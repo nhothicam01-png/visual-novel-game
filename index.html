@@ -114,16 +114,19 @@
     showNode(currentNodeID);
 }
 
-    // Sự kiện click để tiếp tục
-    window.onclick = () => {
+   function tryAdvance() {
         if (!isWaitingForChoice) {
             let node = storyData[currentNodeID];
-            if(node.nextNodeID) {
+            if(node && node.nextNodeID) {
                 currentNodeID = node.nextNodeID;
                 showNode(currentNodeID);
             }
         }
-    };
+    }
+
+    // Gán vào cả click và phím
+    window.onclick = tryAdvance;
+    document.addEventListener('keydown', (e) => { if(e.code === 'Space') { e.preventDefault(); tryAdvance(); } });
 </script>
 </body>
 </html>
