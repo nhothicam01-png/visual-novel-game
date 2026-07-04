@@ -4,64 +4,13 @@
     <meta charset="UTF-8">
     <title>Visual Novel Web</title>
     <style>
-    /* Cho body lấp đầy màn hình và ẩn thanh cuộn */
-    body { 
-        margin: 0; 
-        background: #000; 
-        color: white; 
-        font-family: sans-serif; 
-        height: 100vh; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center;
-    }
-
-    /* Game container chiếm toàn bộ màn hình hoặc tỉ lệ 16:9 nếu trên máy tính */
-    #game-container { 
-        width: 100vw; 
-        height: 100vh; 
-        position: relative; 
-        overflow: hidden; 
-    }
-
-    /* Quan trọng: object-fit: cover giúp ảnh lấp đầy mà không bị bể/méo */
-    #bg { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; /* Cắt ảnh lấp đầy khung hình */
-        position: absolute;
-    }
-
-    #char { 
-        height: 80%; 
-        position: absolute; 
-        bottom: 0; 
-        left: 50%; 
-        transform: translateX(-50%); /* Căn giữa nhân vật */
-    }
-
-    #dialogue-box { 
-        position: absolute; 
-        bottom: 20px; 
-        width: 90%; 
-        left: 5%; 
-        background: rgba(0,0,0,0.6); 
-        padding: 20px; 
-        border-radius: 10px;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .btn { 
-        display: block; 
-        width: 100%;
-        margin: 5px 0; 
-        padding: 15px; 
-        cursor: pointer; 
-        background: #333; 
-        color: white; 
-        border: none;
-    }
-</style>
+        body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        #game-container { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+        #bg { width: 100%; height: 100%; object-fit: cover; position: absolute; }
+        #char { height: 80%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); }
+        #dialogue-box { position: absolute; bottom: 20px; width: 90%; left: 5%; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); }
+        .btn { display: block; width: 100%; margin: 5px 0; padding: 15px; cursor: pointer; background: #333; color: white; border: none; }
+    </style>
 </head>
 <body>
 
@@ -70,9 +19,9 @@
     <img id="char">
     <div id="dialogue-box">
         <div style="position: absolute; top: 10px; right: 10px;">
-    <button onclick="toggleAuto()" id="btnAuto">Auto: OFF</button>
-    <button onclick="resetGame()">Reset</button>
-</div>
+            <button onclick="toggleAuto()" id="btnAuto">Auto: OFF</button>
+            <button onclick="resetGame()">Reset</button>
+        </div>
         <p id="text"></p>
         <button id="btn1" class="btn" onclick="makeChoice(1)">Option 1</button>
         <button id="btn2" class="btn" onclick="makeChoice(2)">Option 2</button>
@@ -85,6 +34,10 @@
     let isWaitingForChoice = false;
     let isAutoMode = false;
     let autoTimer = null;
+    
+    // Quản lý nhạc
+    let bgmPlayer = new Audio();
+    let currentBGM = "";
 
     fetch('story.json').then(res => res.json()).then(data => {
         storyData = data.nodes;
@@ -94,11 +47,19 @@
     function showNode(id) {
         if (!id || !storyData[id]) id = "start";
         currentNodeID = id;
-        localStorage.setItem("savedNode", id); // Tự động lưu
+        localStorage.setItem("savedNode", id);
 
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
         document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
+        
+        // Xử lý nhạc nền
+        if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
+            currentBGM = node.backgroundMusic;
+            bgmPlayer.src = "audio/" + currentBGM;
+            bgmPlayer.loop = true;
+            bgmPlayer.play().catch(e => console.log("Cần click để phát nhạc"));
+        }
         
         if (node.option1Text) {
             isWaitingForChoice = true;
@@ -142,12 +103,13 @@
                 currentNodeID = node.nextNodeID;
                 showNode(currentNodeID);
             }
-        }, 2000); // Tự nhảy sau 2 giây
+        }, 2000);
     }
 
     function stopAuto() { clearTimeout(autoTimer); }
 
     function tryAdvance() {
+        if (isAutoMode) { toggleAuto(); return; }
         if (!isWaitingForChoice) {
             let node = storyData[currentNodeID];
             if(node && node.nextNodeID) {
