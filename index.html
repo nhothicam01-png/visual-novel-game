@@ -55,7 +55,7 @@
 
     function makeChoice(num) {
         let node = storyData[currentNodeID];
-        currentNodeID = (num === 1) ? node.option1Target : node.option2Target;
+        currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
         showNode(currentNodeID);
     }
 
