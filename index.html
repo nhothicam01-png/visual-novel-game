@@ -69,6 +69,10 @@
     <img id="bg">
     <img id="char">
     <div id="dialogue-box">
+        <div style="position: absolute; top: 10px; right: 10px;">
+    <button onclick="toggleAuto()" id="btnAuto">Auto: OFF</button>
+    <button onclick="resetGame()">Reset</button>
+</div>
         <p id="text"></p>
         <button id="btn1" class="btn" onclick="makeChoice(1)">Option 1</button>
         <button id="btn2" class="btn" onclick="makeChoice(2)">Option 2</button>
@@ -77,19 +81,24 @@
 
 <script>
     let storyData = {};
-    let currentNodeID = "start";
+    let currentNodeID = localStorage.getItem("savedNode") || "start";
     let isWaitingForChoice = false;
+    let isAutoMode = false;
+    let autoTimer = null;
 
-    // Load dữ liệu
     fetch('story.json').then(res => res.json()).then(data => {
         storyData = data.nodes;
         showNode(currentNodeID);
     });
 
     function showNode(id) {
+        if (!id || !storyData[id]) id = "start";
+        currentNodeID = id;
+        localStorage.setItem("savedNode", id); // Tự động lưu
+
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
-        document.getElementById('bg').src = "images/"+node.changeBackgroundSprite;
+        document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
         
         if (node.option1Text) {
             isWaitingForChoice = true;
@@ -97,24 +106,48 @@
             document.getElementById('btn1').innerText = node.option1Text;
             document.getElementById('btn2').style.display = 'block';
             document.getElementById('btn2').innerText = node.option2Text;
+            stopAuto();
         } else {
             isWaitingForChoice = false;
             document.getElementById('btn1').style.display = 'none';
             document.getElementById('btn2').style.display = 'none';
+            if (isAutoMode) startAuto();
         }
     }
 
     function makeChoice(num) {
-    let node = storyData[currentNodeID];
-    currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
-    
-    // Thêm dòng này để reset trạng thái
-    isWaitingForChoice = false; 
-    
-    showNode(currentNodeID);
-}
+        let node = storyData[currentNodeID];
+        currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
+        isWaitingForChoice = false;
+        showNode(currentNodeID);
+    }
 
-   function tryAdvance() {
+    function resetGame() {
+        localStorage.removeItem("savedNode");
+        window.location.reload();
+    }
+
+    function toggleAuto() {
+        isAutoMode = !isAutoMode;
+        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
+        if (isAutoMode && !isWaitingForChoice) startAuto();
+        else stopAuto();
+    }
+
+    function startAuto() {
+        stopAuto();
+        autoTimer = setTimeout(() => {
+            let node = storyData[currentNodeID];
+            if (node && node.nextNodeID) {
+                currentNodeID = node.nextNodeID;
+                showNode(currentNodeID);
+            }
+        }, 2000); // Tự nhảy sau 2 giây
+    }
+
+    function stopAuto() { clearTimeout(autoTimer); }
+
+    function tryAdvance() {
         if (!isWaitingForChoice) {
             let node = storyData[currentNodeID];
             if(node && node.nextNodeID) {
@@ -124,7 +157,6 @@
         }
     }
 
-    // Gán vào cả click và phím
     window.onclick = tryAdvance;
     document.addEventListener('keydown', (e) => { if(e.code === 'Space') { e.preventDefault(); tryAdvance(); } });
 </script>
