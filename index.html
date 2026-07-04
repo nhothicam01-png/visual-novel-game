@@ -4,13 +4,65 @@
     <meta charset="UTF-8">
     <title>Visual Novel Web</title>
     <style>
-        body { margin: 0; background: #000; color: white; font-family: sans-serif; }
-        #game-container { width: 800px; height: 600px; margin: auto; position: relative; overflow: hidden; }
-        #bg { width: 100%; height: 100%; position: absolute; }
-        #char { height: 80%; position: absolute; bottom: 0; left: 200px; }
-        #dialogue-box { position: absolute; bottom: 20px; width: 90%; margin: 5%; background: rgba(0,0,0,0.7); padding: 20px; }
-        .btn { display: none; margin: 10px; padding: 10px; cursor: pointer; }
-    </style>
+    /* Cho body lấp đầy màn hình và ẩn thanh cuộn */
+    body { 
+        margin: 0; 
+        background: #000; 
+        color: white; 
+        font-family: sans-serif; 
+        height: 100vh; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+    }
+
+    /* Game container chiếm toàn bộ màn hình hoặc tỉ lệ 16:9 nếu trên máy tính */
+    #game-container { 
+        width: 100vw; 
+        height: 100vh; 
+        position: relative; 
+        overflow: hidden; 
+    }
+
+    /* Quan trọng: object-fit: cover giúp ảnh lấp đầy mà không bị bể/méo */
+    #bg { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; /* Cắt ảnh lấp đầy khung hình */
+        position: absolute;
+        filter: brightness(0.7); /* Làm tối nhẹ để chữ dễ đọc hơn */
+    }
+
+    #char { 
+        height: 80%; 
+        position: absolute; 
+        bottom: 0; 
+        left: 50%; 
+        transform: translateX(-50%); /* Căn giữa nhân vật */
+    }
+
+    #dialogue-box { 
+        position: absolute; 
+        bottom: 20px; 
+        width: 90%; 
+        left: 5%; 
+        background: rgba(0,0,0,0.6); 
+        padding: 20px; 
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .btn { 
+        display: block; 
+        width: 100%;
+        margin: 5px 0; 
+        padding: 15px; 
+        cursor: pointer; 
+        background: #333; 
+        color: white; 
+        border: none;
+    }
+</style>
 </head>
 <body>
 
