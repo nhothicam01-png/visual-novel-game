@@ -54,10 +54,14 @@
     }
 
     function makeChoice(num) {
-        let node = storyData[currentNodeID];
-        currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
-        showNode(currentNodeID);
-    }
+    let node = storyData[currentNodeID];
+    currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
+    
+    // Thêm dòng này để reset trạng thái
+    isWaitingForChoice = false; 
+    
+    showNode(currentNodeID);
+}
 
     // Sự kiện click để tiếp tục
     window.onclick = () => {
