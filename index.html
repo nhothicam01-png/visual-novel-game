@@ -58,10 +58,11 @@
         // --- MỚI: Xử lý ảnh nhân vật ---
         let charImg = document.getElementById('char');
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
-            charImg.src = "images/" + node.changeCharacterSprite;
+            charImg.src = "images/char1.png"// + node.changeCharacterSprite;
             charImg.style.display = 'block'; // Hiện ảnh
         } else {
-            charImg.style.display = 'none'; // Ẩn ảnh nếu không có
+            charImg.src = "images/char1.png"
+            //charImg.style.display = 'none'; // Ẩn ảnh nếu không có
         }
         
         // Xử lý nhạc nền (giữ nguyên)
