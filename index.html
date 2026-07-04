@@ -51,9 +51,20 @@
 
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
-        document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
         
-        // Xử lý nhạc nền
+        // Hiển thị ảnh nền
+        document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
+
+        // --- MỚI: Xử lý ảnh nhân vật ---
+        let charImg = document.getElementById('char');
+        if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
+            charImg.src = "images/" + node.changeCharacterSprite;
+            charImg.style.display = 'block'; // Hiện ảnh
+        } else {
+            charImg.style.display = 'none'; // Ẩn ảnh nếu không có
+        }
+        
+        // Xử lý nhạc nền (giữ nguyên)
         if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
             currentBGM = node.backgroundMusic;
             bgmPlayer.src = "audio/" + currentBGM;
@@ -61,6 +72,7 @@
             bgmPlayer.play().catch(e => console.log("Cần click để phát nhạc"));
         }
         
+        // Xử lý nút bấm (giữ nguyên)
         if (node.option1Text) {
             isWaitingForChoice = true;
             document.getElementById('btn1').style.display = 'block';
