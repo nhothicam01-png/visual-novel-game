@@ -38,7 +38,7 @@
     function showNode(id) {
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
-        document.getElementById('bg').src = "image.jpg";
+        document.getElementById('bg').src = "images/"+node.changeBackgroundSprite;
         
         if (node.option1Text) {
             isWaitingForChoice = true;
