@@ -88,6 +88,15 @@
         }
     }
 
+    // Thêm đoạn này vào bên dưới hàm showNode hoặc ở bất kỳ đâu trong <script>
+document.getElementById('char').addEventListener('error', function() {
+    this.style.display = 'none'; // Nếu ảnh lỗi, tự động ẩn khung ảnh đi
+});
+
+document.getElementById('bg').addEventListener('error', function() {
+    this.style.display = 'none'; // Nếu background lỗi, ẩn luôn background
+});
+
     function makeChoice(num) {
         let node = storyData[currentNodeID];
         currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
