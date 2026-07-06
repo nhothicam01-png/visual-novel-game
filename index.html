@@ -43,6 +43,7 @@
 
     fetch('story.json').then(res => res.json()).then(data => {
         storyData = data.nodes;
+        alert("đã cho nó trở về file gốc");
         showNode(currentNodeID);
     });
 
