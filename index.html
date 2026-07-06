@@ -8,7 +8,7 @@
         body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100dvh; display: flex; justify-content: center; align-items: center; touch-action: manipulation; }
         #game-container { width: 100vw; height: 100dvh; position: relative; overflow: hidden; }
         
-        /* Class nền tảng giữ vị trí */
+        /* Cố định vị trí, không thay đổi theo hiệu ứng */
         .bg-base { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
         .char-base { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
         
@@ -22,15 +22,14 @@
         #controls { position: absolute; top: 10px; right: 10px; z-index: 4; display: flex; gap: 5px; }
         #text { min-height: 50px; font-size: 18px; margin-bottom: 15px; }
 
-        /* Animation Keyframes */
+        /* Các hiệu ứng animation */
         @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-10px, 0); } 75% { transform: translate(10px, 0); } }
         @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
         @keyframes jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         
-        /* CSS Selector bắt mọi class có tên hiệu ứng bất kể hậu tố số (1, 2, 3...) */
-        [class*="shake"] { animation: shake 0.2s infinite; }
-        [class*="fade-in"] { animation: fade 1s forwards; }
-        [class*="jump"] { animation: jump 0.5s infinite; }
+        .shake { animation: shake 0.2s infinite; }
+        .fade-in { animation: fade 1s forwards; }
+        .jump { animation: jump 0.5s infinite; }
     </style>
 </head>
 <body>
@@ -38,7 +37,6 @@
 <div id="game-container">
     <img id="bg" class="bg-base">
     <img id="char" class="char-base">
-    
     <div id="controls">
         <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF</button>
         <button onclick="resetGame(event)">Reset</button>
@@ -59,62 +57,69 @@
     let autoTimer = null;
     let bgmPlayer = new Audio();
     let currentBGM = "";
-    let effectCounter = 0; // Biến đếm để restart animation
 
     fetch('story.json').then(res => res.json()).then(data => {
         storyData = data.nodes;
         showNode(currentNodeID);
     });
 
+    function applyEffect(element, effectName) {
+        // Reset animation bằng cách xóa class cũ và thêm lại
+        element.className = element.className.split(' ')[0]; // Chỉ giữ lại class base
+        if (effectName) {
+            // Dùng requestAnimationFrame để trình duyệt bắt kịp việc reset class
+            requestAnimationFrame(() => { element.classList.add(effectName); });
+        }
+    }
+
     function showNode(id) {
         if (!id || !storyData[id]) id = "start";
         currentNodeID = id;
         localStorage.setItem("savedNode", id);
-        effectCounter++; // Tăng bộ đếm ở mọi lần gọi để reset hiệu ứng
 
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
         
         // Cập nhật Background
-        let bgImg = document.getElementById('bg');
-        bgImg.src = "images/" + node.changeBackgroundSprite;
-        bgImg.className = "bg-base " + (node.bgEffect || "idle") + effectCounter; 
+        let bg = document.getElementById('bg');
+        bg.src = "images/" + node.changeBackgroundSprite;
+        applyEffect(bg, node.bgEffect);
 
         // Cập nhật Character
-        let charImg = document.getElementById('char');
+        let char = document.getElementById('char');
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
-            charImg.src = "images/" + node.changeCharacterSprite;
-            charImg.style.display = 'block';
-            charImg.className = "char-base " + (node.charEffect || "idle") + effectCounter;
+            char.src = "images/" + node.changeCharacterSprite;
+            char.style.display = 'block';
+            applyEffect(char, node.charEffect);
         } else {
-            charImg.style.display = 'none';
+            char.style.display = 'none';
         }
         
         // Nhạc nền
         if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
             currentBGM = node.backgroundMusic;
             bgmPlayer.src = "audio/" + currentBGM;
-            bgmPlayer.loop = true;
             bgmPlayer.play().catch(() => {});
         }
         
-        // Xử lý nút
+        // Nút chọn
         isWaitingForChoice = !!node.option1Text;
         document.getElementById('btn1').style.display = isWaitingForChoice ? 'block' : 'none';
         document.getElementById('btn1').innerText = node.option1Text || "";
         document.getElementById('btn2').style.display = isWaitingForChoice ? 'block' : 'none';
         document.getElementById('btn2').innerText = node.option2Text || "";
         
-        if (!isWaitingForChoice && isAutoMode) startAuto();
-        else stopAuto();
+        if (isWaitingForChoice) stopAuto();
+        else if (isAutoMode) startAuto();
     }
 
+    function showNotification(msg) { /* Giữ nguyên */ }
     function resetGame(e) { e.stopPropagation(); e.target.blur(); localStorage.removeItem("savedNode"); showNode("start"); }
     function makeChoice(e, num) { e.stopPropagation(); e.target.blur(); let node = storyData[currentNodeID]; showNode(num === 1 ? node.option1TargetID : node.option2TargetID); }
-    function toggleAuto(e) { e.stopPropagation(); e.target.blur(); isAutoMode = !isAutoMode; document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF"; if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); }
+    function toggleAuto(e) { e.stopPropagation(); e.target.blur(); isAutoMode = !isAutoMode; document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF uos"; if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); }
     function startAuto() { stopAuto(); autoTimer = setTimeout(() => { if(storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }, 2000); }
     function stopAuto() { clearTimeout(autoTimer); }
-    function tryAdvance(event) { if(isAutoMode) { toggleAuto(event); return; } if(!isWaitingForChoice && storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }
+    function tryAdvance(e) { if(isAutoMode) toggleAuto(e); else if(!isWaitingForChoice && storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }
 
     window.onclick = tryAdvance;
     document.addEventListener('keydown', (e) => { if(e.code === 'Space') tryAdvance(); });
