@@ -43,7 +43,7 @@
     <img id="bg" class="bg-base">
     <img id="char" class="char-base">
     <div id="controls">
-        <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF te</button>
+        <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF</button>
         <button onclick="resetGame(event)">Reset</button>
     </div>
 
@@ -127,7 +127,7 @@ if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
     function showNotification(msg) { /* Giữ nguyên */ }
     function resetGame(e) { e.stopPropagation(); e.target.blur(); localStorage.removeItem("savedNode"); showNode("start"); }
     function makeChoice(e, num) { e.stopPropagation(); e.target.blur(); let node = storyData[currentNodeID]; showNode(num === 1 ? node.option1TargetID : node.option2TargetID); }
-    function toggleAuto(e) { e.stopPropagation(); e.target.blur(); isAutoMode = !isAutoMode; document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF"; if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); }
+    function toggleAuto(e) { e.stopPropagation(); e.target.blur(); isAutoMode = !isAutoMode; document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF aaaah~"; if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); }
     function startAuto() { stopAuto(); autoTimer = setTimeout(() => { if(storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }, 2000); }
     function stopAuto() { clearTimeout(autoTimer); }
     function tryAdvance(e) { if(isAutoMode) toggleAuto(e); else if(!isWaitingForChoice && storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }
