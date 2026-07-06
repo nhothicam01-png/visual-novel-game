@@ -29,6 +29,19 @@
         .shake { animation: shake 0.2s infinite; }
         .fade-in { animation: fade 1s forwards; }
         .jump { animation: jump 0.5s infinite; }
+        /* Thêm class này vào CSS */
+.char-base {
+    height: 75%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+/* Sửa lại CSS của #char ban đầu để nó dùng chung class này */
+#char { /* Giữ nguyên hoặc xóa bớt các thuộc tính đã đưa vào .char-base */ }
+        
     </style>
 </head>
 <body>
@@ -81,7 +94,12 @@
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
             charImg.src = "images/" + node.changeCharacterSprite;
             charImg.style.display = 'block';
-            charImg.className = node.charEffect || "";
+            // Thay đổi đoạn này trong hàm showNode
+// Thay vì: charImg.className = node.charEffect || "";
+// Hãy dùng cách này để không làm mất các thuộc tính CSS khác:
+
+charImg.className = "char-base " + (node.charEffect || "");
+
         } else {
             charImg.style.display = 'none';
         }
