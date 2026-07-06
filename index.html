@@ -135,7 +135,10 @@ charImg.className = "char-base " + (node.charEffect || "");
         setTimeout(() => { textBox.innerText = old; }, 2000);
     }
 
-    function resetGame(e) { e.stopPropagation(); localStorage.removeItem("savedNode"); showNode("start"); showNotification("Đã khởi động lại!"); }
+    function resetGame(e) { e.stopPropagation();
+    // THÊM DÒNG NÀY: Bỏ focus khỏi nút ngay sau khi click
+    e.target.blur(); 
+     localStorage.removeItem("savedNode"); showNode("start"); showNotification("Đã khởi động lại!"); }
     
     function makeChoice(e, num) { 
         e.stopPropagation(); 
@@ -146,6 +149,9 @@ charImg.className = "char-base " + (node.charEffect || "");
 
     function toggleAuto(e) { 
         e.stopPropagation(); 
+    // THÊM DÒNG NÀY: Bỏ focus khỏi nút ngay sau khi click
+    e.target.blur(); 
+    
         isAutoMode = !isAutoMode; 
         document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
         isAutoMode ? startAuto() : stopAuto();
