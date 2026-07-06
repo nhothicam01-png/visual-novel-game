@@ -6,20 +6,19 @@
     <title>Visual Novel Web</title>
     <style>
         body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100vh; overflow: hidden; }
-        #game-container { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+        #game-container { width: 100vw; height: 100vh; position: relative; }
         
         #bg { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
         #char { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
         
-        #dialogue-box { position: absolute; bottom: 20px; width: 90%; left: 5%; background: rgba(0,0,0,0.7); padding: 20px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.3); z-index: 3; }
+        #dialogue-box { position: absolute; bottom: 20px; width: 92%; left: 4%; background: rgba(0,0,0,0.75); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.3); z-index: 3; box-sizing: border-box; }
         
-        /* Chỉnh lại giao diện nút Auto & Reset */
-        .controls { position: absolute; top: 15px; right: 15px; z-index: 4; display: flex; gap: 10px; }
-        .controls button { padding: 12px 20px; font-size: 16px; border-radius: 8px; border: none; background: #444; color: white; cursor: pointer; font-weight: bold; }
+        /* Nút ở góc phải - Thiết kế to hơn cho mobile */
+        #controls { position: fixed; top: 15px; right: 15px; z-index: 4; display: flex; gap: 10px; }
+        .control-btn { padding: 12px 20px; font-size: 16px; font-weight: bold; background: rgba(0,0,0,0.6); color: white; border: 2px solid white; border-radius: 8px; cursor: pointer; }
         
-        /* Nút lựa chọn to hơn */
-        .btn { display: block; width: 100%; margin: 10px 0; padding: 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; }
-        #text { font-size: 18px; line-height: 1.5; min-height: 60px; }
+        #text { font-size: 18px; line-height: 1.5; margin-bottom: 20px; min-height: 60px; }
+        .btn { display: block; width: 100%; margin: 10px 0; padding: 18px; cursor: pointer; background: #007bff; color: white; border: none; font-size: 18px; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -28,9 +27,9 @@
     <img id="bg">
     <img id="char">
     
-    <div class="controls">
-        <button onclick="toggleAuto()" id="btnAuto">Auto: OFF</button>
-        <button onclick="resetGame()">Reset</button>
+    <div id="controls">
+        <button onclick="toggleAuto()" class="control-btn" id="btnAuto">Auto: OFF</button>
+        <button onclick="resetGame()" class="control-btn">Reset</button>
     </div>
 
     <div id="dialogue-box">
@@ -39,110 +38,3 @@
         <button id="btn2" class="btn" onclick="makeChoice(2)">Option 2</button>
     </div>
 </div>
-
-<script>
-    let storyData = {};
-    let currentNodeID = localStorage.getItem("savedNode") || "start";
-    let isWaitingForChoice = false;
-    let isAutoMode = false;
-    let autoTimer = null;
-    
-    let bgmPlayer = new Audio();
-    let currentBGM = "";
-
-    fetch('story.json').then(res => res.json()).then(data => {
-        storyData = data.nodes;
-        showNode(currentNodeID);
-    });
-
-    function showNode(id) {
-        if (!id || !storyData[id]) id = "start";
-        currentNodeID = id;
-        localStorage.setItem("savedNode", id);
-
-        let node = storyData[id];
-        document.getElementById('text').innerText = node.text;
-        
-        document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
-        document.getElementById('bg').style.display = 'block';
-
-        let charImg = document.getElementById('char');
-        if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
-            charImg.src = "images/" + node.changeCharacterSprite;
-            charImg.style.display = 'block';
-        } else {
-            charImg.style.display = 'none';
-        }
-        
-        if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
-            currentBGM = node.backgroundMusic;
-            bgmPlayer.src = "audio/" + currentBGM;
-            bgmPlayer.loop = true;
-            bgmPlayer.play().catch(e => console.log("Cần click để phát nhạc"));
-        }
-        
-        if (node.option1Text) {
-            isWaitingForChoice = true;
-            document.getElementById('btn1').style.display = 'block';
-            document.getElementById('btn1').innerText = node.option1Text;
-            document.getElementById('btn2').style.display = 'block';
-            document.getElementById('btn2').innerText = node.option2Text;
-            stopAuto();
-        } else {
-            isWaitingForChoice = false;
-            document.getElementById('btn1').style.display = 'none';
-            document.getElementById('btn2').style.display = 'none';
-            if (isAutoMode) startAuto();
-        }
-    }
-
-    document.getElementById('char').addEventListener('error', function() { this.style.display = 'none'; });
-    document.getElementById('bg').addEventListener('error', function() { this.style.display = 'none'; });
-
-    function makeChoice(num) {
-        let node = storyData[currentNodeID];
-        currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
-        isWaitingForChoice = false;
-        showNode(currentNodeID);
-    }
-
-    function resetGame() {
-        localStorage.removeItem("savedNode");
-        window.location.reload();
-    }
-
-    function toggleAuto() {
-        isAutoMode = !isAutoMode;
-        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
-        if (isAutoMode && !isWaitingForChoice) startAuto();
-        else stopAuto();
-    }
-
-    function startAuto() {
-        stopAuto();
-        autoTimer = setTimeout(() => {
-            let node = storyData[currentNodeID];
-            if (node && node.nextNodeID) {
-                currentNodeID = node.nextNodeID;
-                showNode(currentNodeID);
-            }
-        }, 2000);
-    }
-
-    function stopAuto() { clearTimeout(autoTimer); }
-
-    function tryAdvance() {
-        if (isAutoMode) { toggleAuto(); return; }
-        if (!isWaitingForChoice) {
-            let node = storyData[currentNodeID];
-            if(node && node.nextNodeID) {
-                currentNodeID = node.nextNodeID;
-                showNode(currentNodeID);
-            }
-        }
-    }
-
-    window.onclick = tryAdvance;
-</script>
-</body>
-</html>
