@@ -32,8 +32,8 @@
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "bgEffect":"shake",
-      "charEffect":"shake",
+      "bgEffect":"fade-in",
+      "charEffect":"jump",
       "text": "Một con quái vật xuất hiện gặm đi bộ phận tư duy của bạn"
     },
     "start": {
@@ -51,7 +51,7 @@
       "option2Text": "",
       "soundEffect": "",
       "bgEffect":"shake",
-      "charEffect":"shake",
+      "charEffect":"jump",
       "text": "Hì hục hì hục"
     },
     "start2": {
@@ -68,7 +68,7 @@
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "bgEffect":"shake",
+      "bgEffect":"fade-in",
       "charEffect":"shake",
       "text": "Cứ chạy mãi trên hành lang dài vô tận"
     },
@@ -87,7 +87,7 @@
       "option2Text": "Đi lùi lại",
       "soundEffect": "",
       "bgEffect":"shake",
-      "charEffect":"shake",
+      "charEffect":"fade-in",
       "text": "Rồi chợt một cánh cửa xuất hiện"
     }
   }
