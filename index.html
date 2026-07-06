@@ -163,7 +163,23 @@
     }
 
     function stopAuto() { clearTimeout(autoTimer); }
-    function tryAdvance() { if (!isWaitingForChoice) { let n = storyData[currentNodeID]; if(n && n.nextNodeID) showNode(n.nextNodeID); } }
+        function tryAdvance(event) {
+        // Tự động phát nhạc khi người dùng click lần đầu tiên vào game
+        if (bgmPlayer.paused && currentBGM !== "") {
+            bgmPlayer.play().catch(e => console.log("Chờ tương tác"));
+        }
+
+        if (isAutoMode) { 
+            // Nếu đang auto, click vào sẽ tắt auto
+            toggleAuto(event || new Event('click')); 
+            return; 
+        }
+        
+        if (!isWaitingForChoice) {
+            let n = storyData[currentNodeID];
+            if(n && n.nextNodeID) showNode(n.nextNodeID);
+        }
+    }
 
     window.onclick = tryAdvance;
     document.addEventListener('keydown', (e) => { if(e.code === 'Space') tryAdvance(); });
