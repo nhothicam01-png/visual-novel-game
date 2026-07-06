@@ -73,21 +73,24 @@
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
         
-        // Cập nhật Background độc lập với char
+        // 1. Cập nhật Background
         let bgImg = document.getElementById('bg');
         bgImg.src = "images/" + node.changeBackgroundSprite;
-        bgImg.className = "bg-base " + (node.bgEffect || ""); 
+        // Xóa các class hiệu ứng cũ, giữ lại bg-base
+        bgImg.className = "bg-base"; 
+        if (node.bgEffect) bgImg.classList.add(node.bgEffect);
 
-        // Cập nhật Character độc lập với bg
+        // 2. Cập nhật Character
         let charImg = document.getElementById('char');
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
             charImg.src = "images/" + node.changeCharacterSprite;
             charImg.style.display = 'block';
-            charImg.className = "char-base " + (node.charEffect || "");
+            // Xóa các class hiệu ứng cũ, giữ lại char-base
+            charImg.className = "char-base";
+            if (node.charEffect) charImg.classList.add(node.charEffect);
         } else {
             charImg.style.display = 'none';
         }
-        
         // Nhạc nền
         if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
             currentBGM = node.backgroundMusic;
