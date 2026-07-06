@@ -21,7 +21,6 @@
         #controls { position: absolute; top: 10px; right: 10px; z-index: 4; display: flex; gap: 5px; }
         #text { min-height: 50px; font-size: 18px; margin-bottom: 15px; }
 
-        /* Keyframes giữ nguyên thuộc tính translateX(-50%) để không bị lệch */
         @keyframes shake { 
             0%, 100% { transform: translateX(-50%) translateY(0); } 
             25% { transform: translateX(-52%) translateY(0); } 
@@ -63,6 +62,7 @@
     let isAutoMode = false;
     let autoTimer = null;
     let bgmPlayer = new Audio();
+    let voicePlayer = new Audio(); // Trình phát riêng cho Voice
     let currentBGM = "";
 
     fetch('story.json').then(res => res.json()).then(data => {
@@ -71,7 +71,7 @@
     });
 
     function applyEffect(element, effectName) {
-        element.className = element.classList[0]; // Reset về class gốc
+        element.className = element.classList[0]; 
         if (effectName) {
             requestAnimationFrame(() => { element.classList.add(effectName); });
         }
@@ -85,6 +85,7 @@
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
         
+        // Cập nhật Hình ảnh
         let bg = document.getElementById('bg');
         bg.src = "images/" + node.changeBackgroundSprite;
         applyEffect(bg, node.bgEffect);
@@ -98,6 +99,15 @@
             char.style.display = 'none';
         }
         
+        // --- XỬ LÝ VOICE (Mới) ---
+        voicePlayer.pause();
+        voicePlayer.currentTime = 0;
+        if (node.characterVoice && node.characterVoice !== "") {
+            voicePlayer.src = "audio/" + node.characterVoice;
+            voicePlayer.play().catch(e => console.log("Voice không phát được hoặc không tồn tại."));
+        }
+
+        // --- XỬ LÝ NHẠC NỀN ---
         if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
             currentBGM = node.backgroundMusic;
             bgmPlayer.src = "audio/" + currentBGM;
