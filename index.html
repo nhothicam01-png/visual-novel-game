@@ -1,80 +1,17 @@
-<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
     <title>Visual Novel Web</title>
     <style>
-        /* Sử dụng 100dvh để tránh bị thanh công cụ trình duyệt che */
-        body { 
-            margin: 0; 
-            background: #000; 
-            color: white; 
-            font-family: sans-serif; 
-            height: 100dvh; 
-            overflow: hidden; 
-        }
+        body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        #game-container { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
         
-        #game-container { 
-            width: 100vw; 
-            height: 100dvh; 
-            position: relative; 
-            overflow: hidden; 
-        }
-        
+        /* Đảm bảo z-index để lớp hình ảnh không bị đè lên nhau */
         #bg { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
-        #char { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
+        #char { height: 80%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; }
         
-        /* Nhóm nút điều khiển: Góc trên bên phải, to và rõ */
-        #top-controls { 
-            position: absolute; 
-            top: 15px; 
-            right: 15px; 
-            z-index: 100; 
-            display: flex; 
-            gap: 10px; 
-        }
-        .ctrl-btn { 
-            padding: 15px 20px; 
-            font-size: 18px; 
-            font-weight: bold;
-            background: rgba(0,0,0,0.6); 
-            color: white; 
-            border: 2px solid white; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            touch-action: manipulation;
-        }
-        
-        /* Hộp thoại được đẩy lên cao hơn khỏi đáy để tránh thanh nav dưới */
-        #dialogue-box { 
-            position: absolute; 
-            bottom: 25px; 
-            width: 90%; 
-            left: 5%; 
-            background: rgba(0,0,0,0.7); 
-            padding: 20px; 
-            border-radius: 15px; 
-            border: 1px solid rgba(255,255,255,0.3); 
-            z-index: 50; 
-            box-sizing: border-box;
-        }
-        
-        #text { font-size: 20px; line-height: 1.6; margin-bottom: 20px; }
-        .btn { 
-            display: block; 
-            width: 100%; 
-            margin: 15px 0; 
-            padding: 22px; 
-            cursor: pointer; 
-            background: #007bff; 
-            color: white; 
-            border: none; 
-            font-size: 20px; 
-            font-weight: bold;
-            border-radius: 12px; 
-            touch-action: manipulation;
-        }
+        #dialogue-box { position: absolute; bottom: 20px; width: 90%; left: 5%; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); z-index: 3; }
+        .btn { display: block; width: 100%; margin: 5px 0; padding: 15px; cursor: pointer; background: #333; color: white; border: none; }
     </style>
 </head>
 <body>
@@ -82,13 +19,11 @@
 <div id="game-container">
     <img id="bg">
     <img id="char">
-    
-    <div id="top-controls">
-        <button onclick="toggleAuto()" class="ctrl-btn" id="btnAuto">Auto: OFF</button>
-        <button onclick="resetGame()" class="ctrl-btn">Reset</button>
-    </div>
-
     <div id="dialogue-box">
+        <div style="position: absolute; top: 10px; right: 10px;">
+            <button onclick="toggleAuto()" id="btnAuto">Auto: OFF</button>
+            <button onclick="resetGame()">Reset</button>
+        </div>
         <p id="text"></p>
         <button id="btn1" class="btn" onclick="makeChoice(1)">Option 1</button>
         <button id="btn2" class="btn" onclick="makeChoice(2)">Option 2</button>
@@ -101,6 +36,7 @@
     let isWaitingForChoice = false;
     let isAutoMode = false;
     let autoTimer = null;
+    
     let bgmPlayer = new Audio();
     let currentBGM = "";
 
@@ -116,8 +52,12 @@
 
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
-        document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
         
+        // Cập nhật ảnh nền
+        document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
+        document.getElementById('bg').style.display = 'block';
+
+        // Cập nhật ảnh nhân vật
         let charImg = document.getElementById('char');
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
             charImg.src = "images/" + node.changeCharacterSprite;
@@ -126,6 +66,15 @@
             charImg.style.display = 'none';
         }
         
+        // Xử lý nhạc nền
+        if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
+            currentBGM = node.backgroundMusic;
+            bgmPlayer.src = "audio/" + currentBGM;
+            bgmPlayer.loop = true;
+            bgmPlayer.play().catch(e => console.log("Cần click để phát nhạc"));
+        }
+        
+        // Xử lý lựa chọn
         if (node.option1Text) {
             isWaitingForChoice = true;
             document.getElementById('btn1').style.display = 'block';
@@ -141,7 +90,21 @@
         }
     }
 
-    function resetGame() { localStorage.removeItem("savedNode"); window.location.reload(); }
+    // Xử lý lỗi ảnh
+    document.getElementById('char').addEventListener('error', function() { this.style.display = 'none'; });
+    document.getElementById('bg').addEventListener('error', function() { this.style.display = 'none'; });
+
+    function makeChoice(num) {
+        let node = storyData[currentNodeID];
+        currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
+        isWaitingForChoice = false;
+        showNode(currentNodeID);
+    }
+
+    function resetGame() {
+        localStorage.removeItem("savedNode");
+        window.location.reload();
+    }
 
     function toggleAuto() {
         isAutoMode = !isAutoMode;
@@ -154,24 +117,28 @@
         stopAuto();
         autoTimer = setTimeout(() => {
             let node = storyData[currentNodeID];
-            if (node && node.nextNodeID) showNode(node.nextNodeID);
+            if (node && node.nextNodeID) {
+                currentNodeID = node.nextNodeID;
+                showNode(currentNodeID);
+            }
         }, 2000);
     }
 
     function stopAuto() { clearTimeout(autoTimer); }
 
-    function makeChoice(num) {
-        let node = storyData[currentNodeID];
-        currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
-        showNode(currentNodeID);
+    function tryAdvance() {
+        if (isAutoMode) { toggleAuto(); return; }
+        if (!isWaitingForChoice) {
+            let node = storyData[currentNodeID];
+            if(node && node.nextNodeID) {
+                currentNodeID = node.nextNodeID;
+                showNode(currentNodeID);
+            }
+        }
     }
 
-    window.onclick = () => {
-        if (!isAutoMode && !isWaitingForChoice) {
-            let node = storyData[currentNodeID];
-            if(node && node.nextNodeID) showNode(node.nextNodeID);
-        }
-    };
+    window.onclick = tryAdvance;
+    document.addEventListener('keydown', (e) => { if(e.code === 'Space') { e.preventDefault(); tryAdvance(); } });
 </script>
 </body>
 </html>
