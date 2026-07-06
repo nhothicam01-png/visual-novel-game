@@ -138,7 +138,9 @@
             }
         }
     }
-
+window.onload = function() {
+    showNotification("Tải trang thành công 0!");
+};
     window.onclick = tryAdvance;
     document.addEventListener('keydown', (e) => { if(e.code === 'Space') { e.preventDefault(); tryAdvance(); } });
 </script>
