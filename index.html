@@ -29,16 +29,19 @@
         #char { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
         
         #dialogue-box { 
-            position: absolute; 
-            bottom: 20px; 
-            width: 90%; 
-            left: 5%; 
-            background: rgba(0,0,0,0.7); 
-            padding: 15px; 
-            border-radius: 10px; 
-            border: 1px solid rgba(255,255,255,0.3); 
-            z-index: 3; 
-        }
+    position: absolute; 
+    bottom: 20px; 
+    width: 90%; 
+    left: 50%; /* Đưa điểm gốc về giữa màn hình */
+    transform: translateX(-50%); /* Dịch lùi lại đúng bằng 50% độ rộng của nó để căn giữa chính xác */
+    background: rgba(0,0,0,0.7); 
+    padding: 15px; 
+    border-radius: 10px; 
+    border: 1px solid rgba(255,255,255,0.3); 
+    z-index: 3; 
+    box-sizing: border-box; /* Đảm bảo padding không làm vỡ khung */
+}
+
         
         .btn { 
             display: block; 
