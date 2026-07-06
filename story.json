@@ -15,7 +15,7 @@
       "option2Text": "",
       "soundEffect": "",
       "bgEffect":"fade-in",
-      "charEffect":"shake",
+      "charEffect":"fade-in",
       "text": "Một thế giới mới hiện ra"
     },
     "choice_2": {
@@ -32,8 +32,8 @@
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "bgEffect":"fade-in",
-      "charEffect":"jump",
+      "bgEffect":"",
+      "charEffect":"fade-in",
       "text": "Một con quái vật xuất hiện gặm đi bộ phận tư duy của bạn"
     },
     "start": {
@@ -50,8 +50,8 @@
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "bgEffect":"shake",
-      "charEffect":"jump",
+      "bgEffect":"",
+      "charEffect":"fade-in",
       "text": "Hì hục hì hục"
     },
     "start2": {
@@ -68,8 +68,8 @@
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "bgEffect":"fade-in",
-      "charEffect":"shake",
+      "bgEffect":"",
+      "charEffect":"fade-in",
       "text": "Cứ chạy mãi trên hành lang dài vô tận"
     },
     "start3": {
@@ -86,7 +86,7 @@
       "option2TargetID": "choice_2",
       "option2Text": "Đi lùi lại",
       "soundEffect": "",
-      "bgEffect":"shake",
+      "bgEffect":"",
       "charEffect":"fade-in",
       "text": "Rồi chợt một cánh cửa xuất hiện"
     }
