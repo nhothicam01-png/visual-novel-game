@@ -43,7 +43,7 @@
     <img id="bg" class="bg-base">
     <img id="char" class="char-base">
     <div id="controls">
-        <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF</button>
+        <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF te</button>
         <button onclick="resetGame(event)">Reset</button>
     </div>
 
@@ -100,12 +100,18 @@
             char.style.display = 'none';
         }
         
-        // Nhạc nền
-        if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
-            currentBGM = node.backgroundMusic;
-            bgmPlayer.src = "audio/" + currentBGM;
-            bgmPlayer.play().catch(() => {});
-        }
+       // Nhạc nền
+if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
+    currentBGM = node.backgroundMusic;
+    bgmPlayer.src = "audio/" + currentBGM;
+    bgmPlayer.loop = true;
+    
+    // Thêm logic: Chỉ cố phát nếu người dùng đã từng tương tác
+    // Nếu nhạc bị chặn, nó sẽ tự phát ở lần click tiếp theo trong tryAdvance
+    bgmPlayer.play().catch(e => {
+        console.log("Trình duyệt chặn autoplay, chờ người dùng click...");
+    });
+}
         
         // Nút chọn
         isWaitingForChoice = !!node.option1Text;
