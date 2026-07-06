@@ -12,7 +12,6 @@
         
         #dialogue-box { position: absolute; bottom: 20px; width: 90%; left: 5%; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); z-index: 3; }
         .btn { display: block; width: 100%; margin: 5px 0; padding: 15px; cursor: pointer; background: #333; color: white; border: none; }
-        /* Tăng z-index cho cụm nút điều khiển để đảm bảo nó nhận click trước */
         #controls { position: absolute; top: 10px; right: 10px; z-index: 4; }
     </style>
 </head>
@@ -45,6 +44,8 @@
     fetch('story.json').then(res => res.json()).then(data => {
         storyData = data.nodes;
         showNode(currentNodeID);
+        // Thông báo khi load game thành công
+        showNotification("Tải trang thành công!");
     });
 
     function showNode(id) {
@@ -88,30 +89,38 @@
         }
     }
 
-    // --- CÁC HÀM CÓ TRUYỀN THAM SỐ EVENT ĐỂ NGĂN LAN TRUYỀN ---
+    // Hàm thông báo tạm thời trong khung thoại
+    function showNotification(message, duration = 3000) {
+        let textBox = document.getElementById('text');
+        let originalText = textBox.innerText;
+        textBox.innerText = "⭐ " + message;
+        setTimeout(() => { textBox.innerText = originalText; }, duration);
+    }
+
+    function resetGame(event) {
+        event.stopPropagation();
+        localStorage.removeItem("savedNode");
+        // Reset về start mà không reload
+        showNode("start");
+        showNotification("Đã khởi động lại từ đầu!");
+    }
+
     function makeChoice(event, num) {
-        event.stopPropagation(); // Ngăn click nút làm ảnh hưởng màn hình
+        event.stopPropagation();
         let node = storyData[currentNodeID];
         currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
         isWaitingForChoice = false;
         showNode(currentNodeID);
     }
 
-    function resetGame(event) {
-        event.stopPropagation(); // Ngăn click nút làm ảnh hưởng màn hình
-        localStorage.removeItem("savedNode");
-        window.location.reload();
-    }
-
     function toggleAuto(event) {
-        event.stopPropagation(); // Ngăn click nút làm ảnh hưởng màn hình
+        event.stopPropagation();
         isAutoMode = !isAutoMode;
         document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
         if (isAutoMode && !isWaitingForChoice) startAuto();
         else stopAuto();
     }
 
-    // --- CÁC HÀM KHÔNG CẦN EVENT ---
     document.getElementById('char').addEventListener('error', function() { this.style.display = 'none'; });
     document.getElementById('bg').addEventListener('error', function() { this.style.display = 'none'; });
 
