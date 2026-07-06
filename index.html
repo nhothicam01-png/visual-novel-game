@@ -7,12 +7,13 @@
         body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; }
         #game-container { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
         
-        /* Đảm bảo z-index để lớp hình ảnh không bị đè lên nhau */
         #bg { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
         #char { height: 80%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; }
         
         #dialogue-box { position: absolute; bottom: 20px; width: 90%; left: 5%; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); z-index: 3; }
         .btn { display: block; width: 100%; margin: 5px 0; padding: 15px; cursor: pointer; background: #333; color: white; border: none; }
+        /* Tăng z-index cho cụm nút điều khiển để đảm bảo nó nhận click trước */
+        #controls { position: absolute; top: 10px; right: 10px; z-index: 4; }
     </style>
 </head>
 <body>
@@ -21,13 +22,13 @@
     <img id="bg">
     <img id="char">
     <div id="dialogue-box">
-        <div style="position: absolute; top: 10px; right: 10px;">
-            <button onclick="toggleAuto()" id="btnAuto">Auto: OFF</button>
-            <button onclick="resetGame()">Reset</button>
+        <div id="controls">
+            <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF</button>
+            <button onclick="resetGame(event)">Reset</button>
         </div>
         <p id="text"></p>
-        <button id="btn1" class="btn" onclick="makeChoice(1)">Option 1</button>
-        <button id="btn2" class="btn" onclick="makeChoice(2)">Option 2</button>
+        <button id="btn1" class="btn" onclick="makeChoice(event, 1)">Option 1</button>
+        <button id="btn2" class="btn" onclick="makeChoice(event, 2)">Option 2</button>
     </div>
 </div>
 
@@ -43,7 +44,6 @@
 
     fetch('story.json').then(res => res.json()).then(data => {
         storyData = data.nodes;
-        alert("đã cho nó trở về file gốc");
         showNode(currentNodeID);
     });
 
@@ -55,11 +55,9 @@
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
         
-        // Cập nhật ảnh nền
         document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
         document.getElementById('bg').style.display = 'block';
 
-        // Cập nhật ảnh nhân vật
         let charImg = document.getElementById('char');
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
             charImg.src = "images/" + node.changeCharacterSprite;
@@ -68,7 +66,6 @@
             charImg.style.display = 'none';
         }
         
-        // Xử lý nhạc nền
         if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
             currentBGM = node.backgroundMusic;
             bgmPlayer.src = "audio/" + currentBGM;
@@ -76,7 +73,6 @@
             bgmPlayer.play().catch(e => console.log("Cần click để phát nhạc"));
         }
         
-        // Xử lý lựa chọn
         if (node.option1Text) {
             isWaitingForChoice = true;
             document.getElementById('btn1').style.display = 'block';
@@ -92,28 +88,32 @@
         }
     }
 
-    // Xử lý lỗi ảnh
-    document.getElementById('char').addEventListener('error', function() { this.style.display = 'none'; });
-    document.getElementById('bg').addEventListener('error', function() { this.style.display = 'none'; });
-
-    function makeChoice(num) {
+    // --- CÁC HÀM CÓ TRUYỀN THAM SỐ EVENT ĐỂ NGĂN LAN TRUYỀN ---
+    function makeChoice(event, num) {
+        event.stopPropagation(); // Ngăn click nút làm ảnh hưởng màn hình
         let node = storyData[currentNodeID];
         currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
         isWaitingForChoice = false;
         showNode(currentNodeID);
     }
 
-    function resetGame() {
+    function resetGame(event) {
+        event.stopPropagation(); // Ngăn click nút làm ảnh hưởng màn hình
         localStorage.removeItem("savedNode");
         window.location.reload();
     }
 
-    function toggleAuto() {
+    function toggleAuto(event) {
+        event.stopPropagation(); // Ngăn click nút làm ảnh hưởng màn hình
         isAutoMode = !isAutoMode;
         document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
         if (isAutoMode && !isWaitingForChoice) startAuto();
         else stopAuto();
     }
+
+    // --- CÁC HÀM KHÔNG CẦN EVENT ---
+    document.getElementById('char').addEventListener('error', function() { this.style.display = 'none'; });
+    document.getElementById('bg').addEventListener('error', function() { this.style.display = 'none'; });
 
     function startAuto() {
         stopAuto();
@@ -129,7 +129,7 @@
     function stopAuto() { clearTimeout(autoTimer); }
 
     function tryAdvance() {
-        if (isAutoMode) { toggleAuto(); return; }
+        if (isAutoMode) { toggleAuto(event); return; }
         if (!isWaitingForChoice) {
             let node = storyData[currentNodeID];
             if(node && node.nextNodeID) {
