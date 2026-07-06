@@ -2,57 +2,80 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content">
     <title>Visual Novel Web</title>
     <style>
-    /* Sử dụng 100dvh thay vì 100vh để tránh bị che bởi thanh công cụ trình duyệt */
-    body { 
-        margin: 0; 
-        background: #000; 
-        color: white; 
-        font-family: sans-serif; 
-        height: 100dvh; /* Đơn vị dynamic giúp khớp đúng màn hình mobile */
-        overflow: hidden; 
-    }
-    
-    #game-container { 
-        width: 100vw; 
-        height: 100dvh; 
-        position: relative; 
-    }
-    
-    /* Điều chỉnh Z-index cho nhóm nút điều khiển */
-    #controls { 
-        position: fixed; 
-        top: 10px; /* Cách mép trên một khoảng an toàn */
-        right: 10px; 
-        z-index: 100; /* Đưa lên cao nhất để không bị che */
-        display: flex; 
-        gap: 10px; 
-    }
-    
-    .control-btn { 
-        padding: 15px 20px; /* Tăng padding để dễ chạm bằng ngón tay */
-        font-size: 18px; 
-        background: rgba(0,0,0,0.7); 
-        color: white; 
-        border: 2px solid white; 
-        border-radius: 10px; 
-        cursor: pointer; 
-    }
-
-    /* Đảm bảo hộp thoại không bị che bởi thanh nav dưới */
-    #dialogue-box { 
-        position: absolute; 
-        bottom: 10px; /* Cách đáy một khoảng */
-        width: 90%; 
-        left: 5%; 
-        padding: 20px; 
-        background: rgba(0,0,0,0.8); 
-        border-radius: 15px; 
-        z-index: 50; 
-    }
-</style>
+        /* Sử dụng 100dvh để tránh bị thanh công cụ trình duyệt che */
+        body { 
+            margin: 0; 
+            background: #000; 
+            color: white; 
+            font-family: sans-serif; 
+            height: 100dvh; 
+            overflow: hidden; 
+        }
+        
+        #game-container { 
+            width: 100vw; 
+            height: 100dvh; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        
+        #bg { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
+        #char { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
+        
+        /* Nhóm nút điều khiển: Góc trên bên phải, to và rõ */
+        #top-controls { 
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            z-index: 100; 
+            display: flex; 
+            gap: 10px; 
+        }
+        .ctrl-btn { 
+            padding: 15px 20px; 
+            font-size: 18px; 
+            font-weight: bold;
+            background: rgba(0,0,0,0.6); 
+            color: white; 
+            border: 2px solid white; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            touch-action: manipulation;
+        }
+        
+        /* Hộp thoại được đẩy lên cao hơn khỏi đáy để tránh thanh nav dưới */
+        #dialogue-box { 
+            position: absolute; 
+            bottom: 25px; 
+            width: 90%; 
+            left: 5%; 
+            background: rgba(0,0,0,0.7); 
+            padding: 20px; 
+            border-radius: 15px; 
+            border: 1px solid rgba(255,255,255,0.3); 
+            z-index: 50; 
+            box-sizing: border-box;
+        }
+        
+        #text { font-size: 20px; line-height: 1.6; margin-bottom: 20px; }
+        .btn { 
+            display: block; 
+            width: 100%; 
+            margin: 15px 0; 
+            padding: 22px; 
+            cursor: pointer; 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            font-size: 20px; 
+            font-weight: bold;
+            border-radius: 12px; 
+            touch-action: manipulation;
+        }
+    </style>
 </head>
 <body>
 
@@ -60,9 +83,9 @@
     <img id="bg">
     <img id="char">
     
-    <div id="controls">
-        <button onclick="toggleAuto()" class="control-btn" id="btnAuto">Auto: OFF</button>
-        <button onclick="resetGame()" class="control-btn">Reset</button>
+    <div id="top-controls">
+        <button onclick="toggleAuto()" class="ctrl-btn" id="btnAuto">Auto: OFF</button>
+        <button onclick="resetGame()" class="ctrl-btn">Reset</button>
     </div>
 
     <div id="dialogue-box">
@@ -71,3 +94,84 @@
         <button id="btn2" class="btn" onclick="makeChoice(2)">Option 2</button>
     </div>
 </div>
+
+<script>
+    let storyData = {};
+    let currentNodeID = localStorage.getItem("savedNode") || "start";
+    let isWaitingForChoice = false;
+    let isAutoMode = false;
+    let autoTimer = null;
+    let bgmPlayer = new Audio();
+    let currentBGM = "";
+
+    fetch('story.json').then(res => res.json()).then(data => {
+        storyData = data.nodes;
+        showNode(currentNodeID);
+    });
+
+    function showNode(id) {
+        if (!id || !storyData[id]) id = "start";
+        currentNodeID = id;
+        localStorage.setItem("savedNode", id);
+
+        let node = storyData[id];
+        document.getElementById('text').innerText = node.text;
+        document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
+        
+        let charImg = document.getElementById('char');
+        if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
+            charImg.src = "images/" + node.changeCharacterSprite;
+            charImg.style.display = 'block';
+        } else {
+            charImg.style.display = 'none';
+        }
+        
+        if (node.option1Text) {
+            isWaitingForChoice = true;
+            document.getElementById('btn1').style.display = 'block';
+            document.getElementById('btn1').innerText = node.option1Text;
+            document.getElementById('btn2').style.display = 'block';
+            document.getElementById('btn2').innerText = node.option2Text;
+            stopAuto();
+        } else {
+            isWaitingForChoice = false;
+            document.getElementById('btn1').style.display = 'none';
+            document.getElementById('btn2').style.display = 'none';
+            if (isAutoMode) startAuto();
+        }
+    }
+
+    function resetGame() { localStorage.removeItem("savedNode"); window.location.reload(); }
+
+    function toggleAuto() {
+        isAutoMode = !isAutoMode;
+        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
+        if (isAutoMode && !isWaitingForChoice) startAuto();
+        else stopAuto();
+    }
+
+    function startAuto() {
+        stopAuto();
+        autoTimer = setTimeout(() => {
+            let node = storyData[currentNodeID];
+            if (node && node.nextNodeID) showNode(node.nextNodeID);
+        }, 2000);
+    }
+
+    function stopAuto() { clearTimeout(autoTimer); }
+
+    function makeChoice(num) {
+        let node = storyData[currentNodeID];
+        currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
+        showNode(currentNodeID);
+    }
+
+    window.onclick = () => {
+        if (!isAutoMode && !isWaitingForChoice) {
+            let node = storyData[currentNodeID];
+            if(node && node.nextNodeID) showNode(node.nextNodeID);
+        }
+    };
+</script>
+</body>
+</html>
