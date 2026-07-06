@@ -5,59 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Visual Novel Web</title>
     <style>
-        /* Sử dụng dvh (Dynamic Viewport Height) để tránh bị che bởi thanh menu trình duyệt */
-        body { 
-            margin: 0; 
-            background: #000; 
-            color: white; 
-            font-family: sans-serif; 
-            height: 100dvh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            touch-action: manipulation; /* Tối ưu cảm ứng */
-        }
-        
-        #game-container { 
-            width: 100vw; 
-            height: 100dvh; 
-            position: relative; 
-            overflow: hidden; 
-        }
+        body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100dvh; display: flex; justify-content: center; align-items: center; touch-action: manipulation; }
+        #game-container { width: 100vw; height: 100dvh; position: relative; overflow: hidden; }
         
         #bg { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
         #char { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
         
         #dialogue-box { 
-    position: absolute; 
-    bottom: 20px; 
-    width: 90%; 
-    left: 50%; /* Đưa điểm gốc về giữa màn hình */
-    transform: translateX(-50%); /* Dịch lùi lại đúng bằng 50% độ rộng của nó để căn giữa chính xác */
-    background: rgba(0,0,0,0.7); 
-    padding: 15px; 
-    border-radius: 10px; 
-    border: 1px solid rgba(255,255,255,0.3); 
-    z-index: 3; 
-    box-sizing: border-box; /* Đảm bảo padding không làm vỡ khung */ 
-}
-
-        
-        .btn { 
-            display: block; 
-            width: 100%; 
-            margin: 8px 0; 
-            padding: 12px; 
-            cursor: pointer; 
-            background: rgba(255,255,255,0.1); 
-            color: white; 
-            border: 1px solid #fff; 
-            border-radius: 5px;
-            font-size: 16px; /* Đảm bảo cỡ chữ dễ đọc trên mobile */
+            position: absolute; bottom: 20px; width: 90%; left: 50%; transform: translateX(-50%); 
+            background: rgba(0,0,0,0.7); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); 
+            z-index: 3; box-sizing: border-box; 
         }
         
+        .btn { display: block; width: 100%; margin: 8px 0; padding: 12px; cursor: pointer; background: rgba(255,255,255,0.1); color: white; border: 1px solid #fff; border-radius: 5px; font-size: 16px; }
         #controls { position: absolute; top: 10px; right: 10px; z-index: 4; display: flex; gap: 5px; }
         #text { min-height: 50px; font-size: 18px; margin-bottom: 15px; }
+
+        /* Các hiệu ứng animation */
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-10px, 0); } 75% { transform: translate(10px, 0); } }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        
+        .shake { animation: shake 0.2s infinite; }
+        .fade-in { animation: fade 1s forwards; }
+        .jump { animation: jump 0.5s infinite; }
     </style>
 </head>
 <body>
@@ -71,7 +42,6 @@
     </div>
 
     <div id="dialogue-box">
-        
         <p id="text"></p>
         <button id="btn1" class="btn" onclick="makeChoice(event, 1)">Option 1</button>
         <button id="btn2" class="btn" onclick="makeChoice(event, 2)">Option 2</button>
@@ -101,16 +71,22 @@
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
         
-        document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
-        
+        // Cập nhật Background và hiệu ứng nền
+        let bgImg = document.getElementById('bg');
+        bgImg.src = "images/" + node.changeBackgroundSprite;
+        bgImg.className = node.bgEffect || ""; 
+
+        // Cập nhật Character và hiệu ứng nhân vật
         let charImg = document.getElementById('char');
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
             charImg.src = "images/" + node.changeCharacterSprite;
             charImg.style.display = 'block';
+            charImg.className = node.charEffect || "";
         } else {
             charImg.style.display = 'none';
         }
         
+        // Nhạc nền
         if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
             currentBGM = node.backgroundMusic;
             bgmPlayer.src = "audio/" + currentBGM;
@@ -118,6 +94,7 @@
             bgmPlayer.play().catch(e => console.log("Cần tương tác để phát nhạc"));
         }
         
+        // Nút chọn
         if (node.option1Text) {
             isWaitingForChoice = true;
             document.getElementById('btn1').style.display = 'block';
@@ -140,13 +117,15 @@
         setTimeout(() => { textBox.innerText = old; }, 2000);
     }
 
-    function resetGame(e) { e.stopPropagation(); localStorage.removeItem("savedNode"); showNode("start"); }
+    function resetGame(e) { e.stopPropagation(); localStorage.removeItem("savedNode"); showNode("start"); showNotification("Đã khởi động lại!"); }
+    
     function makeChoice(e, num) { 
         e.stopPropagation(); 
         let node = storyData[currentNodeID];
         currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
         showNode(currentNodeID); 
     }
+
     function toggleAuto(e) { 
         e.stopPropagation(); 
         isAutoMode = !isAutoMode; 
@@ -166,18 +145,10 @@
     }
 
     function stopAuto() { clearTimeout(autoTimer); }
-        function tryAdvance(event) {
-        // Tự động phát nhạc khi người dùng click lần đầu tiên vào game
-        if (bgmPlayer.paused && currentBGM !== "") {
-            bgmPlayer.play().catch(e => console.log("Chờ tương tác"));
-        }
 
-        if (isAutoMode) { 
-            // Nếu đang auto, click vào sẽ tắt auto
-            toggleAuto(event || new Event('click')); 
-            return; 
-        }
-        
+    function tryAdvance(event) {
+        if (bgmPlayer.paused && currentBGM !== "") { bgmPlayer.play().catch(() => {}); }
+        if (isAutoMode) { toggleAuto(event || new Event('click')); return; }
         if (!isWaitingForChoice) {
             let n = storyData[currentNodeID];
             if(n && n.nextNodeID) showNode(n.nextNodeID);
