@@ -145,7 +145,7 @@
     function toggleAuto(e) { 
         e.stopPropagation(); 
         isAutoMode = !isAutoMode; 
-        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto";
+        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
         isAutoMode ? startAuto() : stopAuto();
     }
 
