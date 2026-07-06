@@ -2,17 +2,59 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Visual Novel Web</title>
     <style>
-        body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        #game-container { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+        /* Sử dụng dvh (Dynamic Viewport Height) để tránh bị che bởi thanh menu trình duyệt */
+        body { 
+            margin: 0; 
+            background: #000; 
+            color: white; 
+            font-family: sans-serif; 
+            height: 100dvh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            touch-action: manipulation; /* Tối ưu cảm ứng */
+        }
+        
+        #game-container { 
+            width: 100vw; 
+            height: 100dvh; 
+            position: relative; 
+            overflow: hidden; 
+        }
         
         #bg { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
-        #char { height: 80%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; }
+        #char { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
         
-        #dialogue-box { position: absolute; bottom: 20px; width: 90%; left: 5%; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); z-index: 3; }
-        .btn { display: block; width: 100%; margin: 5px 0; padding: 15px; cursor: pointer; background: #333; color: white; border: none; }
-        #controls { position: absolute; top: 10px; right: 10px; z-index: 4; }
+        #dialogue-box { 
+            position: absolute; 
+            bottom: 20px; 
+            width: 90%; 
+            left: 5%; 
+            background: rgba(0,0,0,0.7); 
+            padding: 15px; 
+            border-radius: 10px; 
+            border: 1px solid rgba(255,255,255,0.3); 
+            z-index: 3; 
+        }
+        
+        .btn { 
+            display: block; 
+            width: 100%; 
+            margin: 8px 0; 
+            padding: 12px; 
+            cursor: pointer; 
+            background: rgba(255,255,255,0.1); 
+            color: white; 
+            border: 1px solid #fff; 
+            border-radius: 5px;
+            font-size: 16px; /* Đảm bảo cỡ chữ dễ đọc trên mobile */
+        }
+        
+        #controls { position: absolute; top: 10px; right: 10px; z-index: 4; display: flex; gap: 5px; }
+        #text { min-height: 50px; font-size: 18px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -22,7 +64,7 @@
     <img id="char">
     <div id="dialogue-box">
         <div id="controls">
-            <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF</button>
+            <button onclick="toggleAuto(event)">Auto</button>
             <button onclick="resetGame(event)">Reset</button>
         </div>
         <p id="text"></p>
@@ -37,15 +79,13 @@
     let isWaitingForChoice = false;
     let isAutoMode = false;
     let autoTimer = null;
-    
     let bgmPlayer = new Audio();
     let currentBGM = "";
 
     fetch('story.json').then(res => res.json()).then(data => {
         storyData = data.nodes;
         showNode(currentNodeID);
-        // Thông báo khi load game thành công
-        showNotification("Tải trang thành công!");
+        showNotification("Sẵn sàng!");
     });
 
     function showNode(id) {
@@ -57,8 +97,7 @@
         document.getElementById('text').innerText = node.text;
         
         document.getElementById('bg').src = "images/" + node.changeBackgroundSprite;
-        document.getElementById('bg').style.display = 'block';
-
+        
         let charImg = document.getElementById('char');
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
             charImg.src = "images/" + node.changeCharacterSprite;
@@ -71,7 +110,7 @@
             currentBGM = node.backgroundMusic;
             bgmPlayer.src = "audio/" + currentBGM;
             bgmPlayer.loop = true;
-            bgmPlayer.play().catch(e => console.log("Cần click để phát nhạc"));
+            bgmPlayer.play().catch(e => console.log("Cần tương tác để phát nhạc"));
         }
         
         if (node.option1Text) {
@@ -89,40 +128,26 @@
         }
     }
 
-    // Hàm thông báo tạm thời trong khung thoại
-    function showNotification(message, duration = 3000) {
+    function showNotification(message) {
         let textBox = document.getElementById('text');
-        let originalText = textBox.innerText;
+        let old = textBox.innerText;
         textBox.innerText = "⭐ " + message;
-        setTimeout(() => { textBox.innerText = originalText; }, duration);
+        setTimeout(() => { textBox.innerText = old; }, 2000);
     }
 
-    function resetGame(event) {
-        event.stopPropagation();
-        localStorage.removeItem("savedNode");
-        // Reset về start mà không reload
-        showNode("start");
-        showNotification("Đã khởi động lại từ đầu!");
-    }
-
-    function makeChoice(event, num) {
-        event.stopPropagation();
+    function resetGame(e) { e.stopPropagation(); localStorage.removeItem("savedNode"); showNode("start"); }
+    function makeChoice(e, num) { 
+        e.stopPropagation(); 
         let node = storyData[currentNodeID];
         currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
-        isWaitingForChoice = false;
-        showNode(currentNodeID);
+        showNode(currentNodeID); 
     }
-
-    function toggleAuto(event) {
-        event.stopPropagation();
-        isAutoMode = !isAutoMode;
-        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
-        if (isAutoMode && !isWaitingForChoice) startAuto();
-        else stopAuto();
+    function toggleAuto(e) { 
+        e.stopPropagation(); 
+        isAutoMode = !isAutoMode; 
+        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto";
+        isAutoMode ? startAuto() : stopAuto();
     }
-
-    document.getElementById('char').addEventListener('error', function() { this.style.display = 'none'; });
-    document.getElementById('bg').addEventListener('error', function() { this.style.display = 'none'; });
 
     function startAuto() {
         stopAuto();
@@ -136,20 +161,11 @@
     }
 
     function stopAuto() { clearTimeout(autoTimer); }
-
-    function tryAdvance() {
-        if (isAutoMode) { toggleAuto(event); return; }
-        if (!isWaitingForChoice) {
-            let node = storyData[currentNodeID];
-            if(node && node.nextNodeID) {
-                currentNodeID = node.nextNodeID;
-                showNode(currentNodeID);
-            }
-        }
-    }
+    function tryAdvance() { if (!isWaitingForChoice) { let n = storyData[currentNodeID]; if(n && n.nextNodeID) showNode(n.nextNodeID); } }
 
     window.onclick = tryAdvance;
-    document.addEventListener('keydown', (e) => { if(e.code === 'Space') { e.preventDefault(); tryAdvance(); } });
+    document.addEventListener('keydown', (e) => { if(e.code === 'Space') tryAdvance(); });
+    document.getElementById('char').addEventListener('error', function() { this.style.display = 'none'; });
 </script>
 </body>
 </html>
