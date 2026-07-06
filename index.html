@@ -8,8 +8,9 @@
         body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100dvh; display: flex; justify-content: center; align-items: center; touch-action: manipulation; }
         #game-container { width: 100vw; height: 100dvh; position: relative; overflow: hidden; }
         
-        #bg { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
-        #char { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
+        /* Class nền tảng giữ vị trí */
+        .bg-base { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
+        .char-base { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
         
         #dialogue-box { 
             position: absolute; bottom: 20px; width: 90%; left: 50%; transform: translateX(-50%); 
@@ -21,21 +22,23 @@
         #controls { position: absolute; top: 10px; right: 10px; z-index: 4; display: flex; gap: 5px; }
         #text { min-height: 50px; font-size: 18px; margin-bottom: 15px; }
 
-        /* Các hiệu ứng animation */
+        /* Animation Keyframes */
         @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-10px, 0); } 75% { transform: translate(10px, 0); } }
         @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
         @keyframes jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         
-        .shake { animation: shake 0.2s infinite; }
-        .fade-in { animation: fade 1s forwards; }
-        .jump { animation: jump 0.5s infinite; }
+        /* CSS Selector bắt mọi class có tên hiệu ứng bất kể hậu tố số (1, 2, 3...) */
+        [class*="shake"] { animation: shake 0.2s infinite; }
+        [class*="fade-in"] { animation: fade 1s forwards; }
+        [class*="jump"] { animation: jump 0.5s infinite; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <img id="bg">
-    <img id="char">
+    <img id="bg" class="bg-base">
+    <img id="char" class="char-base">
+    
     <div id="controls">
         <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF</button>
         <button onclick="resetGame(event)">Reset</button>
@@ -56,32 +59,33 @@
     let autoTimer = null;
     let bgmPlayer = new Audio();
     let currentBGM = "";
+    let effectCounter = 0; // Biến đếm để restart animation
 
     fetch('story.json').then(res => res.json()).then(data => {
         storyData = data.nodes;
         showNode(currentNodeID);
-        showNotification("Sẵn sàng!");
     });
 
     function showNode(id) {
         if (!id || !storyData[id]) id = "start";
         currentNodeID = id;
         localStorage.setItem("savedNode", id);
+        effectCounter++; // Tăng bộ đếm ở mọi lần gọi để reset hiệu ứng
 
         let node = storyData[id];
         document.getElementById('text').innerText = node.text;
         
-        // Cập nhật Background và hiệu ứng nền
+        // Cập nhật Background
         let bgImg = document.getElementById('bg');
         bgImg.src = "images/" + node.changeBackgroundSprite;
-        bgImg.className = node.bgEffect || ""; 
+        bgImg.className = "bg-base " + (node.bgEffect || "idle") + effectCounter; 
 
-        // Cập nhật Character và hiệu ứng nhân vật
+        // Cập nhật Character
         let charImg = document.getElementById('char');
         if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
             charImg.src = "images/" + node.changeCharacterSprite;
             charImg.style.display = 'block';
-            charImg.className = node.charEffect || "";
+            charImg.className = "char-base " + (node.charEffect || "idle") + effectCounter;
         } else {
             charImg.style.display = 'none';
         }
@@ -91,73 +95,29 @@
             currentBGM = node.backgroundMusic;
             bgmPlayer.src = "audio/" + currentBGM;
             bgmPlayer.loop = true;
-            bgmPlayer.play().catch(e => console.log("Cần tương tác để phát nhạc"));
+            bgmPlayer.play().catch(() => {});
         }
         
-        // Nút chọn
-        if (node.option1Text) {
-            isWaitingForChoice = true;
-            document.getElementById('btn1').style.display = 'block';
-            document.getElementById('btn1').innerText = node.option1Text;
-            document.getElementById('btn2').style.display = 'block';
-            document.getElementById('btn2').innerText = node.option2Text;
-            stopAuto();
-        } else {
-            isWaitingForChoice = false;
-            document.getElementById('btn1').style.display = 'none';
-            document.getElementById('btn2').style.display = 'none';
-            if (isAutoMode) startAuto();
-        }
+        // Xử lý nút
+        isWaitingForChoice = !!node.option1Text;
+        document.getElementById('btn1').style.display = isWaitingForChoice ? 'block' : 'none';
+        document.getElementById('btn1').innerText = node.option1Text || "";
+        document.getElementById('btn2').style.display = isWaitingForChoice ? 'block' : 'none';
+        document.getElementById('btn2').innerText = node.option2Text || "";
+        
+        if (!isWaitingForChoice && isAutoMode) startAuto();
+        else stopAuto();
     }
 
-    function showNotification(message) {
-        let textBox = document.getElementById('text');
-        let old = textBox.innerText;
-        textBox.innerText = "⭐ " + message;
-        setTimeout(() => { textBox.innerText = old; }, 2000);
-    }
-
-    function resetGame(e) { e.stopPropagation(); localStorage.removeItem("savedNode"); showNode("start"); showNotification("Đã khởi động lại!"); }
-    
-    function makeChoice(e, num) { 
-        e.stopPropagation(); 
-        let node = storyData[currentNodeID];
-        currentNodeID = (num === 1) ? node.option1TargetID : node.option2TargetID;
-        showNode(currentNodeID); 
-    }
-
-    function toggleAuto(e) { 
-        e.stopPropagation(); 
-        isAutoMode = !isAutoMode; 
-        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF";
-        isAutoMode ? startAuto() : stopAuto();
-    }
-
-    function startAuto() {
-        stopAuto();
-        autoTimer = setTimeout(() => {
-            let node = storyData[currentNodeID];
-            if (node && node.nextNodeID) {
-                currentNodeID = node.nextNodeID;
-                showNode(currentNodeID);
-            }
-        }, 2000);
-    }
-
+    function resetGame(e) { e.stopPropagation(); e.target.blur(); localStorage.removeItem("savedNode"); showNode("start"); }
+    function makeChoice(e, num) { e.stopPropagation(); e.target.blur(); let node = storyData[currentNodeID]; showNode(num === 1 ? node.option1TargetID : node.option2TargetID); }
+    function toggleAuto(e) { e.stopPropagation(); e.target.blur(); isAutoMode = !isAutoMode; document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF"; if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); }
+    function startAuto() { stopAuto(); autoTimer = setTimeout(() => { if(storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }, 2000); }
     function stopAuto() { clearTimeout(autoTimer); }
-
-    function tryAdvance(event) {
-        if (bgmPlayer.paused && currentBGM !== "") { bgmPlayer.play().catch(() => {}); }
-        if (isAutoMode) { toggleAuto(event || new Event('click')); return; }
-        if (!isWaitingForChoice) {
-            let n = storyData[currentNodeID];
-            if(n && n.nextNodeID) showNode(n.nextNodeID);
-        }
-    }
+    function tryAdvance(event) { if(isAutoMode) { toggleAuto(event); return; } if(!isWaitingForChoice && storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }
 
     window.onclick = tryAdvance;
     document.addEventListener('keydown', (e) => { if(e.code === 'Space') tryAdvance(); });
-    document.getElementById('char').addEventListener('error', function() { this.style.display = 'none'; });
 </script>
 </body>
 </html>
