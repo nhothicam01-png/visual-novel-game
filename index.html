@@ -22,19 +22,18 @@
         #controls { position: absolute; top: 10px; right: 10px; z-index: 4; display: flex; gap: 5px; }
         #text { min-height: 50px; font-size: 18px; margin-bottom: 15px; }
 
+        
         /* Các hiệu ứng animation */
-          @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-         /* Sửa lại keyframes jump để giữ nguyên vị trí X */
-@keyframes jump { 
-    0%, 100% { transform: translateX(-50%) translateY(0); } 
-    50% { transform: translateX(-50%) translateY(-20px); } 
-}
-@keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-10px, 0); } 75% { transform: translate(10px, 0); } }
-     
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(-10px, 0); } 75% { transform: translate(10px, 0); } }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        
         .shake { animation: shake 0.2s infinite; }
         .fade-in { animation: fade 1s forwards; }
         .jump { animation: jump 0.5s infinite; }
-
+        /* Trạng thái mặc định: không có hiệu ứng gì cả */
+@keyframes idle { from { opacity: 1; } to { opacity: 1; } }
+.idle { animation: idle 1s forwards; }
 
     </style>
 </head>
@@ -122,7 +121,7 @@
     function showNotification(msg) { /* Giữ nguyên */ }
     function resetGame(e) { e.stopPropagation(); e.target.blur(); localStorage.removeItem("savedNode"); showNode("start"); }
     function makeChoice(e, num) { e.stopPropagation(); e.target.blur(); let node = storyData[currentNodeID]; showNode(num === 1 ? node.option1TargetID : node.option2TargetID); }
-    function toggleAuto(e) { e.stopPropagation(); e.target.blur(); isAutoMode = !isAutoMode; document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF sửa "; if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); }
+    function toggleAuto(e) { e.stopPropagation(); e.target.blur(); isAutoMode = !isAutoMode; document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF"; if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); }
     function startAuto() { stopAuto(); autoTimer = setTimeout(() => { if(storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }, 2000); }
     function stopAuto() { clearTimeout(autoTimer); }
     function tryAdvance(e) { if(isAutoMode) toggleAuto(e); else if(!isWaitingForChoice && storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }
