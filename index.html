@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Oke sau N lần sửa</title>
+    <title>Ok chưa </title>
     <style>
         body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100dvh; display: flex; justify-content: center; align-items: center; touch-action: manipulation; }
         #game-container { width: 100vw; height: 100dvh; position: relative; overflow: hidden; }
@@ -98,12 +98,12 @@
     }
 
     function showNode(id) {
-        // Nếu ID trống → không làm gì cả, không nhảy lung tung
+        // Nếu ID trống → giữ nguyên, không nhảy lung tung
         if (!id || id.trim() === "") {
             console.warn("⚠️ ID đích trống, giữ nguyên node hiện tại");
             return;
         }
-        // Nếu ID không tồn tại → báo lỗi và dừng lại
+        // Nếu ID không tồn tại → báo lỗi rõ ràng
         if (!storyData[id]) {
             console.error("❌ Không tìm thấy node ID:", id);
             alert(`Lỗi: Không có nội dung "${id}"!\nKiểm tra lại tệp JSON nhé.`);
@@ -113,7 +113,7 @@
         currentNodeID = id;
         localStorage.setItem("savedNode", id);
         const node = storyData[id];
-        console.log(`✅ Đang mở: ${id} | ${node.text}`);
+        console.log(`✅ Đang mở: ${id} | ${node.text} | nextNode: ${node.nextNodeID}`);
 
         document.getElementById('text').innerText = node.text;
         
@@ -170,7 +170,7 @@
         e.stopPropagation(); e.target.blur(); 
         const node = storyData[currentNodeID];
         const targetId = num === 1 ? node.option1TargetID : node.option2TargetID;
-        console.log(`🎯 Chọn ${num} → ID: ${targetId}`);
+        console.log(`🎯 Chọn ${num} → mở node: ${targetId}`);
         showNode(targetId); 
     }
 
@@ -196,8 +196,14 @@
         if (bgmPlayer.paused && currentBGM) { bgmPlayer.play().catch(() => {}); }
         if(isAutoMode) { toggleAuto(e); } 
         else if(!isWaitingForChoice) { 
+            // ✅ QUAN TRỌNG: Nhảy đến nextNodeID của node hiện tại (bao gồm cả node op_...)
             const nextId = storyData[currentNodeID]?.nextNodeID;
-            if(nextId) showNode(nextId); 
+            if(nextId) {
+                console.log(`➡️ Chuyển tiếp đến nextNodeID: ${nextId}`);
+                showNode(nextId); 
+            } else {
+                console.log(`ℹ️ Node ${currentNodeID} không có nextNodeID → kết thúc`);
+            }
         } 
     }
 
