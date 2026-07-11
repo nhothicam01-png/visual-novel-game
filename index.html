@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nhung</title>
+    <title> sửa lại lỗi</title>
     <style>
         body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100dvh; display: flex; justify-content: center; align-items: center; touch-action: manipulation; }
         #game-container { width: 100vw; height: 100dvh; position: relative; overflow: hidden; }
@@ -45,7 +45,7 @@
     <img id="char" class="char-base">
     <div id="controls">
         <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF</button>
-        <button onclick="resetGame(event)">Reset</button>
+        <button onclick="resetGame(event)">Reset & Xóa lưu</button>
     </div>
 
     <div id="dialogue-box">
@@ -57,7 +57,8 @@
 
 <script>
     let storyData = {};
-    let currentNodeID = localStorage.getItem("savedNode") || "start";
+    // 🛑 TẠM TẮT LẤY ID CŨ TỪ LƯU TRỮ → LUÔN BẮT ĐẦU TỪ "start" CHO ĐẾN KHI KIỂM TRA XONG
+    let currentNodeID = "start";
     let isWaitingForChoice = false;
     let isAutoMode = false;
     let autoTimer = null;
@@ -65,70 +66,93 @@
     let voicePlayer = new Audio();
     let currentBGM = "";
 
-    // Sửa: Thêm ?t=ngẫu nhiên để KHÔNG đọc JSON cũ trong bộ nhớ đệm
+    // Luôn tải JSON mới nhất, không đọc bộ nhớ đệm
     fetch('story.json?t=' + Date.now())
         .then(res => res.json())
         .then(data => {
             storyData = data.nodes;
-            console.log("✅ Đã tải xong dữ liệu, các ID có sẵn:", Object.keys(storyData)); // Kiểm tra ID
+            console.log("✅ Đã tải dữ liệu, các ID có sẵn:");
+            console.log(Object.keys(storyData));
+
+            // Kiểm tra xem ID lưu trước có hợp lệ không mới dùng
+            const saved = localStorage.getItem("savedNode");
+            if (saved && storyData[saved]) {
+                currentNodeID = saved;
+                console.log("📂 Tiếp tục từ tiến trình đã lưu:", saved);
+            } else {
+                console.log("🔄 Bắt đầu từ đầu (lưu cũ không hợp lệ hoặc không có)");
+                localStorage.removeItem("savedNode");
+            }
+
             showNode(currentNodeID);
         })
-        .catch(err => alert("❌ Lỗi tải story.json: " + err.message));
+        .catch(err => alert("❌ Không tìm thấy tệp story.json! Đặt cùng thư mục với file HTML nhé."));
 
     function applyEffect(element, effectName) {
         element.className = element.classList[0]; 
-        if (effectName) {
+        if (effectName && effectName !== "idle") {
             requestAnimationFrame(() => { element.classList.add(effectName); });
         }
     }
 
     function showNode(id) {
-        // Sửa: Chỉ về start nếu id trống HOẶC hoàn toàn không tồn tại
-        if (!id) id = "start";
+        // Xử lý ID trống hoặc không tồn tại
+        if (!id) {
+            console.warn("⚠️ ID đích trống → giữ nguyên node hiện tại");
+            return;
+        }
         if (!storyData[id]) {
-            console.error("❌ Không tìm thấy node ID:", id, "→ quay về start");
-            id = "start";
+            console.error("❌ KHÔNG TÌM THẤY NODE:", id);
+            alert(`Lỗi: Không tìm thấy nội dung "${id}"! Vui lòng kiểm tra lại tệp JSON.`);
+            return;
         }
 
         currentNodeID = id;
         localStorage.setItem("savedNode", id);
-        let node = storyData[id];
-        console.log("📌 Đang hiển thị node:", id, "→ nextNode:", node.nextNodeID);
+        const node = storyData[id];
+        console.log(`✅ Đang mở: ${id} | Nội dung: ${node.text}`);
 
         document.getElementById('text').innerText = node.text;
         
-        let bg = document.getElementById('bg');
-        bg.src = node.changeBackgroundSprite ? "images/" + node.changeBackgroundSprite : "";
-        applyEffect(bg, node.bgEffect);
+        // Hình ảnh nền & nhân vật
+        const bg = document.getElementById('bg');
+        bg.src = node.changeBackgroundSprite ? `images/${node.changeBackgroundSprite}` : "";
+        applyEffect(bg, node.bgEffect || "idle");
 
-        let char = document.getElementById('char');
+        const char = document.getElementById('char');
         if (node.changeCharacterSprite) {
-            char.src = "images/" + node.changeCharacterSprite;
+            char.src = `images/${node.changeCharacterSprite}`;
             char.style.display = 'block';
-            applyEffect(char, node.charEffect);
+            applyEffect(char, node.charEffect || "idle");
         } else {
             char.style.display = 'none';
         }
         
+        // Âm thanh
         voicePlayer.pause();
         voicePlayer.currentTime = 0;
         if (node.characterVoice) {
-            voicePlayer.src = "audio/" + node.characterVoice;
+            voicePlayer.src = `audio/${node.characterVoice}`;
             voicePlayer.play().catch(e => console.log("Voice không phát:", e));
         }
 
         if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
             currentBGM = node.backgroundMusic;
-            bgmPlayer.src = "audio/" + currentBGM;
+            bgmPlayer.src = `audio/${currentBGM}`;
             bgmPlayer.loop = true;
             bgmPlayer.play().catch(() => {});
         }
         
-        isWaitingForChoice = !!node.option1Text;
-        document.getElementById('btn1').style.display = isWaitingForChoice ? 'block' : 'none';
-        document.getElementById('btn1').innerText = node.option1Text || "";
-        document.getElementById('btn2').style.display = isWaitingForChoice ? 'block' : 'none';
-        document.getElementById('btn2').innerText = node.option2Text || "";
+        // Nút lựa chọn
+        const hasChoice = !!node.option1Text || !!node.option2Text;
+        isWaitingForChoice = hasChoice;
+
+        const btn1 = document.getElementById('btn1');
+        const btn2 = document.getElementById('btn2');
+        btn1.style.display = node.option1Text ? 'block' : 'none';
+        btn1.innerText = node.option1Text || "";
+        btn2.style.display = node.option2Text ? 'block' : 'none';
+        btn2.innerText = node.option2Text || "";
         
         if (isWaitingForChoice) stopAuto();
         else if (isAutoMode) startAuto();
@@ -136,15 +160,16 @@
 
     function resetGame(e) { 
         e.stopPropagation(); e.target.blur(); 
-        localStorage.removeItem("savedNode"); 
+        localStorage.clear(); // XÓA TOÀN BỘ LƯU TRỮ CŨ
+        console.log("🔄 Đã reset và xóa lưu tiến trình");
         showNode("start"); 
     }
 
     function makeChoice(e, num) { 
         e.stopPropagation(); e.target.blur(); 
-        let node = storyData[currentNodeID];
+        const node = storyData[currentNodeID];
         const targetId = num === 1 ? node.option1TargetID : node.option2TargetID;
-        console.log("🎯 Chọn lựa", num, "→ đến ID:", targetId);
+        console.log(`🎯 Chọn ${num}: đích = ${targetId}`);
         showNode(targetId); 
     }
 
@@ -159,7 +184,8 @@
         stopAuto(); 
         const waitTime = storyData[currentNodeID]?.forceDuration || 2;
         autoTimer = setTimeout(() => { 
-            if(storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); 
+            const nextId = storyData[currentNodeID]?.nextNodeID;
+            if(nextId) showNode(nextId); 
         }, waitTime * 1000); 
     }
 
@@ -168,8 +194,9 @@
     function tryAdvance(e) { 
         if (bgmPlayer.paused && currentBGM) { bgmPlayer.play().catch(() => {}); }
         if(isAutoMode) { toggleAuto(e); } 
-        else if(!isWaitingForChoice && storyData[currentNodeID]?.nextNodeID) { 
-            showNode(storyData[currentNodeID].nextNodeID); 
+        else if(!isWaitingForChoice) { 
+            const nextId = storyData[currentNodeID]?.nextNodeID;
+            if(nextId) showNode(nextId); 
         } 
     }
 
