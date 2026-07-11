@@ -62,13 +62,18 @@
     let isAutoMode = false;
     let autoTimer = null;
     let bgmPlayer = new Audio();
-    let voicePlayer = new Audio(); // Trình phát riêng cho Voice
+    let voicePlayer = new Audio();
     let currentBGM = "";
 
-    fetch('story.json').then(res => res.json()).then(data => {
-        storyData = data.nodes;
-        showNode(currentNodeID);
-    });
+    // Sửa: Thêm ?t=ngẫu nhiên để KHÔNG đọc JSON cũ trong bộ nhớ đệm
+    fetch('story.json?t=' + Date.now())
+        .then(res => res.json())
+        .then(data => {
+            storyData = data.nodes;
+            console.log("✅ Đã tải xong dữ liệu, các ID có sẵn:", Object.keys(storyData)); // Kiểm tra ID
+            showNode(currentNodeID);
+        })
+        .catch(err => alert("❌ Lỗi tải story.json: " + err.message));
 
     function applyEffect(element, effectName) {
         element.className = element.classList[0]; 
@@ -78,20 +83,26 @@
     }
 
     function showNode(id) {
-        if (!id || !storyData[id]) id = "start";
+        // Sửa: Chỉ về start nếu id trống HOẶC hoàn toàn không tồn tại
+        if (!id) id = "start";
+        if (!storyData[id]) {
+            console.error("❌ Không tìm thấy node ID:", id, "→ quay về start");
+            id = "start";
+        }
+
         currentNodeID = id;
         localStorage.setItem("savedNode", id);
-
         let node = storyData[id];
+        console.log("📌 Đang hiển thị node:", id, "→ nextNode:", node.nextNodeID);
+
         document.getElementById('text').innerText = node.text;
         
-        // Cập nhật Hình ảnh
         let bg = document.getElementById('bg');
-        bg.src = "images/" + node.changeBackgroundSprite;
+        bg.src = node.changeBackgroundSprite ? "images/" + node.changeBackgroundSprite : "";
         applyEffect(bg, node.bgEffect);
 
         let char = document.getElementById('char');
-        if (node.changeCharacterSprite && node.changeCharacterSprite !== "") {
+        if (node.changeCharacterSprite) {
             char.src = "images/" + node.changeCharacterSprite;
             char.style.display = 'block';
             applyEffect(char, node.charEffect);
@@ -99,15 +110,13 @@
             char.style.display = 'none';
         }
         
-        // --- XỬ LÝ VOICE (Mới) ---
         voicePlayer.pause();
         voicePlayer.currentTime = 0;
-        if (node.characterVoice && node.characterVoice !== "") {
+        if (node.characterVoice) {
             voicePlayer.src = "audio/" + node.characterVoice;
-            voicePlayer.play().catch(e => console.log("Voice không phát được hoặc không tồn tại."));
+            voicePlayer.play().catch(e => console.log("Voice không phát:", e));
         }
 
-        // --- XỬ LÝ NHẠC NỀN ---
         if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
             currentBGM = node.backgroundMusic;
             bgmPlayer.src = "audio/" + currentBGM;
@@ -125,15 +134,43 @@
         else if (isAutoMode) startAuto();
     }
 
-    function resetGame(e) { e.stopPropagation(); e.target.blur(); localStorage.removeItem("savedNode"); showNode("start"); }
-    function makeChoice(e, num) { e.stopPropagation(); e.target.blur(); let node = storyData[currentNodeID]; showNode(num === 1 ? node.option1TargetID : node.option2TargetID); }
-    function toggleAuto(e) { e.stopPropagation(); e.target.blur(); isAutoMode = !isAutoMode; document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF "; if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); }
-    function startAuto() { stopAuto(); autoTimer = setTimeout(() => { if(storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); }, 2000); }
+    function resetGame(e) { 
+        e.stopPropagation(); e.target.blur(); 
+        localStorage.removeItem("savedNode"); 
+        showNode("start"); 
+    }
+
+    function makeChoice(e, num) { 
+        e.stopPropagation(); e.target.blur(); 
+        let node = storyData[currentNodeID];
+        const targetId = num === 1 ? node.option1TargetID : node.option2TargetID;
+        console.log("🎯 Chọn lựa", num, "→ đến ID:", targetId);
+        showNode(targetId); 
+    }
+
+    function toggleAuto(e) { 
+        e.stopPropagation(); e.target.blur(); 
+        isAutoMode = !isAutoMode; 
+        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF "; 
+        if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); 
+    }
+
+    function startAuto() { 
+        stopAuto(); 
+        const waitTime = storyData[currentNodeID]?.forceDuration || 2;
+        autoTimer = setTimeout(() => { 
+            if(storyData[currentNodeID]?.nextNodeID) showNode(storyData[currentNodeID].nextNodeID); 
+        }, waitTime * 1000); 
+    }
+
     function stopAuto() { clearTimeout(autoTimer); }
+
     function tryAdvance(e) { 
-        if (bgmPlayer.paused && currentBGM !== "") { bgmPlayer.play().catch(() => {}); }
+        if (bgmPlayer.paused && currentBGM) { bgmPlayer.play().catch(() => {}); }
         if(isAutoMode) { toggleAuto(e); } 
-        else if(!isWaitingForChoice && storyData[currentNodeID]?.nextNodeID) { showNode(storyData[currentNodeID].nextNodeID); } 
+        else if(!isWaitingForChoice && storyData[currentNodeID]?.nextNodeID) { 
+            showNode(storyData[currentNodeID].nextNodeID); 
+        } 
     }
 
     window.onclick = tryAdvance;
