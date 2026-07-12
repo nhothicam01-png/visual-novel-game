@@ -1,6 +1,6 @@
 {
   "nodes": {
-    "1783786960271": {
+    "1783871607928": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -9,16 +9,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783787156812",
-      "nodeID": "1783786960271",
+      "nextNodeID": "1783871725103",
+      "nodeID": "1783871607928",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Diễn biến"
+      "text": "Đồng hồ báo mất điện toàn khu"
     },
-    "1783786983369": {
+    "1783871725103": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -27,16 +27,34 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "",
-      "nodeID": "1783786983369",
+      "nextNodeID": "1783786960271",
+      "nodeID": "1783871725103",
+      "option1TargetID": "op_1783871705046",
+      "option1Text": "Đi tắm cho mát",
+      "option2TargetID": "op_1783871705846",
+      "option2Text": "Tiếp tục nằm",
+      "soundEffect": "",
+      "text": "Ngoài trời chập tối, nhưng không khí thì oi bức"
+    },
+    "1783871815545": {
+      "backgroundMusic": "",
+      "bgEffect": "idle",
+      "changeBackgroundSprite": "",
+      "changeCharacterSprite": "",
+      "charEffect": "idle",
+      "characterVoice": "",
+      "forceDuration": 2,
+      "forceSecondsMode": false,
+      "nextNodeID": "1783871959905",
+      "nodeID": "1783871815545",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "kết thúc"
+      "text": "Lúc định vặn vòi nước thì...chẳng ra giọt nào"
     },
-    "1783787156812": {
+    "1783871959905": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -45,16 +63,52 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783791614368",
-      "nodeID": "1783787156812",
+      "nextNodeID": "1783786960271",
+      "nodeID": "1783871959905",
+      "option1TargetID": "op_1783871950999",
+      "option1Text": "Quấn khăn tắm ra bên ",
+      "option2TargetID": "op_1783871951821",
+      "option2Text": "Mặc quần áo vào rồi đi ra ngoài",
+      "soundEffect": "",
+      "text": "Hôm nay xui vl~"
+    },
+    "1783872491552": {
+      "backgroundMusic": "",
+      "bgEffect": "idle",
+      "changeBackgroundSprite": "",
+      "changeCharacterSprite": "",
+      "charEffect": "idle",
+      "characterVoice": "",
+      "forceDuration": 2,
+      "forceSecondsMode": false,
+      "nextNodeID": "1783786960271",
+      "nodeID": "1783872491552",
+      "option1TargetID": "op_1783872485092",
+      "option1Text": "Đẩy cửa bước vào như mọi khi",
+      "option2TargetID": "op_1783872485872",
+      "option2Text": "Gõ cửa",
+      "soundEffect": "",
+      "text": "Nhà thằng bạn thân ở ngay bên cạnh, cửa không "
+    },
+    "1783872737924": {
+      "backgroundMusic": "",
+      "bgEffect": "idle",
+      "changeBackgroundSprite": "",
+      "changeCharacterSprite": "",
+      "charEffect": "idle",
+      "characterVoice": "",
+      "forceDuration": 2,
+      "forceSecondsMode": false,
+      "nextNodeID": "1783872797249",
+      "nodeID": "1783872737924",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Ngồi trên giường"
+      "text": "Không có tiếng trả lời..."
     },
-    "1783787204434": {
+    "1783872797249": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -63,16 +117,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783788237053",
-      "nodeID": "1783787204434",
+      "nextNodeID": "1783872980169",
+      "nodeID": "1783872797249",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Trên màn hình hiển thị tên người gọi là bạn gái."
+      "text": "Đi sâu vào trong, có ánh đèn yếu ớt từ bên trong vọt ra ngoài"
     },
-    "1783787369169": {
+    "1783872980169": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -81,34 +135,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "",
-      "nodeID": "1783787369169",
-      "option1TargetID": "",
-      "option1Text": "aaaaaaaaaaaaa",
-      "option2TargetID": "",
-      "option2Text": "aaaaaaaaaaaaaaaaaaaaaa",
-      "soundEffect": "",
-      "text": "aaaaaaaaaaaa"
-    },
-    "1783788237053": {
-      "backgroundMusic": "",
-      "bgEffect": "idle",
-      "changeBackgroundSprite": "",
-      "changeCharacterSprite": "",
-      "charEffect": "idle",
-      "characterVoice": "",
-      "forceDuration": 2,
-      "forceSecondsMode": false,
-      "nextNodeID": "1783788540454",
-      "nodeID": "1783788237053",
+      "nextNodeID": "1783873065011",
+      "nodeID": "1783872980169",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Bạn sẽ làm gì?"
+      "text": "Ở trong phòng khách..."
     },
-    "1783788540454": {
+    "1783873065011": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -117,16 +153,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783789485658",
-      "nodeID": "1783788540454",
+      "nextNodeID": "1783786960271",
+      "nodeID": "1783873065011",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Hãy chọn"
+      "text": "Ơ… em? Sao em qua lúc này? Thằng em trai chị nó đi vắng rồi"
     },
-    "1783789485658": {
+    "op_1783871705046": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -135,34 +171,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "",
-      "nodeID": "1783789485658",
-      "option1TargetID": "op_1783789478188",
-      "option1Text": "Bắt máy nghe",
-      "option2TargetID": "op_1783789479072",
-      "option2Text": "Không bắt máy",
-      "soundEffect": "",
-      "text": "Bạn sẽ..."
-    },
-    "1783791026145": {
-      "backgroundMusic": "",
-      "bgEffect": "idle",
-      "changeBackgroundSprite": "",
-      "changeCharacterSprite": "",
-      "charEffect": "idle",
-      "characterVoice": "",
-      "forceDuration": 2,
-      "forceSecondsMode": false,
-      "nextNodeID": "1783786983369",
-      "nodeID": "1783791026145",
+      "nextNodeID": "1783871815545",
+      "nodeID": "op_1783871705046",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Điện thoại reo chuông thật lâu"
+      "text": "Đi tắm cho mát"
     },
-    "1783791614368": {
+    "op_1783871705846": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -171,16 +189,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783791692065",
-      "nodeID": "1783791614368",
+      "nextNodeID": "1783786960271",
+      "nodeID": "op_1783871705846",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Căn phòng im lặng"
+      "text": "Tiếp tục nằm"
     },
-    "1783791692065": {
+    "op_1783871950999": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -189,34 +207,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "",
-      "nodeID": "1783791692065",
-      "option1TargetID": "op_1783792069523",
-      "option1Text": "Có",
-      "option2TargetID": "op_1783792070407",
-      "option2Text": "Không",
-      "soundEffect": "",
-      "text": "Bạn có muốn rời giường không?"
-    },
-    "op_1783789478188": {
-      "backgroundMusic": "",
-      "bgEffect": "idle",
-      "changeBackgroundSprite": "",
-      "changeCharacterSprite": "",
-      "charEffect": "idle",
-      "characterVoice": "",
-      "forceDuration": 2,
-      "forceSecondsMode": false,
-      "nextNodeID": "1783786983369",
-      "nodeID": "op_1783789478188",
+      "nextNodeID": "1783872491552",
+      "nodeID": "op_1783871950999",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Bắt máy nghe"
+      "text": "Quấn đại cái khăn tắm rồi qua nhà thằng bạn thân chí cốt tắm nhờ vậy hẹ hẹ"
     },
-    "op_1783789479072": {
+    "op_1783871951821": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -225,16 +225,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783791026145",
-      "nodeID": "op_1783789479072",
+      "nextNodeID": "1783786960271",
+      "nodeID": "op_1783871951821",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Không bắt máy"
+      "text": "Mặc quần áo vào rồi đi ra ngoài"
     },
-    "op_1783792069523": {
+    "op_1783872485092": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -243,16 +243,16 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783787204434",
-      "nodeID": "op_1783792069523",
+      "nextNodeID": "1783872737924",
+      "nodeID": "op_1783872485092",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Có"
+      "text": "Ê mày! Tao tắm nhờ cái, mất điện với hết nước nhà tao rồi…"
     },
-    "op_1783792070407": {
+    "op_1783872485872": {
       "backgroundMusic": "",
       "bgEffect": "idle",
       "changeBackgroundSprite": "",
@@ -261,14 +261,14 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783787204434",
-      "nodeID": "op_1783792070407",
+      "nextNodeID": "1783786960271",
+      "nodeID": "op_1783872485872",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Không"
+      "text": "Gõ cửa"
     },
     "start": {
       "backgroundMusic": "",
@@ -279,14 +279,14 @@
       "characterVoice": "",
       "forceDuration": 2,
       "forceSecondsMode": false,
-      "nextNodeID": "1783786960271",
+      "nextNodeID": "1783871607928",
       "nodeID": "start",
       "option1TargetID": "",
       "option1Text": "",
       "option2TargetID": "",
       "option2Text": "",
       "soundEffect": "",
-      "text": "Mở đầu"
+      "text": "Tôi tỉnh dậy trong căn phòng tối om "
     }
   }
 }
