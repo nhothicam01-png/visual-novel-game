@@ -197,6 +197,198 @@
 </head>
 <body>
     <div class="container">
+        <button class="nut thu2" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-hai.html', '_blank')">2</button>
+        <button class="nut thu3" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-ba.html', '_blank')">3</button>
+        <button class="nut thu4" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-tu.html', '_blank')">4</button>
+        <button class="nut thu5" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-nam.html', '_blank')">5</button>
+        <button class="nut thu6" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-sau.html', '_blank')">6</button>
+        <button class="nut thu7" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-bay.html', '_blank')">7</button>
+        <button class="nut chunhat nut-chia-2" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/chu-nhat.html', '_blank')">CHỦ NHẬT</button>
+        <button class="nut chonngay nut-chia-2" onclick="moHopChonNgay()">📅 XEM THEO NGÀY BẤT KỲ</button>
+    </div>
+
+    <!-- Hộp chọn ngày -->
+    <div class="lop-mo" id="lopMo" onclick="dongHopChonNgay()"></div>
+    <div class="hop-chon-ngay" id="hopChonNgay">
+        <h3>🔎 Tra cứu kết quả theo ngày</h3>
+        <div class="hang-chon">
+            <!-- Phần Ngày được tô màu nổi bật -->
+            <div class="nhom-chon-ngay">
+                <label>📆 Ngày</label>
+                <select id="chonNgay">
+                    <option value="">-- Chọn ngày --</option>
+                </select>
+            </div>
+
+            <label>📅 Tháng</label>
+            <select id="chonThang">
+                <option value="">-- Chọn tháng --</option>
+            </select>
+
+            <label>🗓 Năm</label>
+            <select id="chonNam">
+                <option value="">-- Chọn năm --</option>
+            </select>
+        </div>
+        <div class="nhom-nut">
+            <button class="nut-huy" onclick="dongHopChonNgay()">Đóng</button>
+            <button class="nut-xem" onclick="xemTheoNgay()">Xem kết quả</button>
+        </div>
+    </div>
+
+    <script>
+        // Tự động tạo danh sách và chọn sẵn ngày/tháng/năm hiện tại
+        const ngay = document.getElementById('chonNgay');
+        const thang = document.getElementById('chonThang');
+        const nam = document.getElementById('chonNam');
+        const homnay = new Date();
+        const ngayHienTai = homnay.getDate();
+        const thangHienTai = homnay.getMonth() + 1;
+        const namHienTai = homnay.getFullYear();
+
+        // Tạo ngày 1-31
+        for(let i=1; i<=31; i++){
+            ngay.innerHTML += `<option value="${i.toString().padStart(2, '0')}">${i}</option>`;
+        }
+        ngay.value = ngayHienTai.toString().padStart(2, '0');
+
+        // Tạo tháng 1-12
+        for(let i=1; i<=12; i++){
+            thang.innerHTML += `<option value="${i.toString().padStart(2, '0')}">${i}</option>`;
+        }
+        thang.value = thangHienTai.toString().padStart(2, '0');
+
+        // Tạo năm từ 2005 đến năm hiện tại
+        for(let i=namHienTai; i>=2005; i--){
+            nam.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+        nam.value = namHienTai;
+
+        function moHopChonNgay(){
+            document.getElementById('hopChonNgay').style.display = 'block';
+            document.getElementById('lopMo').style.display = 'block';
+        }
+
+        function dongHopChonNgay(){
+            document.getElementById('hopChonNgay').style.display = 'none';
+            document.getElementById('lopMo').style.display = 'none';
+        }
+
+        function xemTheoNgay(){
+            const d = ngay.value;
+            const t = thang.value;
+            const n = nam.value;
+
+            if(!d || !t || !n){
+                alert('⚠️ Vui lòng chọn đầy đủ ngày, tháng, năm!');
+                return;
+            }
+
+            const link = `https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/${d}-${t}-${n}.html`;
+            window.open(link, '_blank');
+            dongHopChonNgay();
+        }
+    </script>
+</body>
+</html>
+
+        .hang-chon {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .hang-chon label {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #475569;
+        }
+
+        .hang-chon select {
+            width: 100%;
+            padding: 15px 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: 500;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .hang-chon select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+        }
+
+        /* === TÔ MÀU NỔI BẬT CHO PHẦN CHỌN NGÀY === */
+        .nhom-chon-ngay {
+            background: linear-gradient(135deg, #fff7ed, #ffedd5);
+            border: 2px solid #f97316;
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .nhom-chon-ngay select {
+            border-color: #f97316;
+            font-weight: 700;
+            color: #c2410c;
+            background: white;
+        }
+        .nhom-chon-ngay label {
+            color: #9a3412;
+        }
+
+        .nhom-nut {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .nut-huy, .nut-xem {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nut-huy { 
+            background: #e2e8f0; 
+            color: #475569; 
+        }
+        .nut-huy:hover { background: #cbd5e1; }
+
+        .nut-xem { 
+            background: linear-gradient(145deg, #2196f3, #1565c0); 
+            color: white; 
+        }
+        .nut-xem:hover { 
+            background: linear-gradient(145deg, #1d8cf8, #1976d2); 
+            transform: translateY(-2px);
+        }
+
+        /* Lớp mờ nền khi mở hộp chọn */
+        .lop-mo {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+            z-index: 998;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
         <!-- ✅ Đã bỏ _blank, mở ngay trang hiện tại -->
         <button class="nut thu2" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-hai.html')">2</button>
         <button class="nut thu3" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-ba.html')">3</button>
