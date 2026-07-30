@@ -197,13 +197,14 @@
 </head>
 <body>
     <div class="container">
-        <button class="nut thu2" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-hai.html', '_blank')">2</button>
-        <button class="nut thu3" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-ba.html', '_blank')">3</button>
-        <button class="nut thu4" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-tu.html', '_blank')">4</button>
-        <button class="nut thu5" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-nam.html', '_blank')">5</button>
-        <button class="nut thu6" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-sau.html', '_blank')">6</button>
-        <button class="nut thu7" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-bay.html', '_blank')">7</button>
-        <button class="nut chunhat nut-chia-2" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/chu-nhat.html', '_blank')">CHỦ NHẬT</button>
+        <!-- ✅ Đã bỏ _blank, mở ngay trang hiện tại -->
+        <button class="nut thu2" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-hai.html')">2</button>
+        <button class="nut thu3" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-ba.html')">3</button>
+        <button class="nut thu4" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-tu.html')">4</button>
+        <button class="nut thu5" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-nam.html')">5</button>
+        <button class="nut thu6" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-sau.html')">6</button>
+        <button class="nut thu7" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/thu-bay.html')">7</button>
+        <button class="nut chunhat nut-chia-2" onclick="window.open('https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/chu-nhat.html')">CHỦ NHẬT</button>
         <button class="nut chonngay nut-chia-2" onclick="moHopChonNgay()">📅 XEM THEO NGÀY BẤT KỲ</button>
     </div>
 
@@ -284,8 +285,9 @@
                 return;
             }
 
+            // ✅ Cũng bỏ _blank ở đây
             const link = `https://www.minhngoc.net.vn/ket-qua-xo-so/mien-nam/${d}-${t}-${n}.html`;
-            window.open(link, '_blank');
+            window.open(link);
             dongHopChonNgay();
         }
     </script>
