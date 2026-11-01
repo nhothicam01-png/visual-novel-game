@@ -1,241 +1,310 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> N&N </title>
-    <style>
-        body { margin: 0; background: #000; color: white; font-family: sans-serif; height: 100dvh; display: flex; justify-content: center; align-items: center; touch-action: manipulation; }
-        #game-container { width: 100vw; height: 100dvh; position: relative; overflow: hidden; }
-        
-        .bg-base { width: 100%; height: 100%; object-fit: cover; position: absolute; z-index: 1; }
-        .char-base { height: 75%; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 2; pointer-events: none; }
-        
-        #dialogue-box { 
-            position: absolute; bottom: 20px; width: 90%; left: 50%; transform: translateX(-50%); 
-            background: rgba(0,0,0,0.7); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); 
-            z-index: 3; box-sizing: border-box; 
-        }
-        
-        .btn { display: block; width: 100%; margin: 8px 0; padding: 12px; cursor: pointer; background: rgba(255,255,255,0.1); color: white; border: 1px solid #fff; border-radius: 5px; font-size: 16px; }
-        #controls { position: absolute; top: 10px; right: 10px; z-index: 4; display: flex; gap: 5px; }
-        #text { min-height: 50px; font-size: 18px; margin-bottom: 15px; }
-
-        @keyframes shake { 
-            0%, 100% { transform: translateX(-50%) translateY(0); } 
-            25% { transform: translateX(-52%) translateY(0); } 
-            75% { transform: translateX(-48%) translateY(0); } 
-        }
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes jump { 
-            0%, 100% { transform: translateX(-50%) translateY(0); } 
-            50% { transform: translateX(-50%) translateY(-20px); } 
-        }
-        
-        .shake { animation: shake 0.2s infinite; }
-        .fade-in { animation: fade 1s forwards; }
-        .jump { animation: jump 0.5s infinite; }
-        .idle { animation: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini 30-Min VN Script Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0f19;
+      color: #f3f4f6;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .gradient-btn {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      transition: all 0.3s ease;
+    }
+    .gradient-btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.4);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    pre code {
+      font-family: monospace;
+    }
+  </style>
 </head>
-<body>
+<body class="min-h-screen pb-12">
 
-<div id="game-container">
-    <img id="bg" class="bg-base">
-    <img id="char" class="char-base">
-    <div id="controls">
-        <button onclick="toggleAuto(event)" id="btnAuto">Auto: OFF</button>
-        <button onclick="resetGame(event)">Reset & Xóa lưu</button>
+  <!-- Header -->
+  <header class="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl gradient-btn flex items-center justify-center shadow-lg">
+          <i class="fa-solid font-bold text-white text-xl">✦</i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold gradient-text">VN Script Studio</h1>
+          <p class="text-xs text-gray-400">Tạo kịch bản 30 phút tự động bằng Gemini</p>
+        </div>
+      </div>
+      <button onclick="toggleConfigModal(true)" class="p-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 border border-gray-700 text-gray-300 hover:text-white transition">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 mt-6 space-y-6">
+
+    <!-- Notification Toast -->
+    <div id="toast" class="hidden fixed top-20 right-4 left-4 md:left-auto md:w-96 z-50 p-4 rounded-xl border shadow-2xl flex items-start space-x-3 transition-all duration-300">
+      <i id="toastIcon" class="fa-solid text-xl mt-0.5"></i>
+      <div class="flex-1 text-sm font-medium" id="toastMessage"></div>
+      <button onclick="hideToast()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
-    <div id="dialogue-box">
-        <p id="text"></p>
-        <button id="btn1" class="btn" onclick="makeChoice(event, 1)"></button>
-        <button id="btn2" class="btn" onclick="makeChoice(event, 2)"></button>
+    <!-- Generator Input Card -->
+    <div class="glass-card rounded-2xl p-5 md:p-6 shadow-xl space-y-5">
+      <div>
+        <label class="block text-sm font-semibold text-gray-300 mb-2">
+          <i class="fa-solid fa-book-open text-purple-400 mr-2"></i>Ý tưởng / Tóm tắt cốt truyện (Visual Novel 30 phút)
+        </label>
+        <textarea id="promptInput" rows="4" class="w-full bg-gray-900/90 border border-gray-700 rounded-xl p-3.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" placeholder="Ví dụ: Câu chuyện về An, Hana và Yui tại ngôi trường cấp 3 Nhật Bản. Bắt đầu bằng việc dậy muộn buổi sáng, tới lớp giải quyết bài tập nhóm và hiểu lầm tình bạn vào buổi chiều..."></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Mô hình AI</label>
+          <select id="modelSelect" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-sm text-gray-200 focus:outline-none focus:border-purple-500">
+            <option value="gemini-3.8-flash">Gemini 3.8 Flash (Tối ưu JSON & Tốc độ)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wider">Số lượng phân cảnh ước tính</label>
+          <select id="sceneCount" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-sm text-gray-200 focus:outline-none focus:border-purple-500">
+            <option value="15">Ngắn gọn (~15 phân cảnh)</option>
+            <option value="30" selected>Tiêu chuẩn 30 phút (~30 phân cảnh)</option>
+            <option value="50">Chi tiết đầy đủ (~50 phân cảnh)</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="generateBtn" onclick="generateScript()" class="w-full py-4 rounded-xl gradient-btn font-bold text-white text-base tracking-wide flex items-center justify-center space-x-2 shadow-lg">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>TẠO KỊCH BẢN JSON 30 PHÚT</span>
+      </button>
     </div>
-</div>
 
-<script>
-    let storyData = {};
-    let currentNodeID = "start";
-    let isWaitingForChoice = false;
-    let isAutoMode = false;
-    let autoTimer = null;
-    let bgmPlayer = new Audio();
-    let voicePlayer = new Audio();
-    let currentBGM = "";
+    <!-- Output Display Card -->
+    <div class="glass-card rounded-2xl p-5 md:p-6 shadow-xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-gray-200 flex items-center">
+          <i class="fa-solid fa-code text-pink-400 mr-2.5"></i>Kết quả Kịch bản JSON (`KichBanToanBo`)
+        </h2>
+        <span id="statusBadge" class="text-xs px-2.5 py-1 rounded-full bg-gray-800 text-gray-400 font-medium">Sẵn sàng</span>
+      </div>
 
-    // Tải JSON mới nhất, không đọc bộ nhớ đệm
-    fetch('story.json?t=' + Date.now())
-        .then(res => {
-            if (!res.ok) throw new Error("Không tìm thấy tệp story.json");
-            return res.json();
-        })
-        .then(data => {
-            storyData = data.nodes;
-            console.log("✅ Đã tải xong, tổng số node:", Object.keys(storyData).length);
+      <div id="outputArea" class="w-full h-96 bg-gray-950/90 rounded-xl border border-gray-800/80 p-4 relative overflow-auto">
+        <div id="placeholderUI" class="h-full flex flex-col items-center justify-center text-center space-y-3">
+          <div class="w-16 h-16 rounded-full bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-600 text-2xl">
+            <i class="fa-solid fa-file-code"></i>
+          </div>
+          <p class="text-sm text-gray-400 max-w-xs">Nhập cốt truyện và bấm <b>Tạo Kịch Bản</b> để hệ thống sinh file JSON tự động.</p>
+        </div>
 
-            // Kiểm tra tiến trình lưu cũ
-            const saved = localStorage.getItem("savedNode");
-            if (saved && storyData[saved]) {
-                currentNodeID = saved;
-                console.log("📂 Tiếp tục từ:", saved);
-            } else {
-                localStorage.removeItem("savedNode");
-                console.log("🔄 Bắt đầu từ đầu");
-            }
+        <div id="loadingUI" class="hidden h-full flex flex-col items-center justify-center text-center space-y-4">
+          <div class="w-12 h-12 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin"></div>
+          <p id="loadingText" class="text-sm font-medium text-purple-300">Gemini đang biên soạn kịch bản chi tiết...</p>
+        </div>
 
-            showNode(currentNodeID);
-        })
-        .catch(err => alert("❌ Lỗi: " + err.message + "\nĐặt story.json cùng thư mục với file HTML nhé!"));
+        <pre id="jsonResult" class="hidden text-xs text-emerald-400 font-mono whitespace-pre-wrap"></pre>
+      </div>
 
-    function applyEffect(element, effectName) {
-        element.className = element.classList[0]; 
-        if (effectName && effectName !== "idle") {
-            requestAnimationFrame(() => { element.classList.add(effectName); });
-        }
+      <div id="scriptActions" class="hidden flex items-center justify-end space-x-3 pt-2">
+        <button onclick="copyJsonText()" class="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-sm font-medium border border-gray-700 flex items-center space-x-2 transition">
+          <i class="fa-solid fa-copy"></i>
+          <span>Sao chép JSON</span>
+        </button>
+        <a id="downloadBtn" download="kich_ban_30p.json" class="px-4 py-2.5 rounded-xl gradient-btn text-white text-sm font-bold flex items-center space-x-2 shadow-lg transition">
+          <i class="fa-solid fa-download"></i>
+          <span>Tải file JSON</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal Config API Key -->
+  <div id="configModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card w-full max-w-md rounded-2xl p-6 space-y-5 border border-gray-700 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+        <h3 class="text-base font-bold text-gray-100 flex items-center">
+          <i class="fa-solid fa-key text-yellow-400 mr-2.5"></i>Cấu hình Gemini API Key
+        </h3>
+        <button onclick="toggleConfigModal(false)" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      
+      <div class="space-y-3">
+        <p class="text-xs text-gray-400 leading-relaxed">
+          API Key được tích hợp sẵn. Bạn có thể thay đổi mã khác nếu cần.
+        </p>
+        <input type="password" id="apiKeyInput" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-3.5 text-sm text-gray-100 placeholder-gray-600 focus:outline-none focus:border-purple-500">
+      </div>
+
+      <div class="flex space-x-3 pt-2">
+        <button onclick="toggleConfigModal(false)" class="w-1/2 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm font-medium border border-gray-700">Hủy</button>
+        <button onclick="saveApiKey()" class="w-1/2 py-3 rounded-xl gradient-btn text-white text-sm font-bold shadow-lg">Lưu Cấu Hình</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentApiKey = localStorage.getItem('GEMINI_USER_API_KEY') || 'AQ.Ab8RN6Lj2-yOaijJjs4BJRCRTg-ej3dj9I7GhF4Qe77SFQyMJg';
+    let generatedJsonString = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('apiKeyInput').value = currentApiKey;
+    });
+
+    function toggleConfigModal(show) {
+      document.getElementById('configModal').classList.toggle('hidden', !show);
     }
 
-    function showNode(id) {
-        // Kiểm tra ID hợp lệ
-        if (!id || id.trim() === "") {
-            console.warn("⚠️ ID đích trống, giữ nguyên node hiện tại");
-            return;
+    function saveApiKey() {
+      const key = document.getElementById('apiKeyInput').value.trim();
+      currentApiKey = key;
+      localStorage.setItem('GEMINI_USER_API_KEY', key);
+      toggleConfigModal(false);
+      showToast('Đã lưu API Key thành công!', 'success');
+    }
+
+    function showToast(msg, type = 'error') {
+      const toast = document.getElementById('toast');
+      const icon = document.getElementById('toastIcon');
+      const text = document.getElementById('toastMessage');
+
+      toast.className = `fixed top-20 right-4 left-4 md:left-auto md:w-96 z-50 p-4 rounded-xl border shadow-2xl flex items-start space-x-3 transition-all duration-300 ${
+        type === 'error' ? 'bg-red-950/90 border-red-800 text-red-200' : 'bg-emerald-950/90 border-emerald-800 text-emerald-200'
+      }`;
+      icon.className = `fa-solid ${type === 'error' ? 'fa-circle-exclamation text-red-400' : 'fa-circle-check text-emerald-400'} text-xl mt-0.5`;
+      text.innerText = msg;
+      toast.classList.remove('hidden');
+
+      setTimeout(hideToast, 5000);
+    }
+
+    function hideToast() {
+      document.getElementById('toast').classList.add('hidden');
+    }
+
+    async function generateScript() {
+      const promptText = document.getElementById('promptInput').value.trim();
+      if (!promptText) {
+        showToast('Vui lòng nhập tóm tắt cốt truyện Visual Novel!');
+        return;
+      }
+
+      if (!currentApiKey) {
+        toggleConfigModal(true);
+        showToast('Vui lòng nhập API Key!');
+        return;
+      }
+
+      const count = document.getElementById('sceneCount').value;
+
+      document.getElementById('placeholderUI').classList.add('hidden');
+      document.getElementById('jsonResult').classList.add('hidden');
+      document.getElementById('scriptActions').classList.add('hidden');
+      document.getElementById('loadingUI').classList.remove('hidden');
+      document.getElementById('generateBtn').disabled = true;
+      document.getElementById('generateBtn').classList.add('opacity-50');
+      document.getElementById('statusBadge').className = "text-xs px-2.5 py-1 rounded-full bg-purple-950 text-purple-300 border border-purple-800 animate-pulse font-medium";
+      document.getElementById('statusBadge').innerText = "Đang biên soạn kịch bản...";
+
+      const systemInstruction = `Bạn là biên kịch chuyên nghiệp cho Visual Novel. Hãy trả về ĐÚNG VÀ DUY NHẤT một chuỗi JSON hợp lệ (không kèm theo bất kỳ lời văn giải thích, không bọc trong markdown codeblock nếu không cần thiết).
+Cấu trúc yêu cầu gồm khoảng ${count} mục phân cảnh (id từ 1 đến ${count}):
+{
+  "ten_kich_ban": "Ban_Giao_Huong_Xanh",
+  "thoi_luong_du_kien": "30 phut",
+  "KichBanToanBo": [
+    {
+      "id": 1,
+      "thoi_gian": "00:00 - 01:00",
+      "nhan_vat": "An",
+      "expression": "binh_thuong",
+      "background": "phong_khach",
+      "bgm": "bgm_morning.mp3",
+      "sfx": "",
+      "vfx": "",
+      "noi_dung": "Lời thoại..."
+    }
+  ]
+}`;
+
+      try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${currentApiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: `${systemInstruction}\n\nÝ tưởng cốt truyện: ${promptText}` }]
+            }]
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error?.message || `Lỗi API (${response.status})`);
         }
-        if (!storyData[id]) {
-            console.error("❌ Không tìm thấy node ID:", id);
-            alert(`Lỗi: Không có nội dung "${id}"!\nKiểm tra lại tệp JSON nhé.`);
-            return;
-        }
 
-        // Reset trạng thái cũ HOÀN TOÀN trước khi hiển thị node mới
-        isWaitingForChoice = false;
-        stopAuto();
-
-        currentNodeID = id;
-        localStorage.setItem("savedNode", id);
-        const node = storyData[id];
-        console.log(`✅ Đang mở: ${id} | ${node.text}`);
-
-        document.getElementById('text').innerText = node.text;
+        let rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         
-        // Nền & nhân vật
-        const bg = document.getElementById('bg');
-        bg.src = node.changeBackgroundSprite ? `images/${node.changeBackgroundSprite}` : "";
-        applyEffect(bg, node.bgEffect || "idle");
-
-        const char = document.getElementById('char');
-        if (node.changeCharacterSprite) {
-            char.src = `images/${node.changeCharacterSprite}`;
-            char.style.display = 'block';
-            applyEffect(char, node.charEffect || "idle");
+        // Tự động tìm và trích xuất đúng vùng chứa JSON hợp lệ từ phản hồi của AI
+        const firstOpenBrace = rawText.indexOf('{');
+        const lastCloseBrace = rawText.lastIndexOf('}');
+        
+        if (firstOpenBrace !== -1 && lastCloseBrace !== -1 && lastCloseBrace > firstOpenBrace) {
+          rawText = rawText.substring(firstOpenBrace, lastCloseBrace + 1);
         } else {
-            char.style.display = 'none';
-        }
-        
-        // Âm thanh
-        voicePlayer.pause();
-        voicePlayer.currentTime = 0;
-        if (node.characterVoice) {
-            voicePlayer.src = `audio/${node.characterVoice}`;
-            voicePlayer.play().catch(e => console.log("Voice:", e));
+          rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
         }
 
-        if (node.backgroundMusic && node.backgroundMusic !== currentBGM) {
-            currentBGM = node.backgroundMusic;
-            bgmPlayer.src = `audio/${currentBGM}`;
-            bgmPlayer.loop = true;
-            bgmPlayer.play().catch(() => {});
-        }
-        
-        // --- XỬ LÝ NÚT LỰA CHỌN (SỬA CHÍNH XÁC) ---
-        const btn1 = document.getElementById('btn1');
-        const btn2 = document.getElementById('btn2');
+        const parsedJson = JSON.parse(rawText);
+        generatedJsonString = JSON.stringify(parsedJson, null, 2);
 
-        // Luôn xóa nội dung cũ trước
-        btn1.innerText = "";
-        btn2.innerText = "";
-        btn1.style.display = "none";
-        btn2.style.display = "none";
+        const jsonEl = document.getElementById('jsonResult');
+        jsonEl.innerText = generatedJsonString;
+        jsonEl.classList.remove('hidden');
 
-        // Chỉ hiển thị nếu có CẢ text VÀ ID đích
-        const hasOption1 = node.option1Text && node.option1Text.trim() !== "" && node.option1TargetID && node.option1TargetID.trim() !== "";
-        const hasOption2 = node.option2Text && node.option2Text.trim() !== "" && node.option2TargetID && node.option2TargetID.trim() !== "";
+        const blob = new Blob([generatedJsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        document.getElementById('downloadBtn').href = url;
 
-        if (hasOption1) {
-            btn1.innerText = node.option1Text;
-            btn1.style.display = "block";
-        }
-        if (hasOption2) {
-            btn2.innerText = node.option2Text;
-            btn2.style.display = "block";
-        }
+        document.getElementById('scriptActions').classList.remove('hidden');
+        document.getElementById('statusBadge').className = "text-xs px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-medium";
+        document.getElementById('statusBadge').innerText = "Thành công";
 
-        isWaitingForChoice = hasOption1 || hasOption2;
-        console.log(`🔘 Có lựa chọn: ${isWaitingForChoice} | Nút 1: ${hasOption1} | Nút 2: ${hasOption2}`);
-        
-        if (!isWaitingForChoice && isAutoMode) startAuto();
+      } catch (err) {
+        console.error(err);
+        showToast('Lỗi phân tích cú pháp JSON từ phản hồi của AI. Vui lòng bấm thử lại.');
+        document.getElementById('placeholderUI').classList.remove('hidden');
+        document.getElementById('statusBadge').className = "text-xs px-2.5 py-1 rounded-full bg-red-950 text-red-300 border border-red-800 font-medium";
+        document.getElementById('statusBadge').innerText = "Thất bại";
+      } finally {
+        document.getElementById('loadingUI').classList.add('hidden');
+        document.getElementById('generateBtn').disabled = false;
+        document.getElementById('generateBtn').classList.remove('opacity-50');
+      }
     }
 
-    function resetGame(e) { 
-        e.stopPropagation(); e.target.blur(); 
-        localStorage.clear(); 
-        console.log("🔄 Đã reset hoàn toàn");
-        showNode("start"); 
+    function copyJsonText() {
+      if (!generatedJsonString) return;
+      navigator.clipboard.writeText(generatedJsonString).then(() => {
+        showToast('Đã sao chép nội dung JSON vào clipboard!', 'success');
+      });
     }
-
-    function makeChoice(e, num) { 
-        e.stopPropagation(); e.target.blur(); 
-        const node = storyData[currentNodeID];
-        const targetId = num === 1 ? node.option1TargetID : node.option2TargetID;
-        console.log(`🎯 Chọn ${num}: "${num ===1 ? node.option1Text : node.option2Text}" → đến ID: ${targetId}`);
-        
-        // Chỉ chuyển nếu ID đích hợp lệ
-        if (targetId && targetId.trim() !== "" && storyData[targetId]) {
-            showNode(targetId); 
-        } else {
-            console.error("❌ ID đích không hợp lệ:", targetId);
-            alert("Lỗi: Lựa chọn không có đích đến!");
-        }
-    }
-
-    function toggleAuto(e) { 
-        e.stopPropagation(); e.target.blur(); 
-        isAutoMode = !isAutoMode; 
-        document.getElementById('btnAuto').innerText = isAutoMode ? "Auto: ON" : "Auto: OFF "; 
-        if(!isWaitingForChoice && isAutoMode) startAuto(); else stopAuto(); 
-    }
-
-    function startAuto() { 
-        stopAuto(); 
-        const waitTime = storyData[currentNodeID]?.forceDuration || 2;
-        autoTimer = setTimeout(() => { 
-            const nextId = storyData[currentNodeID]?.nextNodeID;
-            if(nextId && storyData[nextId]) {
-                console.log(`➡️ Tự chuyển đến: ${nextId}`);
-                showNode(nextId); 
-            }
-        }, waitTime * 1000); 
-    }
-
-    function stopAuto() { clearTimeout(autoTimer); }
-
-    function tryAdvance(e) { 
-        if (bgmPlayer.paused && currentBGM) { bgmPlayer.play().catch(() => {}); }
-        if(isAutoMode) { toggleAuto(e); } 
-        else if(!isWaitingForChoice) { 
-            const nextId = storyData[currentNodeID]?.nextNodeID;
-            if(nextId && storyData[nextId]) {
-                console.log(`➡️ Chuyển tiếp đến: ${nextId}`);
-                showNode(nextId); 
-            } else {
-                console.log(`ℹ️ Không có node tiếp theo → kết thúc`);
-            }
-        } 
-    }
-
-    window.onclick = tryAdvance;
-    document.addEventListener('keydown', (e) => { if(e.code === 'Space') tryAdvance(); });
-</script>
+  </script>
 </body>
 </html>
