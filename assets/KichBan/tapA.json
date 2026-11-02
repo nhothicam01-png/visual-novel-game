@@ -1,0 +1,190 @@
+{
+  "thoi_gian_giu_khung": 1.0,
+  "thoi_gian_cho_giua": 0.02,
+  "toc_do_go_chu": 0.03,
+  "danh_sach": [
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Chào Yui, hôm nay cậu đến lớp sớm thế nhỉ?",
+      "anh_nen": "render.mp4",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "bgm_gentle.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Chào An! Tớ muốn đến sớm để ôn lại bài kiểm tra toán sắp tới ấy mà.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "À nhắc tới toán tớ lại thấy hơi lo, bài tập hôm qua khó quá chừng.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Đừng lo lắng quá, nếu cậu không phiền thì lát nữa tụi mình cùng giải nhé.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Thật á? Cậu tuyệt vời thật đấy Yui, cứu tinh của tớ luôn!",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Có gì đâu mà, bạn bè với nhau cả mà ngại ngùng gì chứ.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Mà chiều nay sau giờ học cậu có định đi đâu chơi không?",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Tớ định ghé qua hiệu sách cũ gần trường tìm mua vài cuốn truyện tranh.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Cho tớ đi ké với nhé, tớ cũng đang muốn tìm vài tài liệu tham khảo.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Được chứ, đi cùng nhau cho vui đường vui chợ.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Nhắc mới nhớ, dạo này thời tiết hay mưa bất chợt ghê.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Ừ đúng rồi, hôm qua tớ suýt bị ướt như chuột lột vì quên mang ô đấy.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Thế nay cậu nhớ mang theo ô phòng hờ nha, trời có vẻ hơi âm u.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Cảm ơn An đã nhắc nhở nhé, tớ có thủ sẵn trong cặp rồi.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Cậu chu đáo thật đấy, lúc nào cũng cẩn thận hơn tớ.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Có gì đâu mà, tính tớ xưa nay vốn hay lo xa ấy mà.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Mà tiếng trống vào học sắp vang lên rồi kìa, chúng ta chuẩn bị vào lớp thôi.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Đi thôi, tập sách tớ đã soạn sẵn trên bàn từ nãy rồi.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Tiết đầu tiên hôm nay là môn gì nhỉ, tớ quên mất tiêu.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Là môn Lịch sử của thầy Nam đấy, cậu lại tính ngủ gật hả?",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Đâu có đâu, tớ sẽ cố gắng mở to mắt để nghe giảng mà.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Hơi khó tin nha, nhưng tớ sẽ giám sát cậu suốt tiết học.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Có giám sát viên xinh đẹp thế này thì tớ không dám ngủ gật nữa rồi.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Cậu lại bắt đầu trêu tớ rồi đấy nhé, lo vào chỗ ngồi đi.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Rồi rồi, tớ về chỗ đây, cảm ơn buổi trò chuyện sáng nay nhé.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Không có chi, hẹn gặp lại cậu sau giờ học chiều nay nha.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Chắc chắn rồi, nhớ giữ lời hẹn đi hiệu sách đấy.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Tớ chưa bao giờ quên hứa hẹn gì với cậu cả đâu.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "An",
+      "bieu_cam": "binh_thuong",
+      "noi_dung": "Hehe, vậy nhé, thầy giáo bước vào lớp kìa.",
+      "anh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "vui",
+      "noi_dung": "Ừm, ổn định chỗ ngồi và mở sách vở ra học thôi nào.",
+      "anh_hieu_ung": ""
+    }
+  ]
+}
