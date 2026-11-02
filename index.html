@@ -68,7 +68,6 @@
       object-fit: contain;
       display: none;
       transform-origin: bottom center;
-      /* Mở rộng chiều cao thêm 20px và đẩy nó dịch xuống dưới một khoảng để che phần hở */
       height: calc(100% + 35px);
       margin-bottom: -35px;
     }
@@ -109,12 +108,12 @@
     }
 
     #dialogue-text {
-      font-size: clamp(1rem, 1.8vw, 1.6rem); /* Tự động phóng to thu nhỏ mượt mà theo kích thước khung */
+      font-size: clamp(1rem, 1.8vw, 1.6rem);
       line-height: 1.4;
       color: #ffffff;
       white-space: pre-wrap;
       word-break: break-word;
-      text-align: center;        
+      text-align: center;       
       text-shadow: 
         -1px -1px 0 #000,  
          1px -1px 0 #000,
@@ -152,7 +151,7 @@
       transform: scale(0.96);
     }
 
-    /* Thanh điều chỉnh âm lượng */
+    /* Thanh điều chỉnh âm lượng & TTS */
     #volume-controls {
       margin-top: 10px;
       display: flex;
@@ -165,6 +164,8 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       flex-wrap: wrap;
       justify-content: center;
+      max-width: 1000px;
+      width: 100%;
     }
 
     #volume-controls label {
@@ -175,7 +176,7 @@
 
     #volume-controls input[type="range"] {
       accent-color: #a855f7;
-      width: 80px;
+      width: 70px;
     }
 
     /* Responsive nhỏ hơn cho màn hình siêu hẹp */
@@ -188,6 +189,8 @@
       #speaker-name { font-size: 0.9rem; }
       #dialogue-text { font-size: 0.85rem; }
       .btn { padding: 8px 10px; font-size: 0.8rem; }
+      #volume-controls { gap: 10px; font-size: 0.75rem; }
+      #volume-controls input[type="range"] { width: 55px; }
     }
   </style>
 </head>
@@ -225,6 +228,18 @@
       🔔 SFX: 
       <input type="range" id="vol-sfx" min="0" max="1" step="0.05" value="0.4" oninput="trinhPhat.doiAmLuongSfx(this.value)">
     </label>
+    <label>
+      🗣 TTS Vol: 
+      <input type="range" id="vol-tts" min="0" max="1" step="0.05" value="1.0" oninput="trinhPhat.doiAmLuongTts(this.value)">
+    </label>
+    <label>
+      ⚡ Tốc độ (Rate): <span id="val-rate">1.1</span>
+      <input type="range" id="tts-rate" min="0.5" max="2.0" step="0.1" value="1.1" oninput="trinhPhat.doiTocDoTts(this.value)">
+    </label>
+    <label>
+      🎵 Cao độ (Pitch): <span id="val-pitch">1.0</span>
+      <input type="range" id="tts-pitch" min="0.5" max="1.5" step="0.1" value="1.0" oninput="trinhPhat.doiCaoDoTts(this.value)">
+    </label>
   </div>
 
   <audio id="audio-bgm" loop></audio>
@@ -246,6 +261,11 @@
 
         this.audioBgm.volume = 0.3;
         this.audioSfx.volume = 0.4;
+
+        // Cấu hình thông số TTS mặc định
+        this.ttsVolume = 1.0;
+        this.ttsRate = 1.1;
+        this.ttsPitch = 1.0;
 
         this.boDemAnhNen = new Map();
         this.boDemHieuUng = new Map();
@@ -275,11 +295,9 @@
         }
       }
 
-      // Kích hoạt audio/TTS context bằng chạm tay đầu tiên trên điện thoại
       kichHoatAmThanhMobile() {
         if (this.ttsSynth) {
           this.ttsSynth.resume();
-          // Đọc đoạn văn bản rỗng để tháo khóa autoplay audio/TTS trên iOS/Android
           const dummy = new SpeechSynthesisUtterance('');
           this.ttsSynth.speak(dummy);
         }
@@ -306,6 +324,17 @@
 
       doiAmLuongBgm(val) { this.audioBgm.volume = parseFloat(val); }
       doiAmLuongSfx(val) { this.audioSfx.volume = parseFloat(val); }
+      doiAmLuongTts(val) { this.ttsVolume = parseFloat(val); }
+
+      doiTocDoTts(val) {
+        this.ttsRate = parseFloat(val);
+        document.getElementById('val-rate').innerText = val;
+      }
+
+      doiCaoDoTts(val) {
+        this.ttsPitch = parseFloat(val);
+        document.getElementById('val-pitch').innerText = val;
+      }
 
       async toggleFullscreen() {
         try {
@@ -315,7 +344,6 @@
             } else if (this.container.webkitRequestFullscreen) {
               await this.container.webkitRequestFullscreen();
             }
-            // Thử xoay ngang màn hình nếu chạy trên điện thoại
             if (screen.orientation && screen.orientation.lock) {
               screen.orientation.lock('landscape').catch(() => {});
             }
@@ -376,7 +404,7 @@
       }
 
       async batDau() {
-        this.kichHoatAmThanhMobile(); // Giải phóng Autoplay restriction
+        this.kichHoatAmThanhMobile(); 
 
         if (this.dangChay && !this.dangTamDung) return;
 
@@ -524,9 +552,8 @@
           const bgmPath = `assets/AmThanh/Nen/${amThanhNen}`;
           if (!this.audioBgm.src.includes(amThanhNen)) {
             this.audioBgm.src = bgmPath;
-            this.audioBgm.loop = true; // Ép bật lặp lại
+            this.audioBgm.loop = true;
             
-            // Dự phòng cho mobile: nếu sự kiện loop gốc bị lỗi, dùng sự kiện ended để tua lại từ đầu
             this.audioBgm.onended = () => {
               this.audioBgm.currentTime = 0;
               this.audioBgm.play().catch(() => {});
@@ -569,18 +596,20 @@
 
           const utterance = new SpeechSynthesisUtterance(text);
           if (!this.viVoice) {
-            // Thử cập nhật danh sách giọng đọc nếu chưa tải xong trước đó
             const voices = this.ttsSynth.getVoices();
             this.viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VI')) || null;
           }
           if (this.viVoice) utterance.voice = this.viVoice;
           
-          utterance.rate = 1.1; // Tốc độ vừa phải cho mobile
-          utterance.pitch = 1.0;
+          // Áp dụng các thông số tuỳ chỉnh từ người dùng
+          utterance.volume = this.ttsVolume;
+          utterance.rate = this.ttsRate;
+          utterance.pitch = this.ttsPitch;
           
           this.ttsSynth.speak(utterance);
         }
-        return Math.max(1.2, text.length / 12);
+        // Tính toán thời gian chờ dựa trên độ dài chữ và tốc độ nói (rate) hiện tại
+        return Math.max(1.0, (text.length / 12) / this.ttsRate);
       }
 
       hienLoiThoai(ten, noiDung) {
