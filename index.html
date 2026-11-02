@@ -86,24 +86,21 @@
       100% { transform: translateY(0) scaleY(1); }
     }
 
-    /* Hộp thoại UI (Ôm sát nội dung, nằm ở góc dưới) */
+    /* Hộp thoại UI (Canvas) */
     #dialogue-canvas {
       position: absolute;
-      bottom: 16px;
+      bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      width: fit-content;      /* Chỉ rộng đúng bằng nội dung bên trong */
-      max-width: 92%;          /* Không vượt quá màn hình điện thoại */
-      min-height: 50px;
+      width: 92%;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
-      border-radius: 12px;
-      padding: 14px 22px;
+      border-radius: 10px;
+      padding: 12px 18px;
       z-index: 10;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      gap: 6px;
     }
 
     /* Ẩn hoàn toàn tên nhân vật */
@@ -111,14 +108,13 @@
       display: none !important;
     }
 
-    /* Chữ thoại căn trái (hoặc center), hiển thị tự nhiên theo khung */
     #dialogue-text {
-      font-size: 1.15rem;     /* Bạn có thể tăng lên 1.2rem hoặc 1.3rem nếu muốn chữ to hơn nữa */
-      line-height: 1.5;
+      font-size: clamp(1rem, 1.8vw, 1.6rem); /* Tự động phóng to thu nhỏ mượt mà theo kích thước khung */
+      line-height: 1.4;
       color: #ffffff;
       white-space: pre-wrap;
       word-break: break-word;
-      text-align: left;        
+      text-align: center;        
       text-shadow: 
         -1px -1px 0 #000,  
          1px -1px 0 #000,
