@@ -1,190 +1,817 @@
 {
-  "thoi_gian_giu_khung": 1.0,
-  "thoi_gian_cho_giua": 0.02,
-  "toc_do_go_chu": 0.03,
-  "danh_sach": [
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Chào Yui, hôm nay cậu đến lớp sớm thế nhỉ?",
-      "anh_nen": "render.mp4",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "bgm_gentle.mp3",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Chào An! Tớ muốn đến sớm để ôn lại bài kiểm tra toán sắp tới ấy mà.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "À nhắc tới toán tớ lại thấy hơi lo, bài tập hôm qua khó quá chừng.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Đừng lo lắng quá, nếu cậu không phiền thì lát nữa tụi mình cùng giải nhé.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Thật á? Cậu tuyệt vời thật đấy Yui, cứu tinh của tớ luôn!",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Có gì đâu mà, bạn bè với nhau cả mà ngại ngùng gì chứ.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Mà chiều nay sau giờ học cậu có định đi đâu chơi không?",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Tớ định ghé qua hiệu sách cũ gần trường tìm mua vài cuốn truyện tranh.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Cho tớ đi ké với nhé, tớ cũng đang muốn tìm vài tài liệu tham khảo.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Được chứ, đi cùng nhau cho vui đường vui chợ.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Nhắc mới nhớ, dạo này thời tiết hay mưa bất chợt ghê.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Ừ đúng rồi, hôm qua tớ suýt bị ướt như chuột lột vì quên mang ô đấy.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Thế nay cậu nhớ mang theo ô phòng hờ nha, trời có vẻ hơi âm u.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Cảm ơn An đã nhắc nhở nhé, tớ có thủ sẵn trong cặp rồi.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Cậu chu đáo thật đấy, lúc nào cũng cẩn thận hơn tớ.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Có gì đâu mà, tính tớ xưa nay vốn hay lo xa ấy mà.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Mà tiếng trống vào học sắp vang lên rồi kìa, chúng ta chuẩn bị vào lớp thôi.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Đi thôi, tập sách tớ đã soạn sẵn trên bàn từ nãy rồi.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Tiết đầu tiên hôm nay là môn gì nhỉ, tớ quên mất tiêu.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Là môn Lịch sử của thầy Nam đấy, cậu lại tính ngủ gật hả?",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Đâu có đâu, tớ sẽ cố gắng mở to mắt để nghe giảng mà.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Hơi khó tin nha, nhưng tớ sẽ giám sát cậu suốt tiết học.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Có giám sát viên xinh đẹp thế này thì tớ không dám ngủ gật nữa rồi.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Cậu lại bắt đầu trêu tớ rồi đấy nhé, lo vào chỗ ngồi đi.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Rồi rồi, tớ về chỗ đây, cảm ơn buổi trò chuyện sáng nay nhé.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Không có chi, hẹn gặp lại cậu sau giờ học chiều nay nha.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Chắc chắn rồi, nhớ giữ lời hẹn đi hiệu sách đấy.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Tớ chưa bao giờ quên hứa hẹn gì với cậu cả đâu.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "An",
-      "bieu_cam": "binh_thuong",
-      "noi_dung": "Hehe, vậy nhé, thầy giáo bước vào lớp kìa.",
-      "anh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Yui",
-      "bieu_cam": "vui",
-      "noi_dung": "Ừm, ổn định chỗ ngồi và mở sách vở ra học thôi nào.",
-      "anh_hieu_ung": ""
-    }
-  ]
+"thoi_gian_giu_khung": 1.0,
+"thoi_gian_cho_giua": 0.02,
+"toc_do_go_chu": 0.03,
+"danh_sach": [
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Á...!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Đây... đây là đâu? Mình vẫn còn sống sao?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Khoan đã... 15 giờ 00 phút? Không thể nào!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Mình nhớ rõ mà... lúc 16 giờ, có người đã đẩy mình xuống từ tầng ba!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Sad",
+"noi_dung": "Mình đã chết một lần rồi... và bây giờ được quay lại đúng một tiếng trước đó.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Trong ký ức cuối cùng, mình chỉ nhớ có hai người ở gần đó... Yui và Hana.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Một trong hai người họ... chính là hung thủ.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Happy",
+"noi_dung": "Aki! Cậu đây rồi! Tớ tìm cậu nãy giờ đấy!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Yui...!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Neutral",
+"noi_dung": "Cậu sao thế? Trông mặt cậu tái mét vậy?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Không có gì... Yui, lúc nãy cậu có lên tầng ba không?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Surprised",
+"noi_dung": "Tầng ba? Có chứ. Nhưng tớ chỉ lên đó lấy đồ thôi.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Annoyed",
+"noi_dung": "Vậy à... Cậu có gặp Hana ở đó không?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Worried",
+"noi_dung": "Hana sao? Tớ không chắc... À, mà cậu đừng lên cầu thang phía đông nhé.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Tại sao?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Embarrassed",
+"noi_dung": "À... không có gì. Tớ chỉ thấy chỗ đó hơi nguy hiểm thôi.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Yui đang giấu mình chuyện gì đó sao?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Happy",
+"noi_dung": "Hai cậu đang nói chuyện gì vui thế? Cho tớ tham gia với!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Hana... vừa hay, tớ cũng đang muốn tìm cậu.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Surprised",
+"noi_dung": "Tìm tớ? Có chuyện gì vậy?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Cậu có biết hôm nay có chuyện gì đặc biệt không?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Happy",
+"noi_dung": "Không phải hôm nay chúng ta cùng về nhà sao? Còn chuyện gì nữa à?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Annoyed",
+"noi_dung": "Không có gì. Tớ chỉ muốn hỏi... cậu có biết ai đã làm hỏng bài dự thi của tớ không?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Surprised",
+"noi_dung": "Bài dự thi? Ý cậu là bản thiết kế trong phòng mỹ thuật à?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Sao cậu biết nó ở phòng mỹ thuật? Tớ chưa nói với cậu mà.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Worried",
+"noi_dung": "À... tớ đoán thôi! Cậu thường để đồ ở đó mà.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Thì ra là vậy...",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Hana biết chuyện bài dự thi bị hỏng, dù mình chưa hề kể. Có thể cô ấy đã biết nhiều hơn mình nghĩ.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Mình cần kiểm tra xem ai đang nói dối. Nhưng không thể để họ biết mình đã trọng sinh.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Happy",
+"noi_dung": "À, hai cậu này! Tớ vừa nhớ ra mình để quên một thứ ở phòng học. Đợi tớ một lát nhé!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Neutral",
+"noi_dung": "Ừ, cậu cứ đi đi. Tớ đợi ở đây.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Happy",
+"noi_dung": "Nhớ quay lại nhanh nhé! Tớ còn có chuyện muốn nói với cậu.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Tớ sẽ quay lại ngay.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Mình vừa nói dối. Thực ra mình không quên thứ gì cả. Mình muốn xem ai sẽ hành động khi nghĩ rằng mình đã rời đi.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Hana?! Cô ấy đang đi về phía cầu thang tầng ba!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Không được... mình phải theo dõi cô ấy, nhưng không thể để bị phát hiện!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Surprised",
+"noi_dung": "Aki! Cậu đang làm gì ở đây vậy?!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Yui?! Sao cậu lại ở đây?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Annoyed",
+"noi_dung": "Đáng lẽ tớ mới phải hỏi cậu câu đó! Cậu đang lén theo dõi Hana đúng không?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Cậu biết Hana đang ở đây sao?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Sad",
+"noi_dung": "Aki... tớ đã định nói với cậu chuyện này từ lâu rồi.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Annoyed",
+"noi_dung": "Rốt cuộc cậu đang giấu tớ chuyện gì? Đừng nói với tớ là cậu cũng có liên quan!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Worried",
+"noi_dung": "Tớ biết Hana đang có ý định làm hại cậu. Tớ đã cố ngăn cô ấy, nhưng...",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Cậu nói gì cơ?!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Sad",
+"noi_dung": "Hôm trước, tớ vô tình nghe Hana nói rằng cậu sẽ phải biến mất trước khi cuộc thi kết thúc.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Tại sao cậu không nói với tớ sớm hơn?",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Embarrassed",
+"noi_dung": "Vì tớ không có bằng chứng... và Hana đã đe dọa sẽ khiến mọi người nghĩ tớ mới là người làm hại cậu.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Sad",
+"noi_dung": "Vậy nên cậu mới tránh nhắc đến cầu thang tầng ba...",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Worried",
+"noi_dung": "Đúng vậy. Tớ sợ chuyện đó sẽ xảy ra lần nữa. Aki, cậu phải tin tớ!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Tớ tin cậu... nhưng chúng ta vẫn cần bằng chứng.",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Bây giờ là 15 giờ 35. Chỉ còn 25 phút nữa...",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Happy",
+"noi_dung": "Aki! Cuối cùng cũng tìm thấy cậu rồi!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Hana...!",
+"anh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Neutral",
+"noi_dung": "Tớ muốn nói chuyện riêng với cậu một chút. Đi với tớ nhé?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Cậu muốn nói chuyện gì?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Happy",
+"noi_dung": "Chuyện quan trọng lắm. Chỉ có hai chúng ta mới nói được thôi.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Angry",
+"noi_dung": "Hana, cậu định đưa Aki đi đâu? Đừng có giở trò nữa!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Annoyed",
+"noi_dung": "Yui, chuyện này không liên quan đến cậu. Đừng xen vào!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Được thôi, Hana. Tớ sẽ đi cùng cậu. Nhưng Yui cũng sẽ đi.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Annoyed",
+"noi_dung": "Cậu không tin tớ đến vậy sao?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Không phải. Chỉ là tớ không muốn có bất kỳ hiểu lầm nào giữa chúng ta.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Worried",
+"noi_dung": "Tùy cậu vậy...",
+"anh_nen": "",
+"am_thanh_nen": "",
+"anh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Hana vừa tỏ ra khó chịu khi Yui muốn đi cùng. Nếu cô ấy thật sự vô tội, tại sao lại sợ có người thứ ba?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Neutral",
+"noi_dung": "Đến nơi rồi. Aki, cậu còn nhớ lần trước chúng ta đứng ở đây không?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Lần trước? Ý cậu là sao?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Annoyed",
+"noi_dung": "À... không có gì. Tớ nói nhầm thôi.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Không... cô ấy vừa nói 'lần trước'. Làm sao Hana có thể biết được chuyện mình đã trải qua ở kiếp trước?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Surprised",
+"noi_dung": "Aki! Cẩn thận!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Á!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Angry",
+"noi_dung": "Đủ rồi, Aki! Cậu không nên quay lại đây!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Angry",
+"noi_dung": "Hana! Chính cậu đã đẩy tớ trong kiếp trước, đúng không?!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Annoyed",
+"noi_dung": "Cậu vẫn luôn thông minh như vậy... Thật đáng tiếc!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Angry",
+"noi_dung": "Hana! Dừng lại ngay! Tớ đã ghi âm tất cả rồi!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Surprised",
+"noi_dung": "Cái gì?! Cậu ghi âm từ lúc nào?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Angry",
+"noi_dung": "Ngay từ lúc cậu bắt đầu tìm cách đưa Aki lên đây. Tớ không để cậu làm hại cậu ấy thêm lần nào nữa!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Hana... tại sao? Chúng ta từng là bạn thân mà!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Angry",
+"noi_dung": "Bạn thân? Cậu có biết tớ đã phải cố gắng thế nào để đứng cạnh cậu không?!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Cậu đang nói gì vậy?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Angry",
+"noi_dung": "Tớ luôn đứng sau cậu! Bài dự thi, lời khen của giáo viên, sự chú ý của mọi người... Tất cả đều thuộc về cậu!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Sad",
+"noi_dung": "Tớ chỉ muốn một lần được công nhận. Nhưng cậu lại phát hiện ra tớ đã lấy ý tưởng của cậu để dự thi...",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Sad",
+"noi_dung": "Vậy nên cậu phá hỏng bài dự thi của tớ? Và còn muốn giết tớ để che giấu mọi chuyện?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Angry",
+"noi_dung": "Tớ không định để mọi chuyện đi xa đến thế! Nhưng cậu đã ép tớ!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Angry",
+"noi_dung": "Không ai ép cậu làm những chuyện đó cả, Hana. Đừng đổ lỗi cho người khác!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Worried",
+"noi_dung": "Aki, chúng ta phải rời khỏi đây và báo cho giáo viên ngay. Không thể để cô ấy tiếp tục mất kiểm soát!",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Hana",
+"bieu_cam": "Embarrassed",
+"noi_dung": "Tớ... tớ không muốn mọi chuyện thành ra thế này...",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Sad",
+"noi_dung": "Tớ từng nghĩ cậu là người mà mình có thể tin tưởng nhất. Nhưng hóa ra, người khiến tớ sợ hãi nhất lại chính là cậu.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Yui",
+"bieu_cam": "Happy",
+"noi_dung": "Aki... may quá. Cậu vẫn an toàn.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Neutral",
+"noi_dung": "Ừ. Lần này, tớ sẽ không để bản thân phải kết thúc như vậy nữa.",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Worried",
+"noi_dung": "Nhưng có một chuyện mình vẫn chưa hiểu... Tại sao Hana lại nói 'cậu không nên quay lại đây'?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+},
+{
+"nhan_vat": "Aki",
+"bieu_cam": "Surprised",
+"noi_dung": "Khoan đã... nếu chỉ có mình trọng sinh, tại sao Hana lại có vẻ biết trước chuyện này?",
+"anh_nen": "",
+"am_thanh_nen": "",
+"am_thanh_hieu_ung": "",
+"am_thanh_hieu_ung": ""
+}
+]
 }
