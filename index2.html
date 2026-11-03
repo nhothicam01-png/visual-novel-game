@@ -84,7 +84,7 @@ height: 100%;
 object-fit: cover;
 }
 #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
-/* Nhân vật bám sát đáy */
+/* Nhân vật bám sát đáy: Màn hình ngang thì full chiều cao (height 100%, object-fit: contain) */
 #layer-character {
 position: absolute;
 bottom: 0;
@@ -93,10 +93,14 @@ transform: translateX(-50%);
 z-index: 2;
 width: 100%;
 height: 100%;
-object-fit: cover;
+object-fit: contain;
 object-position: bottom center;
 display: none;
 transform-origin: bottom center;
+}
+/* Màn hình dọc thì kéo full chiều rộng (width 100%, object-fit: cover) */
+#game-container.portrait #layer-character {
+object-fit: cover;
 }
 #layer-vfx { z-index: 3; pointer-events: none; display: none; }
 .character-talking {
@@ -261,9 +265,6 @@ width: 65px;
 <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
 <img id="layer-character" class="game-layer" src="" alt="Character" />
 <img id="layer-vfx" class="game-layer" src="" alt="VFX Overlay" />
-<!-- Thẻ âm thanh được đặt trong container để bảo toàn khi fullscreen -->
-<audio id="audio-bgm" loop></audio>
-<audio id="audio-sfx"></audio>
 <div id="dialogue-canvas" style="display: none;">
 <div id="speaker-name"></div>
 <div id="dialogue-text"></div>
@@ -295,9 +296,11 @@ width: 65px;
 <div id="character-voice-panel">
 <h4>🎙️ Cấu hình giọng đọc riêng theo nhân vật</h4>
 <div id="character-voice-list">
-<span style="color: #64748b; font-style: italic;">Đang tải kịch bản...</span>
+<span style="color: #64748b; font-style: italic;">Chưa có kịch bản hoặc nhân vật nào được tải. Hãy Import JSON trước!</span>
 </div>
 </div>
+<audio id="audio-bgm" loop></audio>
+<audio id="audio-sfx"></audio>
 <script>
 class TrinhPhatKichBanWeb {
 constructor() {
@@ -328,51 +331,6 @@ this.danhSachVoices = [];
 this.isPortrait = false;
 this.khoiTaoTTS();
 this.khoiTaoSuKienFile();
-// Tải kịch bản mặc định (thử fetch file tapA.json, nếu thất bại thì nạp kịch bản dự phòng ngay)
-this.taiKichBanMacDinh('assets/KichBan/tapA.json');
-}
-datKichBanDuPhong() {
-this.duLieu = {
-thoi_gian_cho_giua: 0.02,
-toc_do_go_chu: 0.03,
-danh_sach: [
-{
-nhan_vat: "An",
-bieu_cam: "binh_thuong",
-noi_dung: "Chào Yui, hôm nay cậu đến lớp sớm thế nhỉ?",
-anh_nen: "render.mp4",
-am_thanh_nen: "bgm_gentle.mp3"
-},
-{
-nhan_vat: "Yui",
-bieu_cam: "vui",
-noi_dung: "Chào An! Tớ muốn đến sớm để ôn lại bài kiểm tra toán sắp tới ấy mà.",
-anh_nen: "render.mp4"
-},
-{
-nhan_vat: "An",
-bieu_cam: "binh_thuong",
-noi_dung: "Hãy bấm Import JSON để chọn kịch bản riêng của bạn nhé!",
-anh_nen: "render.mp4"
-}
-]
-};
-this.quetVaKhoiTaoNhanVat();
-}
-async taiKichBanMacDinh(duongDan) {
-try {
-const response = await fetch(duongDan);
-if (!response.ok) throw new Error(Status: ${response.status});
-this.duLieu = await response.json();
-await this.taiTruocDuLieu();
-if (this.ttsSynth) {
-this.danhSachVoices = this.ttsSynth.getVoices();
-}
-this.quetVaKhoiTaoNhanVat();
-} catch (err) {
-console.warn("Không tải được file mặc định (do đường dẫn hoặc CORS). Đã dùng kịch bản sẵn trong bộ nhớ.", err);
-this.datKichBanDuPhong();
-}
 }
 toggleOrientation() {
 this.isPortrait = !this.isPortrait;
@@ -565,7 +523,20 @@ if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
 return;
 }
 if (!this.duLieu) {
-this.datKichBanDuPhong();
+this.duLieu = {
+thoi_gian_cho_giua: 0.02,
+toc_do_go_chu: 0.03,
+danh_sach: [
+{
+nhan_vat: "An",
+bieu_cam: "binh_thuong",
+noi_dung: "Hãy bấm Import JSON để tải kịch bản của bạn vào nhé!",
+anh_nen: "bg_school.png",
+am_thanh_nen: "bgm_gentle.mp3"
+}
+]
+};
+this.quetVaKhoiTaoNhanVat();
 }
 document.getElementById('btn-pause').style.display = 'inline-block';
 this.currentIndex = 0;
@@ -607,16 +578,25 @@ this.dangChay = false;
 document.getElementById('btn-pause').style.display = 'none';
 this.xoaChu();
 }
+// Đảm bảo ảnh/video hiển thị xong mới cho chạy thoại
+doiHinhAnhTaiXong(element) {
+return new Promise(resolve => {
+if (!element.src || element.complete) return resolve();
+element.onload = resolve;
+element.onerror = resolve;
+});
+}
 async xuLyKhung(khung) {
 this.xoaChuKhongAnCanvas();
-const anhNen = khung.anh_nen || khung.background;
+​const anhNen = khung.anh_nen || khung.background;
 const nhanVat = khung.nhan_vat;
 const bieuCam = khung.bieu_cam || khung.expression;
 const anhHieuUng = khung.anh_hieu_ung || khung.vfx;
 const noiDung = khung.noi_dung;
 const amThanhNen = khung.am_thanh_nen || khung.bgm;
 const amThanhHieuUng = khung.am_thanh_hieu_ung || khung.sfx;
-if (anhNen && anhNen.trim() !== "") {
+​const promisesLoadMedia = [];
+​if (anhNen && anhNen.trim() !== "") {
 if (this.isMediaVideo(anhNen)) {
 this.layerBgImg.style.display = 'none';
 if (!this.layerBgVideo.src.includes(anhNen)) this.layerBgVideo.src = assets/Nen/${anhNen};
@@ -627,9 +607,10 @@ this.layerBgVideo.style.display = 'none';
 const bgImg = this.boDemAnhNen.get(anhNen);
 this.layerBgImg.src = bgImg ? bgImg.src : assets/Nen/${anhNen};
 this.layerBgImg.style.display = 'block';
+promisesLoadMedia.push(this.doiHinhAnhTaiXong(this.layerBgImg));
 }
 }
-if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
+​if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
 const currentKey = ${nhanVat}/${bieuCam};
 const img = this.boDemNhanVat.get(currentKey);
 this.layerChar.src = img ? img.src : assets/NhanVat/${currentKey}.png;
@@ -637,18 +618,19 @@ this.layerChar.style.display = 'block';
 if (!this.layerChar.classList.contains('character-talking')) {
 this.layerChar.classList.add('character-talking');
 }
+promisesLoadMedia.push(this.doiHinhAnhTaiXong(this.layerChar));
 } else if (nhanVat === "") {
 this.layerChar.style.display = 'none';
 this.layerChar.classList.remove('character-talking');
 }
-if (anhHieuUng && anhHieuUng.trim() !== "") {
+​if (anhHieuUng && anhHieuUng.trim() !== "") {
 const vfxImg = this.boDemHieuUng.get(anhHieuUng);
 this.layerVfx.src = vfxImg ? vfxImg.src : assets/HieuUng/${anhHieuUng};
 this.layerVfx.style.display = 'block';
 } else {
 this.layerVfx.style.display = 'none';
 }
-if (amThanhNen && amThanhNen.trim() !== "") {
+​if (amThanhNen && amThanhNen.trim() !== "") {
 const bgmPath = assets/AmThanh/Nen/${amThanhNen};
 if (!this.audioBgm.src.includes(amThanhNen)) {
 this.audioBgm.src = bgmPath;
@@ -656,50 +638,52 @@ this.audioBgm.loop = true;
 this.audioBgm.play().catch(() => {});
 }
 }
-if (amThanhHieuUng && amThanhHieuUng.trim() !== "") {
+​if (amThanhHieuUng && amThanhHieuUng.trim() !== "") {
 this.audioSfx.src = assets/AmThanh/HieuUng/${amThanhHieuUng};
 this.audioSfx.play().catch(() => {});
 }
-let thoiGianWait = 1.0;
-if (noiDung) {
+​// Chờ ảnh load xong hoàn toàn trên môi trường online
+await Promise.all(promisesLoadMedia);
+​if (noiDung) {
 this.hienLoiThoai(nhanVat, noiDung);
-thoiGianWait = this.docVanBanBangTTS(nhanVat, noiDung);
-}
-let elapsed = 0;
-const interval = 100;
-while (elapsed < thoiGianWait * 1000) {
-if (!this.dangChay) break;
-while (this.dangTamDung) {
-await this.sleep(100);
-if (!this.dangChay) break;
-}
-await this.sleep(interval);
-elapsed += interval;
+// Đợi phát hết câu TTS thực tế mới sang phân cảnh tiếp
+await this.docVanBanBangTTS(nhanVat, noiDung);
+} else {
+await this.sleep(1000);
 }
 }
-docVanBanBangTTS(nhanVat, text) {
-if (!text) return 0;
-if (this.ttsSynth) {
-this.ttsSynth.cancel();
-const utterance = new SpeechSynthesisUtterance(text);
+​docVanBanBangTTS(nhanVat, text) {
+return new Promise((resolve) => {
+if (!text || !this.ttsSynth) return resolve();
+​this.ttsSynth.cancel();
+​const utterance = new SpeechSynthesisUtterance(text);
 const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat])
 ? this.cauHinhGiongNhanVat[nhanVat]
 : { voiceIndex: 0, rate: 1.1, pitch: 1.0 };
-if (this.danhSachVoices.length > 0) {
+​if (this.danhSachVoices.length > 0) {
 utterance.voice = this.danhSachVoices[cfg.voiceIndex] || this.danhSachVoices[0];
 }
-utterance.volume = this.ttsVolume;
+​utterance.volume = this.ttsVolume;
 utterance.rate = cfg.rate;
 utterance.pitch = cfg.pitch;
+​let isHandled = false;
+const finish = () => {
+if (!isHandled) {
+isHandled = true;
+resolve();
+}
+};
+​// Khi TTS phát xong hoàn toàn mới kích hoạt resolve
+utterance.onend = finish;
+utterance.onerror = finish;
+​// Timeout dự phòng trong trường hợp trình duyệt bị kẹt giọng đọc
 const wordsCount = text.split(/\s+/).length;
-let estimatedDuration = (wordsCount / 3.5) * (1 / cfg.rate);
-if (estimatedDuration < 1.2) estimatedDuration = 1.2;
-this.ttsSynth.speak(utterance);
-return estimatedDuration;
+let safeTimeoutDuration = (wordsCount / 2.0) * (1 / cfg.rate) * 1000 + 1500;
+setTimeout(finish, safeTimeoutDuration);
+​this.ttsSynth.speak(utterance);
+});
 }
-return 2.0;
-}
-hienLoiThoai(ten, noiDung) {
+​hienLoiThoai(ten, noiDung) {
 this.dialogueCanvas.style.display = 'flex';
 if (ten && ten.trim() !== "") {
 this.speakerText.innerText = ten;
@@ -707,10 +691,10 @@ this.speakerText.style.display = 'block';
 } else {
 this.speakerText.style.display = 'none';
 }
-let idx = 0;
+​let idx = 0;
 this.dialogueText.innerText = '';
 clearInterval(this.hienChuInterval);
-const speed = (this.duLieu ? this.duLieu.toc_do_go_chu : 0.03) * 1000;
+​const speed = (this.duLieu ? this.duLieu.toc_do_go_chu : 0.03) * 1000;
 this.hienChuInterval = setInterval(() => {
 if (!this.dangTamDung && this.dangChay) {
 if (idx < noiDung.length) {
@@ -722,16 +706,16 @@ clearInterval(this.hienChuInterval);
 }
 }, speed);
 }
-xoaChuKhongAnCanvas() {
+​xoaChuKhongAnCanvas() {
 clearInterval(this.hienChuInterval);
 this.dialogueText.innerText = '';
 this.speakerText.innerText = '';
 }
-xoaChu() {
+​xoaChu() {
 this.xoaChuKhongAnCanvas();
 this.dialogueCanvas.style.display = 'none';
 }
-dung() {
+​dung() {
 this.dangChay = false;
 this.dangTamDung = false;
 document.getElementById('btn-pause').style.display = 'none';
@@ -748,11 +732,11 @@ this.layerChar.style.display = 'none';
 this.layerChar.classList.remove('character-talking');
 this.layerVfx.style.display = 'none';
 }
-sleep(ms) {
+​sleep(ms) {
 return new Promise(resolve => setTimeout(resolve, ms));
 }
 }
-const trinhPhat = new TrinhPhatKichBanWeb();
+​const trinhPhat = new TrinhPhatKichBanWeb();
 </script>
 </body>
 </html>
