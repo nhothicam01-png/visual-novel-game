@@ -25,7 +25,7 @@
       padding: 10px;
     }
 
-    /* Khung màn hình game (Co giãn chuẩn tỷ lệ 16:9 trên mobile) */
+    /* Khung màn hình game (Mặc định Ngang: 1920x1080 -> aspect-ratio 16/9) */
     #game-container {
       position: relative;
       width: 100%;
@@ -37,8 +37,17 @@
       border-radius: 12px;
       overflow: hidden;
       margin: 0 auto;
+      transition: aspect-ratio 0.3s ease, max-width 0.3s ease;
     }
 
+    /* Khi chuyển sang chế độ Dọc: 1080x1920 -> aspect-ratio 9/16 */
+    #game-container.portrait {
+      aspect-ratio: 9 / 16;
+      max-width: 420px;
+      max-height: 85vh;
+    }
+
+    /* Khi ở chế độ Full màn hình */
     #game-container:fullscreen,
     #game-container:-webkit-full-screen {
       width: 100vw;
@@ -48,6 +57,28 @@
       border-radius: 0;
       box-shadow: none;
       background-color: #000;
+    }
+
+    /* Ép tỷ lệ 1920x1080 (16:9) khi Full màn hình */
+    #game-container:fullscreen.force-landscape,
+    #game-container:-webkit-full-screen.force-landscape {
+      aspect-ratio: 16 / 9 !important;
+      width: 100vw !important;
+      height: 56.25vw !important;
+      max-height: 100vh !important;
+      max-width: calc(100vh * 16 / 9) !important;
+      margin: auto !important;
+    }
+
+    /* Ép tỷ lệ 1080x1920 (9:16) khi Full màn hình */
+    #game-container:fullscreen.force-portrait,
+    #game-container:-webkit-full-screen.force-portrait {
+      aspect-ratio: 9 / 16 !important;
+      height: 100vh !important;
+      width: calc(100vh * 9 / 16) !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+      margin: auto !important;
     }
 
     .game-layer {
@@ -61,13 +92,19 @@
 
     #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
     
+    /* Nhân vật bám sát đáy, scale lấp đầy chiều cao mà không méo ảnh */
     #layer-character {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
       z-index: 2;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: bottom center;
       display: none;
       transform-origin: bottom center;
-      height: calc(100% + 35px);
-      margin-bottom: -35px;
     }
 
     #layer-vfx { z-index: 3; pointer-events: none; display: none; }
@@ -77,9 +114,9 @@
     }
 
     @keyframes characterTalkAnim {
-      0%   { transform: translateY(0) scaleY(1); }
-      50%  { transform: translateY(-2%) scaleY(1.01); }
-      100% { transform: translateY(0) scaleY(1); }
+      0%   { transform: translateX(-50%) translateY(0) scaleY(1); }
+      50%  { transform: translateX(-50%) translateY(+2%) scaleY(1.01); }
+      100% { transform: translateX(-50%) translateY(0) scaleY(1); }
     }
 
     #dialogue-canvas {
@@ -99,7 +136,6 @@
       gap: 4px;
     }
 
-    /* Ẩn hoàn toàn tên nhân vật trên hộp thoại */
     #speaker-name {
       display: none !important;
     }
@@ -273,6 +309,9 @@
     <button id="btn-play" class="btn" onclick="trinhPhat.batDau()">▶ Chạy kịch bản</button>
     <button id="btn-pause" class="btn" onclick="trinhPhat.tamDung()" style="display: none;">⏸ Tạm dừng</button>
     <button id="btn-stop" class="btn" onclick="trinhPhat.dung()">⏹ Dừng phát</button>
+    
+    <!-- Nút chuyển tỷ lệ Ngang (1920x1080) / Dọc (1080x1920) -->
+    <button id="btn-orientation" class="btn" onclick="trinhPhat.toggleOrientation()">📱 Tỷ lệ: 1920×1080</button>
     <button id="btn-fullscreen" class="btn" onclick="trinhPhat.toggleFullscreen()">⛶ Toàn màn hình</button>
   </div>
 
@@ -333,15 +372,29 @@
         this.ttsSynth = window.speechSynthesis || null;
         this.danhSachVoices = [];
 
+        this.isPortrait = false; // false = 1920x1080 (Ngang), true = 1080x1920 (Dọc)
+
         this.khoiTaoTTS();
         this.khoiTaoSuKienFile();
+      }
+
+      toggleOrientation() {
+        this.isPortrait = !this.isPortrait;
+        const btn = document.getElementById('btn-orientation');
+
+        if (this.isPortrait) {
+          this.container.classList.add('portrait');
+          btn.innerText = "📱 Tỷ lệ: 1080×1920";
+        } else {
+          this.container.classList.remove('portrait');
+          btn.innerText = "📱 Tỷ lệ: 1920×1080";
+        }
       }
 
       khoiTaoTTS() {
         if (this.ttsSynth) {
           const capNhatVoices = () => {
             this.danhSachVoices = this.ttsSynth.getVoices();
-            // Nếu đã import JSON trước đó mà lúc đầu danh sách giọng bị trống, tiến hành render lại bảng ngay khi tải xong giọng
             if (this.duLieu && this.danhSachVoices.length > 0) {
               this.quetVaKhoiTaoNhanVat();
             }
@@ -382,7 +435,6 @@
             this.duLieu = JSON.parse(e.target.result);
             await this.taiTruocDuLieu();
             
-            // Ép buộc trình duyệt lấy lại danh sách giọng một lần nữa trước khi quét nhân vật
             if (this.ttsSynth) {
               this.danhSachVoices = this.ttsSynth.getVoices();
             }
@@ -409,7 +461,6 @@
 
         setNhanVat.forEach(ten => {
           if (!this.cauHinhGiongNhanVat[ten]) {
-            // Ưu tiên tìm giọng tiếng Việt, nếu không có lấy giọng đầu tiên trong danh sách
             const defaultViIdx = this.danhSachVoices.findIndex(v => v.lang.toLowerCase().includes('vi'));
             this.cauHinhGiongNhanVat[ten] = {
               voiceIndex: defaultViIdx !== -1 ? defaultViIdx : 0,
@@ -478,12 +529,25 @@
       async toggleFullscreen() {
         try {
           if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            if (this.isPortrait) {
+              this.container.classList.add('force-portrait');
+              this.container.classList.remove('force-landscape');
+            } else {
+              this.container.classList.add('force-landscape');
+              this.container.classList.remove('force-portrait');
+            }
+
             if (this.container.requestFullscreen) await this.container.requestFullscreen();
             else if (this.container.webkitRequestFullscreen) await this.container.webkitRequestFullscreen();
-            if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {});
+            
+            if (screen.orientation && screen.orientation.lock) {
+              screen.orientation.lock(this.isPortrait ? 'portrait' : 'landscape').catch(() => {});
+            }
           } else {
             if (document.exitFullscreen) await document.exitFullscreen();
             else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+            
+            this.container.classList.remove('force-landscape', 'force-portrait');
             if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
           }
         } catch (e) { console.log(e); }
