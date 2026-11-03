@@ -148,8 +148,11 @@
       word-break: break-word;
       text-align: center;       
       
+      /* Dùng -webkit-text-stroke để tạo viền mượt, không bị vỡ hạt trên mobile */
       -webkit-text-stroke: 0.8px #000000;
       paint-order: stroke fill;
+
+      /* Đổ bóng nhẹ giúp chữ nổi bật trên nền game mà không bị nhòe */
       text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.9);
     }
 
@@ -308,6 +311,7 @@
     <button id="btn-pause" class="btn" onclick="trinhPhat.tamDung()" style="display: none;">⏸ Tạm dừng</button>
     <button id="btn-stop" class="btn" onclick="trinhPhat.dung()">⏹ Dừng phát</button>
     
+    <!-- Nút chuyển tỷ lệ Ngang (1920x1080) / Dọc (1080x1920) -->
     <button id="btn-orientation" class="btn" onclick="trinhPhat.toggleOrientation()">📱 Tỷ lệ: 1920×1080</button>
     <button id="btn-fullscreen" class="btn" onclick="trinhPhat.toggleFullscreen()">⛶ Toàn màn hình</button>
   </div>
@@ -330,7 +334,7 @@
   <div id="character-voice-panel">
     <h4>🎙️ Cấu hình giọng đọc riêng theo nhân vật</h4>
     <div id="character-voice-list">
-      <span style="color: #64748b; font-style: italic;">Đang tải kịch bản mặc định...</span>
+      <span style="color: #64748b; font-style: italic;">Chưa có kịch bản hoặc nhân vật nào được tải. Hãy Import JSON trước!</span>
     </div>
   </div>
 
@@ -369,33 +373,10 @@
         this.ttsSynth = window.speechSynthesis || null;
         this.danhSachVoices = [];
 
-        this.isPortrait = false;
+        this.isPortrait = false; // false = 1920x1080 (Ngang), true = 1080x1920 (Dọc)
 
         this.khoiTaoTTS();
         this.khoiTaoSuKienFile();
-        
-        // 🚀 Tự động load sẵn file tapA.json khi vừa mở web
-        this.taiKichBanMacDinh('assets/KichBan/tapA.json');
-      }
-
-      async taiKichBanMacDinh(duongDan) {
-        try {
-          const response = await fetch(duongDan);
-          if (!response.ok) throw new Error(`Không thể tải file (Status: ${response.status})`);
-          
-          this.duLieu = await response.json();
-          await this.taiTruocDuLieu();
-          
-          if (this.ttsSynth) {
-            this.danhSachVoices = this.ttsSynth.getVoices();
-          }
-
-          this.quetVaKhoiTaoNhanVat();
-          console.log("✅ Đã tự động tải kịch bản mặc định thành công:", duongDan);
-        } catch (err) {
-          console.warn("⚠️ Không tìm thấy kịch bản mặc định hoặc chạy qua file:// protocol (CORS block). Vui lòng dùng nút Import JSON nếu cần.", err);
-          document.getElementById('character-voice-list').innerHTML = '<span style="color: #64748b; font-style: italic;">Chưa có kịch bản hoặc nhân vật nào được tải. Hãy Import JSON trước!</span>';
-        }
       }
 
       toggleOrientation() {
@@ -628,8 +609,20 @@
         }
 
         if (!this.duLieu) {
-          alert("⚠️ Chưa có kịch bản nào được tải! Vui lòng chọn Import JSON.");
-          return;
+          this.duLieu = {
+            thoi_gian_cho_giua: 0.02,
+            toc_do_go_chu: 0.03,
+            danh_sach: [
+              {
+                nhan_vat: "An",
+                bieu_cam: "binh_thuong",
+                noi_dung: "Hãy bấm Import JSON để tải kịch bản của bạn vào nhé!",
+                anh_nen: "bg_school.png",
+                am_thanh_nen: "bgm_gentle.mp3"
+              }
+            ]
+          };
+          this.quetVaKhoiTaoNhanVat();
         }
 
         document.getElementById('btn-pause').style.display = 'inline-block';
@@ -843,7 +836,7 @@
       }
 
       sleep(ms) {
-        return new Response => setTimeout(resolve, ms); // Sửa cú pháp chuẩn bên dưới
+        return new Promise(resolve => setTimeout(resolve, ms));
       }
     }
 
