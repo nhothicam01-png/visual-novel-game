@@ -718,34 +718,23 @@
         });
       }
 
-            async batDau() {
+      async batDau() {
         this.kichHoatAmThanhMobile(); 
 
-        // Nếu kịch bản đang chạy bình thường thì bỏ qua
         if (this.dangChay && !this.dangTamDung) return;
 
-        // Nếu kịch bản đang ở trạng thái tạm dừng (hoặc bấm đúp để tiếp tục)
         if (this.dangTamDung) {
           this.dangTamDung = false;
-          document.getElementById('btn-pause').style.display = 'inline-block';
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
+          if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
+          if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           
-          // 👇 Bắt buộc bật lại nhạc nền và video nền ngay lập tức tại đây
-          if (this.audioBgm.paused) {
-            this.audioBgm.play().catch(()=>{});
-          }
-          if (this.layerBgVideo.style.display === 'block' && this.layerBgVideo.paused) {
-            this.layerBgVideo.play().catch(()=>{});
-          }
-          
-          // Tiếp tục đọc nốt phần TTS còn lại nếu có
           if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
           }
           return;
         }
 
-        // Nếu kịch bản chưa chạy từ đầu (hoặc đã dừng hẳn)
         if (!this.duLieu) {
           this.duLieu = {
             thoi_gian_cho_giua: 0.02,
@@ -767,7 +756,6 @@
         this.currentIndex = 0;
         this.chayToanBo();
       }
-
 
       tamDung() {
         if (!this.dangChay) return;
