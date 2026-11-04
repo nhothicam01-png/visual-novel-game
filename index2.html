@@ -377,7 +377,7 @@
 
         this.boDemAnhNen = new Map();
         this.boDemHieuUng = new Map();
-        this.boDemNhanVat = new Map();
+        this.boDemNhanVat = new Map(); // Lưu trữ mảng frame ảnh animation
 
         this.duLieu = null;
         this.dangChay = false;
@@ -385,7 +385,10 @@
         this.hienChuInterval = null;
         this.currentIndex = 0;
 
-        // Quản lý trạng thái TTS thông minh khi tạm dừng / tiếp tục
+        // Quản lý khung hình animation nhân vật
+        this.animFrameInterval = null;
+        this.currentFrameIndex = 0;
+
         this.currentTtsResolve = null;
         this.ttsRemainingText = "";
         this.currentSpeaker = "";
@@ -440,8 +443,6 @@
 
       khoiTaoSuKienDoubleTapFullscreen() {
         let lastTapTime = 0;
-        
-        // Hỗ trợ chạm đúp trên mobile khi ở chế độ fullscreen
         this.container.addEventListener('touchend', (e) => {
           const currentTime = new Date().getTime();
           const tapLength = currentTime - lastTapTime;
@@ -459,7 +460,6 @@
           lastTapTime = currentTime;
         });
 
-        // Hỗ trợ nhấp đúp chuột trên máy tính khi ở chế độ fullscreen
         this.container.addEventListener('dblclick', () => {
           const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
           if (isFullscreen) {
@@ -518,11 +518,11 @@
 
         setNhanVat.forEach(ten => {
           if (!this.cauHinhGiongNhanVat[ten]) {
-            const defaultViIdx = this.danhSachVoices.findIndex(v => v.lang.toLowerCase().includes('vi'));
             this.cauHinhGiongNhanVat[ten] = {
-              voiceIndex: defaultViIdx !== -1 ? defaultViIdx : 0,
+              voiceIndex: 0,
               rate: 1.1,
-              pitch: 1.0
+              pitch: 1.0,
+              lang: 'ja-JP' // Mặc định Nhật hoặc Việt
             };
           }
         });
@@ -544,9 +544,22 @@
           const cfg = this.cauHinhGiongNhanVat[ten];
           
           let optionsHtml = '';
-          if (this.danhSachVoices.length === 0) {
-            optionsHtml = `<option value="0">Đang tải danh sách giọng...</option>`;
-          } else {
+          const presetLangs = [
+            { code: 'ja-JP', name: '🇯🇵 Tiếng Nhật (Japanese)' },
+            { code: 'vi-VN', name: '🇻🇳 Tiếng Việt (Vietnamese)' },
+            { code: 'en-US', name: '🇺🇸 Tiếng Anh (English)' },
+            { code: 'ko-KR', name: '🇰🇷 Tiếng Hàn (Korean)' },
+            { code: 'zh-CN', name: '🇨🇳 Tiếng Trung (Chinese)' }
+          ];
+
+          // Tạo sẵn danh sách chọn nhanh ngôn ngữ quốc tế (tránh lỗi thiếu voice trên mobile)
+          presetLangs.forEach(lang => {
+            const selected = (cfg.lang === lang.code) ? 'selected' : '';
+            optionsHtml += `<option value="${lang.code}" ${selected}>${lang.name}</option>`;
+          });
+
+          // Nếu có danh sách giọng hệ thống chi tiết hơn, nối thêm vào
+          if (this.danhSachVoices.length > 0) {
             this.danhSachVoices.forEach((v, idx) => {
               const selected = (cfg.voiceIndex === idx) ? 'selected' : '';
               optionsHtml += `<option value="${idx}" ${selected}>${v.name} (${v.lang})</option>`;
@@ -569,7 +582,18 @@
         if (!this.cauHinhGiongNhanVat[tenNhanVat]) return;
 
         if (loai === 'voice') {
-          this.cauHinhGiongNhanVat[tenNhanVat].voiceIndex = parseInt(giaTri);
+          if (isNaN(giaTri)) {
+            this.cauHinhGiongNhanVat[tenNhanVat].lang = giaTri;
+            const foundIdx = this.danhSachVoices.findIndex(v => v.lang.toLowerCase().includes(giaTri.toLowerCase().split('-')[0]));
+            if (foundIdx !== -1) {
+              this.cauHinhGiongNhanVat[tenNhanVat].voiceIndex = foundIdx;
+            }
+          } else {
+            this.cauHinhGiongNhanVat[tenNhanVat].voiceIndex = parseInt(giaTri);
+            if (this.danhSachVoices[giaTri]) {
+              this.cauHinhGiongNhanVat[tenNhanVat].lang = this.danhSachVoices[giaTri].lang;
+            }
+          }
         } else if (loai === 'rate') {
           this.cauHinhGiongNhanVat[tenNhanVat].rate = parseFloat(giaTri);
           document.getElementById(`rate-val-${tenNhanVat}`).innerText = giaTri;
@@ -627,14 +651,51 @@
           if (anhHieuUng && !this.boDemHieuUng.has(anhHieuUng)) {
             promises.push(this.preloadImage(`assets/HieuUng/${anhHieuUng}`, img => this.boDemHieuUng.set(anhHieuUng, img)));
           }
+          
+          // ✨ Nạp trước cấu trúc Frame Animation theo thư mục: assets/NhanVat/{ten}/{bieu_cam}/1.png, 2.png,...
           if (nhanVat && bieuCam) {
             const key = `${nhanVat}/${bieuCam}`;
             if (!this.boDemNhanVat.has(key)) {
-              promises.push(this.preloadImage(`assets/NhanVat/${key}.png`, img => this.boDemNhanVat.set(key, img)));
+              promises.push(this.preloadCharacterFrames(nhanVat, bieuCam, key));
             }
           }
         }
         await Promise.all(promises);
+      }
+
+      // Hàm thông minh tự dò tìm các file frame 1.png, 2.png,... hoặc fallback về file ảnh đơn cũ
+      async preloadCharacterFrames(nhanVat, bieuCam, cacheKey) {
+        let frameImages = [];
+        // Thử load tối đa 10 frame đầu tiên (1.png đến 10.png)
+        for (let i = 1; i <= 8; i++) {
+          const framePath = `assets/NhanVat/${nhanVat}/${bieuCam}/${i}.png`;
+          const loadedImg = await this.checkAndLoadImage(framePath);
+          if (loadedImg) {
+            frameImages.push(loadedImg);
+          } else {
+            break; // Dừng lại nếu không tìm thấy file tiếp theo
+          }
+        }
+
+        // Nếu không tìm thấy thư mục frame dạng số, tự động fallback về file ảnh đơn cũ: assets/NhanVat/{nhanVat}/{bieuCam}.png
+        if (frameImages.length === 0) {
+          const singlePath = `assets/NhanVat/${nhanVat}/${bieuCam}.png`;
+          const singleImg = await this.checkAndLoadImage(singlePath);
+          if (singleImg) {
+            frameImages.push(singleImg);
+          }
+        }
+
+        this.boDemNhanVat.set(cacheKey, frameImages);
+      }
+
+      checkAndLoadImage(src) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(null);
+          img.src = src;
+        });
       }
 
       isMediaVideo(filename) {
@@ -662,7 +723,6 @@
           if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           
-          // Tiếp tục đọc nốt phần TTS còn lại nếu có
           if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
           }
@@ -697,9 +757,8 @@
         if (!this.dangTamDung) {
           this.dangTamDung = true;
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
-          
-          // Hủy lệnh đọc hiện tại của TTS để ghi nhớ đoạn chưa đọc xong
           if (this.ttsSynth) this.ttsSynth.cancel();
+          this.dungAnimationKhungHinh();
 
           this.audioBgm.pause();
           this.audioSfx.pause();
@@ -709,6 +768,12 @@
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
           if (this.audioBgm.play) this.audioBgm.play().catch(()=>{});
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
+
+          // Bật lại animation khung hình nếu nhân vật đang nói
+          if (this.currentSpeaker) {
+            const currentCfg = this.duLieu.danh_sach[this.currentIndex];
+            if (currentCfg) this.batDauAnimationKhungHinh(currentCfg.nhan_vat, currentCfg.bieu_cam);
+          }
 
           if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
@@ -776,26 +841,32 @@
           }
         }
 
-        // Xử lý nhân vật
+        // Xử lý hiển thị Nhân vật & Frame Animation động
         if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
-          const currentKey = `${nhanVat}/${bieuCam}`;
-          const img = this.boDemNhanVat.get(currentKey);
-          if (img) {
-            this.layerChar.src = img.src;
+          const cacheKey = `${nhanVat}/${bieuCam}`;
+          const frames = this.boDemNhanVat.get(cacheKey);
+          
+          if (frames && frames.length > 0) {
+            this.layerChar.src = frames[0].src;
+            this.layerChar.style.display = 'block';
+            
+            // Nếu có từ 2 frame trở lên, bật hiệu ứng chạy frame liên tục giống hoạt hình
+            if (frames.length > 1) {
+              this.batDauAnimationKhungHinh(nhanVat, bieuCam);
+            } else {
+              this.dungAnimationKhungHinh();
+            }
           } else {
-            await new Promise(r => {
-              this.layerChar.onload = r;
-              this.layerChar.onerror = r;
-              this.layerChar.src = `assets/NhanVat/${currentKey}.png`;
-            });
+            this.layerChar.style.display = 'none';
           }
-          this.layerChar.style.display = 'block';
+
           if (!this.layerChar.classList.contains('character-talking')) {
             this.layerChar.classList.add('character-talking');
           }
-        } else if (nhanVat === "") {
+        } else {
           this.layerChar.style.display = 'none';
           this.layerChar.classList.remove('character-talking');
+          this.dungAnimationKhungHinh();
         }
 
         // Hiệu ứng VFX
@@ -837,8 +908,32 @@
           await this.sleep(1000);
         }
 
+        this.dungAnimationKhungHinh();
         const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
         await this.sleep(thoiGianCho * 1000);
+      }
+
+      // Quản lý vòng lặp đổi frame liên tục mượt mà 60fps từ RAM
+      batDauAnimationKhungHinh(nhanVat, bieuCam) {
+        this.dungAnimationKhungHinh();
+        const cacheKey = `${nhanVat}/${bieuCam}`;
+        const frames = this.boDemNhanVat.get(cacheKey);
+        if (!frames || frames.length <= 1) return;
+
+        this.currentFrameIndex = 0;
+        this.animFrameInterval = setInterval(() => {
+          if (!this.dangTamDung && this.dangChay) {
+            this.currentFrameIndex = (this.currentFrameIndex + 1) % frames.length;
+            this.layerChar.src = frames[this.currentFrameIndex].src;
+          }
+        }, 120); // Tốc độ chuyển đổi giữa các frame (120ms / frame)
+      }
+
+      dungAnimationKhungHinh() {
+        if (this.animFrameInterval) {
+          clearInterval(this.animFrameInterval);
+          this.animFrameInterval = null;
+        }
       }
 
       docVanBanBangTTS(nhanVat, text, resolveCallback) {
@@ -852,17 +947,19 @@
         const utterance = new SpeechSynthesisUtterance(text);
         const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat]) 
           ? this.cauHinhGiongNhanVat[nhanVat] 
-          : { voiceIndex: 0, rate: 1.1, pitch: 1.0 };
+          : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: 'ja-JP' };
 
-        if (this.danhSachVoices.length > 0) {
-          utterance.voice = this.danhSachVoices[cfg.voiceIndex] || this.danhSachVoices[0];
+        // Ép buộc gán ngôn ngữ chính xác (ví dụ 'ja-JP' cho tiếng Nhật) giúp điện thoại nhận diện đúng bộ giọng
+        utterance.lang = cfg.lang || 'ja-JP';
+
+        if (this.danhSachVoices.length > 0 && this.danhSachVoices[cfg.voiceIndex]) {
+          utterance.voice = this.danhSachVoices[cfg.voiceIndex];
         }
 
         utterance.volume = this.ttsVolume;
         utterance.rate = cfg.rate;
         utterance.pitch = cfg.pitch;
 
-        // Theo dõi quá trình đọc để cập nhật phần văn bản còn lại nếu bị pause giữa chừng
         utterance.onboundary = (event) => {
           if (event.name === 'word') {
             this.ttsRemainingText = text.substring(event.charIndex);
@@ -929,6 +1026,7 @@
         document.getElementById('btn-pause').style.display = 'none';
         document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
         clearInterval(this.hienChuInterval);
+        this.dungAnimationKhungHinh();
         if (this.ttsSynth) this.ttsSynth.cancel();
         this.audioBgm.pause();
         this.audioSfx.pause();
