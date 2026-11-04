@@ -498,7 +498,7 @@
         }
       }
 
-      // Hàm xử lý xóa phông nền tự động cho ảnh (biến màu nền thành trong suốt)
+      // Hàm xử lý xóa phông nền thông minh hơn (hạn chế lẹm màu da & khử viền mờ)
       removeBackgroundFromImage(imgElement) {
         return new Promise((resolve) => {
           const canvas = document.createElement('canvas');
@@ -507,44 +507,49 @@
           canvas.width = imgElement.naturalWidth || imgElement.width;
           canvas.height = imgElement.naturalHeight || imgElement.height;
           
-          // Vẽ ảnh gốc lên canvas
           ctx.drawImage(imgElement, 0, 0);
-          
           const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = imgData.data;
           
-          // Lấy mẫu màu ở góc trên cùng bên trái (thường là màu phông nền cần xóa: Trắng, Xanh lá, v.v.)
+          // Lấy mẫu màu nền từ góc trên-trái
           const targetR = data[0];
           const targetG = data[1];
           const targetB = data[2];
           
-          // Ngưỡng dung sai màu (tolerance) để khử viền răng cưa
-          const threshold = 40; 
+          // Dùng khoảng dung sai vừa phải để tránh lẹm vào da/tóc (giảm từ 40 xuống 30)
+          const threshold = 30;
+          // Ngưỡng chuyển tiếp mềm (feathering) để khử viền xanh mờ
+          const featherRange = 15; 
 
           for (let i = 0; i < data.length; i += 4) {
             const r = data[i];
             const g = data[i + 1];
             const b = data[i + 2];
             
-            // Nếu màu pixel hiện tại giống với màu nền ở góc
-            if (
-              Math.abs(r - targetR) < threshold &&
-              Math.abs(g - targetG) < threshold &&
-              Math.abs(b - targetB) < threshold
-            ) {
-              data[i + 3] = 0; // Đặt độ trong suốt (Alpha) về 0 (Xóa nền)
+            // Tính độ lệch màu so với màu nền gốc
+            const diff = Math.max(
+              Math.abs(r - targetR),
+              Math.abs(g - targetG),
+              Math.abs(b - targetB)
+            );
+
+            if (diff < threshold) {
+              // Xóa hoàn toàn nếu giống màu nền
+              data[i + 3] = 0; 
+            } else if (diff < threshold + featherRange) {
+              // Làm mờ dần (mềm biên) các pixel viền để khử viền xanh dư thừa
+              const alphaRatio = (diff - threshold) / featherRange;
+              data[i + 3] = Math.round(data[i + 3] * alphaRatio);
             }
           }
           
           ctx.putImageData(imgData, 0, 0);
           
-          // Tạo một đối tượng ảnh mới từ canvas đã xóa phông
           const processedImg = new Image();
           processedImg.onload = () => resolve(processedImg);
           processedImg.src = canvas.toDataURL('image/png');
         });
       }
-
       toggleOrientation() {
         this.isPortrait = !this.isPortrait;
         const btn = document.getElementById('btn-orientation');
