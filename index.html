@@ -403,6 +403,53 @@
         this.khoiTaoSuKienFile();
         this.khoiTaoSuKienDoubleTapFullscreen();
       }
+            // Hàm xử lý xóa phông nền tự động cho ảnh (biến màu nền thành trong suốt)
+      removeBackgroundFromImage(imgElement) {
+        return new Promise((resolve) => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          canvas.width = imgElement.naturalWidth || imgElement.width;
+          canvas.height = imgElement.naturalHeight || imgElement.height;
+          
+          // Vẽ ảnh gốc lên canvas
+          ctx.drawImage(imgElement, 0, 0);
+          
+          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imgData.data;
+          
+          // Lấy mẫu màu ở góc trên cùng bên trái (thường là màu phông nền cần xóa: Trắng, Xanh lá, v.v.)
+          const targetR = data[0];
+          const targetG = data[1];
+          const targetB = data[2];
+          
+          // Ngưỡng dung sai màu (tolerance) để khử viền răng cưa
+          const threshold = 40; 
+
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            
+            // Nếu màu pixel hiện tại giống với màu nền ở góc
+            if (
+              Math.abs(r - targetR) < threshold &&
+              Math.abs(g - targetG) < threshold &&
+              Math.abs(b - targetB) < threshold
+            ) {
+              data[i + 3] = 0; // Đặt độ trong suốt (Alpha) về 0 (Xóa nền)
+            }
+          }
+          
+          ctx.putImageData(imgData, 0, 0);
+          
+          // Tạo một đối tượng ảnh mới từ canvas đã xóa phông
+          const processedImg = new Image();
+          processedImg.onload = () => resolve(processedImg);
+          processedImg.src = canvas.toDataURL('image/png');
+        });
+      }
+      
 
       toggleOrientation() {
         this.isPortrait = !this.isPortrait;
@@ -663,37 +710,38 @@
         await Promise.all(promises);
       }
       
-      // Hàm tự động dò tìm số lượng frame ảnh linh hoạt (không giới hạn số lượng tối đa)
-      async preloadCharacterFrames(nhanVat, bieuCam, cacheKey) {
+            async preloadCharacterFrames(nhanVat, bieuCam, cacheKey) {
         let frameImages = [];
         let i = 1;
         let continueSearching = true;
 
-        // Vòng lặp tự động quét từ 1.png, 2.png, 3.png... đến khi nào hết file thì thôi
-        while (continueSearching && i <= 50) { // Đặt giới hạn an toàn tối đa 50 frame mỗi biểu cảm
+        while (continueSearching && i <= 50) {
           const framePath = `assets/NhanVat/${nhanVat}/${bieuCam}/${i}.png`;
           const loadedImg = await this.checkAndLoadImage(framePath);
           
           if (loadedImg) {
-            frameImages.push(loadedImg);
+            // ✨ Tự động khử phông nền cho từng frame ảnh tại đây
+            const transparentImg = await this.removeBackgroundFromImage(loadedImg);
+            frameImages.push(transparentImg);
             i++;
           } else {
-            continueSearching = false; // Gặp file không tồn tại -> Dừng quét
+            continueSearching = false;
           }
         }
 
-        // Nếu không có thư mục frame dạng số, fallback về file ảnh đơn cũ: assets/NhanVat/{nhanVat}/{bieuCam}.png
+        // Fallback nếu dùng file ảnh đơn cũ
         if (frameImages.length === 0) {
           const singlePath = `assets/NhanVat/${nhanVat}/${bieuCam}.png`;
           const singleImg = await this.checkAndLoadImage(singlePath);
           if (singleImg) {
-            frameImages.push(singleImg);
+            const transparentSingle = await this.removeBackgroundFromImage(singleImg);
+            frameImages.push(transparentSingle);
           }
         }
 
         this.boDemNhanVat.set(cacheKey, frameImages);
-      }
-
+            }
+      
 
       checkAndLoadImage(src) {
         return new Promise((resolve) => {
