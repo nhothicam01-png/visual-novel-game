@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Visual Novel Web Player</title>
   <style>
-        * {
+    * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -25,7 +25,7 @@
       padding: 10px;
     }
 
-    /* Khung màn hình game — Ngang 16:9 */
+    /* Khung màn hình game (Mặc định Ngang: 1920x1080 -> aspect-ratio 16/9) */
     #game-container {
       position: relative;
       width: 100%;
@@ -40,14 +40,14 @@
       transition: aspect-ratio 0.3s ease, max-width 0.3s ease;
     }
 
-    /* Chế độ Dọc 9:16 */
+    /* Khi chuyển sang chế độ Dọc: 1080x1920 -> aspect-ratio 9/16 */
     #game-container.portrait {
       aspect-ratio: 9 / 16;
       max-width: 420px;
       max-height: 85vh;
     }
 
-    /* Full màn hình */
+    /* Khi ở chế độ Full màn hình */
     #game-container:fullscreen,
     #game-container:-webkit-full-screen {
       width: 100vw;
@@ -59,6 +59,7 @@
       background-color: #000;
     }
 
+    /* Ép tỷ lệ 1920x1080 (16:9) khi Full màn hình */
     #game-container:fullscreen.force-landscape,
     #game-container:-webkit-full-screen.force-landscape {
       aspect-ratio: 16 / 9 !important;
@@ -69,6 +70,7 @@
       margin: auto !important;
     }
 
+    /* Ép tỷ lệ 1080x1920 (9:16) khi Full màn hình */
     #game-container:fullscreen.force-portrait,
     #game-container:-webkit-full-screen.force-portrait {
       aspect-ratio: 9 / 16 !important;
@@ -90,27 +92,35 @@
 
     #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
     
-    /* ===== NHÂN VẬT — Chế độ NGANG (16:9) ===== */
+    /* 
+      ✨ Xử lý vị trí & Tỷ lệ ảnh Nhân vật:
+      
+      1. Mặc định - Màn hình Ngang (1920x1080):
+         - Chiều rộng 100% full ngang.
+         - Bám sát mép ĐỈNH (top: 0) để luôn hiển thị rõ đầu nhân vật.
+    */
     #layer-character {
       position: absolute;
       top: 0;
       left: 50%;
       transform: translateX(-50%);
       z-index: 2;
-      width: auto;
-      height: 100%;
+      width: 100%;
+      height: auto;
       object-fit: contain;
       object-position: top center;
       display: none;
       transform-origin: top center;
     }
 
-    /* ===== NHÂN VẬT — Chế độ DỌC (9:16) ===== */
+    /* 
+      2. Màn hình Dọc (.portrait - 1080x1920):
+         - Chiều rộng 100% full ngang.
+         - Bám sát mép ĐÁY (bottom: 0) để hiển thị trọn vẹn chân/thân dưới.
+    */
     #game-container.portrait #layer-character {
       top: auto;
       bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
       width: 100%;
       height: auto;
       object-fit: contain;
@@ -120,27 +130,27 @@
 
     #layer-vfx { z-index: 3; pointer-events: none; display: none; }
 
-    /* Animation nói — Ngang */
+    /* Hiệu ứng nhún nhảy thoại tương ứng theo vị trí neo */
     .character-talking {
       animation: characterTalkAnim 1.2s ease-in-out infinite;
     }
-    @keyframes characterTalkAnim {
-      0%   { transform: translateX(-50%) translateY(0) scale(1); }
-      50%  { transform: translateX(-50%) translateY(+1.5%) scale(1.008); }
-      100% { transform: translateX(-50%) translateY(0) scale(1); }
-    }
 
-    /* Animation nói — Dọc */
     #game-container.portrait .character-talking {
       animation: characterTalkAnimPortrait 1.2s ease-in-out infinite;
     }
-    @keyframes characterTalkAnimPortrait {
-      0%   { transform: translateX(-50%) translateY(0) scale(1); }
-      50%  { transform: translateX(-50%) translateY(-1.5%) scale(1.008); }
-      100% { transform: translateX(-50%) translateY(0) scale(1); }
+
+    @keyframes characterTalkAnim {
+      0%   { transform: translateX(-50%) translateY(0) scaleY(1); }
+      50%  { transform: translateX(-50%) translateY(+1.5%) scaleY(1.01); }
+      100% { transform: translateX(-50%) translateY(0) scaleY(1); }
     }
 
-    /* Hộp thoại */
+    @keyframes characterTalkAnimPortrait {
+      0%   { transform: translateX(-50%) translateY(0) scaleY(1); }
+      50%  { transform: translateX(-50%) translateY(-1.5%) scaleY(1.01); }
+      100% { transform: translateX(-50%) translateY(0) scaleY(1); }
+    }
+
     #dialogue-canvas {
       position: absolute;
       bottom: 10px;
@@ -158,7 +168,9 @@
       gap: 4px;
     }
 
-    #speaker-name { display: none !important; }
+    #speaker-name {
+      display: none !important;
+    }
 
     #dialogue-text {
       font-size: clamp(1rem, 2.2vw, 1.6rem);
@@ -167,16 +179,17 @@
       white-space: pre-wrap;
       word-break: break-word;
       text-align: center;       
+      
       -webkit-text-stroke: 0.8px #000000;
       paint-order: stroke fill;
       text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.9);
     }
 
-    /* Nút điều khiển */
     #controls {
       margin-top: 12px;
       display: flex;
       gap: 8px;
+      align-items: center;
       flex-wrap: wrap;
       justify-content: center;
       width: 100%;
@@ -195,9 +208,11 @@
       transition: transform 0.2s, opacity 0.2s;
       touch-action: manipulation;
     }
-    .btn:active { transform: scale(0.96); }
 
-    /* Thanh âm lượng */
+    .btn:active {
+      transform: scale(0.96);
+    }
+
     #volume-controls {
       margin-top: 8px;
       display: flex;
@@ -213,17 +228,18 @@
       max-width: 1000px;
       width: 100%;
     }
+
     #volume-controls label {
       display: flex;
       align-items: center;
       gap: 6px;
     }
+
     #volume-controls input[type="range"] {
       accent-color: #a855f7;
       width: 60px;
     }
 
-    /* Panel giọng nhân vật */
     #character-voice-panel {
       margin-top: 8px;
       background: rgba(15, 23, 42, 0.85);
@@ -232,21 +248,26 @@
       padding: 10px 14px;
       width: 100%;
       max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
+
     #character-voice-panel h4 {
       font-size: 0.85rem;
       color: #e2e8f0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 4px;
     }
+
     #character-voice-list {
-      margin-top: 6px;
       display: flex;
       flex-direction: column;
       gap: 6px;
       max-height: 130px;
       overflow-y: auto;
     }
+
     .char-voice-row {
       display: flex;
       align-items: center;
@@ -258,23 +279,32 @@
       gap: 8px;
       flex-wrap: wrap;
     }
+
     .char-voice-row label {
       display: flex;
       align-items: center;
       gap: 4px;
       color: #cbd5e1;
     }
+
     .char-voice-row select, .char-voice-row input[type="range"] {
       background: #1e293b;
-      color: #ffffff;
+      color: #fff;
       border: 1px solid #475569;
       border-radius: 4px;
       padding: 2px 4px;
       font-size: 0.75rem;
       accent-color: #a855f7;
     }
-    .char-voice-row select { max-width: 160px; }
-    .char-voice-row input[type="range"] { width: 65px; }
+
+    .char-voice-row select {
+      max-width: 160px;
+      text-overflow: ellipsis;
+    }
+
+    .char-voice-row input[type="range"] {
+      width: 65px;
+    }
 
     @media (max-width: 600px) {
       #dialogue-canvas { padding: 6px 12px; bottom: 6px; }
@@ -284,9 +314,7 @@
       #volume-controls { gap: 8px; font-size: 0.72rem; }
       .char-voice-row { font-size: 0.7rem; }
       .char-voice-row select { max-width: 120px; }
-        }
-        
-
+    }
   </style>
 </head>
 <body>
@@ -295,7 +323,7 @@
     <img id="layer-bg-img" class="game-layer" src="" alt="Background Image" />
     <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
     
-    <img id="layer-character" class="game-layer" src="" alt="Character" />
+    <img id="layer-character" src="" alt="Character" />
     <img id="layer-vfx" class="game-layer" src="" alt="VFX Overlay" />
 
     <div id="dialogue-canvas" style="display: none;">
@@ -683,7 +711,7 @@
         const amThanhNen = khung.am_thanh_nen || khung.bgm;
         const amThanhHieuUng = khung.am_thanh_hieu_ung || khung.sfx;
 
-        // Xử lý nạp ảnh nền / video mượt mà (chờ load xong hoặc video sẵn sàng)
+        // Xử lý nạp ảnh nền / video mượt mà
         if (anhNen && anhNen.trim() !== "") {
           if (this.isMediaVideo(anhNen)) {
             this.layerBgImg.style.display = 'none';
@@ -699,7 +727,6 @@
             if (bgImg) {
               this.layerBgImg.src = bgImg.src;
             } else {
-              // Fallback nếu chưa cache kịp
               await new Promise(r => {
                 this.layerBgImg.onload = r;
                 this.layerBgImg.onerror = r;
@@ -757,7 +784,7 @@
           this.audioSfx.play().catch(() => {});
         }
 
-        // ✨ Đồng bộ tuyệt đối: Chạy chữ đồng thời đọc TTS, CHỜ đọc xong hoàn toàn mới sang khung tiếp theo
+        // Chạy chữ & đọc TTS
         if (noiDung) {
           this.hienLoiThoai(nhanVat, noiDung);
           await this.docVanBanBangTTS(nhanVat, noiDung);
@@ -765,7 +792,6 @@
           await this.sleep(1000);
         }
 
-        // Khoảng nghỉ ngắn giữa các khung
         const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
         await this.sleep(thoiGianCho * 1000);
       }
@@ -792,14 +818,8 @@
           utterance.rate = cfg.rate;
           utterance.pitch = cfg.pitch;
 
-          // Khi giọng đọc phát xong thực sự -> giải phóng Promise để chuyển sang câu tiếp theo
-          utterance.onend = () => {
-            resolve();
-          };
-
-          utterance.onerror = () => {
-            resolve();
-          };
+          utterance.onend = () => { resolve(); };
+          utterance.onerror = () => { resolve(); };
 
           this.ttsSynth.speak(utterance);
         });
