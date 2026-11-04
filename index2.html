@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Visual Novel Web Player</title>
   <style>
-    * {
+        * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -25,7 +25,7 @@
       padding: 10px;
     }
 
-    /* Khung màn hình game (Mặc định Ngang: 1920x1080 -> aspect-ratio 16/9) */
+    /* Khung màn hình game — Ngang 16:9 */
     #game-container {
       position: relative;
       width: 100%;
@@ -40,14 +40,14 @@
       transition: aspect-ratio 0.3s ease, max-width 0.3s ease;
     }
 
-    /* Khi chuyển sang chế độ Dọc: 1080x1920 -> aspect-ratio 9/16 */
+    /* Chế độ Dọc 9:16 */
     #game-container.portrait {
       aspect-ratio: 9 / 16;
       max-width: 420px;
       max-height: 85vh;
     }
 
-    /* Khi ở chế độ Full màn hình */
+    /* Full màn hình */
     #game-container:fullscreen,
     #game-container:-webkit-full-screen {
       width: 100vw;
@@ -59,7 +59,6 @@
       background-color: #000;
     }
 
-    /* Ép tỷ lệ 1920x1080 (16:9) khi Full màn hình */
     #game-container:fullscreen.force-landscape,
     #game-container:-webkit-full-screen.force-landscape {
       aspect-ratio: 16 / 9 !important;
@@ -70,7 +69,6 @@
       margin: auto !important;
     }
 
-    /* Ép tỷ lệ 1080x1920 (9:16) khi Full màn hình */
     #game-container:fullscreen.force-portrait,
     #game-container:-webkit-full-screen.force-portrait {
       aspect-ratio: 9 / 16 !important;
@@ -92,50 +90,57 @@
 
     #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
     
-        /* --- Cấu hình hiển thị ảnh nhân vật --- */
+    /* ===== NHÂN VẬT — Chế độ NGANG (16:9) ===== */
     #layer-character {
       position: absolute;
-      z-index: 2;
-      display: none;
-      transform-origin: bottom center;
-    }
-
-    /* Mặc định (Màn hình Ngang): Full chiều ngang (width: 100%), bám đỉnh (top: 0) */
-    #game-container:not(.portrait) #layer-character {
       top: 0;
-      left: 0;
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      object-position: top center;
-    }
-
-    /* Khi đổi sang màn hình Dọc (.portrait): Full chiều dọc (height: 100%), bám đáy (bottom: 0) */
-    #game-container.portrait #layer-character {
-      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
+      z-index: 2;
       width: auto;
       height: 100%;
       object-fit: contain;
-      object-position: bottom center;
+      object-position: top center;
+      display: none;
+      transform-origin: top center;
     }
 
-    /* Tinh chỉnh lại hiệu ứng nhún nhảy cho phù hợp với từng chiều */
+    /* ===== NHÂN VẬT — Chế độ DỌC (9:16) ===== */
+    #game-container.portrait #layer-character {
+      top: auto;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      object-position: bottom center;
+      transform-origin: bottom center;
+    }
+
+    #layer-vfx { z-index: 3; pointer-events: none; display: none; }
+
+    /* Animation nói — Ngang */
     .character-talking {
       animation: characterTalkAnim 1.2s ease-in-out infinite;
     }
-
     @keyframes characterTalkAnim {
-      0%   { transform: translateY(0) scaleY(1); }
-      50%  { transform: translateY(-2%) scaleY(1.01); }
-      100% { transform: translateY(0) scaleY(1); }
+      0%   { transform: translateX(-50%) translateY(0) scale(1); }
+      50%  { transform: translateX(-50%) translateY(+1.5%) scale(1.008); }
+      100% { transform: translateX(-50%) translateY(0) scale(1); }
     }
 
+    /* Animation nói — Dọc */
+    #game-container.portrait .character-talking {
+      animation: characterTalkAnimPortrait 1.2s ease-in-out infinite;
+    }
+    @keyframes characterTalkAnimPortrait {
+      0%   { transform: translateX(-50%) translateY(0) scale(1); }
+      50%  { transform: translateX(-50%) translateY(-1.5%) scale(1.008); }
+      100% { transform: translateX(-50%) translateY(0) scale(1); }
+    }
 
-    
-    #layer-vfx { z-index: 3; pointer-events: none; display: none; }
-
+    /* Hộp thoại */
     #dialogue-canvas {
       position: absolute;
       bottom: 10px;
@@ -153,9 +158,7 @@
       gap: 4px;
     }
 
-    #speaker-name {
-      display: none !important;
-    }
+    #speaker-name { display: none !important; }
 
     #dialogue-text {
       font-size: clamp(1rem, 2.2vw, 1.6rem);
@@ -164,17 +167,16 @@
       white-space: pre-wrap;
       word-break: break-word;
       text-align: center;       
-      
       -webkit-text-stroke: 0.8px #000000;
       paint-order: stroke fill;
       text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.9);
     }
 
+    /* Nút điều khiển */
     #controls {
       margin-top: 12px;
       display: flex;
       gap: 8px;
-      align-items: center;
       flex-wrap: wrap;
       justify-content: center;
       width: 100%;
@@ -193,11 +195,9 @@
       transition: transform 0.2s, opacity 0.2s;
       touch-action: manipulation;
     }
+    .btn:active { transform: scale(0.96); }
 
-    .btn:active {
-      transform: scale(0.96);
-    }
-
+    /* Thanh âm lượng */
     #volume-controls {
       margin-top: 8px;
       display: flex;
@@ -213,18 +213,17 @@
       max-width: 1000px;
       width: 100%;
     }
-
     #volume-controls label {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-
     #volume-controls input[type="range"] {
       accent-color: #a855f7;
       width: 60px;
     }
 
+    /* Panel giọng nhân vật */
     #character-voice-panel {
       margin-top: 8px;
       background: rgba(15, 23, 42, 0.85);
@@ -233,26 +232,21 @@
       padding: 10px 14px;
       width: 100%;
       max-width: 1000px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
     }
-
     #character-voice-panel h4 {
       font-size: 0.85rem;
       color: #e2e8f0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 4px;
     }
-
     #character-voice-list {
+      margin-top: 6px;
       display: flex;
       flex-direction: column;
       gap: 6px;
       max-height: 130px;
       overflow-y: auto;
     }
-
     .char-voice-row {
       display: flex;
       align-items: center;
@@ -264,32 +258,23 @@
       gap: 8px;
       flex-wrap: wrap;
     }
-
     .char-voice-row label {
       display: flex;
       align-items: center;
       gap: 4px;
       color: #cbd5e1;
     }
-
     .char-voice-row select, .char-voice-row input[type="range"] {
       background: #1e293b;
-      color: #fff;
+      color: #ffffff;
       border: 1px solid #475569;
       border-radius: 4px;
       padding: 2px 4px;
       font-size: 0.75rem;
       accent-color: #a855f7;
     }
-
-    .char-voice-row select {
-      max-width: 160px;
-      text-overflow: ellipsis;
-    }
-
-    .char-voice-row input[type="range"] {
-      width: 65px;
-    }
+    .char-voice-row select { max-width: 160px; }
+    .char-voice-row input[type="range"] { width: 65px; }
 
     @media (max-width: 600px) {
       #dialogue-canvas { padding: 6px 12px; bottom: 6px; }
@@ -299,7 +284,9 @@
       #volume-controls { gap: 8px; font-size: 0.72rem; }
       .char-voice-row { font-size: 0.7rem; }
       .char-voice-row select { max-width: 120px; }
-    }
+        }
+        
+
   </style>
 </head>
 <body>
