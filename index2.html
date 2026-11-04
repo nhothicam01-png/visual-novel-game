@@ -662,22 +662,27 @@
         }
         await Promise.all(promises);
       }
-
-      // Hàm thông minh tự dò tìm các file frame 1.png, 2.png,... hoặc fallback về file ảnh đơn cũ
+      
+      // Hàm tự động dò tìm số lượng frame ảnh linh hoạt (không giới hạn số lượng tối đa)
       async preloadCharacterFrames(nhanVat, bieuCam, cacheKey) {
         let frameImages = [];
-        // Thử load tối đa 10 frame đầu tiên (1.png đến 10.png)
-        for (let i = 1; i <= 8; i++) {
+        let i = 1;
+        let continueSearching = true;
+
+        // Vòng lặp tự động quét từ 1.png, 2.png, 3.png... đến khi nào hết file thì thôi
+        while (continueSearching && i <= 50) { // Đặt giới hạn an toàn tối đa 50 frame mỗi biểu cảm
           const framePath = `assets/NhanVat/${nhanVat}/${bieuCam}/${i}.png`;
           const loadedImg = await this.checkAndLoadImage(framePath);
+          
           if (loadedImg) {
             frameImages.push(loadedImg);
+            i++;
           } else {
-            break; // Dừng lại nếu không tìm thấy file tiếp theo
+            continueSearching = false; // Gặp file không tồn tại -> Dừng quét
           }
         }
 
-        // Nếu không tìm thấy thư mục frame dạng số, tự động fallback về file ảnh đơn cũ: assets/NhanVat/{nhanVat}/{bieuCam}.png
+        // Nếu không có thư mục frame dạng số, fallback về file ảnh đơn cũ: assets/NhanVat/{nhanVat}/{bieuCam}.png
         if (frameImages.length === 0) {
           const singlePath = `assets/NhanVat/${nhanVat}/${bieuCam}.png`;
           const singleImg = await this.checkAndLoadImage(singlePath);
@@ -688,6 +693,7 @@
 
         this.boDemNhanVat.set(cacheKey, frameImages);
       }
+
 
       checkAndLoadImage(src) {
         return new Promise((resolve) => {
