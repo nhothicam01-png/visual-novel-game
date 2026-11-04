@@ -92,42 +92,49 @@
 
     #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
     
-    /* 
-      ✨ Xử lý hiển thị nhân vật theo tỷ lệ màn hình:
-      - Mặc định (Màn hình Ngang): Nhân vật cao full chiều khung (height: 100%), fit theo chiều dọc.
-    */
+        /* --- Cấu hình hiển thị ảnh nhân vật --- */
     #layer-character {
       position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
       z-index: 2;
-      width: auto;
-      height: 100%;
-      object-fit: contain;
-      object-position: bottom center;
       display: none;
       transform-origin: bottom center;
     }
 
-    /* Khi ở màn hình Dọc (.portrait): Nhân vật trải rộng full chiều ngang (width: 100%) */
-    #game-container.portrait #layer-character {
+    /* Mặc định (Màn hình Ngang): Full chiều ngang (width: 100%), bám đỉnh (top: 0) */
+    #game-container:not(.portrait) #layer-character {
+      top: 0;
+      left: 0;
       width: 100%;
       height: auto;
-      object-fit: contain;
+      object-fit: cover;
+      object-position: top center;
     }
 
-    #layer-vfx { z-index: 3; pointer-events: none; display: none; }
+    /* Khi đổi sang màn hình Dọc (.portrait): Full chiều dọc (height: 100%), bám đáy (bottom: 0) */
+    #game-container.portrait #layer-character {
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom center;
+    }
 
+    /* Tinh chỉnh lại hiệu ứng nhún nhảy cho phù hợp với từng chiều */
     .character-talking {
       animation: characterTalkAnim 1.2s ease-in-out infinite;
     }
 
     @keyframes characterTalkAnim {
-      0%   { transform: translateX(-50%) translateY(0) scaleY(1); }
-      50%  { transform: translateX(-50%) translateY(+2%) scaleY(1.01); }
-      100% { transform: translateX(-50%) translateY(0) scaleY(1); }
+      0%   { transform: translateY(0) scaleY(1); }
+      50%  { transform: translateY(-2%) scaleY(1.01); }
+      100% { transform: translateY(0) scaleY(1); }
     }
+
+
+    
+    #layer-vfx { z-index: 3; pointer-events: none; display: none; }
 
     #dialogue-canvas {
       position: absolute;
