@@ -451,7 +451,7 @@
 
         this.boDemAnhNen = new Map();
         this.boDemHieuUng = new Map();
-        this.boDemNhanVat = new Map(); // Lưu trữ mảng frame ảnh animation
+        this.boDemNhanVat = new Map();
 
         this.duLieu = null;
         this.dangChay = false;
@@ -459,7 +459,6 @@
         this.hienChuInterval = null;
         this.currentIndex = 0;
 
-        // Quản lý khung hình animation nhân vật
         this.animFrameInterval = null;
         this.currentFrameIndex = 0;
 
@@ -478,7 +477,6 @@
         this.khoiTaoSuKienDoubleTapFullscreen();
       }
 
-      // Hàm cập nhật tiến độ Loading Bar
       capNhatTienDoLoad(phamtram, message) {
         const percent = Math.min(100, Math.max(0, Math.round(phamtram)));
         this.loadingTitle.innerText = `⏳ Đang tải tài nguyên... (${percent}%)`;
@@ -488,7 +486,6 @@
         }
       }
 
-      // Hàm ẩn/hịên màn hình Loading
       hienLoading(show) {
         if (show) {
           this.capNhatTienDoLoad(0, "Bắt đầu tải kịch bản...");
@@ -498,7 +495,6 @@
         }
       }
 
-      // Hàm tách nền thông minh: Tự động bỏ qua nếu ảnh vốn đã có sẵn nền trong suốt (transparent)
       removeBackgroundFromImage(imgElement) {
         return new Promise((resolve) => {
           const canvas = document.createElement('canvas');
@@ -513,22 +509,19 @@
           const imgData = ctx.getImageData(0, 0, w, h);
           const data = imgData.data;
 
-          // 1. Kiểm tra nhanh xem ảnh có sẵn pixel trong suốt (alpha < 255) hay không
           let hasTransparency = false;
           for (let i = 3; i < data.length; i += 4) {
             if (data[i] < 255) {
               hasTransparency = true;
-              break; // Tìm thấy pixel trong suốt -> Ảnh đã được tách nền sẵn!
+              break;
             }
           }
 
-          // Nếu ảnh đã có sẵn nền trong suốt, bỏ qua luôn bước lọc màu để giữ nguyên vẹn chất lượng ảnh gốc
           if (hasTransparency) {
             resolve(imgElement);
             return;
           }
 
-          // 2. Nếu là ảnh nền đặc (chưa tách nền), tiến hành chạy thuật toán lọc thông minh
           const bgR = data[0], bgG = data[1], bgB = data[2];
           const threshold = 35; 
 
@@ -579,7 +572,6 @@
             }
           }
 
-          // Xử lý các khe hở bên trong tóc
           for (let i = 0; i < visited.length; i++) {
             if (visited[i] === 0) {
               const pos = i * 4;
@@ -606,7 +598,6 @@
         });
       }
 
-      // Hàm phụ trợ: Chuyển đổi màu từ RGB sang HSV
       rgbToHsv(r, g, b) {
         r /= 255; g /= 255; b /= 255;
         const max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -626,6 +617,7 @@
         }
         return { h, s, v };
       }
+
       toggleOrientation() {
         this.isPortrait = !this.isPortrait;
         const btn = document.getElementById('btn-orientation');
@@ -713,7 +705,6 @@
           try {
             this.duLieu = JSON.parse(e.target.result);
             
-            // Bật overlay tiến độ khi bắt đầu preload
             this.hienLoading(true);
             await this.taiTruocDuLieu();
             this.hienLoading(false);
@@ -749,7 +740,7 @@
               voiceIndex: 0,
               rate: 1.1,
               pitch: 1.0,
-              lang: 'ja-JP' // Mặc định Nhật hoặc Việt
+              lang: 'ja-JP'
             };
           }
         });
@@ -779,13 +770,11 @@
             { code: 'zh-CN', name: '🇨🇳 Tiếng Trung (Chinese)' }
           ];
 
-          // Tạo sẵn danh sách chọn nhanh ngôn ngữ quốc tế (tránh lỗi thiếu voice trên mobile)
           presetLangs.forEach(lang => {
             const selected = (cfg.lang === lang.code) ? 'selected' : '';
             optionsHtml += `<option value="${lang.code}" ${selected}>${lang.name}</option>`;
           });
 
-          // Nếu có danh sách giọng hệ thống chi tiết hơn, nối thêm vào
           if (this.danhSachVoices.length > 0) {
             this.danhSachVoices.forEach((v, idx) => {
               const selected = (cfg.voiceIndex === idx) ? 'selected' : '';
@@ -861,11 +850,11 @@
         } catch (e) { console.log(e); }
       }
 
+      // ✨ TỐI ƯU TỐC ĐỘ: Gom toàn bộ tác vụ thành mảng và chạy song song (Parallel)
       async taiTruocDuLieu() {
         const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo;
         if (!ds) return;
 
-        // Xây dựng danh sách tác vụ nạp tiền độ chi tiết
         const tasks = [];
         for (const khung of ds) {
           const anhNen = khung.anh_nen || khung.background;
@@ -904,12 +893,16 @@
         }
 
         let completedTasks = 0;
-        for (const task of tasks) {
-          this.capNhatTienDoLoad((completedTasks / totalTasks) * 100, `Đang xử lý: ${task.name}`);
+        this.capNhatTienDoLoad(0, `Đang tải đồng thời ${totalTasks} tài nguyên...`);
+
+        // Chạy song song tất cả các request thay vì chờ đợi từng cái tuần tự
+        const promises = tasks.map(async (task) => {
           await task.run();
           completedTasks++;
-          this.capNhatTienDoLoad((completedTasks / totalTasks) * 100, `Đã xong: ${task.name}`);
-        }
+          this.capNhatTienDoLoad((completedTasks / totalTasks) * 100, `Đã hoàn thành: ${task.name}`);
+        });
+
+        await Promise.all(promises);
         this.capNhatTienDoLoad(100, "Tải hoàn tất!");
       }
       
@@ -923,7 +916,6 @@
           const loadedImg = await this.checkAndLoadImage(framePath);
           
           if (loadedImg) {
-            // ✨ Tự động khử phông nền cho từng frame ảnh tại đây
             const transparentImg = await this.removeBackgroundFromImage(loadedImg);
             frameImages.push(transparentImg);
             i++;
@@ -932,7 +924,6 @@
           }
         }
 
-        // Fallback nếu dùng file ảnh đơn cũ
         if (frameImages.length === 0) {
           const singlePath = `assets/NhanVat/${nhanVat}/${bieuCam}.png`;
           const singleImg = await this.checkAndLoadImage(singlePath);
@@ -1025,7 +1016,6 @@
           if (this.audioBgm.play) this.audioBgm.play().catch(()=>{});
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
 
-          // Bật lại animation khung hình nếu nhân vật đang nói
           if (this.currentSpeaker) {
             const currentCfg = this.duLieu.danh_sach[this.currentIndex];
             if (currentCfg) this.batDauAnimationKhungHinh(currentCfg.nhan_vat, currentCfg.bieu_cam);
@@ -1071,7 +1061,6 @@
         const amThanhNen = khung.am_thanh_nen || khung.bgm;
         const amThanhHieuUng = khung.am_thanh_hieu_ung || khung.sfx;
 
-        // Xử lý nền
         if (anhNen && anhNen.trim() !== "") {
           if (this.isMediaVideo(anhNen)) {
             this.layerBgImg.style.display = 'none';
@@ -1097,7 +1086,6 @@
           }
         }
 
-        // Xử lý hiển thị Nhân vật & Frame Animation động
         if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
           const cacheKey = `${nhanVat}/${bieuCam}`;
           const frames = this.boDemNhanVat.get(cacheKey);
@@ -1106,7 +1094,6 @@
             this.layerChar.src = frames[0].src;
             this.layerChar.style.display = 'block';
             
-            // Nếu có từ 2 frame trở lên, bật hiệu ứng chạy frame liên tục giống hoạt hình
             if (frames.length > 1) {
               this.batDauAnimationKhungHinh(nhanVat, bieuCam);
             } else {
@@ -1125,7 +1112,6 @@
           this.dungAnimationKhungHinh();
         }
 
-        // Hiệu ứng VFX
         if (anhHieuUng && anhHieuUng.trim() !== "") {
           const vfxImg = this.boDemHieuUng.get(anhHieuUng);
           this.layerVfx.src = vfxImg ? vfxImg.src : `assets/HieuUng/${anhHieuUng}`;
@@ -1134,7 +1120,6 @@
           this.layerVfx.style.display = 'none';
         }
 
-        // BGM
         if (amThanhNen && amThanhNen.trim() !== "") {
           const bgmPath = `assets/AmThanh/Nen/${amThanhNen}`;
           if (!this.audioBgm.src.includes(amThanhNen)) {
@@ -1144,13 +1129,11 @@
           }
         }
 
-        // SFX
         if (amThanhHieuUng && amThanhHieuUng.trim() !== "") {
           this.audioSfx.src = `assets/AmThanh/HieuUng/${amThanhHieuUng}`;
           this.audioSfx.play().catch(() => {});
         }
 
-        // Chạy chữ & TTS
         if (noiDung) {
           this.hienLoiThoai(nhanVat, noiDung);
           this.currentSpeaker = nhanVat;
@@ -1169,7 +1152,6 @@
         await this.sleep(thoiGianCho * 1000);
       }
 
-      // Quản lý vòng lặp đổi frame liên tục mượt mà 60fps từ RAM
       batDauAnimationKhungHinh(nhanVat, bieuCam) {
         this.dungAnimationKhungHinh();
         const cacheKey = `${nhanVat}/${bieuCam}`;
@@ -1182,7 +1164,7 @@
             this.currentFrameIndex = (this.currentFrameIndex + 1) % frames.length;
             this.layerChar.src = frames[this.currentFrameIndex].src;
           }
-        }, 100); // Tốc độ chuyển đổi giữa các frame (100ms / frame)
+        }, 100);
       }
 
       dungAnimationKhungHinh() {
@@ -1205,7 +1187,6 @@
           ? this.cauHinhGiongNhanVat[nhanVat] 
           : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: 'ja-JP' };
 
-        // Ép buộc gán ngôn ngữ chính xác (ví dụ 'ja-JP' cho tiếng Nhật) giúp điện thoại nhận diện đúng bộ giọng
         utterance.lang = cfg.lang || 'ja-JP';
 
         if (this.danhSachVoices.length > 0 && this.danhSachVoices[cfg.voiceIndex]) {
