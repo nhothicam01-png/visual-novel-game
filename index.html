@@ -92,18 +92,29 @@
 
     #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
     
-    /* Nhân vật bám sát đáy, scale lấp đầy chiều cao mà không méo ảnh */
+    /* Mặc định - Màn hình Ngang (1920x1080): Bám sát mép ĐỈNH (top: 0) */
     #layer-character {
       position: absolute;
-      bottom: 0;
+      top: 0;
       left: 50%;
       transform: translateX(-50%);
       z-index: 2;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: bottom center;
+      height: auto;
+      object-fit: contain;
+      object-position: top center;
       display: none;
+      transform-origin: top center;
+    }
+
+    /* Màn hình Dọc (.portrait - 1080x1920): Bám sát mép ĐÁY (bottom: 0) */
+    #game-container.portrait #layer-character {
+      top: auto;
+      bottom: 0;
+      width: auto;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom center;
       transform-origin: bottom center;
     }
 
@@ -113,9 +124,19 @@
       animation: characterTalkAnim 1.2s ease-in-out infinite;
     }
 
+    #game-container.portrait .character-talking {
+      animation: characterTalkAnimPortrait 1.2s ease-in-out infinite;
+    }
+
     @keyframes characterTalkAnim {
       0%   { transform: translateX(-50%) translateY(0) scaleY(1); }
-      50%  { transform: translateX(-50%) translateY(+2%) scaleY(1.01); }
+      50%  { transform: translateX(-50%) translateY(-1.5%) scaleY(1.01); }
+      100% { transform: translateX(-50%) translateY(0) scaleY(1); }
+    }
+
+    @keyframes characterTalkAnimPortrait {
+      0%   { transform: translateX(-50%) translateY(0) scaleY(1); }
+      50%  { transform: translateX(-50%) translateY(+1.5%) scaleY(1.01); }
       100% { transform: translateX(-50%) translateY(0) scaleY(1); }
     }
 
@@ -147,12 +168,8 @@
       white-space: pre-wrap;
       word-break: break-word;
       text-align: center;       
-      
-      /* Dùng -webkit-text-stroke để tạo viền mượt, không bị vỡ hạt trên mobile */
       -webkit-text-stroke: 0.8px #000000;
       paint-order: stroke fill;
-
-      /* Đổ bóng nhẹ giúp chữ nổi bật trên nền game mà không bị nhòe */
       text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.9);
     }
 
@@ -294,7 +311,7 @@
     <img id="layer-bg-img" class="game-layer" src="" alt="Background Image" />
     <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
     
-    <img id="layer-character" class="game-layer" src="" alt="Character" />
+    <img id="layer-character" src="" alt="Character" />
     <img id="layer-vfx" class="game-layer" src="" alt="VFX Overlay" />
 
     <div id="dialogue-canvas" style="display: none;">
@@ -311,7 +328,6 @@
     <button id="btn-pause" class="btn" onclick="trinhPhat.tamDung()" style="display: none;">⏸ Tạm dừng</button>
     <button id="btn-stop" class="btn" onclick="trinhPhat.dung()">⏹ Dừng phát</button>
     
-    <!-- Nút chuyển tỷ lệ Ngang (1920x1080) / Dọc (1080x1920) -->
     <button id="btn-orientation" class="btn" onclick="trinhPhat.toggleOrientation()">📱 Tỷ lệ: 1920×1080</button>
     <button id="btn-fullscreen" class="btn" onclick="trinhPhat.toggleFullscreen()">⛶ Toàn màn hình</button>
   </div>
@@ -369,14 +385,20 @@
         this.hienChuInterval = null;
         this.currentIndex = 0;
 
+        // Quản lý trạng thái TTS thông minh khi tạm dừng / tiếp tục
+        this.currentTtsResolve = null;
+        this.ttsRemainingText = "";
+        this.currentSpeaker = "";
+
         this.cauHinhGiongNhanVat = {};
         this.ttsSynth = window.speechSynthesis || null;
         this.danhSachVoices = [];
 
-        this.isPortrait = false; // false = 1920x1080 (Ngang), true = 1080x1920 (Dọc)
+        this.isPortrait = false; 
 
         this.khoiTaoTTS();
         this.khoiTaoSuKienFile();
+        this.khoiTaoSuKienDoubleTapFullscreen();
       }
 
       toggleOrientation() {
@@ -414,6 +436,40 @@
 
         btnImport.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', (event) => this.importJSON(event));
+      }
+
+      khoiTaoSuKienDoubleTapFullscreen() {
+        let lastTapTime = 0;
+        
+        // Hỗ trợ chạm đúp trên mobile khi ở chế độ fullscreen
+        this.container.addEventListener('touchend', (e) => {
+          const currentTime = new Date().getTime();
+          const tapLength = currentTime - lastTapTime;
+          if (tapLength < 300 && tapLength > 0) {
+            const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+            if (isFullscreen) {
+              if (!this.dangChay || this.dangTamDung) {
+                this.batDau();
+              } else {
+                this.tamDung();
+              }
+            }
+            e.preventDefault();
+          }
+          lastTapTime = currentTime;
+        });
+
+        // Hỗ trợ nhấp đúp chuột trên máy tính khi ở chế độ fullscreen
+        this.container.addEventListener('dblclick', () => {
+          const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+          if (isFullscreen) {
+            if (!this.dangChay || this.dangTamDung) {
+              this.batDau();
+            } else {
+              this.tamDung();
+            }
+          }
+        });
       }
 
       kichHoatAmThanhMobile() {
@@ -603,8 +659,13 @@
         if (this.dangTamDung) {
           this.dangTamDung = false;
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
-          if (this.ttsSynth && this.ttsSynth.paused) this.ttsSynth.resume();
           if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
+          if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
+          
+          // Tiếp tục đọc nốt phần TTS còn lại nếu có
+          if (this.ttsRemainingText && this.currentTtsResolve) {
+            this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
+          }
           return;
         }
 
@@ -636,16 +697,22 @@
         if (!this.dangTamDung) {
           this.dangTamDung = true;
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
-          if (this.ttsSynth) this.ttsSynth.pause();
+          
+          // Hủy lệnh đọc hiện tại của TTS để ghi nhớ đoạn chưa đọc xong
+          if (this.ttsSynth) this.ttsSynth.cancel();
+
           this.audioBgm.pause();
           this.audioSfx.pause();
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.pause();
         } else {
           this.dangTamDung = false;
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
-          if (this.ttsSynth && this.ttsSynth.paused) this.ttsSynth.resume();
-          this.audioBgm.play().catch(()=>{});
+          if (this.audioBgm.play) this.audioBgm.play().catch(()=>{});
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
+
+          if (this.ttsRemainingText && this.currentTtsResolve) {
+            this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
+          }
         }
       }
 
@@ -664,7 +731,6 @@
           const khung = ds[this.currentIndex];
           await this.xuLyKhung(khung);
           
-          await this.sleep((this.duLieu.thoi_gian_cho_giua || 0.02) * 1000);
           this.currentIndex++;
         }
 
@@ -684,24 +750,45 @@
         const amThanhNen = khung.am_thanh_nen || khung.bgm;
         const amThanhHieuUng = khung.am_thanh_hieu_ung || khung.sfx;
 
+        // Xử lý nền
         if (anhNen && anhNen.trim() !== "") {
           if (this.isMediaVideo(anhNen)) {
             this.layerBgImg.style.display = 'none';
-            if (!this.layerBgVideo.src.includes(anhNen)) this.layerBgVideo.src = `assets/Nen/${anhNen}`;
+            if (!this.layerBgVideo.src.includes(anhNen)) {
+              this.layerBgVideo.src = `assets/Nen/${anhNen}`;
+              this.layerBgVideo.load();
+            }
             this.layerBgVideo.style.display = 'block';
-            this.layerBgVideo.play().catch(()=>{});
+            await this.layerBgVideo.play().catch(()=>{});
           } else {
             this.layerBgVideo.style.display = 'none';
             const bgImg = this.boDemAnhNen.get(anhNen);
-            this.layerBgImg.src = bgImg ? bgImg.src : `assets/Nen/${anhNen}`;
+            if (bgImg) {
+              this.layerBgImg.src = bgImg.src;
+            } else {
+              await new Promise(r => {
+                this.layerBgImg.onload = r;
+                this.layerBgImg.onerror = r;
+                this.layerBgImg.src = `assets/Nen/${anhNen}`;
+              });
+            }
             this.layerBgImg.style.display = 'block';
           }
         }
 
+        // Xử lý nhân vật
         if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
           const currentKey = `${nhanVat}/${bieuCam}`;
           const img = this.boDemNhanVat.get(currentKey);
-          this.layerChar.src = img ? img.src : `assets/NhanVat/${currentKey}.png`;
+          if (img) {
+            this.layerChar.src = img.src;
+          } else {
+            await new Promise(r => {
+              this.layerChar.onload = r;
+              this.layerChar.onerror = r;
+              this.layerChar.src = `assets/NhanVat/${currentKey}.png`;
+            });
+          }
           this.layerChar.style.display = 'block';
           if (!this.layerChar.classList.contains('character-talking')) {
             this.layerChar.classList.add('character-talking');
@@ -711,6 +798,7 @@
           this.layerChar.classList.remove('character-talking');
         }
 
+        // Hiệu ứng VFX
         if (anhHieuUng && anhHieuUng.trim() !== "") {
           const vfxImg = this.boDemHieuUng.get(anhHieuUng);
           this.layerVfx.src = vfxImg ? vfxImg.src : `assets/HieuUng/${anhHieuUng}`;
@@ -719,6 +807,7 @@
           this.layerVfx.style.display = 'none';
         }
 
+        // BGM
         if (amThanhNen && amThanhNen.trim() !== "") {
           const bgmPath = `assets/AmThanh/Nen/${amThanhNen}`;
           if (!this.audioBgm.src.includes(amThanhNen)) {
@@ -728,56 +817,71 @@
           }
         }
 
+        // SFX
         if (amThanhHieuUng && amThanhHieuUng.trim() !== "") {
           this.audioSfx.src = `assets/AmThanh/HieuUng/${amThanhHieuUng}`;
           this.audioSfx.play().catch(() => {});
         }
 
-        let thoiGianWait = 1.0;
+        // Chạy chữ & TTS
         if (noiDung) {
           this.hienLoiThoai(nhanVat, noiDung);
-          thoiGianWait = this.docVanBanBangTTS(nhanVat, noiDung);
+          this.currentSpeaker = nhanVat;
+          this.ttsRemainingText = noiDung;
+          
+          await new Promise((resolve) => {
+            this.currentTtsResolve = resolve;
+            this.docVanBanBangTTS(nhanVat, noiDung, resolve);
+          });
+        } else {
+          await this.sleep(1000);
         }
 
-        let elapsed = 0;
-        const interval = 100;
-        while (elapsed < thoiGianWait * 1000) {
-          if (!this.dangChay) break;
-          while (this.dangTamDung) {
-            await this.sleep(100);
-            if (!this.dangChay) break;
-          }
-          await this.sleep(interval);
-          elapsed += interval;
-        }
+        const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
+        await this.sleep(thoiGianCho * 1000);
       }
 
-      docVanBanBangTTS(nhanVat, text) {
-        if (!text) return 0;
-        if (this.ttsSynth) {
-          this.ttsSynth.cancel();
-
-          const utterance = new SpeechSynthesisUtterance(text);
-          const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat]) 
-            ? this.cauHinhGiongNhanVat[nhanVat] 
-            : { voiceIndex: 0, rate: 1.1, pitch: 1.0 };
-
-          if (this.danhSachVoices.length > 0) {
-            utterance.voice = this.danhSachVoices[cfg.voiceIndex] || this.danhSachVoices[0];
-          }
-
-          utterance.volume = this.ttsVolume;
-          utterance.rate = cfg.rate;
-          utterance.pitch = cfg.pitch;
-
-          const wordsCount = text.split(/\s+/).length;
-          let estimatedDuration = (wordsCount / 3.5) * (1 / cfg.rate);
-          if (estimatedDuration < 1.2) estimatedDuration = 1.2;
-
-          this.ttsSynth.speak(utterance);
-          return estimatedDuration;
+      docVanBanBangTTS(nhanVat, text, resolveCallback) {
+        if (!text || !this.ttsSynth) {
+          resolveCallback();
+          return;
         }
-        return 2.0;
+
+        this.ttsSynth.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat]) 
+          ? this.cauHinhGiongNhanVat[nhanVat] 
+          : { voiceIndex: 0, rate: 1.1, pitch: 1.0 };
+
+        if (this.danhSachVoices.length > 0) {
+          utterance.voice = this.danhSachVoices[cfg.voiceIndex] || this.danhSachVoices[0];
+        }
+
+        utterance.volume = this.ttsVolume;
+        utterance.rate = cfg.rate;
+        utterance.pitch = cfg.pitch;
+
+        // Theo dõi quá trình đọc để cập nhật phần văn bản còn lại nếu bị pause giữa chừng
+        utterance.onboundary = (event) => {
+          if (event.name === 'word') {
+            this.ttsRemainingText = text.substring(event.charIndex);
+          }
+        };
+
+        utterance.onend = () => {
+          this.ttsRemainingText = "";
+          this.currentTtsResolve = null;
+          resolveCallback();
+        };
+
+        utterance.onerror = () => {
+          this.ttsRemainingText = "";
+          this.currentTtsResolve = null;
+          resolveCallback();
+        };
+
+        this.ttsSynth.speak(utterance);
       }
 
       hienLoiThoai(ten, noiDung) {
@@ -820,6 +924,8 @@
       dung() {
         this.dangChay = false;
         this.dangTamDung = false;
+        this.ttsRemainingText = "";
+        this.currentTtsResolve = null;
         document.getElementById('btn-pause').style.display = 'none';
         document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
         clearInterval(this.hienChuInterval);
