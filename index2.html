@@ -173,6 +173,65 @@
       text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.9);
     }
 
+    /* --- GIAO DIỆN MÀN HÌNH CHỜ LOAD TIẾN ĐỘ --- */
+    #loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 8, 17, 0.92);
+      z-index: 99;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      gap: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #loading-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .loading-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #a855f7;
+    }
+
+    .loading-bar-bg {
+      width: 80%;
+      max-width: 400px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+
+    .loading-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      transition: width 0.15s ease;
+    }
+
+    .loading-status {
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      max-width: 80%;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    /* ------------------------------------------- */
+
     #controls {
       margin-top: 12px;
       display: flex;
@@ -308,6 +367,15 @@
 <body>
 
   <div id="game-container">
+    <!-- Khung hiển thị tiến độ tải Dữ liệu -->
+    <div id="loading-overlay">
+      <div class="loading-title" id="loading-title">⏳ Đang tải tài nguyên... (0%)</div>
+      <div class="loading-bar-bg">
+        <div class="loading-bar-fill" id="loading-bar-fill"></div>
+      </div>
+      <div class="loading-status" id="loading-status">Đang khởi tạo...</div>
+    </div>
+
     <img id="layer-bg-img" class="game-layer" src="" alt="Background Image" />
     <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
     
@@ -371,6 +439,12 @@
         this.audioBgm = document.getElementById('audio-bgm');
         this.audioSfx = document.getElementById('audio-sfx');
 
+        // Các phần tử cho Loading Bar
+        this.loadingOverlay = document.getElementById('loading-overlay');
+        this.loadingTitle = document.getElementById('loading-title');
+        this.loadingBarFill = document.getElementById('loading-bar-fill');
+        this.loadingStatus = document.getElementById('loading-status');
+
         this.audioBgm.volume = 0.3;
         this.audioSfx.volume = 0.4;
         this.ttsVolume = 1.0;
@@ -403,7 +477,28 @@
         this.khoiTaoSuKienFile();
         this.khoiTaoSuKienDoubleTapFullscreen();
       }
-            // Hàm xử lý xóa phông nền tự động cho ảnh (biến màu nền thành trong suốt)
+
+      // Hàm cập nhật tiến độ Loading Bar
+      capNhatTienDoLoad(phamtram, message) {
+        const percent = Math.min(100, Math.max(0, Math.round(phamtram)));
+        this.loadingTitle.innerText = `⏳ Đang tải tài nguyên... (${percent}%)`;
+        this.loadingBarFill.style.width = `${percent}%`;
+        if (message) {
+          this.loadingStatus.innerText = message;
+        }
+      }
+
+      // Hàm ẩn/hịên màn hình Loading
+      hienLoading(show) {
+        if (show) {
+          this.capNhatTienDoLoad(0, "Bắt đầu tải kịch bản...");
+          this.loadingOverlay.classList.add('active');
+        } else {
+          this.loadingOverlay.classList.remove('active');
+        }
+      }
+
+      // Hàm xử lý xóa phông nền tự động cho ảnh (biến màu nền thành trong suốt)
       removeBackgroundFromImage(imgElement) {
         return new Promise((resolve) => {
           const canvas = document.createElement('canvas');
@@ -449,7 +544,6 @@
           processedImg.src = canvas.toDataURL('image/png');
         });
       }
-      
 
       toggleOrientation() {
         this.isPortrait = !this.isPortrait;
@@ -537,7 +631,11 @@
         reader.onload = async (e) => {
           try {
             this.duLieu = JSON.parse(e.target.result);
+            
+            // Bật overlay tiến độ khi bắt đầu preload
+            this.hienLoading(true);
             await this.taiTruocDuLieu();
+            this.hienLoading(false);
             
             if (this.ttsSynth) {
               this.danhSachVoices = this.ttsSynth.getVoices();
@@ -546,6 +644,7 @@
             this.quetVaKhoiTaoNhanVat();
             alert(`✅ Đã import kịch bản thành công!\nTổng phân cảnh: ${this.duLieu.danh_sach ? this.duLieu.danh_sach.length : 0}`);
           } catch (err) {
+            this.hienLoading(false);
             alert("❌ Lỗi phân tích cú pháp JSON: " + err.message);
           }
         };
@@ -685,7 +784,8 @@
         const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo;
         if (!ds) return;
 
-        const promises = [];
+        // Xây dựng danh sách tác vụ nạp tiền độ chi tiết
+        const tasks = [];
         for (const khung of ds) {
           const anhNen = khung.anh_nen || khung.background;
           const anhHieuUng = khung.anh_hieu_ung || khung.vfx;
@@ -693,24 +793,46 @@
           const bieuCam = khung.bieu_cam || khung.expression;
 
           if (anhNen && !this.isMediaVideo(anhNen) && !this.boDemAnhNen.has(anhNen)) {
-            promises.push(this.preloadImage(`assets/Nen/${anhNen}`, img => this.boDemAnhNen.set(anhNen, img)));
+            tasks.push({
+              name: `Nền: ${anhNen}`,
+              run: () => this.preloadImage(`assets/Nen/${anhNen}`, img => this.boDemAnhNen.set(anhNen, img))
+            });
           }
           if (anhHieuUng && !this.boDemHieuUng.has(anhHieuUng)) {
-            promises.push(this.preloadImage(`assets/HieuUng/${anhHieuUng}`, img => this.boDemHieuUng.set(anhHieuUng, img)));
+            tasks.push({
+              name: `VFX: ${anhHieuUng}`,
+              run: () => this.preloadImage(`assets/HieuUng/${anhHieuUng}`, img => this.boDemHieuUng.set(anhHieuUng, img))
+            });
           }
           
-          // ✨ Nạp trước cấu trúc Frame Animation theo thư mục: assets/NhanVat/{ten}/{bieu_cam}/1.png, 2.png,...
           if (nhanVat && bieuCam) {
             const key = `${nhanVat}/${bieuCam}`;
             if (!this.boDemNhanVat.has(key)) {
-              promises.push(this.preloadCharacterFrames(nhanVat, bieuCam, key));
+              tasks.push({
+                name: `Nhân vật: ${nhanVat} (${bieuCam})`,
+                run: () => this.preloadCharacterFrames(nhanVat, bieuCam, key)
+              });
             }
           }
         }
-        await Promise.all(promises);
+
+        const totalTasks = tasks.length;
+        if (totalTasks === 0) {
+          this.capNhatTienDoLoad(100, "Hoàn tất!");
+          return;
+        }
+
+        let completedTasks = 0;
+        for (const task of tasks) {
+          this.capNhatTienDoLoad((completedTasks / totalTasks) * 100, `Đang xử lý: ${task.name}`);
+          await task.run();
+          completedTasks++;
+          this.capNhatTienDoLoad((completedTasks / totalTasks) * 100, `Đã xong: ${task.name}`);
+        }
+        this.capNhatTienDoLoad(100, "Tải hoàn tất!");
       }
       
-            async preloadCharacterFrames(nhanVat, bieuCam, cacheKey) {
+      async preloadCharacterFrames(nhanVat, bieuCam, cacheKey) {
         let frameImages = [];
         let i = 1;
         let continueSearching = true;
@@ -740,8 +862,7 @@
         }
 
         this.boDemNhanVat.set(cacheKey, frameImages);
-            }
-      
+      }
 
       checkAndLoadImage(src) {
         return new Promise((resolve) => {
