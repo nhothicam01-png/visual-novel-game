@@ -498,67 +498,96 @@
         }
       }
 
-      // Hàm xóa phông nền siêu sạch (Khử triệt để viền ám màu phông)
+      // Hàm tách nền kết hợp: Giữ chi tiết bên trong nhưng vẫn lọc sạch lỗ trống bên trong tóc
       removeBackgroundFromImage(imgElement) {
         return new Promise((resolve) => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           
-          canvas.width = imgElement.naturalWidth || imgElement.width;
-          canvas.height = imgElement.naturalHeight || imgElement.height;
+          const w = imgElement.naturalWidth || imgElement.width;
+          const h = imgElement.naturalHeight || imgElement.height;
+          canvas.width = w;
+          canvas.height = h;
           
           ctx.drawImage(imgElement, 0, 0);
-          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const imgData = ctx.getImageData(0, 0, w, h);
           const data = imgData.data;
           
-          // Lấy mẫu màu phông nền từ góc trên-trái
-          const bgR = data[0];
-          const bgG = data[1];
-          const bgB = data[2];
-          
-          // Chuyển màu nền sang HSV
-          const bgHsv = this.rgbToHsv(bgR, bgG, bgB);
+          // Lấy màu gốc ở góc trên-trái (0, 0) làm màu phông
+          const bgR = data[0], bgG = data[1], bgB = data[2];
+          const threshold = 35; 
 
-          // Tăng độ mạnh khử phông (Dung sai màu rộng hơn: 45)
-          const threshold = 45; 
-          // Vùng chuyển tiếp khử viền ám màu (Feather zone: 25)
-          const featherRange = 25; 
+          const visited = new Uint8Array(w * h);
+          const queue = [];
 
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            
-            // Tính khoảng cách màu Euclidean trong không gian RGB
-            const distRGB = Math.sqrt(
-              (r - bgR) ** 2 + 
-              (g - bgG) ** 2 + 
-              (b - bgB) ** 2
+          const isBgColor = (idx) => {
+            const r = data[idx], g = data[idx + 1], b = data[idx + 2];
+            return (
+              Math.abs(r - bgR) < threshold &&
+              Math.abs(g - bgG) < threshold &&
+              Math.abs(b - bgB) < threshold
             );
+          };
 
-            // Chuyển pixel hiện tại sang HSV để kiểm tra tông màu (Hue)
-            const hsv = this.rgbToHsv(r, g, b);
-            const hueDiff = Math.abs(hsv.h - bgHsv.h);
-            const isSameHue = (hueDiff < 0.08 || hueDiff > 0.92); // Tông màu cực kỳ gần với phông
+          const addPixel = (x, y) => {
+            const pos = y * w + x;
+            if (!visited[pos] && isBgColor(pos * 4)) {
+              visited[pos] = 1;
+              queue.push(x, y);
+            }
+          };
 
-            if (distRGB < threshold || (isSameHue && distRGB < threshold + 20)) {
-              // 1. Xóa hoàn toàn pixel phông nền
-              data[i + 3] = 0; 
-            } else if (distRGB < threshold + featherRange) {
-              // 2. Vùng viền mờ: Tính toán độ mờ Alpha mềm
-              const alphaRatio = (distRGB - threshold) / featherRange;
-              data[i + 3] = Math.round(data[i + 3] * Math.pow(alphaRatio, 1.5));
+          // 1. Loang từ 4 biên ngoài vào để xóa phông chính và chui vào các khe hở lớn
+          for (let x = 0; x < w; x++) { addPixel(x, 0); addPixel(x, h - 1); }
+          for (let y = 0; y < h; y++) { addPixel(0, y); addPixel(w - 1, y); }
 
-              // 3. Khử sắc màu viền (Spill Suppression): Nếu viền còn dính màu phông, hạ độ bão hòa để mất sắc xanh/màu nền dư
-              if (isSameHue) {
-                const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-                data[i]     = Math.round(r * alphaRatio + gray * (1 - alphaRatio));
-                data[i + 1] = Math.round(g * alphaRatio + gray * (1 - alphaRatio));
-                data[i + 2] = Math.round(b * alphaRatio + gray * (1 - alphaRatio));
+          let head = 0;
+          while (head < queue.length) {
+            const cx = queue[head++];
+            const cy = queue[head++];
+
+            const neighbors = [
+              [cx + 1, cy], [cx - 1, cy],
+              [cx, cy + 1], [cx, cy - 1]
+            ];
+
+            for (let i = 0; i < neighbors.length; i++) {
+              const nx = neighbors[i][0];
+              const ny = neighbors[i][1];
+
+              if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                const nPos = ny * w + nx;
+                if (!visited[nPos] && isBgColor(nPos * 4)) {
+                  visited[nPos] = 1;
+                  queue.push(nx, ny);
+                }
               }
             }
           }
-          
+
+          // 2. Xử lý các vùng khép kín bên trong (như khe tóc): 
+          // Nếu một vùng bên trong có màu trùng màu phông và diện tích nhỏ (bị bao bọc), ta quét tìm và xóa luôn.
+          for (let i = 0; i < visited.length; i++) {
+            if (visited[i] === 0) {
+              const pos = i * 4;
+              // Nếu pixel bên trong này giống hệt màu phông nền và có độ bão hòa cực thấp (hoặc gần như trùng màu nền)
+              const r = data[pos], g = data[pos + 1], b = data[pos + 2];
+              const diffToBg = Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB);
+              
+              // Kiểm tra xem nó có nằm lọt thỏm trong vùng màu phông không (hoặc là khoảng trống nhỏ)
+              if (diffToBg < 15) {
+                visited[i] = 1; // Đánh dấu xóa các khe hở lọt lưới bên trong
+              }
+            }
+          }
+
+          // Tiến hành đặt Alpha = 0 cho tất cả các pixel đã đánh dấu xóa
+          for (let i = 0; i < visited.length; i++) {
+            if (visited[i] === 1) {
+              data[i * 4 + 3] = 0;
+            }
+          }
+
           ctx.putImageData(imgData, 0, 0);
           
           const processedImg = new Image();
