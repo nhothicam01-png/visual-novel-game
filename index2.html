@@ -498,7 +498,7 @@
         }
       }
 
-      // Hàm tách nền kết hợp: Giữ chi tiết bên trong nhưng vẫn lọc sạch lỗ trống bên trong tóc
+      // Hàm tách nền thông minh: Tự động bỏ qua nếu ảnh vốn đã có sẵn nền trong suốt (transparent)
       removeBackgroundFromImage(imgElement) {
         return new Promise((resolve) => {
           const canvas = document.createElement('canvas');
@@ -512,8 +512,23 @@
           ctx.drawImage(imgElement, 0, 0);
           const imgData = ctx.getImageData(0, 0, w, h);
           const data = imgData.data;
-          
-          // Lấy màu gốc ở góc trên-trái (0, 0) làm màu phông
+
+          // 1. Kiểm tra nhanh xem ảnh có sẵn pixel trong suốt (alpha < 255) hay không
+          let hasTransparency = false;
+          for (let i = 3; i < data.length; i += 4) {
+            if (data[i] < 255) {
+              hasTransparency = true;
+              break; // Tìm thấy pixel trong suốt -> Ảnh đã được tách nền sẵn!
+            }
+          }
+
+          // Nếu ảnh đã có sẵn nền trong suốt, bỏ qua luôn bước lọc màu để giữ nguyên vẹn chất lượng ảnh gốc
+          if (hasTransparency) {
+            resolve(imgElement);
+            return;
+          }
+
+          // 2. Nếu là ảnh nền đặc (chưa tách nền), tiến hành chạy thuật toán lọc thông minh
           const bgR = data[0], bgG = data[1], bgB = data[2];
           const threshold = 35; 
 
@@ -537,7 +552,6 @@
             }
           };
 
-          // 1. Loang từ 4 biên ngoài vào để xóa phông chính và chui vào các khe hở lớn
           for (let x = 0; x < w; x++) { addPixel(x, 0); addPixel(x, h - 1); }
           for (let y = 0; y < h; y++) { addPixel(0, y); addPixel(w - 1, y); }
 
@@ -565,23 +579,19 @@
             }
           }
 
-          // 2. Xử lý các vùng khép kín bên trong (như khe tóc): 
-          // Nếu một vùng bên trong có màu trùng màu phông và diện tích nhỏ (bị bao bọc), ta quét tìm và xóa luôn.
+          // Xử lý các khe hở bên trong tóc
           for (let i = 0; i < visited.length; i++) {
             if (visited[i] === 0) {
               const pos = i * 4;
-              // Nếu pixel bên trong này giống hệt màu phông nền và có độ bão hòa cực thấp (hoặc gần như trùng màu nền)
               const r = data[pos], g = data[pos + 1], b = data[pos + 2];
               const diffToBg = Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB);
               
-              // Kiểm tra xem nó có nằm lọt thỏm trong vùng màu phông không (hoặc là khoảng trống nhỏ)
               if (diffToBg < 15) {
-                visited[i] = 1; // Đánh dấu xóa các khe hở lọt lưới bên trong
+                visited[i] = 1; 
               }
             }
           }
 
-          // Tiến hành đặt Alpha = 0 cho tất cả các pixel đã đánh dấu xóa
           for (let i = 0; i < visited.length; i++) {
             if (visited[i] === 1) {
               data[i * 4 + 3] = 0;
