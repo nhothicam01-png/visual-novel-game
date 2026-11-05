@@ -165,7 +165,7 @@
       width: 100%;
       height: 90px;
       object-fit: contain;
-      background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px); /* Nền ca-ro kiểm tra trong suốt */
+      background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px);
     }
     .review-card span {
       font-size: 0.75rem;
@@ -211,13 +211,19 @@
       </div>
     </div>
 
-    <div class="form-group" id="cropDepthGroup">
-      <label>4. Độ xâm lấn gọt mép phông (pixel): <span style="color: #a855f7; font-size: 0.75rem;">(Gợi ý: 0-2px để tránh lẹm vào nhân vật)</span></label>
+    <div class="form-group">
+      <label>4. Độ xâm lấn gọt mép phông (pixel):</label>
       <input type="number" id="cropDepthInput" min="0" max="10" value="1" placeholder="Ví dụ: 1 hoặc 2">
     </div>
 
+    <!-- ✨ Thêm tùy chọn chỉnh độ Blur (Khử răng cưa / Làm mềm mép) -->
     <div class="form-group">
-      <label>5. Tên file ZIP xuất ra:</label>
+      <label>5. Độ làm mờ mép - Khử răng cưa (Blur px): <span style="color: #a855f7; font-size: 0.75rem;">(0 = Không mờ, 0.5 - 1.5 = Mịn mượt)</span></label>
+      <input type="number" id="blurInput" min="0" max="5" step="0.5" value="0.5" placeholder="Ví dụ: 0.5 hoặc 1">
+    </div>
+
+    <div class="form-group">
+      <label>6. Tên file ZIP xuất ra:</label>
       <input type="text" id="zipNameInput" value="character_animation_frames" placeholder="Nhập tên file zip...">
     </div>
 
@@ -230,7 +236,7 @@
       <div class="progress-text" id="progressText">Đang chuẩn bị...</div>
     </div>
 
-    <!-- ✨ Khu vực Review kết quả trước khi tải ZIP -->
+    <!-- Khu vực Review kết quả trước khi tải ZIP -->
     <div id="review-section">
       <div class="review-header">
         <label style="font-weight: bold; color: #a855f7;" id="reviewTitle">👁️ Xem trước kết quả (0 frames):</label>
@@ -249,6 +255,7 @@
     const formatSelect = document.getElementById('formatSelect');
     const removeBgCheck = document.getElementById('removeBgCheck');
     const cropDepthInput = document.getElementById('cropDepthInput');
+    const blurInput = document.getElementById('blurInput');
     const zipNameInput = document.getElementById('zipNameInput');
     const btnProcess = document.getElementById('btnProcess');
     
@@ -262,7 +269,7 @@
     const btnDownloadZip = document.getElementById('btnDownloadZip');
 
     let videoUrl = '';
-    let extractedFrames = []; // Lưu trữ danh sách frame đã cắt để review
+    let extractedFrames = [];
 
     videoFile.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -272,15 +279,15 @@
       videoPreview.src = videoUrl;
       videoPreview.style.display = 'block';
       btnProcess.disabled = false;
-      reviewSection.style.display = 'none'; // Ẩn bảng cũ nếu đổi video mới
+      reviewSection.style.display = 'none';
     });
 
-    // Bấm nút Cắt & Trích xuất
     btnProcess.addEventListener('click', async () => {
       const fps = parseInt(fpsSelect.value);
       const format = formatSelect.value;
       const removeBg = removeBgCheck.checked;
       const cropDepth = Math.max(0, parseInt(cropDepthInput.value) || 0);
+      const blurVal = Math.max(0, parseFloat(blurInput.value) || 0);
       const ext = format === 'image/png' ? 'png' : 'jpg';
 
       btnProcess.disabled = true;
@@ -311,7 +318,7 @@
       tempCanvas.height = canvas.height;
       const tempCtx = tempCanvas.getContext('2d');
 
-      extractedFrames = []; // Reset mảng lưu frame
+      extractedFrames = [];
       let currentTime = 0;
       let frameIndex = 1;
 
@@ -350,6 +357,7 @@
           }
           ctx.putImageData(imgData, 0, 0);
 
+          // Gọt mép (Xâm lấn)
           if (cropDepth > 0) {
             tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
             tempCtx.drawImage(canvas, 0, 0);
@@ -386,6 +394,19 @@
             const finalImgData = new ImageData(outPixels, canvas.width, canvas.height);
             ctx.putImageData(finalImgData, 0, 0);
           }
+
+          // ✨ ✨ Bước làm mờ nhẹ viền (Anti-aliasing / Blur) để khử răng cưa
+          if (blurVal > 0) {
+            tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+            // Áp dụng hiệu ứng lọc mờ (blur) thông qua bộ lọc canvas 2D context
+            tempCtx.filter = `blur(${blurVal}px)`;
+            tempCtx.drawImage(canvas, 0, 0);
+            
+            // Vẽ đè lại để làm mềm vùng biên
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(tempCanvas, 0, 0);
+            tempCtx.filter = 'none'; // Reset lại filter
+          }
         }
 
         const dataUrl = canvas.toDataURL(format, 0.9);
@@ -405,13 +426,11 @@
         frameIndex++;
       }
 
-      // Hoàn tất cắt, hiển thị bảng Review
       progressContainer.style.display = 'none';
       btnProcess.disabled = false;
       hienThiReview();
     });
 
-    // Hàm dựng giao diện lưới ảnh xem trước
     function hienThiReview() {
       reviewGrid.innerHTML = '';
       reviewTitle.innerText = `👁️ Xem trước kết quả (${extractedFrames.length} frames):`;
@@ -430,7 +449,6 @@
       reviewSection.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Bấm nút Tải xuống file ZIP sau khi đã ưng ý
     btnDownloadZip.addEventListener('click', async () => {
       if (extractedFrames.length === 0) return;
 
