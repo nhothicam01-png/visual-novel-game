@@ -109,6 +109,9 @@
     .btn-secondary {
       background: #475569;
     }
+    .btn-warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
 
     #progress-container {
       display: none;
@@ -196,7 +199,7 @@
       background: #9333ea;
     }
 
-    /* Modal chỉnh sửa chi tiết */
+    /* Modal chỉnh sửa chi tiết từng tấm */
     #editModal {
       display: none;
       position: fixed;
@@ -324,7 +327,7 @@
     </div>
   </div>
 
-  <!-- Modal Chỉnh sửa chi tiết từng tấm (có tích hợp loang màu + px viền) -->
+  <!-- Modal Chỉnh sửa chi tiết từng tấm -->
   <div id="editModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -381,7 +384,6 @@
     const reviewTitle = document.getElementById('reviewTitle');
     const btnDownloadZip = document.getElementById('btnDownloadZip');
 
-    // Modal elements
     const editModal = document.getElementById('editModal');
     const modalCanvas = document.getElementById('modalCanvas');
     const modalTitle = document.getElementById('modalTitle');
@@ -392,7 +394,7 @@
     let videoUrl = '';
     let extractedFrames = []; 
     let editingIndex = -1;
-    let originalCleanCanvas = null; // Lưu bản canvas sạch sau khi xóa phông ban đầu trước khi blur
+    let originalCleanCanvas = null;
 
     videoFile.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -412,7 +414,7 @@
       reviewSection.style.display = 'none';
     });
 
-    // Thuật toán loang màu Flood-Fill
+    // Thuật toán loang màu tối ưu (tránh nghẽn stack/queue)
     function applyFloodFill(canvas, startX, startY, targetR, targetG, targetB, threshold) {
       const ctx = canvas.getContext('2d');
       const width = canvas.width;
@@ -421,10 +423,13 @@
       const data = imgData.data;
 
       const visited = new Uint8Array(width * height);
-      const queue = [startX, startY];
+      const queue = new Int32Array(width * height * 2);
+      let head = 0, tail = 0;
 
-      let head = 0;
-      while (head < queue.length) {
+      queue[tail++] = startX;
+      queue[tail++] = startY;
+
+      while (head < tail) {
         const x = queue[head++];
         const y = queue[head++];
         
@@ -440,21 +445,24 @@
         const b = data[pIdx + 2];
         const a = data[pIdx + 3];
 
-        if (a > 0 && Math.abs(r - targetR) < threshold && Math.abs(g - targetG) < threshold && Math.abs(b - targetB) < threshold) {
+        if (a > 0 && Math.abs(r - targetR) <= threshold && Math.abs(g - targetG) <= threshold && Math.abs(b - targetB) <= threshold) {
           data[pIdx + 3] = 0; 
-          queue.push(x - 1, y, x + 1, y, x, y - 1, x, y + 1);
+
+          if (x > 0) { queue[tail++] = x - 1; queue[tail++] = y; }
+          if (x < width - 1) { queue[tail++] = x + 1; queue[tail++] = y; }
+          if (y > 0) { queue[tail++] = x; queue[tail++] = y - 1; }
+          if (y < height - 1) { queue[tail++] = x; queue[tail++] = y + 1; }
         }
       }
       ctx.putImageData(imgData, 0, 0);
     }
 
-    // Hàm áp dụng Blur viền và khử ám màu
+    // Xử lý bộ lọc khử viền ám tóc & blur mượt mà
     function applyEdgeEnhancements(canvas, blurPx, blurPercentVal) {
       const ctx = canvas.getContext('2d');
       const width = canvas.width;
       const height = canvas.height;
 
-      // Khử viền xanh ám tóc (Spill removal)
       const imgData = ctx.getImageData(0, 0, width, height);
       const data = imgData.data;
       for (let i = 0; i < data.length; i += 4) {
@@ -466,7 +474,6 @@
       }
       ctx.putImageData(imgData, 0, 0);
 
-      // Khử răng cưa viền với px blur tùy chỉnh
       if (blurPx > 0 && blurPercentVal > 0) {
         const blurPercent = blurPercentVal / 100;
         const sharpCanvas = document.createElement('canvas');
@@ -512,7 +519,6 @@
       }
     }
 
-    // Xử lý tự động toàn bộ video
     function processFrameAutomatic(canvas) {
       const removeBg = removeBgCheck.checked;
       const thresholdVal = parseInt(thresholdInput.value) || 35;
@@ -526,39 +532,16 @@
         const data = ctx.getImageData(0, 0, width, height).data;
         const targetR = data[0], targetG = data[1], targetB = data[2];
 
-        const queue = [];
-        for (let x = 0; x < width; x++) { queue.push(x, 0); queue.push(x, height - 1); }
-        for (let y = 0; y < height; y++) { queue.push(0, y); queue.push(width - 1, y); }
-        for (let x = Math.floor(width * 0.4); x < Math.floor(width * 0.6); x++) { queue.push(x, height - 10); }
-
-        const visited = new Uint8Array(width * height);
-        const imgData = ctx.getImageData(0, 0, width, height);
-        const pxData = imgData.data;
-
-        let head = 0;
-        while (head < queue.length) {
-          const x = queue[head++];
-          const y = queue[head++];
-          if (x < 0 || x >= width || y < 0 || y >= height) continue;
-          const idx = y * width + x;
-          if (visited[idx]) continue;
-          visited[idx] = 1;
-
-          const pIdx = idx * 4;
-          if (Math.abs(pxData[pIdx] - targetR) < thresholdVal &&
-              Math.abs(pxData[pIdx+1] - targetG) < thresholdVal &&
-              Math.abs(pxData[pIdx+2] - targetB) < thresholdVal) {
-            pxData[pIdx + 3] = 0;
-            queue.push(x - 1, y, x + 1, y, x, y - 1, x, y + 1);
-          }
-        }
-        ctx.putImageData(imgData, 0, 0);
+        applyFloodFill(canvas, 0, 0, targetR, targetG, targetB, thresholdVal);
+        applyFloodFill(canvas, width - 1, 0, targetR, targetG, targetB, thresholdVal);
+        applyFloodFill(canvas, 0, height - 1, targetR, targetG, targetB, thresholdVal);
+        applyFloodFill(canvas, width - 1, height - 1, targetR, targetG, targetB, thresholdVal);
       }
 
       applyEdgeEnhancements(canvas, blurPx, blurPercentVal);
     }
 
-    // Cắt toàn bộ video
+    // Xử lý cắt video toàn bộ
     btnProcess.addEventListener('click', async () => {
       const fps = parseInt(fpsSelect.value);
       const startTime = Math.max(0, parseFloat(startTimeInput.value) || 0);
@@ -589,7 +572,7 @@
       while (currentTime <= endTime) {
         vid.currentTime = currentTime;
         await new Promise(r => {
-          const seekHandler = () => { vid.removeEventListener('seeked', seekHandler); setTimeout(r, 20); };
+          const seekHandler = () => { vid.removeEventListener('seeked', seekHandler); setTimeout(r, 15); };
           vid.addEventListener('seeked', seekHandler);
         });
 
@@ -641,13 +624,11 @@
       reviewSection.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Mở Modal chỉnh sửa
     function openModal(index) {
       editingIndex = index;
       const frame = extractedFrames[index];
       modalTitle.innerText = `✏️ Đang chỉnh sửa: ${frame.name}`;
 
-      // Lưu lại bản canvas gốc trước khi chỉnh sửa trong modal
       originalCleanCanvas = document.createElement('canvas');
       originalCleanCanvas.width = frame.canvas.width;
       originalCleanCanvas.height = frame.canvas.height;
@@ -667,7 +648,6 @@
       editingIndex = -1;
     }
 
-    // Click loang màu trong modal
     modalCanvas.addEventListener('click', (e) => {
       if (editingIndex === -1) return;
       const rect = modalCanvas.getBoundingClientRect();
@@ -684,7 +664,6 @@
       applyFloodFill(modalCanvas, clickX, clickY, pixel[0], pixel[1], pixel[2], thresh);
     });
 
-    // Nút xem trước Blur riêng cho tấm đang sửa
     function applyModalPreview() {
       if (!originalCleanCanvas) return;
       const mCtx = modalCanvas.getContext('2d');
@@ -696,7 +675,6 @@
       applyEdgeEnhancements(modalCanvas, bPx, bPer);
     }
 
-    // Lưu thay đổi tấm đang sửa
     function saveModalEdit() {
       if (editingIndex === -1) return;
       const frame = extractedFrames[editingIndex];
@@ -709,7 +687,6 @@
       renderReviewGrid();
     }
 
-    // Tải ZIP
     btnDownloadZip.addEventListener('click', async () => {
       if (extractedFrames.length === 0) return;
 
