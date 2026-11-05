@@ -189,6 +189,11 @@
     <div class="form-group">
       <label>1. Chọn video nguồn:</label>
       <input type="file" id="videoFile" accept="video/*">
+      
+  <label>Dung sai xóa phông (Threshold): <span style="color: #a855f7; font-size: 0.75rem;">(Gợi ý: 15-25 cho tóc tiệp màu nền)</span></label>
+  <input type="number" id="thresholdInput" min="5" max="100" value="20" placeholder="Mặc định: 20">
+      
+      
     </div>
 
     <video id="videoPreview" controls></video>
@@ -405,8 +410,10 @@
           const targetR = data[0];
           const targetG = data[1];
           const targetB = data[2];
-          const threshold = 45;
-
+         // const threshold = 45;
+// Thay vì cố định threshold = 45;
+const threshold = Math.max(1, parseInt(document.getElementById('thresholdInput').value) || 20);
+          
           for (let i = 0; i < data.length; i += 4) {
             const r = data[i];
             const g = data[i + 1];
