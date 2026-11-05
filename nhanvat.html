@@ -26,7 +26,7 @@
     }
     .container {
       width: 100%;
-      max-width: 700px;
+      max-width: 800px;
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(168, 85, 247, 0.3);
       border-radius: 12px;
@@ -97,6 +97,10 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+
     /* Progress bar */
     #progress-container {
       display: none;
@@ -120,6 +124,52 @@
     .progress-text {
       font-size: 0.8rem;
       text-align: center;
+      color: #cbd5e1;
+    }
+
+    /* Khu vực Review ảnh */
+    #review-section {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 16px;
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .review-card {
+      background: #1e293b;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #475569;
+    }
+    .review-card img {
+      width: 100%;
+      height: 90px;
+      object-fit: contain;
+      background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px); /* Nền ca-ro kiểm tra trong suốt */
+    }
+    .review-card span {
+      font-size: 0.75rem;
+      padding: 4px;
       color: #cbd5e1;
     }
   </style>
@@ -171,13 +221,22 @@
       <input type="text" id="zipNameInput" value="character_animation_frames" placeholder="Nhập tên file zip...">
     </div>
 
-    <button class="btn" id="btnProcess" disabled>🚀 Bắt đầu cắt & Đóng gói ZIP</button>
+    <button class="btn" id="btnProcess" disabled>🚀 Bắt đầu cắt & Trích xuất Frame</button>
 
     <div id="progress-container">
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" id="progressFill"></div>
       </div>
       <div class="progress-text" id="progressText">Đang chuẩn bị...</div>
+    </div>
+
+    <!-- ✨ Khu vực Review kết quả trước khi tải ZIP -->
+    <div id="review-section">
+      <div class="review-header">
+        <label style="font-weight: bold; color: #a855f7;" id="reviewTitle">👁️ Xem trước kết quả (0 frames):</label>
+        <button class="btn btn-success" id="btnDownloadZip">📥 Tải xuống file ZIP</button>
+      </div>
+      <div class="review-grid" id="reviewGrid"></div>
     </div>
   </div>
 
@@ -195,9 +254,15 @@
     
     const progressContainer = document.getElementById('progress-container');
     const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progress-text');
+    const progressText = document.getElementById('progressText');
+
+    const reviewSection = document.getElementById('review-section');
+    const reviewGrid = document.getElementById('reviewGrid');
+    const reviewTitle = document.getElementById('reviewTitle');
+    const btnDownloadZip = document.getElementById('btnDownloadZip');
 
     let videoUrl = '';
+    let extractedFrames = []; // Lưu trữ danh sách frame đã cắt để review
 
     videoFile.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -207,17 +272,19 @@
       videoPreview.src = videoUrl;
       videoPreview.style.display = 'block';
       btnProcess.disabled = false;
+      reviewSection.style.display = 'none'; // Ẩn bảng cũ nếu đổi video mới
     });
 
+    // Bấm nút Cắt & Trích xuất
     btnProcess.addEventListener('click', async () => {
       const fps = parseInt(fpsSelect.value);
       const format = formatSelect.value;
       const removeBg = removeBgCheck.checked;
       const cropDepth = Math.max(0, parseInt(cropDepthInput.value) || 0);
-      const zipName = zipNameInput.value.trim() || 'character_animation_frames';
       const ext = format === 'image/png' ? 'png' : 'jpg';
 
       btnProcess.disabled = true;
+      reviewSection.style.display = 'none';
       progressContainer.style.display = 'flex';
       progressFill.style.width = '0%';
       progressText.innerText = 'Đang đọc thông tin video...';
@@ -244,9 +311,7 @@
       tempCanvas.height = canvas.height;
       const tempCtx = tempCanvas.getContext('2d');
 
-      const zip = new JSZip();
-      const folder = zip.folder("frames");
-
+      extractedFrames = []; // Reset mảng lưu frame
       let currentTime = 0;
       let frameIndex = 1;
 
@@ -270,7 +335,6 @@
           const targetB = data[2];
           const threshold = 45;
 
-          // Bước 1: Xóa phông cơ bản
           for (let i = 0; i < data.length; i += 4) {
             const r = data[i];
             const g = data[i + 1];
@@ -286,7 +350,6 @@
           }
           ctx.putImageData(imgData, 0, 0);
 
-          // Bước 2: Gọt mép an toàn (chống lỗi trắng ảnh)
           if (cropDepth > 0) {
             tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
             tempCtx.drawImage(canvas, 0, 0);
@@ -328,7 +391,11 @@
         const dataUrl = canvas.toDataURL(format, 0.9);
         const base64Data = dataUrl.replace(/^data:image\/(png|jpeg);base64,/, "");
         
-        folder.file(`${frameIndex}.${ext}`, base64Data, { base64: true });
+        extractedFrames.push({
+          name: `${frameIndex}.${ext}`,
+          base64: base64Data,
+          dataUrl: dataUrl
+        });
 
         const percent = Math.min(100, Math.round((frameIndex / totalFrames) * 100));
         progressFill.style.width = `${percent}%`;
@@ -338,18 +405,52 @@
         frameIndex++;
       }
 
-      progressText.innerText = 'Đang đóng gói file ZIP...';
-      const content = await zip.generateAsync({ type: "blob" }, (metadata) => {
-        const p = Math.round(metadata.percent);
-        progressFill.style.width = `${p}%`;
-        progressText.innerText = `Đang nén ZIP: ${p}%`;
+      // Hoàn tất cắt, hiển thị bảng Review
+      progressContainer.style.display = 'none';
+      btnProcess.disabled = false;
+      hienThiReview();
+    });
+
+    // Hàm dựng giao diện lưới ảnh xem trước
+    function hienThiReview() {
+      reviewGrid.innerHTML = '';
+      reviewTitle.innerText = `👁️ Xem trước kết quả (${extractedFrames.length} frames):`;
+
+      extractedFrames.forEach(frame => {
+        const card = document.createElement('div');
+        card.className = 'review-card';
+        card.innerHTML = `
+          <img src="${frame.dataUrl}" alt="${frame.name}">
+          <span>${frame.name}</span>
+        `;
+        reviewGrid.appendChild(card);
       });
 
+      reviewSection.style.display = 'flex';
+      reviewSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Bấm nút Tải xuống file ZIP sau khi đã ưng ý
+    btnDownloadZip.addEventListener('click', async () => {
+      if (extractedFrames.length === 0) return;
+
+      const zipName = zipNameInput.value.trim() || 'character_animation_frames';
+      btnDownloadZip.disabled = true;
+      btnDownloadZip.innerText = '⏳ Đang nén file ZIP...';
+
+      const zip = new JSZip();
+      const folder = zip.folder("frames");
+
+      extractedFrames.forEach(frame => {
+        folder.file(frame.name, frame.base64, { base64: true });
+      });
+
+      const content = await zip.generateAsync({ type: "blob" });
       const finalZipName = zipName.endsWith('.zip') ? zipName : `${zipName}.zip`;
       saveAs(content, finalZipName);
 
-      progressText.innerText = `✅ Hoàn tất! Đã tải file ${finalZipName} về máy.`;
-      btnProcess.disabled = false;
+      btnDownloadZip.disabled = false;
+      btnDownloadZip.innerText = '📥 Tải xuống file ZIP';
     });
   </script>
 </body>
