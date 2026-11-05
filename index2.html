@@ -498,102 +498,6 @@
         }
       }
 
-      // Hàm kiểm tra xem ảnh đã có sẵn nền trong suốt (transparent) hay chưa
-      hasTransparentBackground(imgElement) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        canvas.width = imgElement.naturalWidth || imgElement.width;
-        canvas.height = imgElement.naturalHeight || imgElement.height;
-        
-        ctx.drawImage(imgElement, 0, 0);
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imgData.data;
-        
-        for (let i = 3; i < data.length; i += 4 * 50) {
-          if (data[i] < 255) {
-            return true; // Đã có sẵn trong suốt
-          }
-        }
-        return false;
-      }
-
-            // ✨ Hàm xử lý xóa phông và tạo viền trắng lan VÀO TRONG để đè sạch màu cam sót lại
-      removeBackgroundAndAddBorder(imgElement) {
-        return new Promise((resolve) => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          
-          const width = imgElement.naturalWidth || imgElement.width;
-          const height = imgElement.naturalHeight || imgElement.height;
-          
-          canvas.width = width;
-          canvas.height = height;
-          
-          // 1. Vẽ và xóa phông nền gốc
-          ctx.drawImage(imgElement, 0, 0);
-          const imgData = ctx.getImageData(0, 0, width, height);
-          const data = imgData.data;
-          
-          const targetR = data[0];
-          const targetG = data[1];
-          const targetB = data[2];
-          const threshold = 55; // Độ dung sai xóa phông
-
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            
-            if (
-              Math.abs(r - targetR) < threshold &&
-              Math.abs(g - targetG) < threshold &&
-              Math.abs(b - targetB) < threshold
-            ) {
-              data[i + 3] = 0; // Xóa phông trong suốt
-            }
-          }
-          ctx.putImageData(imgData, 0, 0);
-
-          // 2. Tạo bản sao tạm để xử lý phần viền ăn VÀO TRONG
-          const tempCanvas = document.createElement('canvas');
-          tempCanvas.width = width;
-          tempCanvas.height = height;
-          const tempCtx = tempCanvas.getContext('2d');
-          tempCtx.drawImage(canvas, 0, 0);
-
-          // 3. Thuật toán "ăn sâu vào trong": 
-          // Ta vẽ đè chính ảnh đã xóa phông dịch chuyển vào các hướng bên trong, 
-          // sau đó dùng chế độ lọc để tạo thành lớp viền trắng ôm sâu vào mép nhân vật đè lên màu cam.
-          ctx.save();
-          const innerDepth = 4; // 👈 Độ sâu ăn vào trong (4px) để lấp sạch màu cam
-          
-          // Vẽ dịch chuyển ảnh gốc vào phía trong theo các hướng để tạo vùng lấp
-          for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
-            for (let r = 1; r <= innerDepth; r++) {
-              ctx.drawImage(
-                tempCanvas, 
-                Math.cos(angle) * r, 
-                Math.sin(angle) * r
-              );
-            }
-          }
-
-          // Ép toàn bộ phần viền vừa tạo thành màu TRẮNG tinh khôi
-          ctx.globalCompositeOperation = 'source-in';
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, width, height);
-          ctx.restore();
-
-          // 4. Đè lại lớp nhân vật chính chuẩn ở trên cùng (để giữ nguyên nét mặt, chi tiết sắc nét)
-          ctx.drawImage(tempCanvas, 0, 0);
-
-          const processedImg = new Image();
-          processedImg.onload = () => resolve(processedImg);
-          processedImg.src = canvas.toDataURL('image/png');
-        });
-      }
-
       toggleOrientation() {
         this.isPortrait = !this.isPortrait;
         const btn = document.getElementById('btn-orientation');
@@ -882,19 +786,13 @@
         let i = 1;
         let continueSearching = true;
 
-        while (continueSearching && i <= 50) {
+        // Trực tiếp load các frame ảnh đã xử lý sẵn từ thư mục
+        while (continueSearching && i <= 100) {
           const framePath = `assets/NhanVat/${nhanVat}/${bieuCam}/${i}.png`;
           const loadedImg = await this.checkAndLoadImage(framePath);
           
           if (loadedImg) {
-            let processedImg = loadedImg;
-            
-            // Xóa phông & bọc viền 4px ăn sâu nếu ảnh chưa có sẵn nền trong suốt
-            if (!this.hasTransparentBackground(loadedImg)) {
-              processedImg = await this.removeBackgroundAndAddBorder(loadedImg);
-            }
-            
-            frameImages.push(processedImg);
+            frameImages.push(loadedImg);
             i++;
           } else {
             continueSearching = false;
@@ -906,11 +804,7 @@
           const singlePath = `assets/NhanVat/${nhanVat}/${bieuCam}.png`;
           const singleImg = await this.checkAndLoadImage(singlePath);
           if (singleImg) {
-            let processedSingle = singleImg;
-            if (!this.hasTransparentBackground(singleImg)) {
-              processedSingle = await this.removeBackgroundAndAddBorder(singleImg);
-            }
-            frameImages.push(processedSingle);
+            frameImages.push(singleImg);
           }
         }
 
@@ -948,14 +842,8 @@
         if (this.dangTamDung) {
           this.dangTamDung = false;
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
-          
-          // Bật lại nhạc nền và video nền ngay lập tức khi tiếp tục
-          if (this.audioBgm.paused) {
-            this.audioBgm.play().catch(()=>{});
-          }
-          if (this.layerBgVideo.style.display === 'block' && this.layerBgVideo.paused) {
-            this.layerBgVideo.play().catch(()=>{});
-          }
+          if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
+          if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           
           if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
