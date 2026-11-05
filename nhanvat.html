@@ -184,16 +184,11 @@
 <body>
 
   <div class="container">
-    <h2>🎬 Cắt Video thành Frame & Xóa Phông</h2>
+    <h2>🎬 Cắt Video thành Frame & Xóa Phông Thông Minh (Flood-Fill)</h2>
 
     <div class="form-group">
       <label>1. Chọn video nguồn:</label>
       <input type="file" id="videoFile" accept="video/*">
-      
-  <label>Dung sai xóa phông (Threshold): <span style="color: #a855f7; font-size: 0.75rem;">(Gợi ý: 15-25 cho tóc tiệp màu nền)</span></label>
-  <input type="number" id="thresholdInput" min="5" max="100" value="20" placeholder="Mặc định: 20">
-      
-      
     </div>
 
     <video id="videoPreview" controls></video>
@@ -230,13 +225,19 @@
     <div class="form-group">
       <div class="checkbox-group">
         <input type="checkbox" id="removeBgCheck" checked>
-        <label for="removeBgCheck" style="cursor:pointer; color:#fff; font-weight:600;">✨ Tự động xóa phông nền (Lấy màu ở góc trái trên cùng làm chuẩn)</label>
+        <label for="removeBgCheck" style="cursor:pointer; color:#fff; font-weight:600;">✨ Tự động xóa phông nền (Loang từ ngoài vào - Không thủng tóc)</label>
       </div>
     </div>
 
-    <div class="form-group">
-      <label>4. Độ xâm lấn gọt mép phông (pixel):</label>
-      <input type="number" id="cropDepthInput" min="0" max="10" value="1" placeholder="Ví dụ: 1 hoặc 2">
+    <div class="time-range-group">
+      <div class="form-group">
+        <label>4a. Dung sai xóa nền (Threshold):</label>
+        <input type="number" id="thresholdInput" min="5" max="100" value="35" placeholder="Gợi ý: 30-40">
+      </div>
+      <div class="form-group">
+        <label>4b. Độ xâm lấn gọt mép (px):</label>
+        <input type="number" id="cropDepthInput" min="0" max="10" value="1" placeholder="Ví dụ: 1">
+      </div>
     </div>
 
     <div class="time-range-group">
@@ -285,6 +286,7 @@
     const fpsSelect = document.getElementById('fpsSelect');
     const formatSelect = document.getElementById('formatSelect');
     const removeBgCheck = document.getElementById('removeBgCheck');
+    const thresholdInput = document.getElementById('thresholdInput');
     const cropDepthInput = document.getElementById('cropDepthInput');
     const blurPxInput = document.getElementById('blurPxInput');
     const blurPercentInput = document.getElementById('blurPercentInput');
@@ -325,6 +327,7 @@
       const fps = parseInt(fpsSelect.value);
       const format = formatSelect.value;
       const removeBg = removeBgCheck.checked;
+      const threshold = Math.max(1, parseInt(thresholdInput.value) || 35);
       const cropDepth = Math.max(0, parseInt(cropDepthInput.value) || 0);
       const blurPx = Math.max(0, parseFloat(blurPxInput.value) || 0);
       const blurPercent = Math.min(100, Math.max(0, parseFloat(blurPercentInput.value) || 0)) / 100;
@@ -383,11 +386,10 @@
           vid.addEventListener('seeked', onSeeked);
         });
 
-        // Vẽ frame video lên canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
 
-        // Kiểm tra frame trống đầu video
+        // Kiểm tra frame trống
         const checkData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
         let isEmptyFrame = true;
         for (let i = 3; i < checkData.length; i += 4 * 100) {
@@ -402,29 +404,59 @@
           continue;
         }
 
-        // Nếu chọn xóa phông
+        // ✨ THUẬT TOÁN XÓA PHÔNG FLOOD-FILL (LOANG TỪ NGOÀI VÀO BẢO VỆ TÓC)
         if (removeBg && format === 'image/png') {
           const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = imgData.data;
-          
+          const width = canvas.width;
+          const height = canvas.height;
+
+          // Lấy màu phông nền chuẩn ở góc trái trên cùng
           const targetR = data[0];
           const targetG = data[1];
           const targetB = data[2];
-         // const threshold = 45;
-// Thay vì cố định threshold = 45;
-const threshold = Math.max(1, parseInt(document.getElementById('thresholdInput').value) || 20);
-          
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            
+
+          const visited = new Uint8Array(width * height);
+          const queue = [];
+
+          // Đưa toàn bộ các pixel ở 4 cạnh viền ngoài vào hàng chờ để bắt đầu loang
+          for (let x = 0; x < width; x++) {
+            queue.push(x, 0);                  // Cạnh trên
+            queue.push(x, height - 1);         // Cạnh dưới
+          }
+          for (let y = 0; y < height; y++) {
+            queue.push(0, y);                  // Cạnh trái
+            queue.push(width - 1, y);          // Cạnh phải
+          }
+
+          // Thuật toán loang vết dầu (BFS Flood Fill)
+          let head = 0;
+          while (head < queue.length) {
+            const x = queue[head++];
+            const y = queue[head++];
+            const idx = y * width + x;
+
+            if (visited[idx]) continue;
+            visited[idx] = 1;
+
+            const pIdx = idx * 4;
+            const r = data[pIdx];
+            const g = data[pIdx + 1];
+            const b = data[pIdx + 2];
+
+            // Nếu màu khớp với phông nền -> Xóa trong suốt & loang sang pixel lân cận
             if (
               Math.abs(r - targetR) < threshold &&
               Math.abs(g - targetG) < threshold &&
               Math.abs(b - targetB) < threshold
             ) {
-              data[i + 3] = 0; 
+              data[pIdx + 3] = 0; // Đặt Alpha = 0
+
+              // Thêm 4 pixel hàng xóm (trên, dưới, trái, phải) vào queue loang
+              if (x > 0 && !visited[idx - 1]) queue.push(x - 1, y);
+              if (x < width - 1 && !visited[idx + 1]) queue.push(x + 1, y);
+              if (y > 0 && !visited[idx - width]) queue.push(x, y - 1);
+              if (y < height - 1 && !visited[idx + width]) queue.push(x, y + 1);
             }
           }
           ctx.putImageData(imgData, 0, 0);
@@ -467,7 +499,7 @@ const threshold = Math.max(1, parseInt(document.getElementById('thresholdInput')
             ctx.putImageData(finalImgData, 0, 0);
           }
 
-          // Khử răng cưa phần viền với bán kính blur mở rộng chuẩn xác theo px
+          // Khử răng cưa phần viền
           if (blurPx > 0 && blurPercent > 0) {
             const sharpCanvas = document.createElement('canvas');
             sharpCanvas.width = canvas.width;
