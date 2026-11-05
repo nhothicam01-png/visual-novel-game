@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Frame Splitter & Manual Editor</title>
+  <!-- Thư viện nén ZIP và tải file -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
@@ -113,6 +114,7 @@
       background: linear-gradient(135deg, #f59e0b, #d97706);
     }
 
+    /* Progress bar */
     #progress-container {
       display: none;
       flex-direction: column;
@@ -138,6 +140,7 @@
       color: #cbd5e1;
     }
 
+    /* Khu vực Review ảnh */
     #review-section {
       display: none;
       flex-direction: column;
@@ -244,7 +247,7 @@
 <body>
 
   <div class="container">
-    <h2>🎬 Cắt Video & Trình Chỉnh Sửa Phông Từng Frame</h2>
+    <h2>🎬 Cắt Video & Chỉnh Sửa Phông Từng Frame</h2>
 
     <div class="form-group">
       <label>1. Chọn video nguồn:</label>
@@ -265,50 +268,58 @@
     </div>
 
     <div class="form-group">
-      <label>2. Tốc độ khung hình (FPS):</label>
+      <label>2. Tốc độ khung hình (FPS cần cắt):</label>
       <select id="fpsSelect">
-        <option value="10">10 FPS</option>
-        <option value="15" selected>15 FPS (Tiêu chuẩn)</option>
-        <option value="24">24 FPS</option>
-        <option value="30">30 FPS</option>
+        <option value="10">10 FPS (Nhanh, dung lượng nhẹ)</option>
+        <option value="15" selected>15 FPS (Tiêu chuẩn mượt)</option>
+        <option value="24">24 FPS (Mượt cao - Cinematic)</option>
+        <option value="30">30 FPS (Rất mượt)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>3. Định dạng ảnh xuất ra:</label>
+      <select id="formatSelect">
+        <option value="image/png" selected>PNG (Hỗ trợ trong suốt tốt nhất)</option>
+        <option value="image/jpeg">JPEG (Không hỗ trợ trong suốt)</option>
       </select>
     </div>
 
     <div class="form-group">
       <div class="checkbox-group">
         <input type="checkbox" id="removeBgCheck" checked>
-        <label for="removeBgCheck" style="cursor:pointer; color:#fff; font-weight:600;">✨ Tự động xóa phông nền ban đầu</label>
+        <label for="removeBgCheck" style="cursor:pointer; color:#fff; font-weight:600;">✨ Tự động xóa phông nền (Loang từ ngoài vào - Không thủng tóc)</label>
       </div>
     </div>
 
     <div class="time-range-group">
       <div class="form-group">
-        <label>Dung sai mặc định (Threshold):</label>
-        <input type="number" id="thresholdInput" min="5" max="100" value="35">
+        <label>4a. Dung sai xóa nền (Threshold):</label>
+        <input type="number" id="thresholdInput" min="5" max="100" value="35" placeholder="Gợi ý: 30-40">
       </div>
       <div class="form-group">
-        <label>Gọt mép chung (px):</label>
-        <input type="number" id="cropDepthInput" min="0" max="10" value="1">
+        <label>4b. Độ xâm lấn gọt mép (px):</label>
+        <input type="number" id="cropDepthInput" min="0" max="10" value="1" placeholder="Ví dụ: 1">
       </div>
     </div>
 
     <div class="time-range-group">
       <div class="form-group">
-        <label>Blur viền chung (px):</label>
-        <input type="number" id="blurPxInput" min="0" max="10" step="0.5" value="1">
+        <label>5a. Bán kính viền mờ (px):</label>
+        <input type="number" id="blurPxInput" min="0" max="20" step="0.5" value="1" placeholder="Ví dụ: 1 đến 20">
       </div>
       <div class="form-group">
-        <label>Cường độ blur chung (%):</label>
-        <input type="number" id="blurPercentInput" min="0" max="100" value="80">
+        <label>5b. Cường độ mờ viền (%):</label>
+        <input type="number" id="blurPercentInput" min="0" max="100" value="80" placeholder="Ví dụ: 80%">
       </div>
     </div>
 
     <div class="form-group">
-      <label>Tên file ZIP xuất ra:</label>
-      <input type="text" id="zipNameInput" value="character_animation_frames">
+      <label>6. Tên file ZIP xuất ra:</label>
+      <input type="text" id="zipNameInput" value="character_animation_frames" placeholder="Nhập tên file zip...">
     </div>
 
-    <button class="btn" id="btnProcess" disabled>🚀 Bắt đầu cắt toàn bộ video</button>
+    <button class="btn" id="btnProcess" disabled>🚀 Bắt đầu cắt & Trích xuất Frame</button>
 
     <div id="progress-container">
       <div class="progress-bar-bg">
@@ -317,24 +328,24 @@
       <div class="progress-text" id="progressText">Đang chuẩn bị...</div>
     </div>
 
-    <!-- Khu vực Review toàn bộ ảnh -->
+    <!-- Khu vực Review kết quả trước khi tải ZIP -->
     <div id="review-section">
       <div class="review-header">
-        <label style="font-weight: bold; color: #a855f7;" id="reviewTitle">👁️ Danh sách frames (0 ảnh):</label>
+        <label style="font-weight: bold; color: #a855f7;" id="reviewTitle">👁️ Xem trước kết quả (0 frames):</label>
         <button class="btn btn-success" id="btnDownloadZip">📥 Tải xuống tất cả vào ZIP</button>
       </div>
       <div class="review-grid" id="reviewGrid"></div>
     </div>
   </div>
 
-  <!-- Modal Chỉnh sửa chi tiết từng tấm -->
+  <!-- Modal Chỉnh sửa thủ công từng tấm -->
   <div id="editModal">
     <div class="modal-content">
       <div class="modal-header">
         <span id="modalTitle">✏️ Đang chỉnh sửa: Frame 1</span>
         <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="closeModal()">✕ Đóng</button>
       </div>
-      <label style="font-size: 0.8rem; color: #38bdf8;">🖱️ Click vào vùng phông sót để loang màu xóa tiếp:</label>
+      <label style="font-size: 0.8rem; color: #38bdf8;">🖱️ Click vào vùng phông xanh sót để loang màu xóa tiếp:</label>
       <canvas id="modalCanvas"></canvas>
       
       <div class="time-range-group">
@@ -343,7 +354,7 @@
           <input type="number" id="modalThreshold" min="5" max="100" value="35">
         </div>
         <div class="form-group">
-          <label>Bán kính blur viền riêng (px):</label>
+          <label>Bán kính blur riêng (px):</label>
           <input type="number" id="modalBlurPx" min="0" max="10" step="0.5" value="1">
         </div>
       </div>
@@ -355,10 +366,12 @@
 
       <div style="display: flex; gap: 10px; margin-top: 6px;">
         <button class="btn btn-warning" style="flex: 1;" onclick="applyModalPreview()">🔄 Xem trước hiệu ứng Blur</button>
-        <button class="btn btn-success" style="flex: 1;" onclick="saveModalEdit()">💾 Lưu thay đổi</button>
+        <button class="btn btn-success" style="flex: 1;" onclick="saveModalEdit()">💾 Lưu thay đổi tấm này</button>
       </div>
     </div>
   </div>
+
+  <audio id="audioHelper" style="display:none;"></audio>
 
   <script>
     const videoFile = document.getElementById('videoFile');
@@ -367,6 +380,7 @@
     const startTimeInput = document.getElementById('startTimeInput');
     const endTimeInput = document.getElementById('endTimeInput');
     const fpsSelect = document.getElementById('fpsSelect');
+    const formatSelect = document.getElementById('formatSelect');
     const removeBgCheck = document.getElementById('removeBgCheck');
     const thresholdInput = document.getElementById('thresholdInput');
     const cropDepthInput = document.getElementById('cropDepthInput');
@@ -377,13 +391,14 @@
     
     const progressContainer = document.getElementById('progress-container');
     const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progress-text');
+    const progressText = document.getElementById('progressText');
 
     const reviewSection = document.getElementById('review-section');
     const reviewGrid = document.getElementById('reviewGrid');
     const reviewTitle = document.getElementById('reviewTitle');
     const btnDownloadZip = document.getElementById('btnDownloadZip');
 
+    // Modal elements
     const editModal = document.getElementById('editModal');
     const modalCanvas = document.getElementById('modalCanvas');
     const modalTitle = document.getElementById('modalTitle');
@@ -392,7 +407,7 @@
     const modalBlurPercent = document.getElementById('modalBlurPercent');
 
     let videoUrl = '';
-    let extractedFrames = []; 
+    let extractedFrames = []; // Lưu trữ mảng gồm { name, canvas, dataUrl }
     let editingIndex = -1;
     let originalCleanCanvas = null;
 
@@ -414,7 +429,7 @@
       reviewSection.style.display = 'none';
     });
 
-    // Thuật toán loang màu tối ưu (tránh nghẽn stack/queue)
+    // Thuật toán Flood-Fill tối ưu (tránh đứng trình duyệt)
     function applyFloodFill(canvas, startX, startY, targetR, targetG, targetB, threshold) {
       const ctx = canvas.getContext('2d');
       const width = canvas.width;
@@ -457,23 +472,48 @@
       ctx.putImageData(imgData, 0, 0);
     }
 
-    // Xử lý bộ lọc khử viền ám tóc & blur mượt mà
-    function applyEdgeEnhancements(canvas, blurPx, blurPercentVal) {
-      const ctx = canvas.getContext('2d');
+    // Hàm xử lý gọt mép và khử blur viền
+    function applyPostProcess(canvas, cropDepth, blurPx, blurPercentVal) {
       const width = canvas.width;
       const height = canvas.height;
+      const ctx = canvas.getContext('2d');
 
-      const imgData = ctx.getImageData(0, 0, width, height);
-      const data = imgData.data;
-      for (let i = 0; i < data.length; i += 4) {
-        if (data[i + 3] > 0) {
-          if (data[i + 2] > data[i] + 15 && data[i + 2] > data[i + 1] + 15) {
-            data[i + 2] = Math.floor((data[i] + data[i + 1]) / 2);
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = width;
+      tempCanvas.height = height;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.drawImage(canvas, 0, 0);
+
+      // Gọt mép (Xâm lấn)
+      if (cropDepth > 0) {
+        const srcPixels = ctx.getImageData(0, 0, width, height).data;
+        const outPixels = tempCtx.getImageData(0, 0, width, height).data;
+
+        for (let y = cropDepth; y < height - cropDepth; y++) {
+          for (let x = cropDepth; x < width - cropDepth; x++) {
+            const idx = (y * width + x) * 4;
+            if (srcPixels[idx + 3] > 0) {
+              let hasTransparentNeighbor = false;
+              for (let dy = -cropDepth; dy <= cropDepth; dy++) {
+                for (let dx = -cropDepth; dx <= cropDepth; dx++) {
+                  const nIdx = ((y + dy) * width + (x + dx)) * 4;
+                  if (srcPixels[nIdx + 3] === 0) {
+                    hasTransparentNeighbor = true;
+                    break;
+                  }
+                }
+                if (hasTransparentNeighbor) break;
+              }
+              if (hasTransparentNeighbor) {
+                outPixels[idx + 3] = 0; 
+              }
+            }
           }
         }
+        ctx.putImageData(new ImageData(outPixels, width, height), 0, 0);
       }
-      ctx.putImageData(imgData, 0, 0);
 
+      // Khử răng cưa phần viền
       if (blurPx > 0 && blurPercentVal > 0) {
         const blurPercent = blurPercentVal / 100;
         const sharpCanvas = document.createElement('canvas');
@@ -519,47 +559,72 @@
       }
     }
 
+    // Xử lý xóa phông tự động cho từng frame khi cắt video
     function processFrameAutomatic(canvas) {
       const removeBg = removeBgCheck.checked;
-      const thresholdVal = parseInt(thresholdInput.value) || 35;
-      const blurPx = parseFloat(blurPxInput.value) || 0;
-      const blurPercentVal = parseFloat(blurPercentInput.value) || 0;
+      const threshold = Math.max(1, parseInt(thresholdInput.value) || 35);
+      const cropDepth = Math.max(0, parseInt(cropDepthInput.value) || 0);
+      const blurPx = Math.max(0, parseFloat(blurPxInput.value) || 0);
+      const blurPercent = Math.min(100, Math.max(0, parseFloat(blurPercentInput.value) || 0));
+      
       const width = canvas.width;
       const height = canvas.height;
       const ctx = canvas.getContext('2d');
 
       if (removeBg) {
         const data = ctx.getImageData(0, 0, width, height).data;
-        const targetR = data[0], targetG = data[1], targetB = data[2];
+        const targetR = data[0];
+        const targetG = data[1];
+        const targetB = data[2];
 
-        applyFloodFill(canvas, 0, 0, targetR, targetG, targetB, thresholdVal);
-        applyFloodFill(canvas, width - 1, 0, targetR, targetG, targetB, thresholdVal);
-        applyFloodFill(canvas, 0, height - 1, targetR, targetG, targetB, thresholdVal);
-        applyFloodFill(canvas, width - 1, height - 1, targetR, targetG, targetB, thresholdVal);
+        // Loang từ 4 cạnh và khe chân
+        for (let x = 0; x < width; x++) {
+          applyFloodFill(canvas, x, 0, targetR, targetG, targetB, threshold);
+          applyFloodFill(canvas, x, height - 1, targetR, targetG, targetB, threshold);
+        }
+        for (let y = 0; y < height; y++) {
+          applyFloodFill(canvas, 0, y, targetR, targetG, targetB, threshold);
+          applyFloodFill(canvas, width - 1, y, targetR, targetG, targetB, threshold);
+        }
+        for (let x = Math.floor(width * 0.4); x < Math.floor(width * 0.6); x++) {
+          applyFloodFill(canvas, x, height - 10, targetR, targetG, targetB, threshold);
+        }
       }
 
-      applyEdgeEnhancements(canvas, blurPx, blurPercentVal);
+      applyPostProcess(canvas, cropDepth, blurPx, blurPercent);
     }
 
-    // Xử lý cắt video toàn bộ
     btnProcess.addEventListener('click', async () => {
       const fps = parseInt(fpsSelect.value);
+      const format = formatSelect.value;
       const startTime = Math.max(0, parseFloat(startTimeInput.value) || 0);
+      const ext = format === 'image/png' ? 'png' : 'jpg';
 
       btnProcess.disabled = true;
       reviewSection.style.display = 'none';
       progressContainer.style.display = 'flex';
       progressFill.style.width = '0%';
-      progressText.innerText = 'Đang đọc video...';
+      progressText.innerText = 'Đang đọc thông tin video...';
 
       const vid = document.createElement('video');
       vid.src = videoUrl;
       vid.muted = true;
-      await new Promise(r => vid.onloadedmetadata = r);
+      
+      await new Promise((resolve) => {
+        vid.onloadedmetadata = () => resolve();
+      });
 
-      const endTime = Math.min(vid.duration, parseFloat(endTimeInput.value) || vid.duration);
+      const videoDuration = vid.duration;
+      const endTime = Math.min(videoDuration, parseFloat(endTimeInput.value) || videoDuration);
+      
+      if (startTime >= endTime) {
+        alert("⚠️ Thời gian bắt đầu phải nhỏ hơn thời gian kết thúc!");
+        btnProcess.disabled = false;
+        progressContainer.style.display = 'none';
+        return;
+      }
+
       const interval = 1 / fps;
-
       const canvas = document.createElement('canvas');
       canvas.width = vid.videoWidth || 1280;
       canvas.height = vid.videoHeight || 720;
@@ -571,25 +636,51 @@
 
       while (currentTime <= endTime) {
         vid.currentTime = currentTime;
-        await new Promise(r => {
-          const seekHandler = () => { vid.removeEventListener('seeked', seekHandler); setTimeout(r, 15); };
-          vid.addEventListener('seeked', seekHandler);
+        
+        await new Promise((resolve) => {
+          const onSeeked = () => {
+            vid.removeEventListener('seeked', onSeeked);
+            setTimeout(resolve, 20);
+          };
+          vid.addEventListener('seeked', onSeeked);
         });
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
 
-        processFrameAutomatic(canvas);
+        // Kiểm tra frame trống
+        const checkData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        let isEmptyFrame = true;
+        for (let i = 3; i < checkData.length; i += 4 * 100) {
+          if (checkData[i] > 10 && (checkData[i-1] < 240 || checkData[i-2] < 240 || checkData[i-3] < 240)) {
+            isEmptyFrame = false;
+            break;
+          }
+        }
 
+        if (isEmptyFrame && frameIndex === 1) {
+          currentTime += interval;
+          continue;
+        }
+
+        if (format === 'image/png') {
+          processFrameAutomatic(canvas);
+        }
+
+        // Lưu bản sao canvas gốc phục vụ chỉnh sửa tay sau này
         const savedCanvas = document.createElement('canvas');
         savedCanvas.width = canvas.width;
         savedCanvas.height = canvas.height;
         savedCanvas.getContext('2d').drawImage(canvas, 0, 0);
 
+        const dataUrl = canvas.toDataURL(format, 0.9);
+        const base64Data = dataUrl.replace(/^data:image\/(png|jpeg);base64,/, "");
+        
         extractedFrames.push({
-          name: `${frameIndex}.png`,
-          canvas: savedCanvas,
-          dataUrl: canvas.toDataURL('image/png', 0.9)
+          name: `${frameIndex}.${ext}`,
+          base64: base64Data,
+          dataUrl: dataUrl,
+          canvas: savedCanvas
         });
 
         const percent = Math.min(100, Math.round(((currentTime - startTime) / (endTime - startTime)) * 100));
@@ -602,12 +693,12 @@
 
       progressContainer.style.display = 'none';
       btnProcess.disabled = false;
-      renderReviewGrid();
+      hienThiReview();
     });
 
-    function renderReviewGrid() {
+    function hienThiReview() {
       reviewGrid.innerHTML = '';
-      reviewTitle.innerText = `👁️ Danh sách frames (${extractedFrames.length} ảnh):`;
+      reviewTitle.innerText = `👁️ Xem trước kết quả (${extractedFrames.length} frames):`;
 
       extractedFrames.forEach((frame, idx) => {
         const card = document.createElement('div');
@@ -624,6 +715,7 @@
       reviewSection.scrollIntoView({ behavior: 'smooth' });
     }
 
+    // Mở Modal sửa tay
     function openModal(index) {
       editingIndex = index;
       const frame = extractedFrames[index];
@@ -672,7 +764,7 @@
 
       const bPx = parseFloat(modalBlurPx.value) || 0;
       const bPer = parseFloat(modalBlurPercent.value) || 0;
-      applyEdgeEnhancements(modalCanvas, bPx, bPer);
+      applyPostProcess(modalCanvas, 0, bPx, bPer);
     }
 
     function saveModalEdit() {
@@ -684,7 +776,7 @@
       frame.dataUrl = modalCanvas.toDataURL('image/png', 0.9);
 
       closeModal();
-      renderReviewGrid();
+      hienThiReview();
     }
 
     btnDownloadZip.addEventListener('click', async () => {
@@ -703,7 +795,8 @@
       });
 
       const content = await zip.generateAsync({ type: "blob" });
-      saveAs(content, zipName.endsWith('.zip') ? zipName : `${zipName}.zip`);
+      const finalZipName = zipName.endsWith('.zip') ? zipName : `${zipName}.zip`;
+      saveAs(content, finalZipName);
 
       btnDownloadZip.disabled = false;
       btnDownloadZip.innerText = '📥 Tải xuống tất cả vào ZIP';
