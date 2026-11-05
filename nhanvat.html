@@ -193,7 +193,6 @@
 
     <video id="videoPreview" controls></video>
 
-    <!-- ✨ Thêm tùy chọn chọn mốc thời gian bắt đầu & kết thúc cắt -->
     <div class="time-range-group" id="timeRangeGroup" style="display: none;">
       <div class="form-group">
         <label>Bắt đầu cắt từ (giây):</label>
@@ -235,9 +234,16 @@
       <input type="number" id="cropDepthInput" min="0" max="10" value="1" placeholder="Ví dụ: 1 hoặc 2">
     </div>
 
-    <div class="form-group">
-      <label>5. Độ làm mờ RIÊNG PHẦN VIỀN - Khử răng cưa (Blur px):</label>
-      <input type="number" id="blurInput" min="0" max="5" step="0.5" value="1" placeholder="Ví dụ: 1">
+    <!-- ✨ Thêm thông số số pixel mờ và % độ mờ viền -->
+    <div class="time-range-group">
+      <div class="form-group">
+        <label>5a. Bán kính viền mờ (px):</label>
+        <input type="number" id="blurPxInput" min="0" max="5" step="0.5" value="1" placeholder="Ví dụ: 1">
+      </div>
+      <div class="form-group">
+        <label>5b. Cường độ mờ viền (%):</label>
+        <input type="number" id="blurPercentInput" min="0" max="100" value="80" placeholder="Ví dụ: 80%">
+      </div>
     </div>
 
     <div class="form-group">
@@ -276,7 +282,8 @@
     const formatSelect = document.getElementById('formatSelect');
     const removeBgCheck = document.getElementById('removeBgCheck');
     const cropDepthInput = document.getElementById('cropDepthInput');
-    const blurInput = document.getElementById('blurInput');
+    const blurPxInput = document.getElementById('blurPxInput');
+    const blurPercentInput = document.getElementById('blurPercentInput');
     const zipNameInput = document.getElementById('zipNameInput');
     const btnProcess = document.getElementById('btnProcess');
     
@@ -300,7 +307,6 @@
       videoPreview.src = videoUrl;
       videoPreview.style.display = 'block';
 
-      // Lấy thời lượng video để gán vào ô kết thúc
       videoPreview.onloadedmetadata = () => {
         startTimeInput.value = 0;
         endTimeInput.value = videoPreview.duration.toFixed(1);
@@ -316,7 +322,8 @@
       const format = formatSelect.value;
       const removeBg = removeBgCheck.checked;
       const cropDepth = Math.max(0, parseInt(cropDepthInput.value) || 0);
-      const blurVal = Math.max(0, parseFloat(blurInput.value) || 0);
+      const blurPx = Math.max(0, parseFloat(blurPxInput.value) || 0);
+      const blurPercent = Math.min(100, Math.max(0, parseFloat(blurPercentInput.value) || 0)) / 100;
       const startTime = Math.max(0, parseFloat(startTimeInput.value) || 0);
       const ext = format === 'image/png' ? 'png' : 'jpg';
 
@@ -454,8 +461,8 @@
             ctx.putImageData(finalImgData, 0, 0);
           }
 
-          // Khử răng cưa phần viền
-          if (blurVal > 0) {
+          // Khử răng cưa phần viền kết hợp tinh chỉnh % độ mờ
+          if (blurPx > 0 && blurPercent > 0) {
             const sharpCanvas = document.createElement('canvas');
             sharpCanvas.width = canvas.width;
             sharpCanvas.height = canvas.height;
@@ -466,7 +473,7 @@
             blurCanvas.width = canvas.width;
             blurCanvas.height = canvas.height;
             const blurCtx = blurCanvas.getContext('2d');
-            blurCtx.filter = `blur(${blurVal}px)`;
+            blurCtx.filter = `blur(${blurPx}px)`;
             blurCtx.drawImage(canvas, 0, 0);
 
             const sharpData = sharpCtx.getImageData(0, 0, canvas.width, canvas.height);
@@ -495,10 +502,11 @@
                   }
 
                   if (isEdge) {
-                    fPix[idx] = bPix[idx];         
-                    fPix[idx + 1] = bPix[idx + 1];   
-                    fPix[idx + 2] = bPix[idx + 2];   
-                    fPix[idx + 3] = bPix[idx + 3];   
+                    // Pha trộn giữa màu gốc và màu mờ dựa theo % cường độ mờ
+                    fPix[idx]     = sPix[idx]     * (1 - blurPercent) + bPix[idx]     * blurPercent;
+                    fPix[idx + 1] = sPix[idx + 1] * (1 - blurPercent) + bPix[idx + 1] * blurPercent;
+                    fPix[idx + 2] = sPix[idx + 2] * (1 - blurPercent) + bPix[idx + 2] * blurPercent;
+                    fPix[idx + 3] = sPix[idx + 3] * (1 - blurPercent) + bPix[idx + 3] * blurPercent;
                   }
                 }
               }
@@ -571,3 +579,4 @@
   </script>
 </body>
 </html>
+
