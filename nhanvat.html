@@ -161,13 +161,11 @@
       </div>
     </div>
 
-    <!-- ✨ Thêm tùy chọn số pixel xâm lấn (gọt viền mép vào trong) -->
     <div class="form-group" id="cropDepthGroup">
-      <label>4. Độ xâm lấn gọt mép phông (pixel):</label>
-      <input type="number" id="cropDepthInput" min="0" max="10" value="3" placeholder="Ví dụ: 3px (gọt sâu 3px để xóa viền bẩn)">
+      <label>4. Độ xâm lấn gọt mép phông (pixel): <span style="color: #a855f7; font-size: 0.75rem;">(Gợi ý: 0-2px để tránh lẹm vào nhân vật)</span></label>
+      <input type="number" id="cropDepthInput" min="0" max="10" value="1" placeholder="Ví dụ: 1 hoặc 2">
     </div>
 
-    <!-- ✨ Thêm ô gõ tên file ZIP tùy chỉnh -->
     <div class="form-group">
       <label>5. Tên file ZIP xuất ra:</label>
       <input type="text" id="zipNameInput" value="character_animation_frames" placeholder="Nhập tên file zip...">
@@ -197,7 +195,7 @@
     
     const progressContainer = document.getElementById('progress-container');
     const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
+    const progressText = document.getElementById('progress-text');
 
     let videoUrl = '';
 
@@ -241,7 +239,6 @@
       canvas.height = vid.videoHeight || 720;
       const ctx = canvas.getContext('2d');
 
-      // Canvas phụ để xử lý thuật toán xâm lấn gọt mép
       const tempCanvas = document.createElement('canvas');
       tempCanvas.width = canvas.width;
       tempCanvas.height = canvas.height;
@@ -259,11 +256,11 @@
           vid.onseeked = () => resolve();
         });
 
-        // 1. Vẽ frame video lên canvas chính
+        // Vẽ frame video lên canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
 
-        // 2. Nếu chọn xóa phông
+        // Nếu chọn xóa phông
         if (removeBg && format === 'image/png') {
           const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
           const data = imgData.data;
@@ -273,6 +270,7 @@
           const targetB = data[2];
           const threshold = 45;
 
+          // Bước 1: Xóa phông cơ bản
           for (let i = 0; i < data.length; i += 4) {
             const r = data[i];
             const g = data[i + 1];
@@ -283,37 +281,50 @@
               Math.abs(g - targetG) < threshold &&
               Math.abs(b - targetB) < threshold
             ) {
-              data[i + 3] = 0; // Xóa nền thành trong suốt
+              data[i + 3] = 0; 
             }
           }
           ctx.putImageData(imgData, 0, 0);
 
-          // 3. ✨ Thuật toán Xâm lấn (Crop Depth / Erosion): Gọt lấn mép trong suốt vào nhân vật
+          // Bước 2: Gọt mép an toàn (chống lỗi trắng ảnh)
           if (cropDepth > 0) {
             tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
             tempCtx.drawImage(canvas, 0, 0);
 
-            tempCtx.save();
-            tempCtx.globalCompositeOperation = 'destination-out';
-            
-            for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
-              for (let r = 1; r <= cropDepth; r++) {
-                tempCtx.drawImage(
-                  canvas, 
-                  Math.cos(angle) * r, 
-                  Math.sin(angle) * r
-                );
+            const srcData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const srcPixels = srcData.data;
+            const outPixels = tempCtx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+            for (let y = cropDepth; y < canvas.height - cropDepth; y++) {
+              for (let x = cropDepth; x < canvas.width - cropDepth; x++) {
+                const idx = (y * canvas.width + x) * 4;
+                
+                if (srcPixels[idx + 3] > 0) {
+                  let hasTransparentNeighbor = false;
+                  
+                  for (let dy = -cropDepth; dy <= cropDepth; dy++) {
+                    for (let dx = -cropDepth; dx <= cropDepth; dx++) {
+                      const nIdx = ((y + dy) * canvas.width + (x + dx)) * 4;
+                      if (srcPixels[nIdx + 3] === 0) {
+                        hasTransparentNeighbor = true;
+                        break;
+                      }
+                    }
+                    if (hasTransparentNeighbor) break;
+                  }
+
+                  if (hasTransparentNeighbor) {
+                    outPixels[idx + 3] = 0; 
+                  }
+                }
               }
             }
-            tempCtx.restore();
 
-            // Vẽ lại ảnh đã gọt sạch mép vào canvas chính
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(tempCanvas, 0, 0);
+            const finalImgData = new ImageData(outPixels, canvas.width, canvas.height);
+            ctx.putImageData(finalImgData, 0, 0);
           }
         }
 
-        // Chuyển canvas thành base64
         const dataUrl = canvas.toDataURL(format, 0.9);
         const base64Data = dataUrl.replace(/^data:image\/(png|jpeg);base64,/, "");
         
@@ -334,7 +345,6 @@
         progressText.innerText = `Đang nén ZIP: ${p}%`;
       });
 
-      // ✨ Tải file ZIP về với tên tùy chỉnh
       const finalZipName = zipName.endsWith('.zip') ? zipName : `${zipName}.zip`;
       saveAs(content, finalZipName);
 
