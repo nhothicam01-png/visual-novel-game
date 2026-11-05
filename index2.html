@@ -488,7 +488,7 @@
         }
       }
 
-      // Hàm ẩn/hịên màn hình Loading
+      // Hàm ẩn/hiện màn hình Loading
       hienLoading(show) {
         if (show) {
           this.capNhatTienDoLoad(0, "Bắt đầu tải kịch bản...");
@@ -498,134 +498,101 @@
         }
       }
 
-      // Hàm tách nền thông minh: Tự động bỏ qua nếu ảnh vốn đã có sẵn nền trong suốt (transparent)
-      removeBackgroundFromImage(imgElement) {
+      // Hàm kiểm tra xem ảnh đã có sẵn nền trong suốt (transparent) hay chưa
+      hasTransparentBackground(imgElement) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = imgElement.naturalWidth || imgElement.width;
+        canvas.height = imgElement.naturalHeight || imgElement.height;
+        
+        ctx.drawImage(imgElement, 0, 0);
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imgData.data;
+        
+        for (let i = 3; i < data.length; i += 4 * 50) {
+          if (data[i] < 255) {
+            return true; // Đã có sẵn trong suốt
+          }
+        }
+        return false;
+      }
+
+      // ✨ Hàm xử lý xóa phông nền kết hợp tạo viền (stroke) ăn sâu 4px vào trong để lấp sạch viền bẩn
+      removeBackgroundAndAddBorder(imgElement) {
         return new Promise((resolve) => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           
-          const w = imgElement.naturalWidth || imgElement.width;
-          const h = imgElement.naturalHeight || imgElement.height;
-          canvas.width = w;
-          canvas.height = h;
+          const width = imgElement.naturalWidth || imgElement.width;
+          const height = imgElement.naturalHeight || imgElement.height;
           
-          ctx.drawImage(imgElement, 0, 0);
-          const imgData = ctx.getImageData(0, 0, w, h);
+          const padding = 8;
+          canvas.width = width + padding * 2;
+          canvas.height = height + padding * 2;
+          
+          // 1. Xóa phông nền trên ảnh gốc
+          const tempCanvas = document.createElement('canvas');
+          const tempCtx = tempCanvas.getContext('2d');
+          tempCanvas.width = width;
+          tempCanvas.height = height;
+          tempCtx.drawImage(imgElement, 0, 0);
+          
+          const imgData = tempCtx.getImageData(0, 0, width, height);
           const data = imgData.data;
-
-          // 1. Kiểm tra nhanh xem ảnh có sẵn pixel trong suốt (alpha < 255) hay không
-          let hasTransparency = false;
-          for (let i = 3; i < data.length; i += 4) {
-            if (data[i] < 255) {
-              hasTransparency = true;
-              break; // Tìm thấy pixel trong suốt -> Ảnh đã được tách nền sẵn!
-            }
-          }
-
-          // Nếu ảnh đã có sẵn nền trong suốt, bỏ qua luôn bước lọc màu để giữ nguyên vẹn chất lượng ảnh gốc
-          if (hasTransparency) {
-            resolve(imgElement);
-            return;
-          }
-
-          // 2. Nếu là ảnh nền đặc (chưa tách nền), tiến hành chạy thuật toán lọc thông minh
-          const bgR = data[0], bgG = data[1], bgB = data[2];
-          const threshold = 35; 
-
-          const visited = new Uint8Array(w * h);
-          const queue = [];
-
-          const isBgColor = (idx) => {
-            const r = data[idx], g = data[idx + 1], b = data[idx + 2];
-            return (
-              Math.abs(r - bgR) < threshold &&
-              Math.abs(g - bgG) < threshold &&
-              Math.abs(b - bgB) < threshold
-            );
-          };
-
-          const addPixel = (x, y) => {
-            const pos = y * w + x;
-            if (!visited[pos] && isBgColor(pos * 4)) {
-              visited[pos] = 1;
-              queue.push(x, y);
-            }
-          };
-
-          for (let x = 0; x < w; x++) { addPixel(x, 0); addPixel(x, h - 1); }
-          for (let y = 0; y < h; y++) { addPixel(0, y); addPixel(w - 1, y); }
-
-          let head = 0;
-          while (head < queue.length) {
-            const cx = queue[head++];
-            const cy = queue[head++];
-
-            const neighbors = [
-              [cx + 1, cy], [cx - 1, cy],
-              [cx, cy + 1], [cx, cy - 1]
-            ];
-
-            for (let i = 0; i < neighbors.length; i++) {
-              const nx = neighbors[i][0];
-              const ny = neighbors[i][1];
-
-              if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
-                const nPos = ny * w + nx;
-                if (!visited[nPos] && isBgColor(nPos * 4)) {
-                  visited[nPos] = 1;
-                  queue.push(nx, ny);
-                }
-              }
-            }
-          }
-
-          // Xử lý các khe hở bên trong tóc
-          for (let i = 0; i < visited.length; i++) {
-            if (visited[i] === 0) {
-              const pos = i * 4;
-              const r = data[pos], g = data[pos + 1], b = data[pos + 2];
-              const diffToBg = Math.abs(r - bgR) + Math.abs(g - bgG) + Math.abs(b - bgB);
-              
-              if (diffToBg < 15) {
-                visited[i] = 1; 
-              }
-            }
-          }
-
-          for (let i = 0; i < visited.length; i++) {
-            if (visited[i] === 1) {
-              data[i * 4 + 3] = 0;
-            }
-          }
-
-          ctx.putImageData(imgData, 0, 0);
           
+          const targetR = data[0];
+          const targetG = data[1];
+          const targetB = data[2];
+          const threshold = 40; 
+
+          for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            
+            if (
+              Math.abs(r - targetR) < threshold &&
+              Math.abs(g - targetG) < threshold &&
+              Math.abs(b - targetB) < threshold
+            ) {
+              data[i + 3] = 0; // Xóa phông thành trong suốt
+            }
+          }
+          tempCtx.putImageData(imgData, 0, 0);
+
+          // 2. Tạo lớp viền dày (stroke) ăn sâu 4px để che phủ triệt để viền bẩn/răng cưa
+          ctx.save();
+          ctx.translate(padding, padding);
+          
+          const borderWidth = 4; // Độ dày ăn sâu 4px
+          
+          for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 6) {
+            for (let r = 1; r <= borderWidth; r++) {
+              ctx.drawImage(
+                tempCanvas, 
+                Math.cos(angle) * r, 
+                Math.sin(angle) * r
+              );
+            }
+          }
+          
+          // Đổi màu viền (Mặc định là màu Trắng '#FFFFFF', bạn có thể đổi thành '#000000' nếu muốn viền đen)
+          ctx.globalCompositeOperation = 'source-in';
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          ctx.restore();
+
+          // 3. Đè ảnh nhân vật gốc (đã xóa phông sạch) lên chính giữa lớp viền
+          ctx.drawImage(tempCanvas, padding, padding);
+
           const processedImg = new Image();
           processedImg.onload = () => resolve(processedImg);
           processedImg.src = canvas.toDataURL('image/png');
         });
       }
 
-      // Hàm phụ trợ: Chuyển đổi màu từ RGB sang HSV
-      rgbToHsv(r, g, b) {
-        r /= 255; g /= 255; b /= 255;
-        const max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h, s, v = max;
-        const d = max - min;
-        s = max === 0 ? 0 : d / max;
-
-        if (max === min) {
-          h = 0;
-        } else {
-          switch (max) {
-            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-            case g: h = (b - r) / d + 2; break;
-            case b: h = (r - g) / d + 4; break;
-          }
-          h /= 6;
-        }
-        return { h, s, v };
-      }
       toggleOrientation() {
         this.isPortrait = !this.isPortrait;
         const btn = document.getElementById('btn-orientation');
@@ -713,7 +680,6 @@
           try {
             this.duLieu = JSON.parse(e.target.result);
             
-            // Bật overlay tiến độ khi bắt đầu preload
             this.hienLoading(true);
             await this.taiTruocDuLieu();
             this.hienLoading(false);
@@ -749,7 +715,7 @@
               voiceIndex: 0,
               rate: 1.1,
               pitch: 1.0,
-              lang: 'ja-JP' // Mặc định Nhật hoặc Việt
+              lang: 'ja-JP'
             };
           }
         });
@@ -779,13 +745,11 @@
             { code: 'zh-CN', name: '🇨🇳 Tiếng Trung (Chinese)' }
           ];
 
-          // Tạo sẵn danh sách chọn nhanh ngôn ngữ quốc tế (tránh lỗi thiếu voice trên mobile)
           presetLangs.forEach(lang => {
             const selected = (cfg.lang === lang.code) ? 'selected' : '';
             optionsHtml += `<option value="${lang.code}" ${selected}>${lang.name}</option>`;
           });
 
-          // Nếu có danh sách giọng hệ thống chi tiết hơn, nối thêm vào
           if (this.danhSachVoices.length > 0) {
             this.danhSachVoices.forEach((v, idx) => {
               const selected = (cfg.voiceIndex === idx) ? 'selected' : '';
@@ -865,7 +829,6 @@
         const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo;
         if (!ds) return;
 
-        // Xây dựng danh sách tác vụ nạp tiền độ chi tiết
         const tasks = [];
         for (const khung of ds) {
           const anhNen = khung.anh_nen || khung.background;
@@ -923,9 +886,14 @@
           const loadedImg = await this.checkAndLoadImage(framePath);
           
           if (loadedImg) {
-            // ✨ Tự động khử phông nền cho từng frame ảnh tại đây
-            const transparentImg = await this.removeBackgroundFromImage(loadedImg);
-            frameImages.push(transparentImg);
+            let processedImg = loadedImg;
+            
+            // Xóa phông & bọc viền 4px ăn sâu nếu ảnh chưa có sẵn nền trong suốt
+            if (!this.hasTransparentBackground(loadedImg)) {
+              processedImg = await this.removeBackgroundAndAddBorder(loadedImg);
+            }
+            
+            frameImages.push(processedImg);
             i++;
           } else {
             continueSearching = false;
@@ -937,8 +905,11 @@
           const singlePath = `assets/NhanVat/${nhanVat}/${bieuCam}.png`;
           const singleImg = await this.checkAndLoadImage(singlePath);
           if (singleImg) {
-            const transparentSingle = await this.removeBackgroundFromImage(singleImg);
-            frameImages.push(transparentSingle);
+            let processedSingle = singleImg;
+            if (!this.hasTransparentBackground(singleImg)) {
+              processedSingle = await this.removeBackgroundAndAddBorder(singleImg);
+            }
+            frameImages.push(processedSingle);
           }
         }
 
@@ -976,8 +947,14 @@
         if (this.dangTamDung) {
           this.dangTamDung = false;
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
-          if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
-          if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
+          
+          // Bật lại nhạc nền và video nền ngay lập tức khi tiếp tục
+          if (this.audioBgm.paused) {
+            this.audioBgm.play().catch(()=>{});
+          }
+          if (this.layerBgVideo.style.display === 'block' && this.layerBgVideo.paused) {
+            this.layerBgVideo.play().catch(()=>{});
+          }
           
           if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
@@ -1025,7 +1002,6 @@
           if (this.audioBgm.play) this.audioBgm.play().catch(()=>{});
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
 
-          // Bật lại animation khung hình nếu nhân vật đang nói
           if (this.currentSpeaker) {
             const currentCfg = this.duLieu.danh_sach[this.currentIndex];
             if (currentCfg) this.batDauAnimationKhungHinh(currentCfg.nhan_vat, currentCfg.bieu_cam);
@@ -1071,7 +1047,6 @@
         const amThanhNen = khung.am_thanh_nen || khung.bgm;
         const amThanhHieuUng = khung.am_thanh_hieu_ung || khung.sfx;
 
-        // Xử lý nền
         if (anhNen && anhNen.trim() !== "") {
           if (this.isMediaVideo(anhNen)) {
             this.layerBgImg.style.display = 'none';
@@ -1097,7 +1072,6 @@
           }
         }
 
-        // Xử lý hiển thị Nhân vật & Frame Animation động
         if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
           const cacheKey = `${nhanVat}/${bieuCam}`;
           const frames = this.boDemNhanVat.get(cacheKey);
@@ -1106,7 +1080,6 @@
             this.layerChar.src = frames[0].src;
             this.layerChar.style.display = 'block';
             
-            // Nếu có từ 2 frame trở lên, bật hiệu ứng chạy frame liên tục giống hoạt hình
             if (frames.length > 1) {
               this.batDauAnimationKhungHinh(nhanVat, bieuCam);
             } else {
@@ -1125,7 +1098,6 @@
           this.dungAnimationKhungHinh();
         }
 
-        // Hiệu ứng VFX
         if (anhHieuUng && anhHieuUng.trim() !== "") {
           const vfxImg = this.boDemHieuUng.get(anhHieuUng);
           this.layerVfx.src = vfxImg ? vfxImg.src : `assets/HieuUng/${anhHieuUng}`;
@@ -1134,7 +1106,6 @@
           this.layerVfx.style.display = 'none';
         }
 
-        // BGM
         if (amThanhNen && amThanhNen.trim() !== "") {
           const bgmPath = `assets/AmThanh/Nen/${amThanhNen}`;
           if (!this.audioBgm.src.includes(amThanhNen)) {
@@ -1144,13 +1115,11 @@
           }
         }
 
-        // SFX
         if (amThanhHieuUng && amThanhHieuUng.trim() !== "") {
           this.audioSfx.src = `assets/AmThanh/HieuUng/${amThanhHieuUng}`;
           this.audioSfx.play().catch(() => {});
         }
 
-        // Chạy chữ & TTS
         if (noiDung) {
           this.hienLoiThoai(nhanVat, noiDung);
           this.currentSpeaker = nhanVat;
@@ -1169,7 +1138,6 @@
         await this.sleep(thoiGianCho * 1000);
       }
 
-      // Quản lý vòng lặp đổi frame liên tục mượt mà 60fps từ RAM
       batDauAnimationKhungHinh(nhanVat, bieuCam) {
         this.dungAnimationKhungHinh();
         const cacheKey = `${nhanVat}/${bieuCam}`;
@@ -1182,7 +1150,7 @@
             this.currentFrameIndex = (this.currentFrameIndex + 1) % frames.length;
             this.layerChar.src = frames[this.currentFrameIndex].src;
           }
-        }, 100); // Tốc độ chuyển đổi giữa các frame (100ms / frame)
+        }, 100);
       }
 
       dungAnimationKhungHinh() {
@@ -1205,7 +1173,6 @@
           ? this.cauHinhGiongNhanVat[nhanVat] 
           : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: 'ja-JP' };
 
-        // Ép buộc gán ngôn ngữ chính xác (ví dụ 'ja-JP' cho tiếng Nhật) giúp điện thoại nhận diện đúng bộ giọng
         utterance.lang = cfg.lang || 'ja-JP';
 
         if (this.danhSachVoices.length > 0 && this.danhSachVoices[cfg.voiceIndex]) {
