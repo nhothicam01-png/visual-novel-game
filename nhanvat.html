@@ -110,7 +110,6 @@
       background: linear-gradient(135deg, #f59e0b, #d97706);
     }
 
-    /* Khung test mẫu 1 frame */
     #test-box {
       display: none;
       flex-direction: column;
@@ -129,7 +128,6 @@
       cursor: crosshair;
     }
 
-    /* Progress bar */
     #progress-container {
       display: none;
       flex-direction: column;
@@ -155,7 +153,6 @@
       color: #cbd5e1;
     }
 
-    /* Khu vực Review toàn bộ */
     #review-section {
       display: none;
       flex-direction: column;
@@ -214,14 +211,12 @@
 
     <video id="videoPreview" controls></video>
 
-    <!-- Nút Render thử 1 frame tại vị trí đang xem -->
-    <button class="btn btn-warning" id="btnTestFrame" style="display: none;">🧪 Render thử frame hiện tại để test xóa phông</button>
+    <button class="btn btn-warning" id="btnTestFrame" style="display: none;">🧪 Render thử 1 frame tại vị trí hiện tại</button>
 
-    <!-- Khung hiển thị test frame & click chọn màu phông sót -->
     <div id="test-box">
-      <label style="color: #a855f7; font-weight: bold;">🖱️ Bấm trực tiếp vào vùng phông xanh bị sót trên ảnh dưới đây để trích màu xóa:</label>
+      <label style="color: #a855f7; font-weight: bold;">🖱️ Bấm trực tiếp vào vùng phông xanh bị sót trên ảnh để trích màu:</label>
       <canvas id="testCanvas"></canvas>
-      <div id="sampleColorInfo" style="font-size: 0.85rem; color: #38bdf8;">Đã lấy màu mẫu mặc định (Góc trái trên)</div>
+      <div id="sampleColorInfo" style="font-size: 0.85rem; color: #38bdf8;">Chưa trích màu thủ công (Đang lấy mặc định góc trái trên)</div>
     </div>
 
     <div class="time-range-group" id="timeRangeGroup" style="display: none;">
@@ -296,7 +291,6 @@
       <div class="progress-text" id="progressText">Đang chuẩn bị...</div>
     </div>
 
-    <!-- Khu vực Review kết quả trước khi tải ZIP -->
     <div id="review-section">
       <div class="review-header">
         <label style="font-weight: bold; color: #a855f7;" id="reviewTitle">👁️ Xem trước kết quả (0 frames):</label>
@@ -340,8 +334,6 @@
 
     let videoUrl = '';
     let extractedFrames = [];
-    
-    // Lưu trữ màu được trích xuất thủ công (mặc định lấy góc trái trên)
     let customTargetColor = { r: -1, g: -1, b: -1 };
 
     videoFile.addEventListener('change', (e) => {
@@ -365,7 +357,7 @@
       customTargetColor = { r: -1, g: -1, b: -1 };
     });
 
-    // ✨ Nút Render thử 1 frame tại vị trí video đang dừng
+    // Render thử 1 frame giữ nguyên thông số cấu hình hiện tại
     btnTestFrame.addEventListener('click', async () => {
       if (!videoPreview.src) return;
 
@@ -375,11 +367,8 @@
       const ctx = canvas.getContext('2d');
 
       ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
-
-      // Xử lý xóa phông thử nghiệm trên frame này
       xuLyXoaPhông(canvas, ctx);
 
-      // Hiển thị lên khung test canvas nhỏ
       testCanvas.width = canvas.width;
       testCanvas.height = canvas.height;
       const testCtx = testCanvas.getContext('2d');
@@ -389,7 +378,7 @@
       testBox.scrollIntoView({ behavior: 'smooth' });
     });
 
-    // ✨ Click trực tiếp vào ảnh test để trích xuất màu sót
+    // Trích màu thủ công khi click vào canvas test
     testCanvas.addEventListener('click', (e) => {
       const rect = testCanvas.getBoundingClientRect();
       const scaleX = testCanvas.width / rect.width;
@@ -402,11 +391,11 @@
       const pixel = testCtx.getImageData(x, y, 1, 1).data;
 
       customTargetColor = { r: pixel[0], g: pixel[1], b: pixel[2] };
-      sampleColorInfo.innerHTML = `✅ Đã trích màu tại tọa độ (${x}, ${y}) -> RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]}). Hãy bấm "Render thử" lại để kiểm tra!`;
+      sampleColorInfo.innerHTML = `✅ Đã lưu màu trích xuất RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]}). Bấm "Render thử" lại để xem kết quả cập nhật!`;
       sampleColorInfo.style.color = '#10b981';
     });
 
-    // Hàm chung xử lý thuật toán xóa phông (Flood-fill + Crop + Blur)
+    // Hàm xử lý xóa phông dùng chung cho cả test 1 frame và render toàn bộ
     function xuLyXoaPhông(canvas, ctx) {
       const removeBg = removeBgCheck.checked;
       const threshold = Math.max(1, parseInt(thresholdInput.value) || 35);
@@ -421,7 +410,6 @@
       const width = canvas.width;
       const height = canvas.height;
 
-      // Nếu người dùng đã trích màu thủ công thì lấy màu đó, bằng không lấy góc trái trên
       const targetR = customTargetColor.r !== -1 ? customTargetColor.r : data[0];
       const targetG = customTargetColor.g !== -1 ? customTargetColor.g : data[1];
       const targetB = customTargetColor.b !== -1 ? customTargetColor.b : data[2];
@@ -471,6 +459,19 @@
           if (y < height - 1) queue.push(x, y + 1);
         }
       }
+
+      // Khử ám màu viền (Spill Removal) cho tóc
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] > 0) {
+          const r = data[i];
+          const g = data[i + 1];
+          const b = data[i + 2];
+          if (b > r + 15 && b > g + 15) {
+            data[i + 2] = Math.floor((r + g) / 2); 
+          }
+        }
+      }
+
       ctx.putImageData(imgData, 0, 0);
 
       // Gọt mép (Xâm lấn)
@@ -565,7 +566,7 @@
       }
     }
 
-    // Bắt đầu cắt toàn bộ video
+    // Render toàn bộ video áp dụng chính xác cấu hình đã lưu
     btnProcess.addEventListener('click', async () => {
       const fps = parseInt(fpsSelect.value);
       const format = formatSelect.value;
@@ -622,7 +623,6 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
 
-        // Kiểm tra frame trống
         const checkData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
         let isEmptyFrame = true;
         for (let i = 3; i < checkData.length; i += 4 * 100) {
@@ -637,7 +637,7 @@
           continue;
         }
 
-        // Gọi hàm xóa phông chuẩn chỉnh
+        // Tự động áp dụng toàn bộ cấu hình màu & thông số đã chọn cho từng frame
         xuLyXoaPhông(canvas, ctx);
 
         const dataUrl = canvas.toDataURL(format, 0.9);
