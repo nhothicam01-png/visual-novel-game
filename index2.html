@@ -518,7 +518,7 @@
         return false;
       }
 
-      // ✨ Hàm xử lý xóa phông nền kết hợp tạo viền (stroke) ăn sâu 4px vào trong để lấp sạch viền bẩn
+            // ✨ Hàm xử lý xóa phông và tạo viền trắng lan VÀO TRONG để đè sạch màu cam sót lại
       removeBackgroundAndAddBorder(imgElement) {
         return new Promise((resolve) => {
           const canvas = document.createElement('canvas');
@@ -527,24 +527,18 @@
           const width = imgElement.naturalWidth || imgElement.width;
           const height = imgElement.naturalHeight || imgElement.height;
           
-          const padding = 8;
-          canvas.width = width + padding * 2;
-          canvas.height = height + padding * 2;
+          canvas.width = width;
+          canvas.height = height;
           
-          // 1. Xóa phông nền trên ảnh gốc
-          const tempCanvas = document.createElement('canvas');
-          const tempCtx = tempCanvas.getContext('2d');
-          tempCanvas.width = width;
-          tempCanvas.height = height;
-          tempCtx.drawImage(imgElement, 0, 0);
-          
-          const imgData = tempCtx.getImageData(0, 0, width, height);
+          // 1. Vẽ và xóa phông nền gốc
+          ctx.drawImage(imgElement, 0, 0);
+          const imgData = ctx.getImageData(0, 0, width, height);
           const data = imgData.data;
           
           const targetR = data[0];
           const targetG = data[1];
           const targetB = data[2];
-          const threshold = 40; 
+          const threshold = 55; // Độ dung sai xóa phông
 
           for (let i = 0; i < data.length; i += 4) {
             const r = data[i];
@@ -556,19 +550,27 @@
               Math.abs(g - targetG) < threshold &&
               Math.abs(b - targetB) < threshold
             ) {
-              data[i + 3] = 0; // Xóa phông thành trong suốt
+              data[i + 3] = 0; // Xóa phông trong suốt
             }
           }
-          tempCtx.putImageData(imgData, 0, 0);
+          ctx.putImageData(imgData, 0, 0);
 
-          // 2. Tạo lớp viền dày (stroke) ăn sâu 4px để che phủ triệt để viền bẩn/răng cưa
+          // 2. Tạo bản sao tạm để xử lý phần viền ăn VÀO TRONG
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = width;
+          tempCanvas.height = height;
+          const tempCtx = tempCanvas.getContext('2d');
+          tempCtx.drawImage(canvas, 0, 0);
+
+          // 3. Thuật toán "ăn sâu vào trong": 
+          // Ta vẽ đè chính ảnh đã xóa phông dịch chuyển vào các hướng bên trong, 
+          // sau đó dùng chế độ lọc để tạo thành lớp viền trắng ôm sâu vào mép nhân vật đè lên màu cam.
           ctx.save();
-          ctx.translate(padding, padding);
+          const innerDepth = 4; // 👈 Độ sâu ăn vào trong (4px) để lấp sạch màu cam
           
-          const borderWidth = 4; // Độ dày ăn sâu 4px
-          
-          for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 6) {
-            for (let r = 1; r <= borderWidth; r++) {
+          // Vẽ dịch chuyển ảnh gốc vào phía trong theo các hướng để tạo vùng lấp
+          for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
+            for (let r = 1; r <= innerDepth; r++) {
               ctx.drawImage(
                 tempCanvas, 
                 Math.cos(angle) * r, 
@@ -576,16 +578,15 @@
               );
             }
           }
-          
-          // Đổi màu viền (Mặc định là màu Trắng '#FFFFFF', bạn có thể đổi thành '#000000' nếu muốn viền đen)
+
+          // Ép toàn bộ phần viền vừa tạo thành màu TRẮNG tinh khôi
           ctx.globalCompositeOperation = 'source-in';
           ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          
+          ctx.fillRect(0, 0, width, height);
           ctx.restore();
 
-          // 3. Đè ảnh nhân vật gốc (đã xóa phông sạch) lên chính giữa lớp viền
-          ctx.drawImage(tempCanvas, padding, padding);
+          // 4. Đè lại lớp nhân vật chính chuẩn ở trên cùng (để giữ nguyên nét mặt, chi tiết sắc nét)
+          ctx.drawImage(tempCanvas, 0, 0);
 
           const processedImg = new Image();
           processedImg.onload = () => resolve(processedImg);
