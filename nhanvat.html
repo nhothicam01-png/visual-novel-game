@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Video Frame Splitter & Background Remover</title>
-  <!-- Thư viện nén ZIP và tải file -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <style>
@@ -107,6 +106,28 @@
     .btn-success {
       background: linear-gradient(135deg, #10b981, #059669);
     }
+    .btn-warning {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    /* Khung test mẫu 1 frame */
+    #test-box {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(0,0,0,0.4);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px dashed #a855f7;
+      align-items: center;
+    }
+    #testCanvas {
+      max-width: 100%;
+      max-height: 250px;
+      border-radius: 6px;
+      background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px);
+      cursor: crosshair;
+    }
 
     /* Progress bar */
     #progress-container {
@@ -134,7 +155,7 @@
       color: #cbd5e1;
     }
 
-    /* Khu vực Review ảnh */
+    /* Khu vực Review toàn bộ */
     #review-section {
       display: none;
       flex-direction: column;
@@ -184,7 +205,7 @@
 <body>
 
   <div class="container">
-    <h2>🎬 Cắt Video thành Frame & Xóa Phông Thông Minh (Flood-Fill)</h2>
+    <h2>🎬 Cắt Video & Xóa Phông Chuyên Sâu</h2>
 
     <div class="form-group">
       <label>1. Chọn video nguồn:</label>
@@ -192,6 +213,16 @@
     </div>
 
     <video id="videoPreview" controls></video>
+
+    <!-- Nút Render thử 1 frame tại vị trí đang xem -->
+    <button class="btn btn-warning" id="btnTestFrame" style="display: none;">🧪 Render thử frame hiện tại để test xóa phông</button>
+
+    <!-- Khung hiển thị test frame & click chọn màu phông sót -->
+    <div id="test-box">
+      <label style="color: #a855f7; font-weight: bold;">🖱️ Bấm trực tiếp vào vùng phông xanh bị sót trên ảnh dưới đây để trích màu xóa:</label>
+      <canvas id="testCanvas"></canvas>
+      <div id="sampleColorInfo" style="font-size: 0.85rem; color: #38bdf8;">Đã lấy màu mẫu mặc định (Góc trái trên)</div>
+    </div>
 
     <div class="time-range-group" id="timeRangeGroup" style="display: none;">
       <div class="form-group">
@@ -225,14 +256,14 @@
     <div class="form-group">
       <div class="checkbox-group">
         <input type="checkbox" id="removeBgCheck" checked>
-        <label for="removeBgCheck" style="cursor:pointer; color:#fff; font-weight:600;">✨ Tự động xóa phông nền (Loang từ ngoài vào - Không thủng tóc)</label>
+        <label for="removeBgCheck" style="cursor:pointer; color:#fff; font-weight:600;">✨ Tự động xóa phông nền thông minh</label>
       </div>
     </div>
 
     <div class="time-range-group">
       <div class="form-group">
-        <label>4a. Dung sai xóa nền (Threshold):</label>
-        <input type="number" id="thresholdInput" min="5" max="100" value="35" placeholder="Gợi ý: 30-40">
+        <label>4a. Dung sai quét màu sót (Threshold):</label>
+        <input type="number" id="thresholdInput" min="5" max="100" value="35" placeholder="Gợi ý: 30-45">
       </div>
       <div class="form-group">
         <label>4b. Độ xâm lấn gọt mép (px):</label>
@@ -243,7 +274,7 @@
     <div class="time-range-group">
       <div class="form-group">
         <label>5a. Bán kính viền mờ (px):</label>
-        <input type="number" id="blurPxInput" min="0" max="20" step="0.5" value="1" placeholder="Ví dụ: 1 đến 20">
+        <input type="number" id="blurPxInput" min="0" max="20" step="0.5" value="1" placeholder="Ví dụ: 1">
       </div>
       <div class="form-group">
         <label>5b. Cường độ mờ viền (%):</label>
@@ -256,7 +287,7 @@
       <input type="text" id="zipNameInput" value="character_animation_frames" placeholder="Nhập tên file zip...">
     </div>
 
-    <button class="btn" id="btnProcess" disabled>🚀 Bắt đầu cắt & Trích xuất Frame</button>
+    <button class="btn" id="btnProcess" disabled>🚀 Bắt đầu cắt & Trích xuất Toàn bộ</button>
 
     <div id="progress-container">
       <div class="progress-bar-bg">
@@ -280,6 +311,11 @@
   <script>
     const videoFile = document.getElementById('videoFile');
     const videoPreview = document.getElementById('videoPreview');
+    const btnTestFrame = document.getElementById('btnTestFrame');
+    const testBox = document.getElementById('test-box');
+    const testCanvas = document.getElementById('testCanvas');
+    const sampleColorInfo = document.getElementById('sampleColorInfo');
+
     const timeRangeGroup = document.getElementById('timeRangeGroup');
     const startTimeInput = document.getElementById('startTimeInput');
     const endTimeInput = document.getElementById('endTimeInput');
@@ -295,7 +331,7 @@
     
     const progressContainer = document.getElementById('progress-container');
     const progressFill = document.getElementById('progressFill');
-    const progressText = document.getElementById('progressText');
+    const progressText = document.getElementById('progress-text');
 
     const reviewSection = document.getElementById('review-section');
     const reviewGrid = document.getElementById('reviewGrid');
@@ -304,6 +340,9 @@
 
     let videoUrl = '';
     let extractedFrames = [];
+    
+    // Lưu trữ màu được trích xuất thủ công (mặc định lấy góc trái trên)
+    let customTargetColor = { r: -1, g: -1, b: -1 };
 
     videoFile.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -312,6 +351,7 @@
       videoUrl = URL.createObjectURL(file);
       videoPreview.src = videoUrl;
       videoPreview.style.display = 'block';
+      btnTestFrame.style.display = 'block';
 
       videoPreview.onloadedmetadata = () => {
         startTimeInput.value = 0;
@@ -321,16 +361,214 @@
 
       btnProcess.disabled = false;
       reviewSection.style.display = 'none';
+      testBox.style.display = 'none';
+      customTargetColor = { r: -1, g: -1, b: -1 };
     });
 
-    btnProcess.addEventListener('click', async () => {
-      const fps = parseInt(fpsSelect.value);
-      const format = formatSelect.value;
+    // ✨ Nút Render thử 1 frame tại vị trí video đang dừng
+    btnTestFrame.addEventListener('click', async () => {
+      if (!videoPreview.src) return;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = videoPreview.videoWidth || 1280;
+      canvas.height = videoPreview.videoHeight || 720;
+      const ctx = canvas.getContext('2d');
+
+      ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+
+      // Xử lý xóa phông thử nghiệm trên frame này
+      xuLyXoaPhông(canvas, ctx);
+
+      // Hiển thị lên khung test canvas nhỏ
+      testCanvas.width = canvas.width;
+      testCanvas.height = canvas.height;
+      const testCtx = testCanvas.getContext('2d');
+      testCtx.drawImage(canvas, 0, 0);
+
+      testBox.style.display = 'flex';
+      testBox.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // ✨ Click trực tiếp vào ảnh test để trích xuất màu sót
+    testCanvas.addEventListener('click', (e) => {
+      const rect = testCanvas.getBoundingClientRect();
+      const scaleX = testCanvas.width / rect.width;
+      const scaleY = testCanvas.height / rect.height;
+      
+      const x = Math.floor((e.clientX - rect.left) * scaleX);
+      const y = Math.floor((e.clientY - rect.top) * scaleY);
+
+      const testCtx = testCanvas.getContext('2d');
+      const pixel = testCtx.getImageData(x, y, 1, 1).data;
+
+      customTargetColor = { r: pixel[0], g: pixel[1], b: pixel[2] };
+      sampleColorInfo.innerHTML = `✅ Đã trích màu tại tọa độ (${x}, ${y}) -> RGB(${pixel[0]}, ${pixel[1]}, ${pixel[2]}). Hãy bấm "Render thử" lại để kiểm tra!`;
+      sampleColorInfo.style.color = '#10b981';
+    });
+
+    // Hàm chung xử lý thuật toán xóa phông (Flood-fill + Crop + Blur)
+    function xuLyXoaPhông(canvas, ctx) {
       const removeBg = removeBgCheck.checked;
       const threshold = Math.max(1, parseInt(thresholdInput.value) || 35);
       const cropDepth = Math.max(0, parseInt(cropDepthInput.value) || 0);
       const blurPx = Math.max(0, parseFloat(blurPxInput.value) || 0);
       const blurPercent = Math.min(100, Math.max(0, parseFloat(blurPercentInput.value) || 0)) / 100;
+
+      if (!removeBg) return;
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      const width = canvas.width;
+      const height = canvas.height;
+
+      // Nếu người dùng đã trích màu thủ công thì lấy màu đó, bằng không lấy góc trái trên
+      const targetR = customTargetColor.r !== -1 ? customTargetColor.r : data[0];
+      const targetG = customTargetColor.g !== -1 ? customTargetColor.g : data[1];
+      const targetB = customTargetColor.b !== -1 ? customTargetColor.b : data[2];
+
+      const visited = new Uint8Array(width * height);
+      const queue = [];
+
+      for (let x = 0; x < width; x++) {
+        queue.push(x, 0);
+        queue.push(x, height - 1);
+      }
+      for (let y = 0; y < height; y++) {
+        queue.push(0, y);
+        queue.push(width - 1, y);
+      }
+
+      for (let x = Math.floor(width * 0.4); x < Math.floor(width * 0.6); x++) {
+        queue.push(x, height - 10); 
+      }
+
+      let head = 0;
+      while (head < queue.length) {
+        const x = queue[head++];
+        const y = queue[head++];
+        
+        if (x < 0 || x >= width || y < 0 || y >= height) continue;
+        const idx = y * width + x;
+
+        if (visited[idx]) continue;
+        visited[idx] = 1;
+
+        const pIdx = idx * 4;
+        const r = data[pIdx];
+        const g = data[pIdx + 1];
+        const b = data[pIdx + 2];
+
+        if (
+          Math.abs(r - targetR) < threshold &&
+          Math.abs(g - targetG) < threshold &&
+          Math.abs(b - targetB) < threshold
+        ) {
+          data[pIdx + 3] = 0; 
+
+          if (x > 0) queue.push(x - 1, y);
+          if (x < width - 1) queue.push(x + 1, y);
+          if (y > 0) queue.push(x, y - 1);
+          if (y < height - 1) queue.push(x, y + 1);
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      // Gọt mép (Xâm lấn)
+      if (cropDepth > 0) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(canvas, 0, 0);
+
+        const srcPixels = ctx.getImageData(0, 0, width, height).data;
+        const outPixels = tempCtx.getImageData(0, 0, width, height).data;
+
+        for (let y = cropDepth; y < height - cropDepth; y++) {
+          for (let x = cropDepth; x < width - cropDepth; x++) {
+            const idx = (y * width + x) * 4;
+            
+            if (srcPixels[idx + 3] > 0) {
+              let hasTransparentNeighbor = false;
+              
+              for (let dy = -cropDepth; dy <= cropDepth; dy++) {
+                for (let dx = -cropDepth; dx <= cropDepth; dx++) {
+                  const nIdx = ((y + dy) * width + (x + dx)) * 4;
+                  if (srcPixels[nIdx + 3] === 0) {
+                    hasTransparentNeighbor = true;
+                    break;
+                  }
+                }
+                if (hasTransparentNeighbor) break;
+              }
+
+              if (hasTransparentNeighbor) {
+                outPixels[idx + 3] = 0; 
+              }
+            }
+          }
+        }
+        ctx.putImageData(new ImageData(outPixels, width, height), 0, 0);
+      }
+
+      // Khử răng cưa viền
+      if (blurPx > 0 && blurPercent > 0) {
+        const sharpCanvas = document.createElement('canvas');
+        sharpCanvas.width = width;
+        sharpCanvas.height = height;
+        const sharpCtx = sharpCanvas.getContext('2d');
+        sharpCtx.drawImage(canvas, 0, 0);
+
+        const blurCanvas = document.createElement('canvas');
+        blurCanvas.width = width;
+        blurCanvas.height = height;
+        const blurCtx = blurCanvas.getContext('2d');
+        blurCtx.filter = `blur(${blurPx}px)`;
+        blurCtx.drawImage(canvas, 0, 0);
+
+        const sharpData = sharpCtx.getImageData(0, 0, width, height);
+        const blurData = blurCtx.getImageData(0, 0, width, height);
+        const finalData = ctx.getImageData(0, 0, width, height);
+
+        const sPix = sharpData.data;
+        const bPix = blurData.data;
+        const fPix = finalData.data;
+        const edgeRadius = Math.ceil(blurPx);
+
+        for (let y = edgeRadius; y < height - edgeRadius; y++) {
+          for (let x = edgeRadius; x < width - edgeRadius; x++) {
+            const idx = (y * width + x) * 4;
+
+            if (sPix[idx + 3] > 0) {
+              let isEdge = false;
+              for (let dy = -edgeRadius; dy <= edgeRadius; dy++) {
+                for (let dx = -edgeRadius; dx <= edgeRadius; dx++) {
+                  const nIdx = ((y + dy) * width + (x + dx)) * 4;
+                  if (sPix[nIdx + 3] === 0) {
+                    isEdge = true;
+                    break;
+                  }
+                }
+                if (isEdge) break;
+              }
+
+              if (isEdge) {
+                fPix[idx]     = sPix[idx]     * (1 - blurPercent) + bPix[idx]     * blurPercent;
+                fPix[idx + 1] = sPix[idx + 1] * (1 - blurPercent) + bPix[idx + 1] * blurPercent;
+                fPix[idx + 2] = sPix[idx + 2] * (1 - blurPercent) + bPix[idx + 2] * blurPercent;
+                fPix[idx + 3] = sPix[idx + 3] * (1 - blurPercent) + bPix[idx + 3] * blurPercent;
+              }
+            }
+          }
+        }
+        ctx.putImageData(finalData, 0, 0);
+      }
+    }
+
+    // Bắt đầu cắt toàn bộ video
+    btnProcess.addEventListener('click', async () => {
+      const fps = parseInt(fpsSelect.value);
+      const format = formatSelect.value;
       const startTime = Math.max(0, parseFloat(startTimeInput.value) || 0);
       const ext = format === 'image/png' ? 'png' : 'jpg';
 
@@ -366,11 +604,6 @@
       canvas.height = vid.videoHeight || 720;
       const ctx = canvas.getContext('2d');
 
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = canvas.width;
-      tempCanvas.height = canvas.height;
-      const tempCtx = tempCanvas.getContext('2d');
-
       extractedFrames = [];
       let currentTime = startTime;
       let frameIndex = 1;
@@ -404,155 +637,8 @@
           continue;
         }
 
-        // ✨ THUẬT TOÁN XÓA PHÔNG FLOOD-FILL (LOANG TỪ NGOÀI VÀO BẢO VỆ TÓC)
-        if (removeBg && format === 'image/png') {
-          const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = imgData.data;
-          const width = canvas.width;
-          const height = canvas.height;
-
-          // Lấy màu phông nền chuẩn ở góc trái trên cùng
-          const targetR = data[0];
-          const targetG = data[1];
-          const targetB = data[2];
-
-          const visited = new Uint8Array(width * height);
-          const queue = [];
-
-          // Đưa toàn bộ các pixel ở 4 cạnh viền ngoài vào hàng chờ để bắt đầu loang
-          for (let x = 0; x < width; x++) {
-            queue.push(x, 0);                  // Cạnh trên
-            queue.push(x, height - 1);         // Cạnh dưới
-          }
-          for (let y = 0; y < height; y++) {
-            queue.push(0, y);                  // Cạnh trái
-            queue.push(width - 1, y);          // Cạnh phải
-          }
-
-          // Thuật toán loang vết dầu (BFS Flood Fill)
-          let head = 0;
-          while (head < queue.length) {
-            const x = queue[head++];
-            const y = queue[head++];
-            const idx = y * width + x;
-
-            if (visited[idx]) continue;
-            visited[idx] = 1;
-
-            const pIdx = idx * 4;
-            const r = data[pIdx];
-            const g = data[pIdx + 1];
-            const b = data[pIdx + 2];
-
-            // Nếu màu khớp với phông nền -> Xóa trong suốt & loang sang pixel lân cận
-            if (
-              Math.abs(r - targetR) < threshold &&
-              Math.abs(g - targetG) < threshold &&
-              Math.abs(b - targetB) < threshold
-            ) {
-              data[pIdx + 3] = 0; // Đặt Alpha = 0
-
-              // Thêm 4 pixel hàng xóm (trên, dưới, trái, phải) vào queue loang
-              if (x > 0 && !visited[idx - 1]) queue.push(x - 1, y);
-              if (x < width - 1 && !visited[idx + 1]) queue.push(x + 1, y);
-              if (y > 0 && !visited[idx - width]) queue.push(x, y - 1);
-              if (y < height - 1 && !visited[idx + width]) queue.push(x, y + 1);
-            }
-          }
-          ctx.putImageData(imgData, 0, 0);
-
-          // Gọt mép (Xâm lấn)
-          if (cropDepth > 0) {
-            tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-            tempCtx.drawImage(canvas, 0, 0);
-
-            const srcData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const srcPixels = srcData.data;
-            const outPixels = tempCtx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-            for (let y = cropDepth; y < canvas.height - cropDepth; y++) {
-              for (let x = cropDepth; x < canvas.width - cropDepth; x++) {
-                const idx = (y * canvas.width + x) * 4;
-                
-                if (srcPixels[idx + 3] > 0) {
-                  let hasTransparentNeighbor = false;
-                  
-                  for (let dy = -cropDepth; dy <= cropDepth; dy++) {
-                    for (let dx = -cropDepth; dx <= cropDepth; dx++) {
-                      const nIdx = ((y + dy) * canvas.width + (x + dx)) * 4;
-                      if (srcPixels[nIdx + 3] === 0) {
-                        hasTransparentNeighbor = true;
-                        break;
-                      }
-                    }
-                    if (hasTransparentNeighbor) break;
-                  }
-
-                  if (hasTransparentNeighbor) {
-                    outPixels[idx + 3] = 0; 
-                  }
-                }
-              }
-            }
-
-            const finalImgData = new ImageData(outPixels, canvas.width, canvas.height);
-            ctx.putImageData(finalImgData, 0, 0);
-          }
-
-          // Khử răng cưa phần viền
-          if (blurPx > 0 && blurPercent > 0) {
-            const sharpCanvas = document.createElement('canvas');
-            sharpCanvas.width = canvas.width;
-            sharpCanvas.height = canvas.height;
-            const sharpCtx = sharpCanvas.getContext('2d');
-            sharpCtx.drawImage(canvas, 0, 0);
-
-            const blurCanvas = document.createElement('canvas');
-            blurCanvas.width = canvas.width;
-            blurCanvas.height = canvas.height;
-            const blurCtx = blurCanvas.getContext('2d');
-            blurCtx.filter = `blur(${blurPx}px)`;
-            blurCtx.drawImage(canvas, 0, 0);
-
-            const sharpData = sharpCtx.getImageData(0, 0, canvas.width, canvas.height);
-            const blurData = blurCtx.getImageData(0, 0, canvas.width, canvas.height);
-            const finalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-            const sPix = sharpData.data;
-            const bPix = blurData.data;
-            const fPix = finalData.data;
-
-            const edgeRadius = Math.ceil(blurPx);
-
-            for (let y = edgeRadius; y < canvas.height - edgeRadius; y++) {
-              for (let x = edgeRadius; x < canvas.width - edgeRadius; x++) {
-                const idx = (y * canvas.width + x) * 4;
-
-                if (sPix[idx + 3] > 0) {
-                  let isEdge = false;
-                  for (let dy = -edgeRadius; dy <= edgeRadius; dy++) {
-                    for (let dx = -edgeRadius; dx <= edgeRadius; dx++) {
-                      const nIdx = ((y + dy) * canvas.width + (x + dx)) * 4;
-                      if (sPix[nIdx + 3] === 0) {
-                        isEdge = true;
-                        break;
-                      }
-                    }
-                    if (isEdge) break;
-                  }
-
-                  if (isEdge) {
-                    fPix[idx]     = sPix[idx]     * (1 - blurPercent) + bPix[idx]     * blurPercent;
-                    fPix[idx + 1] = sPix[idx + 1] * (1 - blurPercent) + bPix[idx + 1] * blurPercent;
-                    fPix[idx + 2] = sPix[idx + 2] * (1 - blurPercent) + bPix[idx + 2] * blurPercent;
-                    fPix[idx + 3] = sPix[idx + 3] * (1 - blurPercent) + bPix[idx + 3] * blurPercent;
-                  }
-                }
-              }
-            }
-            ctx.putImageData(finalData, 0, 0);
-          }
-        }
+        // Gọi hàm xóa phông chuẩn chỉnh
+        xuLyXoaPhông(canvas, ctx);
 
         const dataUrl = canvas.toDataURL(format, 0.9);
         const base64Data = dataUrl.replace(/^data:image\/(png|jpeg);base64,/, "");
