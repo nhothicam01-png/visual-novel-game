@@ -234,11 +234,10 @@
       <input type="number" id="cropDepthInput" min="0" max="10" value="1" placeholder="Ví dụ: 1 hoặc 2">
     </div>
 
-    <!-- ✨ Thêm thông số số pixel mờ và % độ mờ viền -->
     <div class="time-range-group">
       <div class="form-group">
         <label>5a. Bán kính viền mờ (px):</label>
-        <input type="number" id="blurPxInput" min="0" max="5" step="0.5" value="1" placeholder="Ví dụ: 1">
+        <input type="number" id="blurPxInput" min="0" max="20" step="0.5" value="1" placeholder="Ví dụ: 1 đến 20">
       </div>
       <div class="form-group">
         <label>5b. Cường độ mờ viền (%):</label>
@@ -383,7 +382,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
 
-        // Kiểm tra frame trống
+        // Kiểm tra frame trống đầu video
         const checkData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
         let isEmptyFrame = true;
         for (let i = 3; i < checkData.length; i += 4 * 100) {
@@ -461,7 +460,7 @@
             ctx.putImageData(finalImgData, 0, 0);
           }
 
-          // Khử răng cưa phần viền kết hợp tinh chỉnh % độ mờ
+          // Khử răng cưa phần viền với bán kính blur mở rộng chuẩn xác theo px
           if (blurPx > 0 && blurPercent > 0) {
             const sharpCanvas = document.createElement('canvas');
             sharpCanvas.width = canvas.width;
@@ -484,14 +483,16 @@
             const bPix = blurData.data;
             const fPix = finalData.data;
 
-            for (let y = 1; y < canvas.height - 1; y++) {
-              for (let x = 1; x < canvas.width - 1; x++) {
+            const edgeRadius = Math.ceil(blurPx);
+
+            for (let y = edgeRadius; y < canvas.height - edgeRadius; y++) {
+              for (let x = edgeRadius; x < canvas.width - edgeRadius; x++) {
                 const idx = (y * canvas.width + x) * 4;
 
                 if (sPix[idx + 3] > 0) {
                   let isEdge = false;
-                  for (let dy = -1; dy <= 1; dy++) {
-                    for (let dx = -1; dx <= 1; dx++) {
+                  for (let dy = -edgeRadius; dy <= edgeRadius; dy++) {
+                    for (let dx = -edgeRadius; dx <= edgeRadius; dx++) {
                       const nIdx = ((y + dy) * canvas.width + (x + dx)) * 4;
                       if (sPix[nIdx + 3] === 0) {
                         isEdge = true;
@@ -502,7 +503,6 @@
                   }
 
                   if (isEdge) {
-                    // Pha trộn giữa màu gốc và màu mờ dựa theo % cường độ mờ
                     fPix[idx]     = sPix[idx]     * (1 - blurPercent) + bPix[idx]     * blurPercent;
                     fPix[idx + 1] = sPix[idx + 1] * (1 - blurPercent) + bPix[idx + 1] * blurPercent;
                     fPix[idx + 2] = sPix[idx + 2] * (1 - blurPercent) + bPix[idx + 2] * blurPercent;
@@ -579,4 +579,3 @@
   </script>
 </body>
 </html>
-
