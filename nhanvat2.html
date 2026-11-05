@@ -351,7 +351,7 @@
       <div class="time-range-group">
         <div class="form-group">
           <label>Dung sai điểm click (Threshold):</label>
-          <input type="number" id="modalThreshold" min="5" max="100" value="35">
+          <input type="number" id="modalThreshold" min="5" max="100" value="20" placeholder="Nên dùng 15-25">
         </div>
         <div class="form-group">
           <label>Bán kính blur riêng (px):</label>
@@ -370,8 +370,6 @@
       </div>
     </div>
   </div>
-
-  <audio id="audioHelper" style="display:none;"></audio>
 
   <script>
     const videoFile = document.getElementById('videoFile');
@@ -407,7 +405,7 @@
     const modalBlurPercent = document.getElementById('modalBlurPercent');
 
     let videoUrl = '';
-    let extractedFrames = []; // Lưu trữ mảng gồm { name, canvas, dataUrl }
+    let extractedFrames = [];
     let editingIndex = -1;
     let originalCleanCanvas = null;
 
@@ -429,7 +427,7 @@
       reviewSection.style.display = 'none';
     });
 
-    // Thuật toán Flood-Fill tối ưu (tránh đứng trình duyệt)
+    // Thuật toán Flood-Fill tối ưu hiệu năng (dùng Int32Array tránh tràn bộ nhớ)
     function applyFloodFill(canvas, startX, startY, targetR, targetG, targetB, threshold) {
       const ctx = canvas.getContext('2d');
       const width = canvas.width;
@@ -478,14 +476,26 @@
       const height = canvas.height;
       const ctx = canvas.getContext('2d');
 
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = width;
-      tempCanvas.height = height;
-      const tempCtx = tempCanvas.getContext('2d');
-      tempCtx.drawImage(canvas, 0, 0);
+      // Khử ám màu viền tóc (Spill Removal)
+      const imgData = ctx.getImageData(0, 0, width, height);
+      const data = imgData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] > 0) {
+          if (data[i + 2] > data[i] + 15 && data[i + 2] > data[i + 1] + 15) {
+            data[i + 2] = Math.floor((data[i] + data[i + 1]) / 2);
+          }
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
 
       // Gọt mép (Xâm lấn)
       if (cropDepth > 0) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(canvas, 0, 0);
+
         const srcPixels = ctx.getImageData(0, 0, width, height).data;
         const outPixels = tempCtx.getImageData(0, 0, width, height).data;
 
@@ -577,7 +587,7 @@
         const targetG = data[1];
         const targetB = data[2];
 
-        // Loang từ 4 cạnh và khe chân
+        // Loang từ 4 cạnh và khe hở chân
         for (let x = 0; x < width; x++) {
           applyFloodFill(canvas, x, 0, targetR, targetG, targetB, threshold);
           applyFloodFill(canvas, x, height - 1, targetR, targetG, targetB, threshold);
@@ -667,7 +677,6 @@
           processFrameAutomatic(canvas);
         }
 
-        // Lưu bản sao canvas gốc phục vụ chỉnh sửa tay sau này
         const savedCanvas = document.createElement('canvas');
         savedCanvas.width = canvas.width;
         savedCanvas.height = canvas.height;
@@ -740,6 +749,7 @@
       editingIndex = -1;
     }
 
+    // ✨ TÍNH TOÁN TỌA ĐỘ CLICK CHUẨN XÁC THEO TỶ LỆ CANVAS THỰC TẾ
     modalCanvas.addEventListener('click', (e) => {
       if (editingIndex === -1) return;
       const rect = modalCanvas.getBoundingClientRect();
@@ -751,8 +761,9 @@
 
       const mCtx = modalCanvas.getContext('2d');
       const pixel = mCtx.getImageData(clickX, clickY, 1, 1).data;
-      const thresh = parseInt(modalThreshold.value) || 35;
+      const thresh = parseInt(modalThreshold.value) || 20;
 
+      // Gọi loang màu chính xác tại điểm vừa click
       applyFloodFill(modalCanvas, clickX, clickY, pixel[0], pixel[1], pixel[2], thresh);
     });
 
