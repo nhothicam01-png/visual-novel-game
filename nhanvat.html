@@ -216,10 +216,9 @@
       <input type="number" id="cropDepthInput" min="0" max="10" value="1" placeholder="Ví dụ: 1 hoặc 2">
     </div>
 
-    <!-- ✨ Thêm tùy chọn chỉnh độ Blur (Khử răng cưa / Làm mềm mép) -->
     <div class="form-group">
-      <label>5. Độ làm mờ mép - Khử răng cưa (Blur px): <span style="color: #a855f7; font-size: 0.75rem;">(0 = Không mờ, 0.5 - 1.5 = Mịn mượt)</span></label>
-      <input type="number" id="blurInput" min="0" max="5" step="0.5" value="0.5" placeholder="Ví dụ: 0.5 hoặc 1">
+      <label>5. Độ làm mờ RIÊNG PHẦN VIỀN - Khử răng cưa (Blur px): <span style="color: #a855f7; font-size: 0.75rem;">(0 = Không mờ, 1-2 = Viền mịn màng, thân giữ nguyên)</span></label>
+      <input type="number" id="blurInput" min="0" max="5" step="0.5" value="1" placeholder="Ví dụ: 1">
     </div>
 
     <div class="form-group">
@@ -357,7 +356,7 @@
           }
           ctx.putImageData(imgData, 0, 0);
 
-          // Gọt mép (Xâm lấn)
+          // 1. Gọt mép (Xâm lấn)
           if (cropDepth > 0) {
             tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
             tempCtx.drawImage(canvas, 0, 0);
@@ -395,17 +394,61 @@
             ctx.putImageData(finalImgData, 0, 0);
           }
 
-          // ✨ ✨ Bước làm mờ nhẹ viền (Anti-aliasing / Blur) để khử răng cưa
+          // 2. ✨ KHỬ RĂNG CƯA CHỈ RIÊNG PHẦN VIỀN (Giữ nguyên thân ảnh sắc nét bên trong)
           if (blurVal > 0) {
-            tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-            // Áp dụng hiệu ứng lọc mờ (blur) thông qua bộ lọc canvas 2D context
-            tempCtx.filter = `blur(${blurVal}px)`;
-            tempCtx.drawImage(canvas, 0, 0);
-            
-            // Vẽ đè lại để làm mềm vùng biên
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(tempCanvas, 0, 0);
-            tempCtx.filter = 'none'; // Reset lại filter
+            // Tạo bản sao ảnh sắc nét gốc
+            const sharpCanvas = document.createElement('canvas');
+            sharpCanvas.width = canvas.width;
+            sharpCanvas.height = canvas.height;
+            const sharpCtx = sharpCanvas.getContext('2d');
+            sharpCtx.drawImage(canvas, 0, 0);
+
+            // Tạo bản sao ảnh bị làm mờ toàn bộ
+            const blurCanvas = document.createElement('canvas');
+            blurCanvas.width = canvas.width;
+            blurCanvas.height = canvas.height;
+            const blurCtx = blurCanvas.getContext('2d');
+            blurCtx.filter = `blur(${blurVal}px)`;
+            blurCtx.drawImage(canvas, 0, 0);
+
+            const sharpData = sharpCtx.getImageData(0, 0, canvas.width, canvas.height);
+            const blurData = blurCtx.getImageData(0, 0, canvas.width, canvas.height);
+            const finalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+            const sPix = sharpData.data;
+            const bPix = blurData.data;
+            const fPix = finalData.data;
+
+            // Chỉ trích xuất và áp dụng độ mờ cho các pixel nằm sát vùng biên trong suốt
+            for (let y = 1; y < canvas.height - 1; y++) {
+              for (let x = 1; x < canvas.width - 1; x++) {
+                const idx = (y * canvas.width + x) * 4;
+
+                if (sPix[idx + 3] > 0) {
+                  let isEdge = false;
+                  // Kiểm tra xung quanh xem có pixel nào trong suốt không (để xác định có phải là viền không)
+                  for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                      const nIdx = ((y + dy) * canvas.width + (x + dx)) * 4;
+                      if (sPix[nIdx + 3] === 0) {
+                        isEdge = true;
+                        break;
+                      }
+                    }
+                    if (isEdge) break;
+                  }
+
+                  // Nếu đúng là viền: lấy màu từ ảnh mờ để làm mềm góc cạnh răng cưa
+                  if (isEdge) {
+                    fPix[idx] = bPix[idx];         // R
+                    fPix[idx + 1] = bPix[idx + 1];   // G
+                    fPix[idx + 2] = bPix[idx + 2];   // B
+                    fPix[idx + 3] = bPix[idx + 3];   // Alpha
+                  }
+                }
+              }
+            }
+            ctx.putImageData(finalData, 0, 0);
           }
         }
 
