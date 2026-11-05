@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Frame Splitter & Manual Editor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body {
+      background-color: #050811;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    h2 {
+      text-align: center;
+      color: #a855f7;
+      font-size: 1.3rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    label {
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+    input[type="file"], select, input[type="number"], input[type="text"] {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .time-range-group {
+      display: flex;
+      gap: 12px;
+    }
+    .time-range-group .form-group {
+      flex: 1;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .checkbox-group input {
+      accent-color: #a855f7;
+      width: 18px;
+      height: 18px;
+    }
+    video {
+      width: 100%;
+      max-height: 250px;
+      background: #000;
+      border-radius: 8px;
+      object-fit: contain;
+      display: none;
+    }
+    .btn {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: #ffffff;
+      border: none;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, opacity 0.2s;
+      text-align: center;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+    .btn-secondary {
+      background: #475569;
+    }
+
+    #progress-container {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+    }
+    .progress-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      transition: width 0.1s linear;
+    }
+    .progress-text {
+      font-size: 0.8rem;
+      text-align: center;
+      color: #cbd5e1;
+    }
+
+    #review-section {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 16px;
+    }
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+      max-height: 350px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .review-card {
+      background: #1e293b;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid #475569;
+      position: relative;
+    }
+    .review-card img {
+      width: 100%;
+      height: 90px;
+      object-fit: contain;
+      background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px);
+    }
+    .review-card span {
+      font-size: 0.75rem;
+      padding: 4px;
+      color: #cbd5e1;
+    }
+    .card-edit-btn {
+      width: 100%;
+      background: #a855f7;
+      border: none;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .card-edit-btn:hover {
+      background: #9333ea;
+    }
+
+    /* Modal chỉnh sửa chi tiết */
+    #editModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #0f172a;
+      border: 1px solid #a855f7;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 650px;
+      max-height: 95vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      gap: 12px;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #a855f7;
+      font-weight: bold;
+    }
+    #modalCanvas {
+      width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+      background: repeating-linear-gradient(45deg, #111, #111 10px, #222 10px, #222 20px);
+      border-radius: 6px;
+      cursor: crosshair;
+      border: 1px solid #475569;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🎬 Cắt Video & Trình Chỉnh Sửa Phông Từng Frame</h2>
+
+    <div class="form-group">
+      <label>1. Chọn video nguồn:</label>
+      <input type="file" id="videoFile" accept="video/*">
+    </div>
+
+    <video id="videoPreview" controls></video>
+
+    <div class="time-range-group" id="timeRangeGroup" style="display: none;">
+      <div class="form-group">
+        <label>Bắt đầu cắt từ (giây):</label>
+        <input type="number" id="startTimeInput" min="0" step="0.1" value="0">
+      </div>
+      <div class="form-group">
+        <label>Kết thúc tại (giây):</label>
+        <input type="number" id="endTimeInput" min="0" step="0.1" value="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>2. Tốc độ khung hình (FPS):</label>
+      <select id="fpsSelect">
+        <option value="10">10 FPS</option>
+        <option value="15" selected>15 FPS (Tiêu chuẩn)</option>
+        <option value="24">24 FPS</option>
+        <option value="30">30 FPS</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <div class="checkbox-group">
+        <input type="checkbox" id="removeBgCheck" checked>
+        <label for="removeBgCheck" style="cursor:pointer; color:#fff; font-weight:600;">✨ Tự động xóa phông nền ban đầu</label>
+      </div>
+    </div>
+
+    <div class="time-range-group">
+      <div class="form-group">
+        <label>Dung sai mặc định (Threshold):</label>
+        <input type="number" id="thresholdInput" min="5" max="100" value="35">
+      </div>
+      <div class="form-group">
+        <label>Gọt mép chung (px):</label>
+        <input type="number" id="cropDepthInput" min="0" max="10" value="1">
+      </div>
+    </div>
+
+    <div class="time-range-group">
+      <div class="form-group">
+        <label>Blur viền chung (px):</label>
+        <input type="number" id="blurPxInput" min="0" max="10" step="0.5" value="1">
+      </div>
+      <div class="form-group">
+        <label>Cường độ blur chung (%):</label>
+        <input type="number" id="blurPercentInput" min="0" max="100" value="80">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Tên file ZIP xuất ra:</label>
+      <input type="text" id="zipNameInput" value="character_animation_frames">
+    </div>
+
+    <button class="btn" id="btnProcess" disabled>🚀 Bắt đầu cắt toàn bộ video</button>
+
+    <div id="progress-container">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">Đang chuẩn bị...</div>
+    </div>
+
+    <!-- Khu vực Review toàn bộ ảnh -->
+    <div id="review-section">
+      <div class="review-header">
+        <label style="font-weight: bold; color: #a855f7;" id="reviewTitle">👁️ Danh sách frames (0 ảnh):</label>
+        <button class="btn btn-success" id="btnDownloadZip">📥 Tải xuống tất cả vào ZIP</button>
+      </div>
+      <div class="review-grid" id="reviewGrid"></div>
+    </div>
+  </div>
+
+  <!-- Modal Chỉnh sửa chi tiết từng tấm (có tích hợp loang màu + px viền) -->
+  <div id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span id="modalTitle">✏️ Đang chỉnh sửa: Frame 1</span>
+        <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.8rem;" onclick="closeModal()">✕ Đóng</button>
+      </div>
+      <label style="font-size: 0.8rem; color: #38bdf8;">🖱️ Click vào vùng phông sót để loang màu xóa tiếp:</label>
+      <canvas id="modalCanvas"></canvas>
+      
+      <div class="time-range-group">
+        <div class="form-group">
+          <label>Dung sai điểm click (Threshold):</label>
+          <input type="number" id="modalThreshold" min="5" max="100" value="35">
+        </div>
+        <div class="form-group">
+          <label>Bán kính blur viền riêng (px):</label>
+          <input type="number" id="modalBlurPx" min="0" max="10" step="0.5" value="1">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Cường độ blur riêng (%):</label>
+        <input type="number" id="modalBlurPercent" min="0" max="100" value="80">
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 6px;">
+        <button class="btn btn-warning" style="flex: 1;" onclick="applyModalPreview()">🔄 Xem trước hiệu ứng Blur</button>
+        <button class="btn btn-success" style="flex: 1;" onclick="saveModalEdit()">💾 Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const videoFile = document.getElementById('videoFile');
+    const videoPreview = document.getElementById('videoPreview');
+    const timeRangeGroup = document.getElementById('timeRangeGroup');
+    const startTimeInput = document.getElementById('startTimeInput');
+    const endTimeInput = document.getElementById('endTimeInput');
+    const fpsSelect = document.getElementById('fpsSelect');
+    const removeBgCheck = document.getElementById('removeBgCheck');
+    const thresholdInput = document.getElementById('thresholdInput');
+    const cropDepthInput = document.getElementById('cropDepthInput');
+    const blurPxInput = document.getElementById('blurPxInput');
+    const blurPercentInput = document.getElementById('blurPercentInput');
+    const zipNameInput = document.getElementById('zipNameInput');
+    const btnProcess = document.getElementById('btnProcess');
+    
+    const progressContainer = document.getElementById('progress-container');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progress-text');
+
+    const reviewSection = document.getElementById('review-section');
+    const reviewGrid = document.getElementById('reviewGrid');
+    const reviewTitle = document.getElementById('reviewTitle');
+    const btnDownloadZip = document.getElementById('btnDownloadZip');
+
+    // Modal elements
+    const editModal = document.getElementById('editModal');
+    const modalCanvas = document.getElementById('modalCanvas');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalThreshold = document.getElementById('modalThreshold');
+    const modalBlurPx = document.getElementById('modalBlurPx');
+    const modalBlurPercent = document.getElementById('modalBlurPercent');
+
+    let videoUrl = '';
+    let extractedFrames = []; 
+    let editingIndex = -1;
+    let originalCleanCanvas = null; // Lưu bản canvas sạch sau khi xóa phông ban đầu trước khi blur
+
+    videoFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      videoUrl = URL.createObjectURL(file);
+      videoPreview.src = videoUrl;
+      videoPreview.style.display = 'block';
+
+      videoPreview.onloadedmetadata = () => {
+        startTimeInput.value = 0;
+        endTimeInput.value = videoPreview.duration.toFixed(1);
+        timeRangeGroup.style.display = 'flex';
+      };
+
+      btnProcess.disabled = false;
+      reviewSection.style.display = 'none';
+    });
+
+    // Thuật toán loang màu Flood-Fill
+    function applyFloodFill(canvas, startX, startY, targetR, targetG, targetB, threshold) {
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+      const imgData = ctx.getImageData(0, 0, width, height);
+      const data = imgData.data;
+
+      const visited = new Uint8Array(width * height);
+      const queue = [startX, startY];
+
+      let head = 0;
+      while (head < queue.length) {
+        const x = queue[head++];
+        const y = queue[head++];
+        
+        if (x < 0 || x >= width || y < 0 || y >= height) continue;
+        const idx = y * width + x;
+
+        if (visited[idx]) continue;
+        visited[idx] = 1;
+
+        const pIdx = idx * 4;
+        const r = data[pIdx];
+        const g = data[pIdx + 1];
+        const b = data[pIdx + 2];
+        const a = data[pIdx + 3];
+
+        if (a > 0 && Math.abs(r - targetR) < threshold && Math.abs(g - targetG) < threshold && Math.abs(b - targetB) < threshold) {
+          data[pIdx + 3] = 0; 
+          queue.push(x - 1, y, x + 1, y, x, y - 1, x, y + 1);
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    // Hàm áp dụng Blur viền và khử ám màu
+    function applyEdgeEnhancements(canvas, blurPx, blurPercentVal) {
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+
+      // Khử viền xanh ám tóc (Spill removal)
+      const imgData = ctx.getImageData(0, 0, width, height);
+      const data = imgData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i + 3] > 0) {
+          if (data[i + 2] > data[i] + 15 && data[i + 2] > data[i + 1] + 15) {
+            data[i + 2] = Math.floor((data[i] + data[i + 1]) / 2);
+          }
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      // Khử răng cưa viền với px blur tùy chỉnh
+      if (blurPx > 0 && blurPercentVal > 0) {
+        const blurPercent = blurPercentVal / 100;
+        const sharpCanvas = document.createElement('canvas');
+        sharpCanvas.width = width;
+        sharpCanvas.height = height;
+        sharpCanvas.getContext('2d').drawImage(canvas, 0, 0);
+
+        const blurCanvas = document.createElement('canvas');
+        blurCanvas.width = width;
+        blurCanvas.height = height;
+        const blurCtx = blurCanvas.getContext('2d');
+        blurCtx.filter = `blur(${blurPx}px)`;
+        blurCtx.drawImage(canvas, 0, 0);
+
+        const sPix = sharpCanvas.getContext('2d').getImageData(0, 0, width, height).data;
+        const bPix = blurCtx.getImageData(0, 0, width, height).data;
+        const finalData = ctx.getImageData(0, 0, width, height);
+        const fPix = finalData.data;
+        const edgeRadius = Math.ceil(blurPx);
+
+        for (let y = edgeRadius; y < height - edgeRadius; y++) {
+          for (let x = edgeRadius; x < width - edgeRadius; x++) {
+            const idx = (y * width + x) * 4;
+            if (sPix[idx + 3] > 0) {
+              let isEdge = false;
+              for (let dy = -edgeRadius; dy <= edgeRadius; dy++) {
+                for (let dx = -edgeRadius; dx <= edgeRadius; dx++) {
+                  const nIdx = ((y + dy) * width + (x + dx)) * 4;
+                  if (sPix[nIdx + 3] === 0) { isEdge = true; break; }
+                }
+                if (isEdge) break;
+              }
+              if (isEdge) {
+                fPix[idx]     = sPix[idx]     * (1 - blurPercent) + bPix[idx]     * blurPercent;
+                fPix[idx + 1] = sPix[idx + 1] * (1 - blurPercent) + bPix[idx + 1] * blurPercent;
+                fPix[idx + 2] = sPix[idx + 2] * (1 - blurPercent) + bPix[idx + 2] * blurPercent;
+                fPix[idx + 3] = sPix[idx + 3] * (1 - blurPercent) + bPix[idx + 3] * blurPercent;
+              }
+            }
+          }
+        }
+        ctx.putImageData(finalData, 0, 0);
+      }
+    }
+
+    // Xử lý tự động toàn bộ video
+    function processFrameAutomatic(canvas) {
+      const removeBg = removeBgCheck.checked;
+      const thresholdVal = parseInt(thresholdInput.value) || 35;
+      const blurPx = parseFloat(blurPxInput.value) || 0;
+      const blurPercentVal = parseFloat(blurPercentInput.value) || 0;
+      const width = canvas.width;
+      const height = canvas.height;
+      const ctx = canvas.getContext('2d');
+
+      if (removeBg) {
+        const data = ctx.getImageData(0, 0, width, height).data;
+        const targetR = data[0], targetG = data[1], targetB = data[2];
+
+        const queue = [];
+        for (let x = 0; x < width; x++) { queue.push(x, 0); queue.push(x, height - 1); }
+        for (let y = 0; y < height; y++) { queue.push(0, y); queue.push(width - 1, y); }
+        for (let x = Math.floor(width * 0.4); x < Math.floor(width * 0.6); x++) { queue.push(x, height - 10); }
+
+        const visited = new Uint8Array(width * height);
+        const imgData = ctx.getImageData(0, 0, width, height);
+        const pxData = imgData.data;
+
+        let head = 0;
+        while (head < queue.length) {
+          const x = queue[head++];
+          const y = queue[head++];
+          if (x < 0 || x >= width || y < 0 || y >= height) continue;
+          const idx = y * width + x;
+          if (visited[idx]) continue;
+          visited[idx] = 1;
+
+          const pIdx = idx * 4;
+          if (Math.abs(pxData[pIdx] - targetR) < thresholdVal &&
+              Math.abs(pxData[pIdx+1] - targetG) < thresholdVal &&
+              Math.abs(pxData[pIdx+2] - targetB) < thresholdVal) {
+            pxData[pIdx + 3] = 0;
+            queue.push(x - 1, y, x + 1, y, x, y - 1, x, y + 1);
+          }
+        }
+        ctx.putImageData(imgData, 0, 0);
+      }
+
+      applyEdgeEnhancements(canvas, blurPx, blurPercentVal);
+    }
+
+    // Cắt toàn bộ video
+    btnProcess.addEventListener('click', async () => {
+      const fps = parseInt(fpsSelect.value);
+      const startTime = Math.max(0, parseFloat(startTimeInput.value) || 0);
+
+      btnProcess.disabled = true;
+      reviewSection.style.display = 'none';
+      progressContainer.style.display = 'flex';
+      progressFill.style.width = '0%';
+      progressText.innerText = 'Đang đọc video...';
+
+      const vid = document.createElement('video');
+      vid.src = videoUrl;
+      vid.muted = true;
+      await new Promise(r => vid.onloadedmetadata = r);
+
+      const endTime = Math.min(vid.duration, parseFloat(endTimeInput.value) || vid.duration);
+      const interval = 1 / fps;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = vid.videoWidth || 1280;
+      canvas.height = vid.videoHeight || 720;
+      const ctx = canvas.getContext('2d');
+
+      extractedFrames = [];
+      let currentTime = startTime;
+      let frameIndex = 1;
+
+      while (currentTime <= endTime) {
+        vid.currentTime = currentTime;
+        await new Promise(r => {
+          const seekHandler = () => { vid.removeEventListener('seeked', seekHandler); setTimeout(r, 20); };
+          vid.addEventListener('seeked', seekHandler);
+        });
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(vid, 0, 0, canvas.width, canvas.height);
+
+        processFrameAutomatic(canvas);
+
+        const savedCanvas = document.createElement('canvas');
+        savedCanvas.width = canvas.width;
+        savedCanvas.height = canvas.height;
+        savedCanvas.getContext('2d').drawImage(canvas, 0, 0);
+
+        extractedFrames.push({
+          name: `${frameIndex}.png`,
+          canvas: savedCanvas,
+          dataUrl: canvas.toDataURL('image/png', 0.9)
+        });
+
+        const percent = Math.min(100, Math.round(((currentTime - startTime) / (endTime - startTime)) * 100));
+        progressFill.style.width = `${percent}%`;
+        progressText.innerText = `Đang trích xuất frame: ${frameIndex} (${percent}%)`;
+
+        currentTime += interval;
+        frameIndex++;
+      }
+
+      progressContainer.style.display = 'none';
+      btnProcess.disabled = false;
+      renderReviewGrid();
+    });
+
+    function renderReviewGrid() {
+      reviewGrid.innerHTML = '';
+      reviewTitle.innerText = `👁️ Danh sách frames (${extractedFrames.length} ảnh):`;
+
+      extractedFrames.forEach((frame, idx) => {
+        const card = document.createElement('div');
+        card.className = 'review-card';
+        card.innerHTML = `
+          <img src="${frame.dataUrl}" alt="${frame.name}">
+          <span>${frame.name}</span>
+          <button class="card-edit-btn" onclick="openModal(${idx})">✏️ Sửa tay</button>
+        `;
+        reviewGrid.appendChild(card);
+      });
+
+      reviewSection.style.display = 'flex';
+      reviewSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Mở Modal chỉnh sửa
+    function openModal(index) {
+      editingIndex = index;
+      const frame = extractedFrames[index];
+      modalTitle.innerText = `✏️ Đang chỉnh sửa: ${frame.name}`;
+
+      // Lưu lại bản canvas gốc trước khi chỉnh sửa trong modal
+      originalCleanCanvas = document.createElement('canvas');
+      originalCleanCanvas.width = frame.canvas.width;
+      originalCleanCanvas.height = frame.canvas.height;
+      originalCleanCanvas.getContext('2d').drawImage(frame.canvas, 0, 0);
+
+      modalCanvas.width = frame.canvas.width;
+      modalCanvas.height = frame.canvas.height;
+      const mCtx = modalCanvas.getContext('2d');
+      mCtx.clearRect(0, 0, modalCanvas.width, modalCanvas.height);
+      mCtx.drawImage(frame.canvas, 0, 0);
+
+      editModal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      editModal.style.display = 'none';
+      editingIndex = -1;
+    }
+
+    // Click loang màu trong modal
+    modalCanvas.addEventListener('click', (e) => {
+      if (editingIndex === -1) return;
+      const rect = modalCanvas.getBoundingClientRect();
+      const scaleX = modalCanvas.width / rect.width;
+      const scaleY = modalCanvas.height / rect.height;
+
+      const clickX = Math.floor((e.clientX - rect.left) * scaleX);
+      const clickY = Math.floor((e.clientY - rect.top) * scaleY);
+
+      const mCtx = modalCanvas.getContext('2d');
+      const pixel = mCtx.getImageData(clickX, clickY, 1, 1).data;
+      const thresh = parseInt(modalThreshold.value) || 35;
+
+      applyFloodFill(modalCanvas, clickX, clickY, pixel[0], pixel[1], pixel[2], thresh);
+    });
+
+    // Nút xem trước Blur riêng cho tấm đang sửa
+    function applyModalPreview() {
+      if (!originalCleanCanvas) return;
+      const mCtx = modalCanvas.getContext('2d');
+      mCtx.clearRect(0, 0, modalCanvas.width, modalCanvas.height);
+      mCtx.drawImage(originalCleanCanvas, 0, 0);
+
+      const bPx = parseFloat(modalBlurPx.value) || 0;
+      const bPer = parseFloat(modalBlurPercent.value) || 0;
+      applyEdgeEnhancements(modalCanvas, bPx, bPer);
+    }
+
+    // Lưu thay đổi tấm đang sửa
+    function saveModalEdit() {
+      if (editingIndex === -1) return;
+      const frame = extractedFrames[editingIndex];
+
+      frame.canvas.getContext('2d').clearRect(0, 0, frame.canvas.width, frame.canvas.height);
+      frame.canvas.getContext('2d').drawImage(modalCanvas, 0, 0);
+      frame.dataUrl = modalCanvas.toDataURL('image/png', 0.9);
+
+      closeModal();
+      renderReviewGrid();
+    }
+
+    // Tải ZIP
+    btnDownloadZip.addEventListener('click', async () => {
+      if (extractedFrames.length === 0) return;
+
+      const zipName = zipNameInput.value.trim() || 'character_animation_frames';
+      btnDownloadZip.disabled = true;
+      btnDownloadZip.innerText = '⏳ Đang nén file ZIP...';
+
+      const zip = new JSZip();
+      const folder = zip.folder("frames");
+
+      extractedFrames.forEach(frame => {
+        const base64Data = frame.dataUrl.replace(/^data:image\/png;base64,/, "");
+        folder.file(frame.name, base64Data, { base64: true });
+      });
+
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, zipName.endsWith('.zip') ? zipName : `${zipName}.zip`);
+
+      btnDownloadZip.disabled = false;
+      btnDownloadZip.innerText = '📥 Tải xuống tất cả vào ZIP';
+    });
+  </script>
+</body>
+</html>
