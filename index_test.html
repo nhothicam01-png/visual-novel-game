@@ -464,15 +464,6 @@
     </div>
   </div>
 
-  <div id="tts-server-panel" style="width:100%;max-width:1000px;margin-top:8px;padding:10px 14px;border-radius:8px;background:rgba(15,23,42,.85);border:1px solid rgba(168,85,247,.3);">
-    <label for="tts-server-url" style="display:block;font-size:.8rem;color:#e2e8f0;margin-bottom:6px;">🌐 Máy chủ TTS MP3 (tùy chọn — không bắt buộc)</label>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;">
-      <input id="tts-server-url" type="url" inputmode="url" placeholder="https://ten-may-chu.onrender.com" style="flex:1;min-width:180px;padding:8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:white;">
-      <button class="btn" type="button" onclick="trinhPhat.luuTTS()">Lưu</button>
-      <button class="btn" type="button" onclick="trinhPhat.kiemTraTTS()">Kiểm tra</button>
-    </div>
-    <div id="tts-server-status" style="font-size:.72rem;color:#94a3b8;margin-top:6px;">Có thể bỏ trống để dùng giọng đọc tích hợp của trình duyệt. Chế độ thu âm tab có thể lấy được giọng này nếu trình duyệt hỗ trợ.</div>
-  </div>
   <audio id="audio-bgm" loop crossorigin="anonymous"></audio>
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
   <audio id="audio-tts" crossorigin="anonymous"></audio>
@@ -523,9 +514,7 @@
         this.audioContext = null;
         this.audioDestination = null;
         this.audioTts = document.getElementById('audio-tts');
-        this.ttsServerUrl = localStorage.getItem('visualNovelTtsServerUrl') || '';
-        const ttsInput = document.getElementById('tts-server-url');
-        if (ttsInput) ttsInput.value = this.ttsServerUrl;
+        this.ttsServerUrl = '';
 
         this.cauHinhGiongNhanVat = {};
         this.ttsSynth = window.speechSynthesis || null;
@@ -1196,49 +1185,7 @@
           ? this.cauHinhGiongNhanVat[nhanVat]
           : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: this.ngonNguMacDinh };
 
-        // MP3 được dùng khi máy chủ được cấu hình; Web Audio có thể thu được nguồn này.
-        if (this.ttsServerUrl) {
-          try {
-            const base = this.ttsServerUrl.replace(/\/+$/, '');
-            const response = await fetch(base + '/tts', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                text,
-                lang: cfg.lang || 'vi-VN',
-                rate: cfg.rate || 1,
-                pitch: cfg.pitch || 1
-              })
-            });
-            if (!response.ok) throw new Error('TTS server trả về HTTP ' + response.status);
-            const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
-            this.audioTts.pause();
-            this.audioTts.src = url;
-            this.audioTts.volume = this.ttsVolume;
-            this.audioTts.onended = () => {
-              URL.revokeObjectURL(url);
-              this.ttsRemainingText = '';
-              this.currentTtsResolve = null;
-              resolveCallback();
-            };
-            this.audioTts.onerror = () => {
-              URL.revokeObjectURL(url);
-              this.currentTtsResolve = null;
-              resolveCallback();
-            };
-            await this.audioTts.play();
-            return;
-          } catch (err) {
-            console.error('Lỗi TTS MP3:', err);
-            const status = document.getElementById('tts-server-status');
-            if (status) status.textContent = 'Lỗi TTS: ' + err.message;
-            this.currentTtsResolve = null;
-            resolveCallback();
-            return;
-          }
-        }
-
+        // Dùng giọng đọc có sẵn trong trình duyệt, không cần máy chủ bên ngoài.
         if (!this.ttsSynth) { resolveCallback(); return; }
         this.ttsSynth.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
@@ -1256,27 +1203,6 @@
           resolveCallback();
         };
         this.ttsSynth.speak(utterance);
-      }
-
-      luuTTS() {
-        this.ttsServerUrl = document.getElementById('tts-server-url').value.trim().replace(/\/+$/, '');
-        localStorage.setItem('visualNovelTtsServerUrl', this.ttsServerUrl);
-        const status = document.getElementById('tts-server-status');
-        if (status) status.textContent = this.ttsServerUrl ? 'Đã lưu địa chỉ máy chủ TTS.' : 'Đã xóa địa chỉ máy chủ TTS.';
-      }
-
-      async kiemTraTTS() {
-        this.luuTTS();
-        const status = document.getElementById('tts-server-status');
-        if (!this.ttsServerUrl) { status.textContent = 'Hãy nhập địa chỉ máy chủ trước.'; return; }
-        status.textContent = 'Đang kết nối máy chủ...';
-        try {
-          const response = await fetch(this.ttsServerUrl + '/health');
-          if (!response.ok) throw new Error('HTTP ' + response.status);
-          status.textContent = 'Máy chủ TTS đang hoạt động.';
-        } catch (err) {
-          status.textContent = 'Không kết nối được: ' + err.message;
-        }
       }
 
       khoiTaoBoTronAmThanh() {
