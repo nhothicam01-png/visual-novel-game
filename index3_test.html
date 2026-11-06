@@ -472,6 +472,37 @@
         this.khoiTaoTTS();
         this.khoiTaoSuKienFile();
         this.khoiTaoSuKienDoubleTapFullscreen();
+
+        // Ưu tiên tự tải ailahungthu.json khi mở trang, chưa cần bấm Import.
+        // Nếu file không tồn tại hoặc nội dung lỗi, giữ duLieu = null để dùng mẫu gốc trong batDau().
+        this.taiKichBanMacDinhPromise = this.taiKichBanMacDinh();
+      }
+
+      async taiKichBanMacDinh() {
+        try {
+          const response = await fetch('./ailahungthu.json', { cache: 'no-store' });
+          if (!response.ok) {
+            throw new Error('Không tìm thấy ailahungthu.json');
+          }
+
+          const data = await response.json();
+          if (!data || !Array.isArray(data.danh_sach) || data.danh_sach.length === 0) {
+            throw new Error('ailahungthu.json không đúng cấu trúc hoặc không có lời thoại');
+          }
+
+          this.duLieu = data;
+          await this.taiTruocDuLieu();
+
+          if (this.ttsSynth) {
+            this.danhSachVoices = this.ttsSynth.getVoices();
+          }
+          this.quetVaKhoiTaoNhanVat();
+          console.info('Đã tự động tải kịch bản ailahungthu.json');
+        } catch (err) {
+          // Không báo lỗi làm phiền người dùng; batDau() sẽ dùng đoạn text mẫu gốc.
+          this.duLieu = null;
+          console.warn('Không thể tải ailahungthu.json, sẽ dùng kịch bản mẫu gốc:', err);
+        }
       }
 
       capNhatTienDoLoad(phamtram, message) {
@@ -784,6 +815,12 @@
         this.kichHoatAmThanhMobile(); 
 
         if (this.dangChay && !this.dangTamDung) return;
+
+        // Chờ kiểm tra file JSON mặc định xong trước khi bắt đầu phát.
+        if (this.taiKichBanMacDinhPromise) {
+          await this.taiKichBanMacDinhPromise;
+          this.taiKichBanMacDinhPromise = null;
+        }
 
         if (this.dangTamDung) {
           this.dangTamDung = false;
