@@ -417,6 +417,16 @@
     <button id="btn-record-start" class="btn" onclick="trinhPhat.startRecording()">🎥 Ghi video & chạy</button>
     <button id="btn-record-stop" class="btn" onclick="trinhPhat.stopRecording()" style="display:none;">⏹ Kết thúc & tải video</button>
     <span id="record-status" aria-live="polite">🔴 Đang ghi video</span>
+    <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">
+      🎞 FPS
+      <select id="record-fps" style="background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:5px;padding:3px 6px;">
+        <option value="24">24</option>
+        <option value="25">25</option>
+        <option value="30" selected>30</option>
+        <option value="50">50</option>
+        <option value="60">60</option>
+      </select>
+    </label>
     <button id="btn-play" class="btn" onclick="trinhPhat.batDau()">▶ Chạy kịch bản</button>
     <button id="btn-pause" class="btn" onclick="trinhPhat.tamDung()" style="display: none;">⏸ Tạm dừng</button>
     <button id="btn-stop" class="btn" onclick="trinhPhat.dung()">⏹ Dừng phát</button>
@@ -1265,9 +1275,12 @@
         }
 
         try {
-          // Chỉ xin quyền lấy hình/âm thanh tab. Hình sẽ được cắt riêng từ #game-container.
+          // Chọn Toàn bộ màn hình + bật Chia sẻ âm thanh hệ thống để thu cả speechSynthesis/TTS.
+          // Hình từ màn hình vẫn được crop riêng về đúng khung #game-container.
+          this.recordingFps = Number(document.getElementById('record-fps')?.value || 30);
+          alert('Trong hộp thoại chia sẻ, hãy chọn Toàn bộ màn hình (Entire Screen) và bật Chia sẻ âm thanh hệ thống (Share system audio). Không chọn riêng tab nếu muốn thu giọng TTS.');
           this.recordingDisplayStream = await navigator.mediaDevices.getDisplayMedia({
-            video: { frameRate: { ideal: 30, max: 30 } },
+            video: { frameRate: { ideal: this.recordingFps, max: this.recordingFps } },
             audio: true,
             preferCurrentTab: true
           });
@@ -1315,13 +1328,13 @@
           };
           drawGameFrame();
 
-          const canvasStream = this.recordingCanvas.captureStream(30);
+          const canvasStream = this.recordingCanvas.captureStream(this.recordingFps);
           this.recordingStream = new MediaStream([
             ...canvasStream.getVideoTracks(),
             ...this.recordingDisplayStream.getAudioTracks()
           ]);
           if (!this.recordingStream.getAudioTracks().length) {
-            console.warn('Tab audio chưa được chia sẻ. Hãy bật “Chia sẻ âm thanh tab” trong hộp thoại Chrome.');
+            alert('Không nhận được âm thanh hệ thống. Hãy dừng và thử lại, chọn Toàn bộ màn hình và bật Chia sẻ âm thanh hệ thống.');
           }
 
           const mimeCandidates = [
@@ -1333,7 +1346,7 @@
           this.recordedChunks = [];
           this.mediaRecorder = new MediaRecorder(this.recordingStream, {
             ...(mimeType ? { mimeType } : {}),
-            videoBitsPerSecond: 8000000,
+            videoBitsPerSecond: Math.round(8000000 * this.recordingFps / 30),
             audioBitsPerSecond: 192000
           });
 
