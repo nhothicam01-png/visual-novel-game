@@ -255,7 +255,7 @@ class OfflineRenderer:
             filters.append(f"[{current}]null[outv]")
         args += ["-filter_complex", ";".join(filters), "-map", "[outv]",
                  "-t", str(duration), "-r", str(fps), "-an", "-c:v", "libx264",
-                 "-preset", "ultrafast", "-threads", "0", "-pix_fmt", "yuv420p", str(output)]
+                 "-preset", "ultrafast", "-threads", "2", "-pix_fmt", "yuv420p", str(output)]
         self.run(args)
 
     def run(self, args):
@@ -385,6 +385,10 @@ class App:
         self.cancel_btn.configure(state="normal")
         self.progress["value"] = 0
         width, height = (1920, 1080) if self.orientation.get() == "landscape" else (1080, 1920)
+        fps = int(self.fps_var.get())
+        json_path = self.json_var.get()
+        asset_root = self.assets_var.get()
+        output_path = self.output_var.get()
         def worker():
             try:
                 renderer = OfflineRenderer(
@@ -392,8 +396,8 @@ class App:
                     lambda m: self.events.put(("status", m)),
                     lambda: self.cancelled
                 )
-                renderer.render(self.json_var.get(), self.assets_var.get(), self.output_var.get(),
-                                width, height, int(self.fps_var.get()), 180, 0.3, 0.4)
+                renderer.render(json_path, asset_root, output_path,
+                                width, height, fps, 180, 0.3, 0.4)
                 self.events.put(("done", None, "Xuất video thành công."))
             except Exception as exc:
                 self.events.put(("error", None, str(exc)))
