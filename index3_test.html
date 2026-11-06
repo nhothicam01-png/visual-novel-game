@@ -629,7 +629,28 @@
           const dummy = new SpeechSynthesisUtterance('');
           this.ttsSynth.speak(dummy);
         }
-        this.audioBgm.play().then(() => this.audioBgm.pause()).catch(() => {});
+
+        // Mở khóa phần tử audio ngay trong thao tác chạm/click của người dùng.
+        // Âm thanh im lặng rất ngắn giúp trình duyệt cho phép phát BGM sau khi tải JSON.
+        if (!this.audioDaMoKhoa) {
+          const wavImLang = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
+          this.audioBgm.src = wavImLang;
+          this.audioBgm.volume = 0;
+          const moKhoa = this.audioBgm.play();
+          if (moKhoa && typeof moKhoa.then === 'function') {
+            moKhoa.then(() => {
+              this.audioBgm.pause();
+              this.audioBgm.currentTime = 0;
+              this.audioBgm.removeAttribute('src');
+              this.audioBgm.load();
+              this.audioBgm.volume = parseFloat(document.getElementById('vol-bgm').value);
+              this.audioDaMoKhoa = true;
+            }).catch(() => {
+              this.audioBgm.volume = parseFloat(document.getElementById('vol-bgm').value);
+            });
+          }
+        }
+
         this.audioSfx.play().then(() => this.audioSfx.pause()).catch(() => {});
       }
 
@@ -1019,7 +1040,14 @@
           if (!this.audioBgm.src.includes(amThanhNen)) {
             this.audioBgm.src = bgmPath;
             this.audioBgm.loop = true;
-            this.audioBgm.play().catch(() => {});
+            this.audioBgm.load();
+          }
+          // Luôn thử phát nếu BGM đang dừng; tránh trường hợp lần đầu bị chặn
+          // rồi lần sau không thử lại vì src đã trùng tên file.
+          if (this.audioBgm.paused) {
+            this.audioBgm.play().catch(err => {
+              console.warn('Không thể phát nhạc nền:', err);
+            });
           }
         }
 
