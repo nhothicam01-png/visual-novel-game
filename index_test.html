@@ -1042,7 +1042,9 @@
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           if (this.layerChar.style.display === 'block') this.layerChar.play().catch(()=>{});
 
-          if (this.ttsRemainingText && this.currentTtsResolve) {
+          if (this.audioTts.src && this.audioTts.paused && this.ttsServerUrl) {
+            this.audioTts.play().catch(() => {});
+          } else if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
           }
         }
