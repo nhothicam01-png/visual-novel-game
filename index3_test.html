@@ -1255,8 +1255,8 @@
 
       async startRecording() {
         if (this.isRecording) return;
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia || !window.MediaRecorder) {
-          alert('Trình duyệt này chưa hỗ trợ ghi tab. Hãy dùng Chrome hoặc Edge phiên bản mới trên máy tính.');
+        if (!navigator.mediaDevices?.getDisplayMedia || !window.MediaRecorder) {
+          alert('Trình duyệt chưa hỗ trợ ghi tab. Hãy dùng Chrome hoặc Edge mới trên máy tính.');
           return;
         }
         if (this.dangChay || this.dangTamDung) {
@@ -1265,17 +1265,63 @@
         }
 
         try {
-          // Chrome/Edge sẽ hỏi tab/màn hình cần chia sẻ. Hãy chọn tab website này
-          // và bật "Chia sẻ âm thanh tab" để thu cả nhạc và âm thanh trình duyệt.
-          this.recordingStream = await navigator.mediaDevices.getDisplayMedia({
+          // Chỉ xin quyền lấy hình/âm thanh tab. Hình sẽ được cắt riêng từ #game-container.
+          this.recordingDisplayStream = await navigator.mediaDevices.getDisplayMedia({
             video: { frameRate: { ideal: 30, max: 30 } },
             audio: true,
             preferCurrentTab: true
           });
 
-          const audioTracks = this.recordingStream.getAudioTracks();
-          if (!audioTracks.length) {
-            console.warn('Không nhận được track âm thanh. Hãy bật Chia sẻ âm thanh tab khi chọn nguồn ghi.');
+          const sourceTrack = this.recordingDisplayStream.getVideoTracks()[0];
+          if (!sourceTrack) throw new Error('Không nhận được hình ảnh từ tab được chia sẻ.');
+
+          // Dùng video nguồn + canvas để crop chính xác khung game, không ghi các nút/trình duyệt.
+          this.recordingSourceVideo = document.createElement('video');
+          this.recordingSourceVideo.muted = true;
+          this.recordingSourceVideo.playsInline = true;
+          this.recordingSourceVideo.srcObject = new MediaStream([sourceTrack]);
+          await new Promise((resolve, reject) => {
+            this.recordingSourceVideo.onloadedmetadata = resolve;
+            this.recordingSourceVideo.onerror = () => reject(new Error('Không đọc được hình ảnh tab.'));
+          });
+          await this.recordingSourceVideo.play();
+
+          const portrait = this.container.classList.contains('portrait');
+          const outWidth = portrait ? 1080 : 1920;
+          const outHeight = portrait ? 1920 : 1080;
+          this.recordingCanvas = document.createElement('canvas');
+          this.recordingCanvas.width = outWidth;
+          this.recordingCanvas.height = outHeight;
+          const ctx = this.recordingCanvas.getContext('2d', { alpha: false });
+          const drawGameFrame = () => {
+            if (!this.recordingCanvas || !this.recordingSourceVideo) return;
+            const rect = this.container.getBoundingClientRect();
+            const scaleX = this.recordingSourceVideo.videoWidth / window.innerWidth;
+            const scaleY = this.recordingSourceVideo.videoHeight / window.innerHeight;
+            const sx = Math.max(0, rect.left * scaleX);
+            const sy = Math.max(0, rect.top * scaleY);
+            const sw = Math.min(rect.width * scaleX, this.recordingSourceVideo.videoWidth - sx);
+            const sh = Math.min(rect.height * scaleY, this.recordingSourceVideo.videoHeight - sy);
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, outWidth, outHeight);
+            if (sw > 0 && sh > 0 && this.recordingSourceVideo.readyState >= 2) {
+              // Cover khung đầu ra, tránh viền đen do sai khác tỷ lệ khung hình.
+              const scale = Math.max(outWidth / sw, outHeight / sh);
+              const dw = sw * scale, dh = sh * scale;
+              ctx.drawImage(this.recordingSourceVideo, sx, sy, sw, sh,
+                            (outWidth - dw) / 2, (outHeight - dh) / 2, dw, dh);
+            }
+            this.recordingFrameId = requestAnimationFrame(drawGameFrame);
+          };
+          drawGameFrame();
+
+          const canvasStream = this.recordingCanvas.captureStream(30);
+          this.recordingStream = new MediaStream([
+            ...canvasStream.getVideoTracks(),
+            ...this.recordingDisplayStream.getAudioTracks()
+          ]);
+          if (!this.recordingStream.getAudioTracks().length) {
+            console.warn('Tab audio chưa được chia sẻ. Hãy bật “Chia sẻ âm thanh tab” trong hộp thoại Chrome.');
           }
 
           const mimeCandidates = [
@@ -1285,14 +1331,17 @@
           ];
           const mimeType = mimeCandidates.find(type => MediaRecorder.isTypeSupported(type)) || '';
           this.recordedChunks = [];
-          this.mediaRecorder = new MediaRecorder(this.recordingStream, mimeType ? { mimeType } : undefined);
+          this.mediaRecorder = new MediaRecorder(this.recordingStream, {
+            ...(mimeType ? { mimeType } : {}),
+            videoBitsPerSecond: 8000000,
+            audioBitsPerSecond: 192000
+          });
 
           this.mediaRecorder.ondataavailable = event => {
             if (event.data && event.data.size > 0) this.recordedChunks.push(event.data);
           };
           this.mediaRecorder.onstop = () => {
-            const type = this.mediaRecorder && this.mediaRecorder.mimeType
-              ? this.mediaRecorder.mimeType : 'video/webm';
+            const type = this.mediaRecorder?.mimeType || 'video/webm';
             if (this.recordedChunks.length) {
               const blob = new Blob(this.recordedChunks, { type });
               const url = URL.createObjectURL(blob);
@@ -1307,47 +1356,55 @@
               alert('Không có dữ liệu video được ghi. Hãy thử lại và chọn chia sẻ tab.');
             }
             this.recordedChunks = [];
-            if (this.recordingStream) {
-              this.recordingStream.getTracks().forEach(track => track.stop());
-              this.recordingStream = null;
-            }
+            this.cleanupRecordingCapture();
             this.mediaRecorder = null;
             this.isRecording = false;
-            this.container.classList.remove('is-recording');
             document.getElementById('btn-record-start').style.display = 'inline-block';
             document.getElementById('btn-record-stop').style.display = 'none';
             document.getElementById('record-status').classList.remove('active');
           };
 
-          this.recordingStream.getVideoTracks()[0].addEventListener('ended', () => {
+          sourceTrack.addEventListener('ended', () => {
             if (this.isRecording) this.stopRecording();
           }, { once: true });
 
           this.mediaRecorder.start(1000);
           this.isRecording = true;
-          this.container.classList.add('is-recording');
           document.getElementById('btn-record-start').style.display = 'none';
           document.getElementById('btn-record-stop').style.display = 'inline-block';
           document.getElementById('record-status').classList.add('active');
-
-          // Bắt đầu phát ngay sau khi trình duyệt cấp quyền ghi tab.
           await this.batDau();
         } catch (err) {
           console.error('Không thể bắt đầu ghi video:', err);
-          if (this.recordingStream) {
-            this.recordingStream.getTracks().forEach(track => track.stop());
-            this.recordingStream = null;
-          }
+          this.cleanupRecordingCapture();
           this.isRecording = false;
           alert(err && err.name === 'NotAllowedError'
-            ? 'Bạn đã hủy quyền ghi màn hình/tab. Hãy bấm Ghi video & chạy và cấp quyền để tiếp tục.'
+            ? 'Bạn đã hủy quyền ghi tab. Hãy thử lại và chọn tab Visual Novel.'
             : 'Không thể bắt đầu ghi video: ' + (err.message || err));
         }
       }
 
+      cleanupRecordingCapture() {
+        if (this.recordingFrameId) cancelAnimationFrame(this.recordingFrameId);
+        this.recordingFrameId = null;
+        if (this.recordingStream) {
+          this.recordingStream.getTracks().forEach(track => track.stop());
+          this.recordingStream = null;
+        }
+        if (this.recordingDisplayStream) {
+          this.recordingDisplayStream.getTracks().forEach(track => track.stop());
+          this.recordingDisplayStream = null;
+        }
+        if (this.recordingSourceVideo) {
+          this.recordingSourceVideo.pause();
+          this.recordingSourceVideo.srcObject = null;
+          this.recordingSourceVideo = null;
+        }
+        this.recordingCanvas = null;
+      }
+
       stopRecording() {
         if (!this.isRecording || !this.mediaRecorder) return;
-        // Dừng kịch bản/TTS cùng lúc nếu người dùng chủ động kết thúc bản ghi.
         this.dangChay = false;
         this.dangTamDung = false;
         this.ttsRemainingText = '';
@@ -1359,9 +1416,7 @@
         this.layerBgVideo.pause();
         this.layerChar.pause();
         this.xoaChu();
-        if (this.mediaRecorder.state !== 'inactive') {
-          this.mediaRecorder.stop();
-        }
+        if (this.mediaRecorder.state !== 'inactive') this.mediaRecorder.stop();
       }
 
       sleep(ms) {
