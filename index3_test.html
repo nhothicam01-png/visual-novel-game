@@ -539,8 +539,22 @@
 
       layNgonNguMacDinh() {
         // Lấy ngôn ngữ ưu tiên của trình duyệt/thiết bị người dùng.
-        const ngonNgu = (navigator.languages && navigator.languages[0]) || navigator.language || 'vi-VN';
-        return ngonNgu;
+        const danhSachNgonNgu = navigator.languages || [];
+        // Ưu tiên tiếng Việt nếu có trong danh sách ngôn ngữ trình duyệt.
+        const tiengViet = danhSachNgonNgu.find(lang => /^vi(?:-|$)/i.test(lang)) ||
+          (navigator.language && /^vi(?:-|$)/i.test(navigator.language) ? navigator.language : null);
+        return tiengViet || danhSachNgonNgu[0] || navigator.language || 'vi-VN';
+      }
+
+      timGiongTheoNgonNgu(maNgonNgu) {
+        if (!this.danhSachVoices || this.danhSachVoices.length === 0) return -1;
+        const ma = (maNgonNgu || 'vi-VN').toLowerCase();
+        let idx = this.danhSachVoices.findIndex(v => (v.lang || '').toLowerCase() === ma);
+        if (idx === -1) {
+          const nhom = ma.split('-')[0];
+          idx = this.danhSachVoices.findIndex(v => (v.lang || '').toLowerCase().startsWith(nhom + '-'));
+        }
+        return idx;
       }
 
       khoiTaoTTS() {
@@ -549,13 +563,14 @@
             this.danhSachVoices = this.ttsSynth.getVoices();
             // Chọn giọng đọc khớp với ngôn ngữ thiết bị nếu trình duyệt có cung cấp.
             Object.values(this.cauHinhGiongNhanVat).forEach(cfg => {
-              if (cfg.lang === this.ngonNguMacDinh) {
-                const idx = this.danhSachVoices.findIndex(v =>
-                  v.lang.toLowerCase() === this.ngonNguMacDinh.toLowerCase() ||
-                  v.lang.toLowerCase().startsWith(this.ngonNguMacDinh.split('-')[0].toLowerCase() + '-')
-                );
-                if (idx !== -1) cfg.voiceIndex = idx;
+              const ma = (cfg.lang || this.ngonNguMacDinh).toLowerCase();
+              let idx = this.danhSachVoices.findIndex(v => (v.lang || '').toLowerCase() === ma);
+              if (idx === -1) {
+                const nhom = ma.split('-')[0];
+                idx = this.danhSachVoices.findIndex(v => (v.lang || '').toLowerCase().startsWith(nhom + '-'));
               }
+              // Không chọn voiceIndex 0 nếu đó là giọng của ngôn ngữ khác.
+              cfg.voiceIndex = idx;
             });
             if (this.duLieu && this.danhSachVoices.length > 0) {
               this.quetVaKhoiTaoNhanVat();
@@ -659,7 +674,7 @@
         setNhanVat.forEach(ten => {
           if (!this.cauHinhGiongNhanVat[ten]) {
             this.cauHinhGiongNhanVat[ten] = {
-              voiceIndex: 0,
+              voiceIndex: this.timGiongTheoNgonNgu(this.ngonNguMacDinh),
               rate: 1.1,
               pitch: 1.0,
               lang: this.ngonNguMacDinh
@@ -1045,7 +1060,8 @@
 
         utterance.lang = cfg.lang || 'ja-JP';
 
-        if (this.danhSachVoices.length > 0 && this.danhSachVoices[cfg.voiceIndex]) {
+        // Chỉ gán voice khi ngôn ngữ khớp; không lấy giọng đầu tiên làm mặc định.
+        if (cfg.voiceIndex >= 0 && this.danhSachVoices[cfg.voiceIndex]) {
           utterance.voice = this.danhSachVoices[cfg.voiceIndex];
         }
 
