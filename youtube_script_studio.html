@@ -28,7 +28,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-
 <section class="panel">
 <h2>⚙️ Kết nối Gemini</h2>
 <div class="field"><label>Gemini API key</label><div class="keyline"><input id="apiKey" type="password" placeholder="Dán API key tại đây" autocomplete="off"><button class="secondary" id="toggleKey" type="button">Hiện</button></div></div>
-<div class="field"><label>Mô hình</label><select id="model"><option value="gemini-2.5-flash">Gemini 2.5 Flash (khuyên dùng)</option><option value="gemini-2.5-pro">Gemini 2.5 Pro</option></select></div>
+<div class="field"><label>Mô hình</label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash (khuyên dùng)</option><option value="gemini-2.5-pro">Gemini 2.5 Pro</option></select></div>
 <div class="small muted">Tạo API key miễn phí tại <a class="link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio ↗</a>. Hạn mức miễn phí phụ thuộc tài khoản, khu vực và mô hình.</div>
 <div class="field"><label>Độ dài kịch bản</label><select id="duration"><option value="15">15 phút</option><option value="20" selected>20 phút</option><option value="25">25 phút</option><option value="30">30 phút</option></select></div>
 <div class="field"><label>Thể loại</label><select id="genre"><option>Học đường</option><option>Kinh dị</option><option>Tình cảm</option><option>Hài hước</option><option>Trinh thám</option><option>Giả tưởng</option><option>Phiêu lưu</option><option>Tâm lý - xã hội</option><option>Tài liệu / khám phá</option><option>Khác</option></select></div>
@@ -86,7 +86,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-
 const $ = id => document.getElementById(id);
 const DB_NAME="YTScriptStudioDB", STORE="projects", DB_VERSION=1;
 let db=null, current=null, running=false, pauseRequested=false;
-const defaults = {model:"gemini-2.5-flash",duration:"20",genre:"Học đường",style:"storytelling",audience:"Khán giả YouTube nói tiếng Việt, 13 tuổi trở lên",market:"Việt Nam"};
+const defaults = {model:"gemini-3.8-flash",duration:"20",genre:"Học đường",style:"storytelling",audience:"Khán giả YouTube nói tiếng Việt, 13 tuổi trở lên",market:"Việt Nam"};
 function uid(){return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(STORE))req.result.createObjectStore(STORE,{keyPath:"id"})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
 function dbReq(mode,fn){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,mode),store=tx.objectStore(STORE);let req;try{req=fn(store)}catch(e){reject(e);return}if(req){req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)}else{tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error)}})}
