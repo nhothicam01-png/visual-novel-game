@@ -1544,6 +1544,7 @@
         this.ttsRemainingText = '';
         this.currentTtsResolve = null;
         if (this.ttsSynth) this.ttsSynth.cancel();
+        this.audioTts.pause();
         clearInterval(this.hienChuInterval);
         this.audioBgm.pause();
         this.audioSfx.pause();
