@@ -1278,7 +1278,7 @@
           // Chọn Toàn bộ màn hình + bật Chia sẻ âm thanh hệ thống để thu cả speechSynthesis/TTS.
           // Hình từ màn hình vẫn được crop riêng về đúng khung #game-container.
           this.recordingFps = Number(document.getElementById('record-fps')?.value || 30);
-          alert('Trong hộp thoại chia sẻ, hãy chọn Toàn bộ màn hình (Entire Screen) và bật Chia sẻ âm thanh hệ thống (Share system audio). Không chọn riêng tab nếu muốn thu giọng TTS.');
+          document.getElementById('record-status').textContent = '🔴 Chọn Toàn bộ màn hình + bật Chia sẻ âm thanh hệ thống';
           this.recordingDisplayStream = await navigator.mediaDevices.getDisplayMedia({
             video: { frameRate: { ideal: this.recordingFps, max: this.recordingFps } },
             audio: true,
