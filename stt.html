@@ -33,7 +33,12 @@
         <div class="fileline"><span>①</span><div><b>Tải mô hình AI</b><div class="muted">Nạp Whisper từ CDN; lần đầu có thể mất vài phút.</div></div></div>
         <div class="fileline"><span>②</span><div><b>Chuẩn hóa âm thanh</b><div class="muted">Giải mã, chuyển mono và lấy mẫu 16 kHz.</div></div></div>
         <div class="fileline"><span>③</span><div><b>Nhận dạng giọng nói</b><div class="muted">AI xử lý từng đoạn âm thanh và ghép kết quả.</div></div></div>
-        <div class="note"><b>Quyền riêng tư:</b> File âm thanh được xử lý cục bộ trong trình duyệt sau khi mô hình tải xong; không gửi tới máy chủ API phiên âm riêng. Trình duyệt vẫn cần Internet để tải thư viện và mô hình AI.</div>
+        <div class="fileline" style="display:block">
+          <div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><b>💾 Bộ nhớ mô hình</b><span class="muted" id="storageSize">Đang kiểm tra…</span></div>
+          <div class="muted" id="storageStatus" style="margin-top:5px">Chuẩn bị kho lưu trữ IndexedDB…</div>
+          <div class="actions" style="margin-top:10px"><button class="secondary" id="clearCache" type="button">Xóa mô hình đã lưu</button></div>
+        </div>
+        <div class="note"><b>Quyền riêng tư:</b> File âm thanh được xử lý cục bộ trong trình duyệt. Mô hình được lưu trên thiết bị bằng IndexedDB; lần đầu vẫn cần Internet để tải mô hình. Trình duyệt có thể xóa dữ liệu nếu người dùng xóa dữ liệu trang web hoặc thiết bị thiếu dung lượng.</div>
       </div>
     </div>
     <div class="card output"><div class="outputhead"><h2>03 · Văn bản kết quả</h2><span class="count" id="count">0 ký tự</span></div><div class="result" id="result" contenteditable="true" spellcheck="false"></div><div class="actions"><button class="primary" id="download" disabled>↓ Tải TXT</button><button class="secondary" id="copy" disabled>Sao chép văn bản</button></div></div>
@@ -43,9 +48,115 @@
 <script type="module">
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
 env.allowLocalModels = false;
-env.useBrowserCache = true;
+
+// Persistent model cache backed by IndexedDB. Transformers.js custom caches
+// use the same match/put contract as the browser Cache API.
+const DB_NAME = 'audio-to-text-model-cache';
+const STORE_NAME = 'responses';
+const LEGACY_CACHE = 'transformers-cache';
+let dbPromise;
+function openModelDB() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((resolve, reject) => {
+    if (!('indexedDB' in window)) return reject(new Error('IndexedDB không khả dụng'));
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME, { keyPath: 'url' });
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error('Không mở được IndexedDB'));
+  });
+  return dbPromise;
+}
+function cacheURL(input) { return typeof input === 'string' ? input : input.url; }
+function idbRequest(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+const persistentModelCache = {
+  async match(input) {
+    const url = cacheURL(input);
+    try {
+      const db = await openModelDB();
+      const record = await idbRequest(db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).get(url));
+      if (record) return new Response(record.body, { status: record.status || 200, statusText: record.statusText || 'OK', headers: record.headers || {} });
+    } catch (error) { console.warn('IndexedDB read failed:', error); }
+    // Migrate older downloads from Transformers.js Cache Storage when available.
+    try {
+      if ('caches' in window) {
+        const legacy = await caches.open(LEGACY_CACHE);
+        const response = await legacy.match(url);
+        if (response) {
+          this.put(url, response.clone()).catch(err => console.warn('Cache migration failed:', err));
+          return response;
+        }
+      }
+    } catch (error) { console.warn('Legacy cache lookup failed:', error); }
+    return undefined;
+  },
+  async put(input, response) {
+    const url = cacheURL(input);
+    try {
+      const copy = response.clone();
+      const body = await copy.arrayBuffer();
+      const record = { url, body, status: copy.status || 200, statusText: copy.statusText || 'OK', headers: [...copy.headers.entries()] };
+      const db = await openModelDB();
+      await idbRequest(db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).put(record));
+    } catch (error) {
+      // Do not fail model inference just because persistent storage is unavailable/full.
+      console.warn('Could not persist model file in IndexedDB:', error);
+    }
+  }
+};
+try {
+  await openModelDB();
+  env.useCustomCache = true;
+  env.customCache = persistentModelCache;
+  env.useBrowserCache = false;
+  if (navigator.storage?.persist) {
+    const granted = await navigator.storage.persist();
+    window.__persistentStorageGranted = granted;
+  }
+} catch (error) {
+  console.warn('IndexedDB unavailable; falling back to browser Cache API:', error);
+  env.useCustomCache = false;
+  env.useBrowserCache = true;
+}
+
 const $ = id => document.getElementById(id);
 let selectedFile = null, recognizer = null, busy = false, outputText = '';
+async function refreshStorageInfo() {
+  try {
+    const [db, estimate] = await Promise.all([openModelDB(), navigator.storage?.estimate?.() || Promise.resolve({})]);
+    const count = await idbRequest(db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).count());
+    const used = estimate.usage || 0;
+    const mb = used >= 1024*1024 ? `${(used/1024/1024).toFixed(1)} MB` : `${(used/1024).toFixed(0)} KB`;
+    $('storageSize').textContent = `${mb} · ${count} tệp cache`;
+    $('storageStatus').textContent = window.__persistentStorageGranted ? 'Đã xin quyền lưu trữ lâu dài từ trình duyệt.' : 'Mô hình được lưu trên thiết bị; trình duyệt vẫn có thể dọn dữ liệu khi cần.';
+  } catch (error) {
+    $('storageSize').textContent = 'Không khả dụng';
+    $('storageStatus').textContent = 'Trình duyệt không hỗ trợ IndexedDB hoặc không thể truy cập kho lưu trữ.';
+  }
+}
+async function clearModelCache() {
+  if (busy) return;
+  if (!confirm('Xóa các tệp mô hình AI đã lưu trên thiết bị? Lần sử dụng sau sẽ cần tải lại.')) return;
+  try {
+    const db = await openModelDB();
+    await idbRequest(db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).clear());
+    if ('caches' in window) await caches.delete(LEGACY_CACHE);
+    recognizer = null;
+    await refreshStorageInfo();
+    setProgress(0, 'Đã xóa bộ nhớ mô hình', 'Các mô hình đã lưu đã được xóa khỏi thiết bị.');
+  } catch (error) {
+    setProgress(0, 'Không thể xóa cache', error?.message || 'Đã xảy ra lỗi khi xóa dữ liệu.');
+  }
+}
+$('clearCache').addEventListener('click', clearModelCache);
+refreshStorageInfo();
 const setProgress = (n, label, detail) => {
   $('bar').style.width = `${Math.max(0,Math.min(100,n))}%`;
   $('percent').textContent = `${Math.round(n)}%`;
@@ -106,7 +217,7 @@ async function decodeAudio(file) {
 }
 $('start').addEventListener('click', async () => {
   if (!selectedFile || busy) return;
-  busy = true; $('start').disabled = true; $('reset').disabled = true; updateOutput('');
+  busy = true; $('start').disabled = true; $('reset').disabled = true; $('clearCache').disabled = true; updateOutput('');
   try {
     const asr = await getRecognizer();
     setProgress(40,'Đang giải mã âm thanh','Đang đọc và chuẩn hóa file âm thanh…');
@@ -120,11 +231,12 @@ $('start').addEventListener('click', async () => {
       updateOutput(pieces.join(' ').replace(/\s+/g,' ').trim());
       setProgress(45+((i+1)/total)*52,'Đang nhận dạng',`Hoàn thành ${i+1}/${total} đoạn âm thanh.`);
     }
-    setProgress(100,'Hoàn tất','Đã chuyển đổi xong. Bạn có thể chỉnh sửa hoặc tải văn bản TXT.');
+    await refreshStorageInfo();
+    setProgress(100,'Hoàn tất','Đã chuyển đổi xong. Mô hình đã được lưu vào bộ nhớ trình duyệt nếu IndexedDB khả dụng. Bạn có thể chỉnh sửa hoặc tải văn bản TXT.');
   } catch(err) {
     console.error(err); setProgress(0,'Có lỗi xảy ra',err?.message||'Không thể xử lý file. Hãy thử file khác hoặc trình duyệt khác.');
     $('status').classList.add('error');
-  } finally { busy=false; $('start').disabled=!selectedFile; $('reset').disabled=false; }
+  } finally { busy=false; $('start').disabled=!selectedFile; $('reset').disabled=false; $('clearCache').disabled=false; }
 });
 $('result').addEventListener('input',()=>{
   outputText=$('result').innerText; $('count').textContent=`${outputText.length.toLocaleString('vi-VN')} ký tự`;
