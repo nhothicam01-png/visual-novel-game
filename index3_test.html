@@ -559,13 +559,13 @@
         if (!vanBan) return 'vi-VN';
 
         // Các hệ chữ có thể nhận diện khá chắc chắn bằng Unicode.
-        if (/[\\u3040-\\u30ff]/.test(vanBan)) return 'ja-JP';
-        if (/[\\uac00-\\ud7af]/.test(vanBan)) return 'ko-KR';
-        if (/[\\u0600-\\u06ff]/.test(vanBan)) return 'ar-SA';
-        if (/[\\u0400-\\u04ff]/.test(vanBan)) return 'ru-RU';
+        if (/[\u3040-\u30ff]/.test(vanBan)) return 'ja-JP';
+        if (/[\uac00-\ud7af]/.test(vanBan)) return 'ko-KR';
+        if (/[\u0600-\u06ff]/.test(vanBan)) return 'ar-SA';
+        if (/[\u0400-\u04ff]/.test(vanBan)) return 'ru-RU';
 
         // Có chữ Hán nhưng không có Hiragana/Katakana: ưu tiên tiếng Trung.
-        if (/[\\u4e00-\\u9fff]/.test(vanBan)) return 'zh-CN';
+        if (/[\u4e00-\u9fff]/.test(vanBan)) return 'zh-CN';
 
         // Dấu và ký tự đặc trưng của tiếng Việt.
         if (/[ăâđêôơưĂÂĐÊÔƠƯáàảãạấầẩẫậắằẳẵặéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ]/.test(vanBan)) {
