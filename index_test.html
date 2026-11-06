@@ -414,19 +414,26 @@
     <input type="file" id="jsonFile" accept=".json" style="display: none;">
     <button class="btn" id="btn-import">📂 Import JSON</button>
     
-    <button id="btn-record-start" class="btn" onclick="trinhPhat.startRecording()">🎥 Ghi video & chạy</button>
-    <button id="btn-record-stop" class="btn" onclick="trinhPhat.stopRecording()" style="display:none;">⏹ Kết thúc & tải video</button>
-    <span id="record-status" aria-live="polite">🔴 Đang ghi video</span>
-    <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">
-      🎞 FPS
+    <button id="btn-record-start" class="btn" onclick="trinhPhat.startRecording()">📦 Xuất ZIP ảnh + âm thanh & chạy</button>
+    <button id="btn-record-stop" class="btn" onclick="trinhPhat.stopRecording()" style="display:none;">⏹ Kết thúc & tải ZIP</button>
+    <span id="record-status" aria-live="polite">🔴 Đang thu: 0 khung hình</span>
+    <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">🎞 FPS
       <select id="record-fps" style="background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:5px;padding:3px 6px;">
-        <option value="24">24</option>
-        <option value="25">25</option>
-        <option value="30" selected>30</option>
-        <option value="50">50</option>
-        <option value="60">60</option>
+        <option value="12">12</option><option value="24">24</option><option value="25">25</option>
+        <option value="30" selected>30</option><option value="50">50</option><option value="60">60</option>
       </select>
     </label>
+    <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">🔊 Âm thanh
+      <select id="record-audio-mode" style="background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:5px;padding:3px 6px;">
+        <option value="game" selected>Âm thanh game</option><option value="system">Âm thanh tab / hệ thống</option>
+      </select>
+    </label>
+    <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">🖼 JPG
+      <select id="record-jpg-quality" style="background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:5px;padding:3px 6px;">
+        <option value="0.65">Nhẹ</option><option value="0.8" selected>Cân bằng</option><option value="0.92">Nét cao</option>
+      </select>
+    </label>
+    <span id="record-progress" style="font-size:.78rem;color:#cbd5e1;">Ảnh JPG tuần tự + audio riêng trong ZIP</span>
     <button id="btn-play" class="btn" onclick="trinhPhat.batDau()">▶ Chạy kịch bản</button>
     <button id="btn-pause" class="btn" onclick="trinhPhat.tamDung()" style="display: none;">⏸ Tạm dừng</button>
     <button id="btn-stop" class="btn" onclick="trinhPhat.dung()">⏹ Dừng phát</button>
@@ -458,13 +465,13 @@
   </div>
 
   <div id="tts-server-panel" style="width:100%;max-width:1000px;margin-top:8px;padding:10px 14px;border-radius:8px;background:rgba(15,23,42,.85);border:1px solid rgba(168,85,247,.3);">
-    <label for="tts-server-url" style="display:block;font-size:.8rem;color:#e2e8f0;margin-bottom:6px;">🌐 Máy chủ TTS MP3 (cần thiết để ghi giọng đọc vào video)</label>
+    <label for="tts-server-url" style="display:block;font-size:.8rem;color:#e2e8f0;margin-bottom:6px;">🌐 Máy chủ TTS MP3 (tùy chọn — không bắt buộc)</label>
     <div style="display:flex;gap:6px;flex-wrap:wrap;">
       <input id="tts-server-url" type="url" inputmode="url" placeholder="https://ten-may-chu.onrender.com" style="flex:1;min-width:180px;padding:8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:white;">
       <button class="btn" type="button" onclick="trinhPhat.luuTTS()">Lưu</button>
       <button class="btn" type="button" onclick="trinhPhat.kiemTraTTS()">Kiểm tra</button>
     </div>
-    <div id="tts-server-status" style="font-size:.72rem;color:#94a3b8;margin-top:6px;">Không cần máy chủ để phát giọng trình duyệt; cần máy chủ để ghi giọng đọc sạch vào video.</div>
+    <div id="tts-server-status" style="font-size:.72rem;color:#94a3b8;margin-top:6px;">Có thể bỏ trống để dùng giọng đọc tích hợp của trình duyệt. Chế độ thu âm tab có thể lấy được giọng này nếu trình duyệt hỗ trợ.</div>
   </div>
   <audio id="audio-bgm" loop crossorigin="anonymous"></audio>
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
@@ -506,7 +513,7 @@
         this.ttsRemainingText = "";
         this.currentSpeaker = "";
 
-        // Ghi trực tiếp khung game bằng Canvas + trộn âm thanh bằng Web Audio.
+        // Xuất tuần tự từng khung JPG, thu âm riêng và đóng gói ZIP.
         this.recordingStream = null;
         this.mediaRecorder = null;
         this.recordedChunks = [];
@@ -1351,24 +1358,35 @@
 
       async startRecording() {
         if (this.isRecording) return;
-        if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) {
-          alert('Trình duyệt này chưa hỗ trợ ghi Canvas. Hãy cập nhật Chrome, Edge hoặc Safari mới.');
+        if (!window.MediaRecorder || !HTMLCanvasElement.prototype.toBlob) {
+          alert('Trình duyệt chưa hỗ trợ xuất ảnh Canvas / MediaRecorder. Hãy thử Chrome, Edge hoặc Safari mới.');
           return;
         }
         if (this.dangChay || this.dangTamDung) {
-          alert('Hãy dừng kịch bản hiện tại trước khi bắt đầu ghi video.');
+          alert('Hãy dừng kịch bản hiện tại trước khi bắt đầu xuất.');
           return;
         }
-        this.luuTTS();
-        if (!this.ttsServerUrl) {
-          alert('Để video có cả giọng đọc nhân vật, hãy nhập và lưu địa chỉ máy chủ TTS MP3 trước. Máy chủ này dùng chung cho PC và điện thoại.');
-          return;
-        }
-
         try {
           this.recordingFps = Number(document.getElementById('record-fps')?.value || 30);
+          this.jpgQuality = Number(document.getElementById('record-jpg-quality')?.value || 0.8);
+          this.audioMode = document.getElementById('record-audio-mode')?.value || 'game';
           this.khoiTaoBoTronAmThanh();
           await this.audioContext.resume();
+
+          this.systemAudioStream = null;
+          if (this.audioMode === 'system') {
+            if (!navigator.mediaDevices?.getDisplayMedia) throw new Error('Trình duyệt này không hỗ trợ chọn chia sẻ tab/màn hình có âm thanh.');
+            const shared = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+            shared.getVideoTracks().forEach(track => track.stop());
+            const tracks = shared.getAudioTracks();
+            if (!tracks.length) {
+              shared.getTracks().forEach(track => track.stop());
+              throw new Error('Nguồn chia sẻ không cung cấp âm thanh. Hãy chọn tab có bật chia sẻ âm thanh hoặc chuyển sang “Âm thanh game”.');
+            }
+            this.systemAudioStream = shared;
+            this.systemAudioSource = this.audioContext.createMediaStreamSource(new MediaStream(tracks));
+            this.systemAudioSource.connect(this.audioDestination);
+          }
 
           const portrait = this.container.classList.contains('portrait');
           const outWidth = portrait ? 1080 : 1920;
@@ -1387,171 +1405,156 @@
           };
           const drawVideo = (video, x, y, w, h, fit = 'contain') => {
             if (!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
-            const scale = fit === 'cover'
-              ? Math.max(w / video.videoWidth, h / video.videoHeight)
-              : Math.min(w / video.videoWidth, h / video.videoHeight);
+            const scale = fit === 'cover' ? Math.max(w / video.videoWidth, h / video.videoHeight) : Math.min(w / video.videoWidth, h / video.videoHeight);
             const dw = video.videoWidth * scale, dh = video.videoHeight * scale;
             ctx.drawImage(video, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
           };
-
-          const drawFrame = () => {
-            if (!this.recordingCanvas) return;
+          this.drawRecordingFrame = () => {
             const rect = this.container.getBoundingClientRect();
-            const sx = outWidth / Math.max(1, rect.width);
-            const sy = outHeight / Math.max(1, rect.height);
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, outWidth, outHeight);
-
-            if (this.layerBgVideo.style.display !== 'none' && this.layerBgVideo.style.display !== '') {
-              drawVideo(this.layerBgVideo, 0, 0, outWidth, outHeight, 'cover');
-            } else if (this.layerBgImg.style.display !== 'none' && this.layerBgImg.style.display !== '') {
-              drawImageCover(this.layerBgImg, 0, 0, outWidth, outHeight);
-            }
-
+            const sx = outWidth / Math.max(1, rect.width), sy = outHeight / Math.max(1, rect.height);
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, outWidth, outHeight);
+            if (this.layerBgVideo.style.display !== 'none' && this.layerBgVideo.style.display !== '') drawVideo(this.layerBgVideo, 0, 0, outWidth, outHeight, 'cover');
+            else if (this.layerBgImg.style.display !== 'none' && this.layerBgImg.style.display !== '') drawImageCover(this.layerBgImg, 0, 0, outWidth, outHeight);
             if (this.layerChar.style.display !== 'none' && this.layerChar.style.display !== '') {
               const cr = this.layerChar.getBoundingClientRect();
-              const x = (cr.left - rect.left) * sx;
-              const y = (cr.top - rect.top) * sy;
-              const w = cr.width * sx, h = cr.height * sy;
-              drawVideo(this.layerChar, x, y, w, h, 'contain');
+              drawVideo(this.layerChar, (cr.left-rect.left)*sx, (cr.top-rect.top)*sy, cr.width*sx, cr.height*sy, 'contain');
             }
-
-            if (this.layerVfx.style.display !== 'none' && this.layerVfx.style.display !== '') {
-              drawImageCover(this.layerVfx, 0, 0, outWidth, outHeight);
-            }
-
+            if (this.layerVfx.style.display !== 'none' && this.layerVfx.style.display !== '') drawImageCover(this.layerVfx, 0, 0, outWidth, outHeight);
             if (this.dialogueCanvas.style.display !== 'none') {
-              const dr = this.dialogueCanvas.getBoundingClientRect();
-              const x = (dr.left - rect.left) * sx;
-              const y = (dr.top - rect.top) * sy;
-              const w = dr.width * sx, h = dr.height * sy;
-              ctx.save();
-              ctx.fillStyle = 'rgba(5, 8, 17, 0.62)';
-              ctx.beginPath();
-              const radius = 18;
-              ctx.roundRect(x, y, w, h, radius);
-              ctx.fill();
-              const style = getComputedStyle(this.dialogueText);
-              const fontSize = parseFloat(style.fontSize) * sy;
-              ctx.font = `${style.fontWeight || '400'} ${fontSize}px ${style.fontFamily || 'sans-serif'}`;
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.lineJoin = 'round';
-              ctx.lineWidth = Math.max(2, fontSize * 0.055);
-              ctx.strokeStyle = '#000';
-              ctx.fillStyle = '#fff';
-              const raw = this.dialogueText.innerText || '';
-              const maxWidth = w - 48;
-              const words = raw.split(/\s+/);
-              const lines = [];
-              let line = '';
-              for (const word of words) {
-                const test = line ? line + ' ' + word : word;
-                if (line && ctx.measureText(test).width > maxWidth) {
-                  lines.push(line);
-                  line = word;
-                } else line = test;
-              }
-              if (line) lines.push(line);
-              const lineHeight = fontSize * 1.4;
-              const startY = y + h / 2 - ((lines.length - 1) * lineHeight) / 2;
-              lines.forEach((lineText, i) => {
-                ctx.strokeText(lineText, x + w / 2, startY + i * lineHeight, maxWidth);
-                ctx.fillText(lineText, x + w / 2, startY + i * lineHeight, maxWidth);
-              });
+              const dr = this.dialogueCanvas.getBoundingClientRect(), x=(dr.left-rect.left)*sx, y=(dr.top-rect.top)*sy, w=dr.width*sx, h=dr.height*sy;
+              ctx.save(); ctx.fillStyle='rgba(5,8,17,.62)'; ctx.beginPath();
+              if (ctx.roundRect) ctx.roundRect(x,y,w,h,18); else ctx.rect(x,y,w,h); ctx.fill();
+              const style=getComputedStyle(this.dialogueText), fs=parseFloat(style.fontSize)*sy;
+              ctx.font=`${style.fontWeight||'400'} ${fs}px ${style.fontFamily||'sans-serif'}`;
+              ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.lineJoin='round'; ctx.lineWidth=Math.max(2,fs*.055);
+              ctx.strokeStyle='#000'; ctx.fillStyle='#fff';
+              const raw=this.dialogueText.innerText||'', maxW=w-48, lines=[]; let line='';
+              for (const word of raw.split(/\\s+/)) { const test=line?line+' '+word:word; if(line&&ctx.measureText(test).width>maxW){lines.push(line);line=word;}else line=test; }
+              if(line) lines.push(line);
+              const lh=fs*1.4, sy0=y+h/2-((lines.length-1)*lh)/2;
+              lines.forEach((t,i)=>{ctx.strokeText(t,x+w/2,sy0+i*lh,maxW);ctx.fillText(t,x+w/2,sy0+i*lh,maxW);});
               ctx.restore();
             }
-            this.recordingFrameId = requestAnimationFrame(drawFrame);
-          };
-          drawFrame();
-
-          const canvasStream = this.recordingCanvas.captureStream(this.recordingFps);
-          this.recordingStream = new MediaStream([
-            ...canvasStream.getVideoTracks(),
-            ...this.audioDestination.stream.getAudioTracks()
-          ]);
-          const mimeCandidates = [
-            'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
-            'video/mp4',
-            'video/webm;codecs=vp9,opus',
-            'video/webm;codecs=vp8,opus',
-            'video/webm'
-          ];
-          const mimeType = mimeCandidates.find(type => MediaRecorder.isTypeSupported(type)) || '';
-          this.recordedChunks = [];
-          this.mediaRecorder = new MediaRecorder(this.recordingStream, {
-            ...(mimeType ? { mimeType } : {}),
-            videoBitsPerSecond: Math.round(8000000 * this.recordingFps / 30),
-            audioBitsPerSecond: 192000
-          });
-
-          this.mediaRecorder.ondataavailable = event => {
-            if (event.data && event.data.size > 0) this.recordedChunks.push(event.data);
-          };
-          this.mediaRecorder.onstop = () => {
-            const type = this.mediaRecorder?.mimeType || 'video/webm';
-            if (this.recordedChunks.length) {
-              const blob = new Blob(this.recordedChunks, { type });
-              const url = URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.href = url;
-              const ext = type.includes('mp4') ? 'mp4' : 'webm';
-              link.download = 'visual-novel-' + new Date().toISOString().replace(/[:.]/g, '-') + '.' + ext;
-              document.body.appendChild(link);
-              link.click();
-              link.remove();
-              setTimeout(() => URL.revokeObjectURL(url), 60000);
-            } else alert('Không có dữ liệu video được ghi. Hãy thử lại.');
-            this.recordedChunks = [];
-            this.cleanupRecordingCapture();
-            this.mediaRecorder = null;
-            this.isRecording = false;
-            document.getElementById('btn-record-start').style.display = 'inline-block';
-            document.getElementById('btn-record-stop').style.display = 'none';
-            document.getElementById('record-status').classList.remove('active');
-            this.container.classList.remove('is-recording');
           };
 
-          this.mediaRecorder.start(1000);
+          this.frameBlobs = [];
+          this.frameCount = 0;
+          this.stopFrameCapture = false;
+          this.audioChunks = [];
+          const audioStream = this.audioDestination.stream;
+          const audioMime = ['audio/webm;codecs=opus','audio/mp4','audio/ogg;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t)) || '';
+          this.audioRecorder = new MediaRecorder(audioStream, audioMime ? {mimeType:audioMime,audioBitsPerSecond:192000} : {audioBitsPerSecond:192000});
+          this.audioRecorder.ondataavailable = e => { if(e.data?.size) this.audioChunks.push(e.data); };
+          this.audioRecorder.onstop = async () => {
+            try {
+              const audioBlob = new Blob(this.audioChunks,{type:this.audioRecorder?.mimeType||'audio/webm'});
+              await this.downloadRecordingZip(audioBlob, outWidth, outHeight);
+            } catch(err) { console.error(err); alert('Không thể tạo ZIP: '+err.message); }
+            finally { this.cleanupRecordingCapture(); this.resetRecordingUI(); }
+          };
+          this.audioRecorder.start(1000);
           this.isRecording = true;
           this.container.classList.add('is-recording');
-          document.getElementById('btn-record-start').style.display = 'none';
-          document.getElementById('btn-record-stop').style.display = 'inline-block';
+          document.getElementById('btn-record-start').style.display='none';
+          document.getElementById('btn-record-stop').style.display='inline-block';
           document.getElementById('record-status').classList.add('active');
+          document.getElementById('record-progress').textContent='Đang chuẩn bị khung hình...';
+          this.frameCapturePromise = this.captureJpgFrames();
           await this.batDau();
-        } catch (err) {
-          console.error('Không thể bắt đầu ghi video:', err);
-          this.cleanupRecordingCapture();
-          this.isRecording = false;
-          alert('Không thể bắt đầu ghi video: ' + (err.message || err));
+        } catch(err) {
+          console.error('Không thể bắt đầu xuất ZIP:',err);
+          this.stopFrameCapture = true;
+          if(this.audioRecorder && this.audioRecorder.state!=='inactive') this.audioRecorder.stop();
+          else { this.cleanupRecordingCapture(); this.resetRecordingUI(); }
+          alert('Không thể bắt đầu: '+(err.message||err));
         }
+      }
+
+      async captureJpgFrames() {
+        const interval=1000/this.recordingFps;
+        let next=performance.now();
+        while(!this.stopFrameCapture) {
+          const now=performance.now();
+          if(now>=next) {
+            this.drawRecordingFrame();
+            const blob=await new Promise(resolve=>this.recordingCanvas.toBlob(resolve,'image/jpeg',this.jpgQuality));
+            if(blob) {
+              this.frameBlobs.push(blob); this.frameCount++;
+              const status=document.getElementById('record-status');
+              if(status) status.textContent='🔴 Đang thu: '+this.frameCount.toLocaleString('vi-VN')+' khung hình';
+              const progress=document.getElementById('record-progress');
+              if(progress) progress.textContent='Đã tạo '+this.frameCount.toLocaleString('vi-VN')+' ảnh JPG';
+            }
+            next+=interval;
+            if(next<performance.now()-interval) next=performance.now()+interval;
+          } else await new Promise(resolve=>setTimeout(resolve,Math.min(8,next-now)));
+        }
+      }
+
+      async stopRecording() {
+        if(!this.isRecording) return;
+        this.dangChay=false; this.dangTamDung=false; this.stopFrameCapture=true;
+        this.ttsRemainingText=''; this.currentTtsResolve=null;
+        if(this.ttsSynth) this.ttsSynth.cancel();
+        this.audioTts.pause(); clearInterval(this.hienChuInterval);
+        this.audioBgm.pause(); this.audioSfx.pause(); this.layerBgVideo.pause(); this.layerChar.pause(); this.xoaChu();
+        if(this.frameCapturePromise) await this.frameCapturePromise;
+        const status=document.getElementById('record-status');
+        if(status) status.textContent='⏳ Đang đóng gói ZIP...';
+        if(this.audioRecorder && this.audioRecorder.state!=='inactive') this.audioRecorder.stop();
+      }
+
+      async downloadRecordingZip(audioBlob, width, height) {
+        if(!this.frameBlobs?.length) throw new Error('Không có khung hình nào được ghi.');
+        const files=this.frameBlobs.map((blob,i)=>({name:'images/frame_'+String(i+1).padStart(6,'0')+'.jpg',blob}));
+        if(audioBlob?.size) files.push({name:audioBlob.type.includes('mp4')?'audio.mp4':audioBlob.type.includes('ogg')?'audio.ogg':'audio.webm',blob:audioBlob});
+        const meta='Visual Novel export\\nResolution: '+width+'x'+height+'\\nFPS: '+this.recordingFps+'\\nFrames: '+this.frameBlobs.length+'\\nAudio mode: '+this.audioMode+'\\nAudio format: '+(audioBlob?.type||'none')+'\\n';
+        files.push({name:'metadata.txt',blob:new Blob([meta],{type:'text/plain;charset=utf-8'})});
+        const zip=await this.createStoredZip(files);
+        const url=URL.createObjectURL(zip), link=document.createElement('a');
+        link.href=url; link.download='visual-novel-frames-'+new Date().toISOString().replace(/[:.]/g,'-')+'.zip';
+        document.body.appendChild(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(url),120000);
+        const progress=document.getElementById('record-progress');
+        if(progress) progress.textContent='Hoàn tất: '+files.length+' tệp trong ZIP.';
+      }
+
+      async createStoredZip(files) {
+        const enc=new TextEncoder(), locals=[], centrals=[]; let offset=0;
+        const crcTable=TrinhPhatKichBanWeb.crcTable || (TrinhPhatKichBanWeb.crcTable=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}return t;})());
+        const crc32=data=>{let c=0xffffffff;for(let i=0;i<data.length;i++)c=crcTable[(c^data[i])&255]^(c>>>8);return (c^0xffffffff)>>>0;};
+        const dosDate=new Date(), time=(dosDate.getHours()<<11)|(dosDate.getMinutes()<<5)|(Math.floor(dosDate.getSeconds()/2)), date=((Math.max(1980,dosDate.getFullYear())-1980)<<9)|((dosDate.getMonth()+1)<<5)|dosDate.getDate();
+        for(const file of files) {
+          const name=enc.encode(file.name), data=new Uint8Array(await file.blob.arrayBuffer()), crc=crc32(data);
+          const local=new Uint8Array(30+name.length), lv=new DataView(local.buffer);
+          lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0x0800,true);lv.setUint16(8,0,true);
+          lv.setUint16(10,time,true);lv.setUint16(12,date,true);lv.setUint32(14,crc,true);lv.setUint32(18,data.length,true);lv.setUint32(22,data.length,true);lv.setUint16(26,name.length,true);lv.setUint16(28,0,true);local.set(name,30);
+          locals.push(local,data);
+          const central=new Uint8Array(46+name.length), cv=new DataView(central.buffer);
+          cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(10,0,true);
+          cv.setUint16(12,time,true);cv.setUint16(14,date,true);cv.setUint32(16,crc,true);cv.setUint32(20,data.length,true);cv.setUint32(24,data.length,true);
+          cv.setUint16(28,name.length,true);cv.setUint16(30,0,true);cv.setUint16(32,0,true);cv.setUint16(34,0,true);cv.setUint16(36,0,true);cv.setUint32(38,0,true);cv.setUint32(42,offset,true);central.set(name,46);
+          centrals.push(central); offset+=local.length+data.length;
+        }
+        const centralSize=centrals.reduce((s,a)=>s+a.length,0), end=new Uint8Array(22), ev=new DataView(end.buffer);
+        ev.setUint32(0,0x06054b50,true);ev.setUint16(4,0,true);ev.setUint16(6,0,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,centralSize,true);ev.setUint32(16,offset,true);ev.setUint16(20,0,true);
+        return new Blob([...locals,...centrals,end],{type:'application/zip'});
+      }
+
+      static crcTable = null;
+
+      resetRecordingUI() {
+        this.isRecording=false; this.mediaRecorder=null; this.audioRecorder=null;
+        this.recordedChunks=[]; this.audioChunks=[]; this.frameBlobs=[];
+        this.container.classList.remove('is-recording');
+        document.getElementById('btn-record-start').style.display='inline-block';
+        document.getElementById('btn-record-stop').style.display='none';
+        document.getElementById('record-status').classList.remove('active');
       }
 
       cleanupRecordingCapture() {
-        if (this.recordingFrameId) cancelAnimationFrame(this.recordingFrameId);
-        this.recordingFrameId = null;
-        if (this.recordingStream) {
-          this.recordingStream.getTracks().forEach(track => track.stop());
-          this.recordingStream = null;
-        }
-        this.recordingCanvas = null;
-      }
-
-      stopRecording() {
-        if (!this.isRecording || !this.mediaRecorder) return;
-        this.dangChay = false;
-        this.dangTamDung = false;
-        this.ttsRemainingText = '';
-        this.currentTtsResolve = null;
-        if (this.ttsSynth) this.ttsSynth.cancel();
-        this.audioTts.pause();
-        clearInterval(this.hienChuInterval);
-        this.audioBgm.pause();
-        this.audioSfx.pause();
-        this.layerBgVideo.pause();
-        this.layerChar.pause();
-        this.xoaChu();
-        if (this.mediaRecorder.state !== 'inactive') this.mediaRecorder.stop();
+        if(this.systemAudioSource) { try{this.systemAudioSource.disconnect();}catch(e){} this.systemAudioSource=null; }
+        if(this.systemAudioStream) { this.systemAudioStream.getTracks().forEach(t=>t.stop()); this.systemAudioStream=null; }
+        this.recordingCanvas=null; this.drawRecordingFrame=null;
       }
 
       sleep(ms) {
