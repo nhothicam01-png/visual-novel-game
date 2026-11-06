@@ -43,7 +43,7 @@ async def create_tts(payload: TTSRequest):
     text = payload.text.strip()
     if not text:
         raise HTTPException(status_code=400, detail="Text is empty")
-    if re.search(r"[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]", text):
+    if re.search(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", text):
         raise HTTPException(status_code=400, detail="Text contains unsupported control characters")
 
     lang_key = (payload.lang or "vi-VN").split("-")[0].lower()
