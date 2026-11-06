@@ -362,6 +362,26 @@
       .char-voice-row { font-size: 0.7rem; }
       .char-voice-row select { max-width: 120px; }
     }
+  
+    /* Giao diện ghi video */
+    #record-status {
+      display: none;
+      color: #fecaca;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      padding: 7px 12px;
+      border: 1px solid rgba(248, 113, 113, 0.45);
+      background: rgba(127, 29, 29, 0.35);
+      border-radius: 8px;
+    }
+    #record-status.active { display: inline-flex; align-items: center; gap: 7px; }
+    #btn-record-start { background: linear-gradient(135deg, #dc2626, #f97316); }
+    #btn-record-stop { background: #991b1b; }
+    #game-container.is-recording { box-shadow: 0 0 0 2px rgba(248,113,113,.65); }
+    @media (max-width: 600px) {
+      #record-status { font-size: 0.72rem; }
+    }
   </style>
 </head>
 <body>
@@ -394,6 +414,9 @@
     <input type="file" id="jsonFile" accept=".json" style="display: none;">
     <button class="btn" id="btn-import">📂 Import JSON</button>
     
+    <button id="btn-record-start" class="btn" onclick="trinhPhat.startRecording()">🎥 Ghi video & chạy</button>
+    <button id="btn-record-stop" class="btn" onclick="trinhPhat.stopRecording()" style="display:none;">⏹ Kết thúc & tải video</button>
+    <span id="record-status" aria-live="polite">🔴 Đang ghi video</span>
     <button id="btn-play" class="btn" onclick="trinhPhat.batDau()">▶ Chạy kịch bản</button>
     <button id="btn-pause" class="btn" onclick="trinhPhat.tamDung()" style="display: none;">⏸ Tạm dừng</button>
     <button id="btn-stop" class="btn" onclick="trinhPhat.dung()">⏹ Dừng phát</button>
@@ -462,6 +485,12 @@
         this.currentTtsResolve = null;
         this.ttsRemainingText = "";
         this.currentSpeaker = "";
+
+        // Ghi lại toàn bộ tab bằng MediaRecorder (giữ nguyên SpeechSynthesis TTS).
+        this.recordingStream = null;
+        this.mediaRecorder = null;
+        this.recordedChunks = [];
+        this.isRecording = false;
 
         this.cauHinhGiongNhanVat = {};
         this.ttsSynth = window.speechSynthesis || null;
@@ -1009,6 +1038,8 @@
         this.dangChay = false;
         document.getElementById('btn-pause').style.display = 'none';
         this.xoaChu();
+        // Tự kết thúc và tải video khi kịch bản phát hết.
+        if (this.isRecording) this.stopRecording();
       }
 
       async xuLyKhung(khung) {
@@ -1220,6 +1251,117 @@
         this.layerChar.style.display = 'none';
         this.layerChar.classList.remove('character-talking');
         this.layerVfx.style.display = 'none';
+      }
+
+      async startRecording() {
+        if (this.isRecording) return;
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia || !window.MediaRecorder) {
+          alert('Trình duyệt này chưa hỗ trợ ghi tab. Hãy dùng Chrome hoặc Edge phiên bản mới trên máy tính.');
+          return;
+        }
+        if (this.dangChay || this.dangTamDung) {
+          alert('Hãy dừng kịch bản hiện tại trước khi bắt đầu ghi video.');
+          return;
+        }
+
+        try {
+          // Chrome/Edge sẽ hỏi tab/màn hình cần chia sẻ. Hãy chọn tab website này
+          // và bật "Chia sẻ âm thanh tab" để thu cả nhạc và âm thanh trình duyệt.
+          this.recordingStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { frameRate: { ideal: 30, max: 30 } },
+            audio: true,
+            preferCurrentTab: true
+          });
+
+          const audioTracks = this.recordingStream.getAudioTracks();
+          if (!audioTracks.length) {
+            console.warn('Không nhận được track âm thanh. Hãy bật Chia sẻ âm thanh tab khi chọn nguồn ghi.');
+          }
+
+          const mimeCandidates = [
+            'video/webm;codecs=vp9,opus',
+            'video/webm;codecs=vp8,opus',
+            'video/webm'
+          ];
+          const mimeType = mimeCandidates.find(type => MediaRecorder.isTypeSupported(type)) || '';
+          this.recordedChunks = [];
+          this.mediaRecorder = new MediaRecorder(this.recordingStream, mimeType ? { mimeType } : undefined);
+
+          this.mediaRecorder.ondataavailable = event => {
+            if (event.data && event.data.size > 0) this.recordedChunks.push(event.data);
+          };
+          this.mediaRecorder.onstop = () => {
+            const type = this.mediaRecorder && this.mediaRecorder.mimeType
+              ? this.mediaRecorder.mimeType : 'video/webm';
+            if (this.recordedChunks.length) {
+              const blob = new Blob(this.recordedChunks, { type });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = 'visual-novel-' + new Date().toISOString().replace(/[:.]/g, '-') + '.webm';
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              setTimeout(() => URL.revokeObjectURL(url), 60000);
+            } else {
+              alert('Không có dữ liệu video được ghi. Hãy thử lại và chọn chia sẻ tab.');
+            }
+            this.recordedChunks = [];
+            if (this.recordingStream) {
+              this.recordingStream.getTracks().forEach(track => track.stop());
+              this.recordingStream = null;
+            }
+            this.mediaRecorder = null;
+            this.isRecording = false;
+            this.container.classList.remove('is-recording');
+            document.getElementById('btn-record-start').style.display = 'inline-block';
+            document.getElementById('btn-record-stop').style.display = 'none';
+            document.getElementById('record-status').classList.remove('active');
+          };
+
+          this.recordingStream.getVideoTracks()[0].addEventListener('ended', () => {
+            if (this.isRecording) this.stopRecording();
+          }, { once: true });
+
+          this.mediaRecorder.start(1000);
+          this.isRecording = true;
+          this.container.classList.add('is-recording');
+          document.getElementById('btn-record-start').style.display = 'none';
+          document.getElementById('btn-record-stop').style.display = 'inline-block';
+          document.getElementById('record-status').classList.add('active');
+
+          // Bắt đầu phát ngay sau khi trình duyệt cấp quyền ghi tab.
+          await this.batDau();
+        } catch (err) {
+          console.error('Không thể bắt đầu ghi video:', err);
+          if (this.recordingStream) {
+            this.recordingStream.getTracks().forEach(track => track.stop());
+            this.recordingStream = null;
+          }
+          this.isRecording = false;
+          alert(err && err.name === 'NotAllowedError'
+            ? 'Bạn đã hủy quyền ghi màn hình/tab. Hãy bấm Ghi video & chạy và cấp quyền để tiếp tục.'
+            : 'Không thể bắt đầu ghi video: ' + (err.message || err));
+        }
+      }
+
+      stopRecording() {
+        if (!this.isRecording || !this.mediaRecorder) return;
+        // Dừng kịch bản/TTS cùng lúc nếu người dùng chủ động kết thúc bản ghi.
+        this.dangChay = false;
+        this.dangTamDung = false;
+        this.ttsRemainingText = '';
+        this.currentTtsResolve = null;
+        if (this.ttsSynth) this.ttsSynth.cancel();
+        clearInterval(this.hienChuInterval);
+        this.audioBgm.pause();
+        this.audioSfx.pause();
+        this.layerBgVideo.pause();
+        this.layerChar.pause();
+        this.xoaChu();
+        if (this.mediaRecorder.state !== 'inactive') {
+          this.mediaRecorder.stop();
+        }
       }
 
       sleep(ms) {
