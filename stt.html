@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audio to Text Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2d;--panel2:#18233a;--line:#283650;--text:#edf3ff;--muted:#9aabc6;--accent:#7c9cff;--accent2:#55dfc0;--danger:#ff7585}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 0%,#1a2b50 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{width:min(1000px,calc(100% - 32px));margin:42px auto 60px}.top{display:flex;align-items:center;gap:13px;margin-bottom:28px}.logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#7898ff,#57dfc0);display:grid;place-items:center;color:#071323;font-size:23px;font-weight:900;box-shadow:0 8px 30px #628bff40}.eyebrow{color:var(--accent2);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}.top h1{font-size:clamp(24px,4vw,34px);line-height:1.15;margin:2px 0}.sub{color:var(--muted);margin:0 0 24px}.layout{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:linear-gradient(180deg,#151f34f2,#111a2c);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 18px 55px #0003}.card h2{font-size:17px;margin:0 0 16px}.drop{border:1.5px dashed #50658b;border-radius:16px;padding:28px 18px;text-align:center;background:#101a2d;transition:.2s;cursor:pointer}.drop.drag{border-color:var(--accent2);background:#153044}.drop .symbol{font-size:35px}.drop strong{display:block;margin:8px 0 3px}.muted{color:var(--muted);font-size:13px}.fileline{display:flex;align-items:center;gap:10px;margin-top:14px;padding:11px 12px;background:var(--panel2);border-radius:12px;min-width:0}.fileline span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fileline small{color:var(--muted);margin-left:auto;white-space:nowrap}.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:17px}label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}select,button{font:inherit}select{width:100%;background:#0c1527;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px}button{border:0;border-radius:11px;padding:11px 15px;font-weight:750;cursor:pointer;transition:.15s}button:disabled{opacity:.42;cursor:not-allowed}.primary{background:linear-gradient(100deg,#7c9cff,#66d8d0);color:#081426}.secondary{background:#263550;color:var(--text);border:1px solid #3b4d6b}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.progressbox{margin-top:18px;padding:14px;background:#0d1729;border:1px solid var(--line);border-radius:13px}.progresshead{display:flex;justify-content:space-between;gap:10px;font-size:13px;margin-bottom:9px}.progresshead span:last-child{color:var(--accent2)}.bar{height:8px;border-radius:20px;background:#26334b;overflow:hidden}.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#7898ff,#55dfc0);border-radius:20px;transition:width .25s}.status{color:var(--muted);font-size:12px;margin-top:9px}.output{grid-column:1/-1}.outputhead{display:flex;align-items:center;justify-content:space-between;gap:12px}.outputhead h2{margin:0}.count{color:var(--muted);font-size:12px}.result{margin-top:15px;min-height:230px;max-height:480px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1425;border:1px solid var(--line);border-radius:13px;padding:17px;color:#e5edff;outline:none}.result:empty:before{content:"Văn bản nhận dạng sẽ xuất hiện ở đây…";color:#71829e}.note{margin-top:18px;padding:13px 15px;border:1px solid #344866;border-radius:13px;color:var(--muted);font-size:12px}.note b{color:#dce7ff}.error{color:var(--danger)}footer{text-align:center;color:#70819d;font-size:12px;margin-top:20px}
+@media(max-width:720px){.wrap{margin-top:25px}.layout{grid-template-columns:1fr}.output{grid-column:auto}.card{padding:17px}.controls{grid-template-columns:1fr 1fr}.outputhead{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top"><div class="logo">音</div><div><div class="eyebrow">AI transcription workspace</div><h1>Audio to Text Studio</h1></div></header>
+  <p class="sub">Chuyển giọng nói thành văn bản bằng AI Whisper — thao tác ngay trong trình duyệt.</p>
+  <section class="layout">
+    <div class="card">
+      <h2>01 · Tải âm thanh lên</h2>
+      <div class="drop" id="drop"><div class="symbol">🎧</div><strong>Kéo thả file âm thanh vào đây</strong><div class="muted">hoặc nhấn để chọn file từ thiết bị</div><div class="muted" style="margin-top:9px">MP3 · WAV · M4A · OGG · FLAC · WebM</div><input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac,.webm" hidden></div>
+      <div class="fileline" id="fileline" hidden><span>🎵</span><span id="filename"></span><small id="filesize"></small></div>
+      <div class="controls">
+        <div><label for="language">Ngôn ngữ âm thanh</label><select id="language"><option value="Vietnamese">Tiếng Việt</option><option value="English">English</option><option value="Chinese">中文</option><option value="Japanese">日本語</option><option value="Korean">한국어</option><option value="French">Français</option><option value="German">Deutsch</option><option value="Spanish">Español</option><option value="auto">Tự nhận diện (English prompt)</option></select></div>
+        <div><label for="model">Mô hình AI</label><select id="model"><option value="Xenova/whisper-small">Whisper Small · cân bằng</option><option value="Xenova/whisper-tiny">Whisper Tiny · nhẹ hơn</option><option value="Xenova/whisper-base">Whisper Base · vừa</option></select></div>
+      </div>
+      <div class="actions"><button class="primary" id="start" disabled>▶ Bắt đầu chuyển đổi</button><button class="secondary" id="reset">Làm mới</button></div>
+      <div class="progressbox"><div class="progresshead"><span id="progresslabel">Trạng thái</span><span id="percent">0%</span></div><div class="bar"><i id="bar"></i></div><div class="status" id="status">Chọn một file âm thanh để bắt đầu.</div></div>
+    </div>
+    <div class="card">
+      <h2>02 · Quy trình xử lý</h2>
+      <div style="display:grid;gap:14px">
+        <div class="fileline"><span>①</span><div><b>Tải mô hình AI</b><div class="muted">Nạp Whisper từ CDN; lần đầu có thể mất vài phút.</div></div></div>
+        <div class="fileline"><span>②</span><div><b>Chuẩn hóa âm thanh</b><div class="muted">Giải mã, chuyển mono và lấy mẫu 16 kHz.</div></div></div>
+        <div class="fileline"><span>③</span><div><b>Nhận dạng giọng nói</b><div class="muted">AI xử lý từng đoạn âm thanh và ghép kết quả.</div></div></div>
+        <div class="note"><b>Quyền riêng tư:</b> File âm thanh được xử lý cục bộ trong trình duyệt sau khi mô hình tải xong; không gửi tới máy chủ API phiên âm riêng. Trình duyệt vẫn cần Internet để tải thư viện và mô hình AI.</div>
+      </div>
+    </div>
+    <div class="card output"><div class="outputhead"><h2>03 · Văn bản kết quả</h2><span class="count" id="count">0 ký tự</span></div><div class="result" id="result" contenteditable="true" spellcheck="false"></div><div class="actions"><button class="primary" id="download" disabled>↓ Tải TXT</button><button class="secondary" id="copy" disabled>Sao chép văn bản</button></div></div>
+  </section>
+  <footer>Audio to Text Studio · Whisper AI chạy trên trình duyệt</footer>
+</main>
+<script type="module">
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+env.allowLocalModels = false;
+env.useBrowserCache = true;
+const $ = id => document.getElementById(id);
+let selectedFile = null, recognizer = null, busy = false, outputText = '';
+const setProgress = (n, label, detail) => {
+  $('bar').style.width = `${Math.max(0,Math.min(100,n))}%`;
+  $('percent').textContent = `${Math.round(n)}%`;
+  $('progresslabel').textContent = label;
+  $('status').textContent = detail;
+};
+const formatSize = n => n < 1048576 ? `${(n/1024).toFixed(0)} KB` : `${(n/1048576).toFixed(1)} MB`;
+function updateOutput(text) {
+  outputText = text; $('result').textContent = text;
+  $('count').textContent = `${text.length.toLocaleString('vi-VN')} ký tự`;
+  $('download').disabled = !text.trim(); $('copy').disabled = !text.trim();
+}
+function selectFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('audio/') && !/\.(mp3|wav|m4a|ogg|flac|webm|aac)$/i.test(file.name)) { setProgress(0,'File không hợp lệ','Vui lòng chọn một file âm thanh.'); return; }
+  selectedFile = file; $('filename').textContent = file.name; $('filesize').textContent = formatSize(file.size);
+  $('fileline').hidden = false; $('start').disabled = false;
+  setProgress(0,'Sẵn sàng',`Đã chọn ${file.name}. Nhấn Bắt đầu chuyển đổi.`);
+}
+$('drop').addEventListener('click', () => $('file').click());
+$('file').addEventListener('change', e => selectFile(e.target.files[0]));
+$('drop').addEventListener('dragover', e => {e.preventDefault();$('drop').classList.add('drag')});
+$('drop').addEventListener('dragleave', () => $('drop').classList.remove('drag'));
+$('drop').addEventListener('drop', e => {e.preventDefault();$('drop').classList.remove('drag');selectFile(e.dataTransfer.files[0])});
+async function getRecognizer() {
+  const model = $('model').value;
+  if (recognizer && recognizer.modelName === model) return recognizer;
+  recognizer = null;
+  setProgress(2,'Đang tải mô hình','Đang tải thư viện và trọng số Whisper. Lần đầu có thể cần tải nhiều dữ liệu…');
+  const instance = await pipeline('automatic-speech-recognition', model, {
+    quantized: true,
+    progress_callback: info => {
+      if (info.status === 'progress' && Number.isFinite(info.progress)) setProgress(Math.min(35,2+info.progress*.33),'Đang tải mô hình',`${info.file || 'Tệp mô hình'} · ${Math.round(info.progress)}%`);
+      else if (info.status === 'done') setProgress(35,'Mô hình đã tải','Đang khởi tạo mô hình AI…');
+      else if (info.status === 'ready') setProgress(38,'Mô hình sẵn sàng','Đang chuẩn bị âm thanh…');
+    }
+  });
+  instance.modelName = model; recognizer = instance; return recognizer;
+}
+async function decodeAudio(file) {
+  const buffer = await file.arrayBuffer();
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) throw new Error('Trình duyệt không hỗ trợ giải mã âm thanh.');
+  const ctx = new AudioCtx();
+  try {
+    const decoded = await ctx.decodeAudioData(buffer);
+    const offline = new OfflineAudioContext(1,Math.ceil(decoded.duration*16000),16000);
+    const source = offline.createBufferSource(); source.buffer = decoded;
+    const channels = decoded.numberOfChannels;
+    if (channels > 1) {
+      const mono = ctx.createBuffer(1,decoded.length,decoded.sampleRate), data = mono.getChannelData(0);
+      for(let c=0;c<channels;c++){const ch=decoded.getChannelData(c);for(let i=0;i<data.length;i++)data[i]+=ch[i]/channels;}
+      source.buffer = mono;
+    }
+    source.connect(offline.destination); source.start(0);
+    const rendered = await offline.startRendering(); return rendered.getChannelData(0);
+  } finally { await ctx.close(); }
+}
+$('start').addEventListener('click', async () => {
+  if (!selectedFile || busy) return;
+  busy = true; $('start').disabled = true; $('reset').disabled = true; updateOutput('');
+  try {
+    const asr = await getRecognizer();
+    setProgress(40,'Đang giải mã âm thanh','Đang đọc và chuẩn hóa file âm thanh…');
+    const audio = await decodeAudio(selectedFile), duration = audio.length/16000;
+    const chunkSamples = 30*16000, total = Math.ceil(audio.length/chunkSamples), pieces = [];
+    for(let i=0;i<total;i++){
+      const start=i*chunkSamples, end=Math.min(audio.length,start+chunkSamples), chunk=audio.slice(start,end), lang=$('language').value;
+      const options={task:'transcribe'}; if(lang!=='auto') options.language=lang;
+      setProgress(45+(i/total)*52,'Đang nhận dạng',`Đang xử lý đoạn ${i+1}/${total} · ${Math.round(Math.min(duration,(i+1)*30))}/${Math.ceil(duration)} giây`);
+      const result=await asr(chunk,options); if(result&&result.text)pieces.push(result.text.trim());
+      updateOutput(pieces.join(' ').replace(/\s+/g,' ').trim());
+      setProgress(45+((i+1)/total)*52,'Đang nhận dạng',`Hoàn thành ${i+1}/${total} đoạn âm thanh.`);
+    }
+    setProgress(100,'Hoàn tất','Đã chuyển đổi xong. Bạn có thể chỉnh sửa hoặc tải văn bản TXT.');
+  } catch(err) {
+    console.error(err); setProgress(0,'Có lỗi xảy ra',err?.message||'Không thể xử lý file. Hãy thử file khác hoặc trình duyệt khác.');
+    $('status').classList.add('error');
+  } finally { busy=false; $('start').disabled=!selectedFile; $('reset').disabled=false; }
+});
+$('result').addEventListener('input',()=>{
+  outputText=$('result').innerText; $('count').textContent=`${outputText.length.toLocaleString('vi-VN')} ký tự`;
+  $('download').disabled=!outputText.trim(); $('copy').disabled=!outputText.trim();
+});
+$('download').addEventListener('click',()=>{
+  const blob=new Blob([outputText],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url; a.download=(selectedFile?.name||'transcript').replace(/\.[^.]+$/,'')+'.txt'; a.click(); URL.revokeObjectURL(url);
+});
+$('copy').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(outputText);$('copy').textContent='Đã sao chép ✓';setTimeout(()=>$('copy').textContent='Sao chép văn bản',1600);}
+  catch{$('copy').textContent='Không thể sao chép';}
+});
+$('reset').addEventListener('click',()=>{
+  if(busy)return; selectedFile=null; $('file').value=''; $('fileline').hidden=true; $('start').disabled=true;
+  updateOutput(''); setProgress(0,'Trạng thái','Chọn một file âm thanh để bắt đầu.'); $('status').classList.remove('error');
+});
+</script>
+</body>
+</html>
