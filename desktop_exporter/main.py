@@ -143,6 +143,7 @@ class OfflineRenderer:
         segments, audio_events, bgm_events = [], [], []
         timeline = 0.0
         current_bgm = ""
+        bgm_start = 0.0
         voice_map = {}
         speakers = sorted({str(x.get("nhan_vat", "")).strip() for x in scenes if x.get("nhan_vat")})
         for idx, speaker in enumerate(speakers):
@@ -158,8 +159,12 @@ class OfflineRenderer:
                 vfx = str(scene.get("anh_hieu_ung") or scene.get("vfx") or "").strip()
                 bgm = str(scene.get("am_thanh_nen") or scene.get("bgm") or "").strip()
                 sfx = str(scene.get("am_thanh_hieu_ung") or scene.get("sfx") or "").strip()
-                if bgm:
+                if bgm and bgm != current_bgm:
+                    if current_bgm and timeline > bgm_start:
+                        bgm_events.append((root / "assets" / "AmThanh" / "Nen" / current_bgm,
+                                           bgm_start, timeline - bgm_start, bgm_volume))
                     current_bgm = bgm
+                    bgm_start = timeline
                 tts_path = work_dir / f"tts_{i:05d}.wav"
                 duration = self.make_tts(text, speaker, voice_map, rate, tts_path) if text else 0
                 if text and duration <= 0:
@@ -167,8 +172,6 @@ class OfflineRenderer:
                 duration = max(1.0, duration + float(data.get("thoi_gian_cho_giua", 0.02)))
                 if text and tts_path.exists():
                     audio_events.append((tts_path, timeline, 1.0))
-                if current_bgm:
-                    bgm_events.append((root / "assets" / "AmThanh" / "Nen" / current_bgm, timeline, duration, bgm_volume))
                 if sfx:
                     sfx_path = root / "assets" / "AmThanh" / "HieuUng" / sfx
                     if sfx_path.exists():
@@ -185,6 +188,9 @@ class OfflineRenderer:
                 segments.append((segment_path, duration))
                 timeline += duration
                 self.progress((i + 1) / len(scenes) * 85, f"Đã dựng cảnh {i + 1}/{len(scenes)}")
+            if current_bgm and timeline > bgm_start:
+                bgm_events.append((root / "assets" / "AmThanh" / "Nen" / current_bgm,
+                                   bgm_start, timeline - bgm_start, bgm_volume))
             self.join_segments(segments, work_dir / "video_silent.mp4", fps)
             self.mix_audio(audio_events, bgm_events, timeline, work_dir / "mix.wav")
             self.mux(work_dir / "video_silent.mp4", work_dir / "mix.wav", output_path)
