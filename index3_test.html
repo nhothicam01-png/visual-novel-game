@@ -492,6 +492,8 @@
           }
 
           this.duLieu = data;
+          // Chuẩn bị sẵn file MP3 đầu tiên trước khi người dùng bấm chạy.
+          this.chuanBiNhacNen();
           await this.taiTruocDuLieu();
 
           if (this.ttsSynth) {
@@ -623,6 +625,24 @@
         });
       }
 
+      chuanBiNhacNen() {
+        if (!this.duLieu) return;
+        const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo || [];
+        const khungCoNhac = ds.find(khung => {
+          const tenNhac = khung.am_thanh_nen || khung.bgm;
+          return typeof tenNhac === 'string' && tenNhac.trim() !== '';
+        });
+        if (!khungCoNhac) return;
+
+        const tenNhac = khungCoNhac.am_thanh_nen || khungCoNhac.bgm;
+        const bgmPath = `assets/AmThanh/Nen/${tenNhac}`;
+        if (!this.audioBgm.src.includes(tenNhac)) {
+          this.audioBgm.src = bgmPath;
+          this.audioBgm.loop = true;
+          this.audioBgm.load();
+        }
+      }
+
       kichHoatAmThanhMobile() {
         if (this.ttsSynth) {
           this.ttsSynth.resume();
@@ -630,25 +650,12 @@
           this.ttsSynth.speak(dummy);
         }
 
-        // Mở khóa phần tử audio ngay trong thao tác chạm/click của người dùng.
-        // Âm thanh im lặng rất ngắn giúp trình duyệt cho phép phát BGM sau khi tải JSON.
-        if (!this.audioDaMoKhoa) {
-          const wavImLang = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
-          this.audioBgm.src = wavImLang;
-          this.audioBgm.volume = 0;
-          const moKhoa = this.audioBgm.play();
-          if (moKhoa && typeof moKhoa.then === 'function') {
-            moKhoa.then(() => {
-              this.audioBgm.pause();
-              this.audioBgm.currentTime = 0;
-              this.audioBgm.removeAttribute('src');
-              this.audioBgm.load();
-              this.audioBgm.volume = parseFloat(document.getElementById('vol-bgm').value);
-              this.audioDaMoKhoa = true;
-            }).catch(() => {
-              this.audioBgm.volume = parseFloat(document.getElementById('vol-bgm').value);
-            });
-          }
+        // Phát trực tiếp MP3 thật trong chính thao tác bấm của người dùng.
+        // Không thay src bằng WAV im lặng, tránh làm mất nguồn nhạc của kịch bản.
+        if (this.audioBgm.src && this.audioBgm.paused) {
+          this.audioBgm.play().catch(err => {
+            console.warn('Trình duyệt chưa cho phép phát BGM:', err);
+          });
         }
 
         this.audioSfx.play().then(() => this.audioSfx.pause()).catch(() => {});
@@ -662,6 +669,8 @@
         reader.onload = async (e) => {
           try {
             this.duLieu = JSON.parse(e.target.result);
+            // Chuẩn bị sẵn file MP3 của kịch bản vừa import.
+            this.chuanBiNhacNen();
             
             this.hienLoading(true);
             await this.taiTruocDuLieu();
