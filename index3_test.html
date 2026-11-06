@@ -1280,9 +1280,14 @@
           this.recordingFps = Number(document.getElementById('record-fps')?.value || 30);
           document.getElementById('record-status').textContent = '🔴 Chọn Toàn bộ màn hình + bật Chia sẻ âm thanh hệ thống';
           this.recordingDisplayStream = await navigator.mediaDevices.getDisplayMedia({
-            video: { frameRate: { ideal: this.recordingFps, max: this.recordingFps } },
+            // Ưu tiên nguồn màn hình để trình duyệt có thể cung cấp âm thanh hệ thống
+            // (bao gồm TTS speechSynthesis), thay vì mặc định ưu tiên tab hiện tại.
+            video: {
+              displaySurface: 'monitor',
+              frameRate: { ideal: this.recordingFps, max: this.recordingFps }
+            },
             audio: true,
-            preferCurrentTab: true
+            preferCurrentTab: false
           });
 
           const sourceTrack = this.recordingDisplayStream.getVideoTracks()[0];
