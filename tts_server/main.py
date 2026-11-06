@@ -41,7 +41,7 @@ async def synthesize(payload: TTSRequest):
     text = payload.text.strip()
     if not text:
         raise HTTPException(status_code=400, detail="Nội dung thoại đang trống.")
-    if re.search(r"[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]", text):
+    if re.search(r"[\x00-\x08\x0b\x0c\x0e-\x1f]", text):
         raise HTTPException(status_code=400, detail="Nội dung chứa ký tự không hợp lệ.")
 
     try:
