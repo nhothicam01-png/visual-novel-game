@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RemoveBG Anime Pro Ultimate v0.4 - Frame Range</title>
+<style>
+:root{color-scheme:dark;--bg:#080d18;--panel:#111a2b;--panel2:#172338;--line:#293750;--blue:#397cf6;--cyan:#27c6d8;--muted:#9aa9bf;--green:#35d6a0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#132846 0,#080d18 48%);color:#eef4ff;font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#0c1423ed;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:12px max(16px,env(safe-area-inset-left))}
+.head{max-width:1400px;margin:auto;display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#2774f5,#25c7d4);display:grid;place-items:center;font-size:22px}.head h1{font-size:18px;margin:0}.head p{margin:2px 0 0;color:var(--muted);font-size:12px}
+main{max-width:1400px;margin:22px auto;padding:0 16px 40px}.panel{background:linear-gradient(145deg,#121d30f2,#0e1727f2);border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:0 12px 32px #0003}
+.upload{max-width:760px;margin:35px auto;text-align:center;padding:38px 20px;border:2px dashed #405879}.upload input{max-width:100%}button,.btn{border:1px solid #3b5275;background:#1c2b43;color:#edf5ff;padding:10px 13px;border-radius:10px;font-weight:650;cursor:pointer}button.primary{background:linear-gradient(110deg,#2869e8,#168fae);border:0}button:disabled{opacity:.4;cursor:not-allowed}button.active{outline:2px solid var(--blue);background:#214b8d}
+.layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px}.controls{display:flex;flex-direction:column;gap:16px;align-self:start}.group{border-bottom:1px solid var(--line);padding-bottom:14px}.group:last-child{border:0;padding:0}.group h3{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:#a8bad5;margin:0 0 12px}.field{margin:11px 0}.field label{display:flex;justify-content:space-between;gap:8px;color:#c3d0e3;font-size:13px;margin-bottom:6px}.field output{color:#73a9ff;font-variant-numeric:tabular-nums}input[type=range]{width:100%;accent-color:#4388ff}input[type=color]{width:42px;height:35px;padding:2px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)}select,input[type=number]{background:#172338;color:white;border:1px solid var(--line);border-radius:8px;padding:9px;width:100%}.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}.hint{font-size:12px;color:var(--muted)}.actions{display:flex;flex-wrap:wrap;gap:8px}.preview{min-width:0}.previews{display:grid;grid-template-columns:1fr 1fr;gap:12px}.previewbox{background:#070b13;border:1px solid var(--line);border-radius:14px;padding:10px;min-width:0}.previewbox h3{font-size:13px;color:#b8c8df;margin:0 0 8px}.stage{min-height:220px;display:grid;place-items:center;overflow:hidden;border-radius:10px;background-color:#101827;background-image:linear-gradient(45deg,#253247 25%,transparent 25%),linear-gradient(-45deg,#253247 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#253247 75%),linear-gradient(-45deg,transparent 75%,#253247 75%);background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0}.stage video,.stage canvas{display:block;width:100%;max-height:70vh;object-fit:contain}.stage canvas{height:auto}.paint-wrap{position:relative;width:100%;line-height:0}.paint-wrap #out{width:100%;height:auto;max-height:70vh}.paint-wrap #eraseOverlay{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}.paint-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 10px}.paint-toolbar input[type=range]{width:120px}.paint-active{outline:2px solid var(--cyan)}.timeline{display:flex;align-items:center;gap:10px;margin-top:12px}.timeline input{flex:1}.status{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:12px;margin-top:12px}.notice{border:1px solid #725d2a;background:#302817;color:#f6d99b;border-radius:12px;padding:11px 13px;font-size:12px;margin:14px 0}.good{color:var(--green)}.hide{display:none!important}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.controls{order:2}.preview{order:1}.previews{grid-template-columns:1fr}.stage{min-height:180px}.head p{display:none}}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="logo">✂</div><div><h1>RemoveBG Anime Pro <span style="color:#71a8ff;font-size:11px">ULTIMATE · FRAME RANGE</span></h1><p>Local-first video matting · Adaptive Chroma · AI fallback · PNG / WebM</p></div></div></header>
+<main>
+<section id="uploadPanel" class="panel upload">
+  <div style="font-size:42px">🎞️</div><h2>Chọn video cần tách nền</h2>
+  <p class="hint">Hỗ trợ MP4, WebM, MOV (tùy trình duyệt). Video được xử lý trong trình duyệt.</p>
+  <input id="fileInput" type="file" accept="video/*"><p class="hint">Trên điện thoại, hãy mở file bằng Chrome hoặc trình duyệt Chromium mới.</p>
+</section>
+<section id="editor" class="layout hide">
+  <aside class="panel controls">
+    <div class="group">
+      <h3>1 · Chế độ tách nền</h3>
+      <div class="field"><label>Phương pháp</label><select id="mode"><option value="chroma">Chroma Key – nền một màu</option><option value="ai">AI Segmentation – nền bất kỳ</option><option value="hybrid">Kết hợp AI + Chroma Key</option><option value="toonout">ToonOut Anime AI (ONNX · chất lượng cao)</option></select></div>
+      <p class="hint">ToonOut là model chuyên anime. Tải trọng số ONNX một lần để chạy cục bộ; cần Internet khi tải model và thư viện lần đầu.</p>
+    </div>
+    <div class="group">
+      <h3>Trạng thái hệ thống Ultimate</h3>
+      <div class="hint" id="runtimeStatus">Đang kiểm tra khả năng tăng tốc…</div>
+      <div class="hint" id="modelStatus" style="margin-top:7px">ToonOut ONNX: chưa tải · Matting video theo thời gian: chưa tích hợp</div>
+      <div class="actions" style="margin-top:9px"><button id="loadToonoutBtn" class="primary">Tải / nạp ToonOut AI</button><span class="hint" id="toonoutProgress">Chưa nạp model</span></div>
+      <p class="hint">Model ONNX khoảng vài trăm MB tùy bản. Sau khi tải, trình duyệt có thể cần nhiều RAM. ToonOut xử lý từng khung hình; chưa có temporal matting nên video chuyển động nhanh có thể nhấp nháy.</p>
+      <p class="hint" style="margin-top:7px">ToonOut ONNX đã có pipeline tiền/hậu xử lý 1024×1024. Tải model qua nút bên dưới; model chạy cục bộ sau khi tải xong.</p>
+    </div>
+    <div class="group" id="keyControls">
+      <h3>2 · Chroma Key</h3>
+      <div class="field"><label style="justify-content:flex-start;gap:9px"><input id="autoKey" type="checkbox" checked style="width:auto;accent-color:#4388ff"> Tự lấy màu nền ở góc trên bên trái mỗi khung hình</label><p class="hint">Lấy màu trung vị từ vùng 8×8 px ở góc trên trái. Tự cập nhật khi nền đổi màu, ví dụ xám → xanh lá.</p></div>
+      <div class="field"><label>Màu nền cần loại bỏ <output id="hexOut">#00FF00</output></label><div class="row"><input id="keyColor" type="color" value="#00ff00"><button id="sampleBtn">Chấm màu thủ công</button></div></div>
+      <div class="field"><label>Color tolerance <output id="tolOut">70</output></label><input id="tolerance" type="range" min="0" max="220" value="70"></div>
+      <div class="field"><label>Soft edge <output id="softOut">35</output></label><input id="softness" type="range" min="0" max="150" value="35"></div>
+      <div class="field"><label>Khử viền màu xanh <output id="spillOut">75%</output></label><input id="spill" type="range" min="0" max="100" value="75"></div>
+    </div>
+    <div class="group">
+      <h3>3 · Tinh chỉnh Alpha</h3>
+      <div class="field"><label>Co mask / Erode <output id="shrinkOut">0 px</output></label><input id="shrink" type="range" min="0" max="5" value="0"></div>
+      <div class="field"><label>Làm mềm viền <output id="featherOut">1 px</output></label><input id="feather" type="range" min="0" max="8" value="1"></div>
+      <div class="field"><label>Độ sáng nhân vật <output id="brightOut">100%</output></label><input id="brightness" type="range" min="50" max="150" value="100"></div>
+      <p class="hint">Co mask và feather có thể làm mất tóc mảnh nếu đặt quá cao.</p>
+    </div>
+    <div class="group">
+      <h3>4 · Nền xem trước</h3>
+      <div class="field"><label>Kiểu nền</label><select id="bgMode"><option value="transparent">Trong suốt / caro</option><option value="green">Xanh lá</option><option value="white">Trắng</option><option value="black">Đen</option><option value="custom">Màu tùy chọn</option></select></div>
+      <input id="bgColor" type="color" value="#252a38">
+    </div>
+    <div class="group">
+      <h3>5 · Chọn đoạn video (Frame Range)</h3>
+      <div class="field"><label>FPS tham chiếu / xuất <output id="fpsRefOut">30 FPS</output></label><select id="fpsRef"><option value="10">10 FPS</option><option value="11">11 FPS</option><option value="12">12 FPS</option><option value="13">13 FPS</option><option value="14">14 FPS</option><option value="15">15 FPS</option><option value="16">16 FPS</option><option value="17">17 FPS</option><option value="18">18 FPS</option><option value="19">19 FPS</option><option value="20">20 FPS</option><option value="21">21 FPS</option><option value="22">22 FPS</option><option value="23">23 FPS</option><option value="24">24 FPS</option><option value="25">25 FPS</option><option value="26">26 FPS</option><option value="27">27 FPS</option><option value="28">28 FPS</option><option value="29">29 FPS</option><option value="30" selected>30 FPS</option><option value="31">31 FPS</option><option value="32">32 FPS</option><option value="33">33 FPS</option><option value="34">34 FPS</option><option value="35">35 FPS</option><option value="36">36 FPS</option><option value="37">37 FPS</option><option value="38">38 FPS</option><option value="39">39 FPS</option><option value="40">40 FPS</option><option value="41">41 FPS</option><option value="42">42 FPS</option><option value="43">43 FPS</option><option value="44">44 FPS</option><option value="45">45 FPS</option><option value="46">46 FPS</option><option value="47">47 FPS</option><option value="48">48 FPS</option><option value="49">49 FPS</option><option value="50">50 FPS</option><option value="51">51 FPS</option><option value="52">52 FPS</option><option value="53">53 FPS</option><option value="54">54 FPS</option><option value="55">55 FPS</option><option value="56">56 FPS</option><option value="57">57 FPS</option><option value="58">58 FPS</option><option value="59">59 FPS</option><option value="60">60 FPS</option></select></div>
+      <div class="field"><label>Frame bắt đầu</label><input id="startFrame" type="number" min="0" value="0"></div>
+      <div class="actions"><button id="setStartFrame">Đặt tại vị trí hiện tại</button><button id="goStartFrame">Đến frame đầu</button></div>
+      <div class="field"><label>Frame kết thúc</label><input id="endFrame" type="number" min="0" value="0"></div>
+      <div class="actions"><button id="setEndFrame">Đặt tại vị trí hiện tại</button><button id="goEndFrame">Đến frame cuối</button></div>
+      <p class="hint" id="rangeInfo">Chọn video để thiết lập khoảng frame. FPS tham chiếu dùng để quy đổi frame ↔ thời gian.</p>
+      <button id="resetRange">Dùng toàn bộ video</button>
+      <p class="hint">Phạm vi này áp dụng cho phát/xử lý, WebM và PNG Sequence. FPS tham chiếu là FPS quy đổi; video có FPS biến thiên có thể lệch nhẹ.</p>
+    </div>
+    <div class="group">
+      <h3>6 · Xử lý & xuất</h3>
+      <div class="actions"><button class="primary" id="startBtn">▶ Chạy xem trước</button><button id="stopBtn" disabled>Ⅱ Dừng</button></div>
+      <div class="field"><label>Xuất video</label><button id="webmBtn">⬇ Xuất WebM theo cài đặt</button></div>
+      <div class="field"><label>Xuất ảnh</label><div class="actions"><button id="pngBtn">⬇ PNG hiện tại</button><button id="sequenceBtn">⬇ PNG Sequence (ZIP)</button></div></div>
+      <p class="hint">Chỉ cần nhấn Xuất WebM hoặc PNG Sequence: ứng dụng tự xử lý đoạn frame đã chọn và dùng FPS trong mục Frame Range. Không cần nhấn Chạy xem trước trước. WebM có Alpha phụ thuộc codec và trình duyệt.</p>
+    </div>
+    <div class="group"><div class="hint" id="engineStatus">Đang chờ video…</div><div class="status"><span id="fps">0 FPS</span><span id="progress">0%</span></div></div>
+  </aside>
+  <section class="panel preview">
+    <div class="actions" style="justify-content:space-between;margin-bottom:10px"><button id="changeBtn">← Đổi video</button><span class="hint" id="videoInfo"></span></div>
+    <div class="paint-toolbar">
+      <strong style="font-size:13px">Xóa vùng thủ công</strong>
+      <button id="eraseTool" type="button">🖌️ Bật cọ xóa</button>
+      <label class="hint">Cỡ cọ <input id="brushSize" type="range" min="8" max="240" value="48" step="4"> <span id="brushOut">48 px</span></label>
+      <button id="undoErase" type="button" disabled>↶ Hoàn tác</button>
+      <button id="clearErase" type="button" disabled>Xóa nét vẽ</button>
+      <span class="hint" id="eraseStatus">Vẽ lên logo/vật thể muốn xóa ở khung kết quả.</span>
+    </div>
+    <div class="previews">
+      <div class="previewbox"><h3>VIDEO GỐC</h3><div class="stage"><video id="video" playsinline muted controls></video></div></div>
+      <div class="previewbox"><h3>KẾT QUẢ TÁCH NỀN</h3><div class="stage"><div class="paint-wrap"><canvas id="out"></canvas><canvas id="eraseOverlay"></canvas></div></div></div>
+    </div>
+    <div class="timeline"><button id="playBtn">▶ / Ⅱ</button><span class="hint" id="time">00:00 / 00:00</span><input id="seek" type="range" min="0" max="1000" value="0"></div>
+    <div class="notice">Cọ xóa thủ công: bật cọ rồi tô lên logo/vật thể cần xóa; vùng tô sẽ trong suốt trên toàn bộ video tại cùng tọa độ. Có Hoàn tác và Xóa nét vẽ. Lưu ý: Chroma Key là phương pháp dựa trên màu sắc, không phải AI hiểu vật thể. Nếu màu tóc/quần áo trùng màu nền, phần đó cũng có thể bị xóa. Không có thuật toán hậu kỳ nào khôi phục được chi tiết đã bị hòa lẫn hoàn toàn vào nền.</div>
+  </section>
+</section>
+</main>
+<canvas id="source" class="hide"></canvas><canvas id="maskCanvas" class="hide"></canvas><canvas id="eraseMask" class="hide"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js"></script>
+<script>
+(() => {
+const $=id=>document.getElementById(id);
+const video=$('video'),out=$('out'),ctx=out.getContext('2d',{willReadFrequently:true});
+const source=$('source'),sctx=source.getContext('2d',{willReadFrequently:true});
+const maskCanvas=$('maskCanvas'),mctx=maskCanvas.getContext('2d',{willReadFrequently:true});
+const eraseMask=$('eraseMask'),eraseCtx=eraseMask.getContext('2d',{willReadFrequently:true});
+const eraseOverlay=$('eraseOverlay'),overlayCtx=eraseOverlay.getContext('2d');
+let eraseEnabled=false,isPainting=false,eraseStrokes=[],currentStroke=null;
+let ai=null,aiMask=null,toonSession=null,toonReady=false,toonBusy=false,processing=false,raf=0,last=0,fps=0,frames=0,recorder=null,chunks=[],sampleMode=false,videoURL=null,recording=false;
+const clamp=(v,a=0,b=255)=>Math.max(a,Math.min(b,v));
+// Runtime capability check: report acceleration honestly; do not claim model support until weights are loaded.
+(function checkRuntime(){const gpu=!!navigator.gpu;const threads= Math.max(1, Math.min(8, (navigator.hardwareConcurrency||2)-1));$('runtimeStatus').textContent=`WebGPU: ${gpu?'có thể sử dụng':'không khả dụng'} · WASM/CPU: có · Luồng CPU đề xuất: ${threads}`;})();
+function rgb(hex){return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)]}
+function setStatus(s){$('engineStatus').textContent=s}
+function fmt(t){if(!isFinite(t))return'00:00';return `${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`}
+function refFps(){return Number($('fpsRef')?.value||30)}
+function maxFrame(){return Math.max(0,Math.ceil((video.duration||0)*refFps())-1)}
+function frameTime(n){return Math.max(0,Math.min(video.duration||0,Number(n)/refFps()))}
+function rangeFrames(){const max=maxFrame();let a=Math.max(0,Math.min(max,Math.floor(Number($('startFrame').value)||0)));let b=Math.max(a,Math.min(max,Math.floor(Number($('endFrame').value)||0)));return {start:a,end:b,startTime:frameTime(a),endTime:Math.min(video.duration,frameTime(b+1))}}
+function updateRangeUI(reset=false){if(!video.duration)return;const max=maxFrame();if(reset){$('startFrame').value=0;$('endFrame').value=max}
+ $('startFrame').max=max;$('endFrame').max=max;
+ let a=Math.max(0,Math.min(max,Math.floor(Number($('startFrame').value)||0)));let b=Math.max(a,Math.min(max,Math.floor(Number($('endFrame').value)||0)));
+ $('startFrame').value=a;$('endFrame').value=b;$('fpsRefOut').textContent=refFps()+' FPS';
+ $('rangeInfo').textContent=`Đang chọn: frame ${a} → ${b} · ${fmt(frameTime(a))} → ${fmt(Math.min(video.duration,frameTime(b+1)))} · ${b-a+1} frame (ước tính)`;
+}
+function setCurrentFrame(which){const f=Math.max(0,Math.min(maxFrame(),Math.floor(video.currentTime*refFps()+0.0001)));if(which==='start')$('startFrame').value=Math.min(f,Number($('endFrame').value)||maxFrame());else $('endFrame').value=Math.max(f,Number($('startFrame').value)||0);updateRangeUI()}
+$('fpsRef').addEventListener('change',()=>updateRangeUI(true));$('startFrame').addEventListener('change',()=>updateRangeUI());$('endFrame').addEventListener('change',()=>updateRangeUI());
+$('setStartFrame').onclick=()=>setCurrentFrame('start');$('setEndFrame').onclick=()=>setCurrentFrame('end');
+$('goStartFrame').onclick=()=>{video.pause();video.currentTime=rangeFrames().startTime;renderStill()};$('goEndFrame').onclick=()=>{video.pause();video.currentTime=Math.max(0,rangeFrames().endTime-1/refFps());renderStill()};$('resetRange').onclick=()=>updateRangeUI(true);
+function controls(){[['tolerance','tolOut',v=>v],['softness','softOut',v=>v],['spill','spillOut',v=>v+'%'],['shrink','shrinkOut',v=>v+' px'],['feather','featherOut',v=>v+' px'],['brightness','brightOut',v=>v+'%']].forEach(([a,b,f])=>$(a).addEventListener('input',()=>$(b).textContent=f($(a).value)));$('keyColor').addEventListener('input',()=>$('hexOut').textContent=$('keyColor').value.toUpperCase())}
+controls();
+$('fileInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;if(videoURL)URL.revokeObjectURL(videoURL);videoURL=URL.createObjectURL(f);video.src=videoURL;video.load();video.onloadedmetadata=()=>{out.width=source.width=maskCanvas.width=eraseMask.width=eraseOverlay.width=video.videoWidth;out.height=source.height=maskCanvas.height=eraseMask.height=eraseOverlay.height=video.videoHeight;eraseStrokes=[];redrawEraseMask();$('uploadPanel').classList.add('hide');$('editor').classList.remove('hide');$('videoInfo').textContent=`${video.videoWidth}×${video.videoHeight} · ${fmt(video.duration)}`;$('time').textContent=`00:00 / ${fmt(video.duration)}`;updateRangeUI(true);setStatus('Video đã sẵn sàng. Chọn đoạn frame rồi nhấn Bắt đầu.');renderStill()}});
+$('changeBtn').onclick=()=>{stop();video.pause();$('editor').classList.add('hide');$('uploadPanel').classList.remove('hide');$('fileInput').value=''};
+$('playBtn').onclick=()=>{if(video.paused){video.play();if(!processing)start()}else video.pause()};
+video.addEventListener('timeupdate',()=>{$('time').textContent=`${fmt(video.currentTime)} / ${fmt(video.duration)}`;$('seek').value=video.duration?video.currentTime/video.duration*1000:0});
+$('seek').oninput=()=>{video.currentTime=Number($('seek').value)/1000*video.duration;renderStill()};
+$('sampleBtn').onclick=()=>{$('autoKey').checked=false;sampleMode=true;$('sampleBtn').textContent='Chạm vào video gốc…';setStatus('Đã tắt tự lấy màu. Chọn một điểm nền trên khung hình video gốc.')};
+video.addEventListener('click',e=>{if(!sampleMode)return;const r=video.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*video.videoWidth),y=Math.floor((e.clientY-r.top)/r.height*video.videoHeight);sctx.drawImage(video,0,0,source.width,source.height);const d=sctx.getImageData(clamp(x,0,source.width-1),clamp(y,0,source.height-1),1,1).data;$('keyColor').value='#'+[d[0],d[1],d[2]].map(v=>v.toString(16).padStart(2,'0')).join('');$('hexOut').textContent=$('keyColor').value.toUpperCase();sampleMode=false;$('sampleBtn').textContent='Chấm màu từ video';setStatus('Đã lấy màu mẫu.')});
+$('mode').onchange=()=>{$('keyControls').style.opacity=$('mode').value==='ai'||$('mode').value==='toonout'?.45:1;aiMask=null;renderStill()};
+
+const TOONOUT_MODEL_URL='https://huggingface.co/sprited/birefnet-toonout-onnx/resolve/main/birefnet-toonout-fp16.onnx';
+async function loadToonout(){
+ if(toonSession)return toonSession;
+ if(!window.ort)throw Error('Không tải được ONNX Runtime Web. Kiểm tra Internet rồi tải lại trang.');
+ $('toonoutProgress').textContent='Đang nạp runtime…';
+ ort.env.wasm.wasmPaths='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/';
+ // Try WebGPU first, then WASM. Some devices/drivers do not support all model operators on WebGPU.
+ const attempts=[];
+ if(navigator.gpu)attempts.push('webgpu');
+ attempts.push('wasm');
+ let lastError=null;
+ for(const ep of attempts){
+  try{
+   if(ep==='wasm')ort.env.wasm.numThreads=Math.max(1,Math.min(4,(navigator.hardwareConcurrency||2)-1));
+   $('toonoutProgress').textContent=`Đang tải model ToonOut (${ep.toUpperCase()})…`;
+   toonSession=await ort.InferenceSession.create(TOONOUT_MODEL_URL,{executionProviders:[ep],graphOptimizationLevel:'all'});
+   toonReady=true;
+   $('modelStatus').textContent=`ToonOut ONNX: đã nạp · ${ep.toUpperCase()} · MIT`;
+   $('toonoutProgress').textContent='Model đã sẵn sàng';
+   return toonSession;
+  }catch(e){lastError=e;toonSession=null}
+ }
+ throw Error('Không nạp được ToonOut trên thiết bị này: '+(lastError?.message||'lỗi không xác định'));
+}
+$('loadToonoutBtn').onclick=async()=>{
+ $('loadToonoutBtn').disabled=true;
+ try{await loadToonout();setStatus('ToonOut đã sẵn sàng. Chọn ToonOut Anime AI để xử lý.')}
+ catch(e){$('toonoutProgress').textContent='Nạp thất bại';$('modelStatus').textContent='ToonOut ONNX: chưa nạp';setStatus(e.message)}
+ finally{$('loadToonoutBtn').disabled=false}
+};
+async function runToonout(imageSource){
+ const session=await loadToonout();
+ if(toonBusy)throw Error('ToonOut đang xử lý khung hình trước.');
+ toonBusy=true;
+ try{
+  const c=document.createElement('canvas');c.width=1024;c.height=1024;
+  const cc=c.getContext('2d',{willReadFrequently:true});cc.drawImage(imageSource,0,0,1024,1024);
+  const pix=cc.getImageData(0,0,1024,1024).data;
+  const chw=new Float32Array(3*1024*1024);
+  const mean=[0.485,0.456,0.406],std=[0.229,0.224,0.225],plane=1024*1024;
+  for(let i=0;i<plane;i++){
+   chw[i]=(pix[i*4]/255-mean[0])/std[0];
+   chw[plane+i]=(pix[i*4+1]/255-mean[1])/std[1];
+   chw[2*plane+i]=(pix[i*4+2]/255-mean[2])/std[2];
+  }
+  const inputName=session.inputNames[0];
+  const outputName=session.outputNames[0];
+  const feeds={};feeds[inputName]=new ort.Tensor('float32',chw,[1,3,1024,1024]);
+  const result=await session.run(feeds);
+  const data=result[outputName].data;
+  const mask=document.createElement('canvas');mask.width=1024;mask.height=1024;
+  const mc=mask.getContext('2d'),im=mc.createImageData(1024,1024);
+  for(let i=0;i<plane;i++){const a=Math.max(0,Math.min(255,Math.round(Number(data[i])*255)));const j=i*4;im.data[j]=a;im.data[j+1]=a;im.data[j+2]=a;im.data[j+3]=255}
+  mc.putImageData(im,0,0);
+  aiMask=mask;
+  $('toonoutProgress').textContent='ToonOut đang hoạt động';
+ }finally{toonBusy=false}
+}
+async function initAI(){if(ai)return ai;if(!window.SelfieSegmentation)throw Error('Không tải được thư viện AI. Kiểm tra Internet rồi tải lại trang.');ai=new SelfieSegmentation({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`});ai.setOptions({modelSelection:1});ai.onResults(r=>{aiMask=r.segmentationMask});await ai.initialize();return ai}
+function median(values){values.sort((a,b)=>a-b);return values[Math.floor(values.length/2)]}
+function sampleTopLeft(imageData){
+ const w=imageData.width,h=imageData.height,d=imageData.data;
+ const rw=Math.min(8,w),rh=Math.min(8,h),rs=[],gs=[],bs=[];
+ // Ignore the extreme outermost row/column to reduce border artifacts.
+ for(let y=0;y<rh;y++)for(let x=0;x<rw;x++){
+   const i=(y*w+x)*4;if(d[i+3]<200)continue;
+   rs.push(d[i]);gs.push(d[i+1]);bs.push(d[i+2]);
+ }
+ if(!rs.length)return rgb($('keyColor').value);
+ const k=[median(rs),median(gs),median(bs)];
+ const hex='#'+k.map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+ $('keyColor').value=hex;$('hexOut').textContent=hex.toUpperCase();
+ return k;
+}
+function makeAlpha(imageData,maskData,autoKey){
+ const d=imageData.data,md=maskData?.data,key=autoKey||rgb($('keyColor').value),tol=+$('tolerance').value,soft=+$('softness').value,spill=+$('spill').value/100,mode=$('mode').value,bright=+$('brightness').value/100;
+ const shrink=+$('shrink').value,feather=+$('feather').value;
+ for(let i=0;i<d.length;i+=4){
+   let chroma=1;
+   if(mode!=='ai'){
+    const dr=d[i]-key[0],dg=d[i+1]-key[1],db=d[i+2]-key[2];
+    const dist=Math.sqrt(dr*dr+dg*dg+db*db);
+    const lo=tol,hi=tol+Math.max(1,soft);
+    chroma=clamp((dist-lo)/(hi-lo),0,1);
+   }
+   let aiA=1;
+   if((mode==='ai'||mode==='hybrid')&&md){const mi=i;aiA=clamp((md[mi]-55)/145,0,1)}
+   let a=mode==='chroma'?chroma:mode==='ai'?aiA:Math.min(chroma,aiA);
+   // Slight inward matte bias to reduce fringe, without globally eroding fine hair.
+   if(shrink>0&&a>0&&a<1)a=clamp(a*(1-shrink*.055),0,1);
+   // Green spill suppression only where key color is green-dominant.
+   if(spill>0&&key[1]>key[0]*1.15&&key[1]>key[2]*1.15&&a<.98){
+     const g=Math.max(0,d[i+1]-Math.max(d[i],d[i+2]));
+     const remove=g*spill*(1-a)*.85;d[i+1]=clamp(d[i+1]-remove);
+   }
+   d[i]=clamp(d[i]*bright);d[i+1]=clamp(d[i+1]*bright);d[i+2]=clamp(d[i+2]*bright);d[i+3]=Math.round(d[i+3]*a);
+ }
+ return imageData;
+}
+
+function paintPoint(e){
+ const r=eraseOverlay.getBoundingClientRect();
+ return {x:clamp((e.clientX-r.left)/r.width*eraseOverlay.width,0,eraseOverlay.width),y:clamp((e.clientY-r.top)/r.height*eraseOverlay.height,0,eraseOverlay.height)};
+}
+function drawStroke(c,stroke,color){
+ if(!stroke.points.length)return;
+ c.save();c.lineCap='round';c.lineJoin='round';c.lineWidth=stroke.size;
+ c.strokeStyle=color;c.fillStyle=color;
+ if(stroke.points.length===1){c.beginPath();c.arc(stroke.points[0].x,stroke.points[0].y,stroke.size/2,0,Math.PI*2);c.fill()}
+ else{c.beginPath();c.moveTo(stroke.points[0].x,stroke.points[0].y);for(let i=1;i<stroke.points.length;i++)c.lineTo(stroke.points[i].x,stroke.points[i].y);c.stroke()}
+ c.restore();
+}
+function redrawEraseMask(){
+ if(!eraseMask.width||!eraseMask.height)return;
+ eraseCtx.clearRect(0,0,eraseMask.width,eraseMask.height);
+ overlayCtx.clearRect(0,0,eraseOverlay.width,eraseOverlay.height);
+ eraseStrokes.forEach(st=>{drawStroke(eraseCtx,st,'rgba(255,255,255,1)');drawStroke(overlayCtx,st,'rgba(255,65,80,.42)')});
+ $('undoErase').disabled=eraseStrokes.length===0;$('clearErase').disabled=eraseStrokes.length===0;
+}
+$('eraseTool').onclick=()=>{
+ eraseEnabled=!eraseEnabled;
+ $('eraseTool').textContent=eraseEnabled?'✋ Tắt cọ xóa':'🖌️ Bật cọ xóa';
+ $('eraseTool').classList.toggle('paint-active',eraseEnabled);
+ eraseOverlay.style.pointerEvents=eraseEnabled?'auto':'none';
+ $('eraseStatus').textContent=eraseEnabled?'Kéo trên vùng cần xóa. Vùng đỏ sẽ trở thành trong suốt.':'Cọ đã tắt.';
+};
+$('brushSize').oninput=()=>{$('brushOut').textContent=$('brushSize').value+' px'};
+eraseOverlay.style.pointerEvents='none';
+eraseOverlay.addEventListener('pointerdown',e=>{
+ if(!eraseEnabled||!out.width)return;
+ isPainting=true;eraseOverlay.setPointerCapture(e.pointerId);
+ currentStroke={size:Number($('brushSize').value),points:[paintPoint(e)]};
+ eraseStrokes.push(currentStroke);redrawEraseMask();e.preventDefault();
+});
+eraseOverlay.addEventListener('pointermove',e=>{
+ if(!isPainting||!currentStroke)return;
+ currentStroke.points.push(paintPoint(e));redrawEraseMask();renderStill();
+});
+function finishPaint(){if(!isPainting)return;isPainting=false;currentStroke=null;redrawEraseMask();renderStill()}
+eraseOverlay.addEventListener('pointerup',finishPaint);
+eraseOverlay.addEventListener('pointercancel',finishPaint);
+$('undoErase').onclick=()=>{eraseStrokes.pop();redrawEraseMask();renderStill()};
+$('clearErase').onclick=()=>{eraseStrokes=[];redrawEraseMask();renderStill()};
+function renderComposite(){
+ const w=out.width,h=out.height;if(!w||!h)return;
+ sctx.drawImage(video,0,0,w,h);
+ const image=sctx.getImageData(0,0,w,h);
+ let md=null;
+ if(aiMask){mctx.clearRect(0,0,w,h);mctx.drawImage(aiMask,0,0,w,h);md=mctx.getImageData(0,0,w,h)}
+ const autoKey=$('autoKey').checked && $('mode').value!=='ai' ? sampleTopLeft(image) : null;
+ const result=makeAlpha(image,md,autoKey);
+ if(eraseMask.width===w&&eraseMask.height===h){
+  const eraseData=eraseCtx.getImageData(0,0,w,h).data,rd=result.data;
+  for(let i=0;i<rd.length;i+=4)if(eraseData[i+3]>0)rd[i+3]=0;
+ }
+ const temp=document.createElement('canvas');temp.width=w;temp.height=h;temp.getContext('2d').putImageData(result,0,0);
+ ctx.clearRect(0,0,w,h);
+ const bg=$('bgMode').value;
+ if(bg!=='transparent'){ctx.globalCompositeOperation='destination-over';ctx.fillStyle=bg==='green'?'#00ff00':bg==='white'?'#ffffff':bg==='black'?'#000000':$('bgColor').value;ctx.fillRect(0,0,w,h);ctx.globalCompositeOperation='source-over'}
+ ctx.drawImage(temp,0,0);
+ // feather is deliberately a visual edge option; browser canvas filter on alpha layer.
+ 
+}
+async function renderStill(){if(!video.videoWidth)return;try{if($('mode').value==='toonout'){await runToonout(video)}else if(['ai','hybrid'].includes($('mode').value)){await initAI();await ai.send({image:video})}renderComposite()}catch(e){setStatus(e.message)}}
+async function tick(){if(!processing)return;const rg=rangeFrames();if(video.currentTime>=rg.endTime-0.002){stop();setStatus('Đã xử lý xong đoạn frame đã chọn.');return}try{if($('mode').value==='toonout'){await runToonout(video)}else if(['ai','hybrid'].includes($('mode').value)){await initAI();await ai.send({image:video})}renderComposite();frames++;const now=performance.now();if(now-last>1000){fps=frames*1000/(now-last);$('fps').textContent=fps.toFixed(1)+' FPS';frames=0;last=now}$('progress').textContent=(rg.endTime>rg.startTime?Math.max(0,Math.min(100,Math.round((video.currentTime-rg.startTime)/(rg.endTime-rg.startTime)*100))):0)+'%'}catch(e){setStatus('Lỗi: '+e.message);stop();return}if(!video.paused&&!video.ended)raf=requestAnimationFrame(tick);else if(video.ended){stop();setStatus('Đã xử lý xong video.')} }
+async function start(){if(processing)return;processing=true;$('startBtn').disabled=true;$('stopBtn').disabled=false;$('webmBtn').disabled=false;setStatus($('mode').value==='chroma'?'Đang xử lý bằng Adaptive Chroma Key…':$('mode').value==='toonout'?'Đang xử lý bằng ToonOut Anime AI…':'Đang xử lý bằng MediaPipe fallback…');last=performance.now();frames=0;const rg=rangeFrames();if(video.currentTime<rg.startTime||video.currentTime>=rg.endTime)video.currentTime=rg.startTime;try{if($('mode').value==='toonout')await loadToonout();else if(['ai','hybrid'].includes($('mode').value))await initAI();await video.play();tick()}catch(e){setStatus('Không thể bắt đầu: '+e.message);stop()}}
+function stop(){processing=false;cancelAnimationFrame(raf);$('startBtn').disabled=false;$('stopBtn').disabled=true;if(video)video.pause();if(recorder&&recorder.state!=='inactive')recorder.stop()}
+$('startBtn').onclick=start;$('stopBtn').onclick=stop;video.addEventListener('seeked',()=>{if(!processing)renderStill()});
+$('bgMode').onchange=()=>renderStill();$('bgColor').oninput=()=>renderStill();$('autoKey').onchange=()=>renderStill();
+$('pngBtn').onclick=()=>{renderStill().then(()=>out.toBlob(b=>download(b,`removebg-frame-${Date.now()}.png`),'image/png'))};
+function download(blob,name){const a=document.createElement('a'),u=URL.createObjectURL(blob);a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),30000)}
+$('sequenceBtn').onclick=async()=>{
+ if(!video.duration||!video.videoWidth)return;
+ if(!window.JSZip){setStatus('Không tải được thư viện ZIP. Kiểm tra Internet.');return}
+ const wasPlaying=!video.paused;stop();const oldTime=video.currentTime;
+ const zip=new JSZip(),folder=zip.folder('png-frames');const rg=rangeFrames();
+ const sampleFps=refFps();
+ const step=1/sampleFps,total=Math.max(1,Math.ceil((rg.endTime-rg.startTime)*sampleFps));
+ $('sequenceBtn').disabled=true;
+ try{
+   for(let n=0;n<total;n++){
+     const t=Math.min(rg.startTime+n*step,Math.max(rg.startTime,rg.endTime-0.02));
+     await new Promise(resolve=>{const done=()=>{video.removeEventListener('seeked',done);resolve()};video.addEventListener('seeked',done);video.currentTime=t;if(Math.abs(video.currentTime-t)<0.015)resolve()});
+     if(['ai','hybrid'].includes($('mode').value)){await initAI();await ai.send({image:video})}
+     renderComposite();
+     const blob=await new Promise(resolve=>out.toBlob(resolve,'image/png'));
+     if(blob)folder.file(`frame_${String(n+1).padStart(6,'0')}.png`,blob);
+     $('progress').textContent=Math.round((n+1)/total*100)+'%';
+     if(n%10===0){setStatus(`Đang tạo PNG sequence: ${n+1}/${total}`);await new Promise(r=>setTimeout(r,0))}
+   }
+   const blob=await zip.generateAsync({type:'blob',compression:'STORE'},m=>{$('progress').textContent=Math.round(m.percent)+'%'});
+   download(blob,`RemoveBG-Anime-Pro-Frames-${rg.start}-${rg.end}-${Date.now()}.zip`);setStatus(`Hoàn tất: ${total} PNG đã được đóng gói ZIP.`);
+ }catch(e){setStatus('Lỗi xuất PNG sequence: '+e.message)}
+ finally{video.currentTime=oldTime;$('sequenceBtn').disabled=false;await renderStill();if(wasPlaying)video.play()}
+};
+$('webmBtn').onclick=async()=>{
+ if(!video.duration||!video.videoWidth||!out.width)return;
+ if(processing||recording){setStatus('Đang có tác vụ xử lý. Hãy đợi hoàn tất hoặc nhấn Dừng.');return}
+ const supported=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(t=>MediaRecorder.isTypeSupported(t));
+ if(!supported){setStatus('Trình duyệt không hỗ trợ MediaRecorder WebM.');return}
+ const rg=rangeFrames();
+ try{
+   $('webmBtn').disabled=true; $('sequenceBtn').disabled=true;
+   if($('mode').value==='toonout')await loadToonout();else if(['ai','hybrid'].includes($('mode').value))await initAI();
+   video.pause(); video.currentTime=rg.startTime;
+   await new Promise(resolve=>{if(Math.abs(video.currentTime-rg.startTime)<0.01){resolve();return}const done=()=>{video.removeEventListener('seeked',done);resolve()};video.addEventListener('seeked',done)});
+   await renderStill();
+   const stream=out.captureStream(refFps());chunks=[];
+   recorder=new MediaRecorder(stream,{mimeType:supported,videoBitsPerSecond:8000000});
+   recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+   recorder.onstop=()=>{download(new Blob(chunks,{type:supported}),`RemoveBG-Anime-Pro-Frames-${rg.start}-${rg.end}-${Date.now()}.webm`);recording=false;$('webmBtn').disabled=false;$('sequenceBtn').disabled=false;setStatus('Đã xuất WebM theo khoảng frame và FPS đã chọn.')};
+   recorder.start();recording=true;processing=true;$('startBtn').disabled=true;$('stopBtn').disabled=false;
+   setStatus(`Đang tự xử lý và ghi WebM: frame ${rg.start}–${rg.end} ở ${refFps()} FPS…`);
+   last=performance.now();frames=0;await video.play();tick();
+ }catch(e){recording=false;$('webmBtn').disabled=false;$('sequenceBtn').disabled=false;if(recorder&&recorder.state!=='inactive')recorder.stop();setStatus('Không thể xuất WebM: '+e.message);stop()}
+};
+// Keep output preview responsive while paused.
+video.addEventListener('loadeddata',renderStill);
+})();
+</script>
+<footer style="max-width:1400px;margin:24px auto;padding:0 16px 24px;color:#8192aa;font-size:12px">ToonOut: BiRefNet fine-tune for anime · Model license MIT · Model source: sprited/birefnet-toonout-onnx · Paper: arXiv:2509.06839. ONNX Runtime Web is loaded from jsDelivr. No video is uploaded to a server by this app.</footer></body></html>
