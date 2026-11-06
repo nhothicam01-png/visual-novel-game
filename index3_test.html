@@ -417,11 +417,6 @@
     <button id="btn-record-start" class="btn" onclick="trinhPhat.startRecording()">🎥 Ghi video & chạy</button>
     <button id="btn-record-stop" class="btn" onclick="trinhPhat.stopRecording()" style="display:none;">⏹ Kết thúc & tải video</button>
     <span id="record-status" aria-live="polite">🔴 Đang ghi video</span>
-    <label style="display:flex;align-items:center;gap:6px;color:#cbd5e1;font-size:.8rem;flex-wrap:wrap;">
-      🌐 TTS server
-      <input id="tts-server-url" type="url" inputmode="url" placeholder="https://ten-dich-vu.onrender.com"
-        style="width:min(280px,70vw);background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:6px;padding:7px;">
-    </label>
     <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">
       🎞 FPS
       <select id="record-fps" style="background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:5px;padding:3px 6px;">
@@ -462,9 +457,8 @@
     </div>
   </div>
 
-  <audio id="audio-bgm" loop crossorigin="anonymous"></audio>
-  <audio id="audio-sfx" crossorigin="anonymous"></audio>
-  <audio id="audio-tts" crossorigin="anonymous"></audio>
+  <audio id="audio-bgm" loop></audio>
+  <audio id="audio-sfx"></audio>
 
   <script>
     class TrinhPhatKichBanWeb {
@@ -479,19 +473,6 @@
         this.dialogueText = document.getElementById('dialogue-text');
         this.audioBgm = document.getElementById('audio-bgm');
         this.audioSfx = document.getElementById('audio-sfx');
-        this.audioTts = document.getElementById('audio-tts');
-        this.audioContext = null;
-        this.recordingAudioDestination = null;
-        this.audioNodesReady = false;
-        this.ttsServerUrl = localStorage.getItem('visualNovelTtsServerUrl') || '';
-        const ttsServerInput = document.getElementById('tts-server-url');
-        if (ttsServerInput) {
-          ttsServerInput.value = this.ttsServerUrl;
-          ttsServerInput.addEventListener('change', () => {
-            this.ttsServerUrl = ttsServerInput.value.trim().replace(/\\/$/, '');
-            localStorage.setItem('visualNovelTtsServerUrl', this.ttsServerUrl);
-          });
-        }
 
         this.loadingOverlay = document.getElementById('loading-overlay');
         this.loadingTitle = document.getElementById('loading-title');
@@ -993,9 +974,7 @@
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           if (this.layerChar.style.display === 'block') this.layerChar.play().catch(()=>{});
           
-          if (this.ttsServerUrl && this.audioTts.src) {
-            this.audioTts.play().catch(err => console.warn('Không thể tiếp tục MP3 TTS:', err));
-          } else if (this.ttsRemainingText && this.currentTtsResolve) {
+          if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
           }
           return;
@@ -1030,7 +1009,6 @@
           this.dangTamDung = true;
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
           if (this.ttsSynth) this.ttsSynth.cancel();
-          if (this.ttsServerUrl) this.audioTts.pause();
 
           this.audioBgm.pause();
           this.audioSfx.pause();
@@ -1043,9 +1021,7 @@
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           if (this.layerChar.style.display === 'block') this.layerChar.play().catch(()=>{});
 
-          if (this.ttsServerUrl && this.audioTts.src) {
-            this.audioTts.play().catch(err => console.warn('Không thể tiếp tục MP3 TTS:', err));
-          } else if (this.ttsRemainingText && this.currentTtsResolve) {
+          if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
           }
         }
@@ -1184,109 +1160,49 @@
         await this.sleep(thoiGianCho * 1000);
       }
 
-      async docVanBanBangTTS(nhanVat, text, resolveCallback) {
-        if (!text) { resolveCallback(); return; }
-        const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat])
-          ? this.cauHinhGiongNhanVat[nhanVat]
-          : { rate: 1.1, pitch: 1.0, lang: this.ngonNguMacDinh };
-
-        // Khi đã cấu hình máy chủ, dùng MP3 để có thể thu âm sạch bằng Web Audio.
-        if (this.ttsServerUrl) {
-          try {
-            await this.khoiTaoAudioRouting();
-            const voiceMap = {
-              'vi': 'vi-VN-HoaiMyNeural',
-              'en': 'en-US-JennyNeural',
-              'ja': 'ja-JP-NanamiNeural',
-              'ko': 'ko-KR-SunHiNeural',
-              'zh': 'zh-CN-XiaoxiaoNeural',
-              'fr': 'fr-FR-DeniseNeural',
-              'de': 'de-DE-KatjaNeural',
-              'es': 'es-ES-ElviraNeural',
-              'pt': 'pt-PT-RaquelNeural',
-              'ru': 'ru-RU-SvetlanaNeural',
-              'ar': 'ar-SA-ZariyahNeural'
-            };
-            const lang = (cfg.lang || 'vi-VN').toLowerCase().split('-')[0];
-            const voice = voiceMap[lang] || 'en-US-JennyNeural';
-            const response = await fetch(this.ttsServerUrl + '/tts', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ text, voice, rate: cfg.rate || 1, pitch: cfg.pitch || 1 })
-            });
-            if (!response.ok) {
-              const detail = await response.text();
-              throw new Error(detail || ('HTTP ' + response.status));
-            }
-            const blob = await response.blob();
-            const objectUrl = URL.createObjectURL(blob);
-            this.audioTts.pause();
-            this.audioTts.src = objectUrl;
-            this.audioTts.volume = this.ttsVolume;
-            await new Promise((resolve, reject) => {
-              this.audioTts.onended = resolve;
-              this.audioTts.onerror = () => reject(new Error('Không phát được MP3 TTS.'));
-              this.audioTts.play().catch(reject);
-            });
-            URL.revokeObjectURL(objectUrl);
-            this.ttsRemainingText = '';
-            this.currentTtsResolve = null;
-            resolveCallback();
-            return;
-          } catch (err) {
-            console.error('TTS MP3 error:', err);
-            alert('Không tạo/phát được MP3 TTS. Kiểm tra URL máy chủ TTS và kết nối mạng.\\n' + err.message);
-            this.ttsRemainingText = '';
-            this.currentTtsResolve = null;
-            resolveCallback();
-            return;
-          }
+      docVanBanBangTTS(nhanVat, text, resolveCallback) {
+        if (!text || !this.ttsSynth) {
+          resolveCallback();
+          return;
         }
 
-        // Chế độ cũ được giữ lại khi chưa cấu hình TTS server.
-        if (!this.ttsSynth) { resolveCallback(); return; }
         this.ttsSynth.cancel();
+
         const utterance = new SpeechSynthesisUtterance(text);
+        const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat]) 
+          ? this.cauHinhGiongNhanVat[nhanVat] 
+          : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: this.ngonNguMacDinh };
+
         utterance.lang = cfg.lang || 'ja-JP';
+
+        // Chỉ gán voice khi ngôn ngữ khớp; không lấy giọng đầu tiên làm mặc định.
         if (cfg.voiceIndex >= 0 && this.danhSachVoices[cfg.voiceIndex]) {
           utterance.voice = this.danhSachVoices[cfg.voiceIndex];
         }
+
         utterance.volume = this.ttsVolume;
         utterance.rate = cfg.rate;
         utterance.pitch = cfg.pitch;
-        utterance.onboundary = event => {
-          if (event.name === 'word') this.ttsRemainingText = text.substring(event.charIndex);
+
+        utterance.onboundary = (event) => {
+          if (event.name === 'word') {
+            this.ttsRemainingText = text.substring(event.charIndex);
+          }
         };
+
         utterance.onend = () => {
-          this.ttsRemainingText = '';
+          this.ttsRemainingText = "";
           this.currentTtsResolve = null;
           resolveCallback();
         };
+
         utterance.onerror = () => {
-          this.ttsRemainingText = '';
+          this.ttsRemainingText = "";
           this.currentTtsResolve = null;
           resolveCallback();
         };
+
         this.ttsSynth.speak(utterance);
-      }
-
-      async khoiTaoAudioRouting() {
-        if (!this.audioContext) {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (!AudioContextClass) throw new Error('Thiết bị không hỗ trợ Web Audio.');
-          this.audioContext = new AudioContextClass();
-          this.recordingAudioDestination = this.audioContext.createMediaStreamDestination();
-
-          this.bgmSourceNode = this.audioContext.createMediaElementSource(this.audioBgm);
-          this.sfxSourceNode = this.audioContext.createMediaElementSource(this.audioSfx);
-          this.ttsSourceNode = this.audioContext.createMediaElementSource(this.audioTts);
-
-          [this.bgmSourceNode, this.sfxSourceNode, this.ttsSourceNode].forEach(node => {
-            node.connect(this.audioContext.destination);
-            node.connect(this.recordingAudioDestination);
-          });
-        }
-        if (this.audioContext.state === 'suspended') await this.audioContext.resume();
       }
 
       hienLoiThoai(ten, noiDung) {
@@ -1349,131 +1265,93 @@
 
       async startRecording() {
         if (this.isRecording) return;
-        if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) {
-          alert('Trình duyệt này chưa hỗ trợ ghi video trực tiếp. Hãy thử Chrome/Edge mới hoặc Safari mới.');
-          return;
-        }
-        if (!this.ttsServerUrl) {
-          alert('Hãy nhập URL máy chủ TTS trước khi ghi để giọng đọc MP3 được thu sạch cùng nhạc nền và hiệu ứng.');
-          document.getElementById('tts-server-url')?.focus();
+        if (!navigator.mediaDevices?.getDisplayMedia || !window.MediaRecorder) {
+          alert('Trình duyệt chưa hỗ trợ ghi tab. Hãy dùng Chrome hoặc Edge mới trên máy tính.');
           return;
         }
         if (this.dangChay || this.dangTamDung) {
           alert('Hãy dừng kịch bản hiện tại trước khi bắt đầu ghi video.');
           return;
         }
+
         try {
-          await this.khoiTaoAudioRouting();
+          // Chọn Toàn bộ màn hình + bật Chia sẻ âm thanh hệ thống để thu cả speechSynthesis/TTS.
+          // Hình từ màn hình vẫn được crop riêng về đúng khung #game-container.
           this.recordingFps = Number(document.getElementById('record-fps')?.value || 30);
+          alert('Trong hộp thoại chia sẻ, hãy chọn Toàn bộ màn hình (Entire Screen) và bật Chia sẻ âm thanh hệ thống (Share system audio). Không chọn riêng tab nếu muốn thu giọng TTS.');
+          this.recordingDisplayStream = await navigator.mediaDevices.getDisplayMedia({
+            video: { frameRate: { ideal: this.recordingFps, max: this.recordingFps } },
+            audio: true,
+            preferCurrentTab: true
+          });
+
+          const sourceTrack = this.recordingDisplayStream.getVideoTracks()[0];
+          if (!sourceTrack) throw new Error('Không nhận được hình ảnh từ tab được chia sẻ.');
+
+          // Dùng video nguồn + canvas để crop chính xác khung game, không ghi các nút/trình duyệt.
+          this.recordingSourceVideo = document.createElement('video');
+          this.recordingSourceVideo.muted = true;
+          this.recordingSourceVideo.playsInline = true;
+          this.recordingSourceVideo.srcObject = new MediaStream([sourceTrack]);
+          await new Promise((resolve, reject) => {
+            this.recordingSourceVideo.onloadedmetadata = resolve;
+            this.recordingSourceVideo.onerror = () => reject(new Error('Không đọc được hình ảnh tab.'));
+          });
+          await this.recordingSourceVideo.play();
+
           const portrait = this.container.classList.contains('portrait');
           const outWidth = portrait ? 1080 : 1920;
           const outHeight = portrait ? 1920 : 1080;
           this.recordingCanvas = document.createElement('canvas');
           this.recordingCanvas.width = outWidth;
           this.recordingCanvas.height = outHeight;
-          this.recordingContext = this.recordingCanvas.getContext('2d', { alpha: false });
-
-          const drawCover = (source, x, y, w, h, fit = 'cover') => {
-            if (!source) return;
-            const sw = source.videoWidth || source.naturalWidth || source.width;
-            const sh = source.videoHeight || source.naturalHeight || source.height;
-            if (!sw || !sh) return;
-            const scale = fit === 'contain' ? Math.min(w / sw, h / sh) : Math.max(w / sw, h / sh);
-            const dw = sw * scale, dh = sh * scale;
-            this.recordingContext.drawImage(source, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
-          };
-
-          this.drawRecordingFrame = () => {
-            const ctx = this.recordingContext;
-            if (!ctx || !this.recordingCanvas) return;
-            ctx.fillStyle = '#000';
+          const ctx = this.recordingCanvas.getContext('2d', { alpha: false });
+          const drawGameFrame = () => {
+            if (!this.recordingCanvas || !this.recordingSourceVideo) return;
+            const rect = this.container.getBoundingClientRect();
+            const scaleX = this.recordingSourceVideo.videoWidth / window.innerWidth;
+            const scaleY = this.recordingSourceVideo.videoHeight / window.innerHeight;
+            const sx = Math.max(0, rect.left * scaleX);
+            const sy = Math.max(0, rect.top * scaleY);
+            const sw = Math.min(rect.width * scaleX, this.recordingSourceVideo.videoWidth - sx);
+            const sh = Math.min(rect.height * scaleY, this.recordingSourceVideo.videoHeight - sy);
+            ctx.fillStyle = '#000000';
             ctx.fillRect(0, 0, outWidth, outHeight);
-
-            const bg = this.layerBgVideo.style.display === 'block' ? this.layerBgVideo : this.layerBgImg;
-            if (bg && bg.style.display !== 'none' && (bg.readyState === undefined || bg.readyState >= 2 || bg.complete)) {
-              drawCover(bg, 0, 0, outWidth, outHeight, 'cover');
+            if (sw > 0 && sh > 0 && this.recordingSourceVideo.readyState >= 2) {
+              // Cover khung đầu ra, tránh viền đen do sai khác tỷ lệ khung hình.
+              const scale = Math.max(outWidth / sw, outHeight / sh);
+              const dw = sw * scale, dh = sh * scale;
+              ctx.drawImage(this.recordingSourceVideo, sx, sy, sw, sh,
+                            (outWidth - dw) / 2, (outHeight - dh) / 2, dw, dh);
             }
-
-            if (this.layerChar.style.display !== 'none' && this.layerChar.readyState >= 2) {
-              const vw = this.layerChar.videoWidth, vh = this.layerChar.videoHeight;
-              if (vw && vh) {
-                const talkScale = this.layerChar.classList.contains('character-talking')
-                  ? 1 + 0.005 * (1 + Math.sin(performance.now() / 190))
-                  : 1;
-                const scale = portrait ? Math.min(outHeight / vh, outWidth / vw) : outWidth / vw;
-                const dw = vw * scale * talkScale, dh = vh * scale * talkScale;
-                const dx = (outWidth - dw) / 2;
-                const dy = portrait ? outHeight - dh : 0;
-                ctx.drawImage(this.layerChar, dx, dy, dw, dh);
-              }
-            }
-
-            if (this.layerVfx.style.display !== 'none' && this.layerVfx.complete) {
-              drawCover(this.layerVfx, 0, 0, outWidth, outHeight, 'cover');
-            }
-
-            if (this.dialogueCanvas.style.display !== 'none') {
-              const boxW = outWidth * 0.92;
-              const fontSize = portrait ? 34 : 42;
-              const lineHeight = fontSize * 1.4;
-              const maxChars = Math.max(12, Math.floor(boxW / (fontSize * 0.53)));
-              const raw = this.dialogueText.innerText || '';
-              const words = raw.split(/\\s+/);
-              const lines = [];
-              let line = '';
-              words.forEach(word => {
-                const candidate = line ? line + ' ' + word : word;
-                if (candidate.length > maxChars && line) { lines.push(line); line = word; }
-                else line = candidate;
-              });
-              if (line) lines.push(line);
-              const visibleLines = lines.slice(-4);
-              const boxH = Math.max(95, visibleLines.length * lineHeight + 28);
-              const boxX = (outWidth - boxW) / 2;
-              const boxY = outHeight - boxH - (portrait ? 22 : 20);
-              ctx.fillStyle = 'rgba(10,14,28,0.68)';
-              ctx.beginPath();
-              if (ctx.roundRect) ctx.roundRect(boxX, boxY, boxW, boxH, 20);
-              else ctx.rect(boxX, boxY, boxW, boxH);
-              ctx.fill();
-              ctx.font = `600 ${fontSize}px "Segoe UI", Arial, sans-serif`;
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.lineWidth = 3;
-              ctx.strokeStyle = '#000';
-              ctx.fillStyle = '#fff';
-              visibleLines.forEach((txt, i) => {
-                const y = boxY + 18 + lineHeight * (i + 0.5);
-                ctx.strokeText(txt, outWidth / 2, y, boxW - 36);
-                ctx.fillText(txt, outWidth / 2, y, boxW - 36);
-              });
-            }
-            this.recordingFrameId = requestAnimationFrame(this.drawRecordingFrame);
+            this.recordingFrameId = requestAnimationFrame(drawGameFrame);
           };
-          this.drawRecordingFrame();
+          drawGameFrame();
 
           const canvasStream = this.recordingCanvas.captureStream(this.recordingFps);
           this.recordingStream = new MediaStream([
             ...canvasStream.getVideoTracks(),
-            ...this.recordingAudioDestination.stream.getAudioTracks()
+            ...this.recordingDisplayStream.getAudioTracks()
           ]);
+          if (!this.recordingStream.getAudioTracks().length) {
+            alert('Không nhận được âm thanh hệ thống. Hãy dừng và thử lại, chọn Toàn bộ màn hình và bật Chia sẻ âm thanh hệ thống.');
+          }
 
-          const candidates = [
-            'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
-            'video/mp4',
+          const mimeCandidates = [
             'video/webm;codecs=vp9,opus',
             'video/webm;codecs=vp8,opus',
             'video/webm'
           ];
-          const mimeType = candidates.find(type => MediaRecorder.isTypeSupported(type)) || '';
+          const mimeType = mimeCandidates.find(type => MediaRecorder.isTypeSupported(type)) || '';
           this.recordedChunks = [];
           this.mediaRecorder = new MediaRecorder(this.recordingStream, {
             ...(mimeType ? { mimeType } : {}),
             videoBitsPerSecond: Math.round(8000000 * this.recordingFps / 30),
             audioBitsPerSecond: 192000
           });
+
           this.mediaRecorder.ondataavailable = event => {
-            if (event.data?.size) this.recordedChunks.push(event.data);
+            if (event.data && event.data.size > 0) this.recordedChunks.push(event.data);
           };
           this.mediaRecorder.onstop = () => {
             const type = this.mediaRecorder?.mimeType || 'video/webm';
@@ -1482,14 +1360,13 @@
               const url = URL.createObjectURL(blob);
               const link = document.createElement('a');
               link.href = url;
-              const ext = type.includes('mp4') ? 'mp4' : 'webm';
-              link.download = 'visual-novel-' + new Date().toISOString().replace(/[:.]/g, '-') + '.' + ext;
+              link.download = 'visual-novel-' + new Date().toISOString().replace(/[:.]/g, '-') + '.webm';
               document.body.appendChild(link);
               link.click();
               link.remove();
               setTimeout(() => URL.revokeObjectURL(url), 60000);
             } else {
-              alert('Không có dữ liệu video được ghi. Hãy thử lại.');
+              alert('Không có dữ liệu video được ghi. Hãy thử lại và chọn chia sẻ tab.');
             }
             this.recordedChunks = [];
             this.cleanupRecordingCapture();
@@ -1499,6 +1376,11 @@
             document.getElementById('btn-record-stop').style.display = 'none';
             document.getElementById('record-status').classList.remove('active');
           };
+
+          sourceTrack.addEventListener('ended', () => {
+            if (this.isRecording) this.stopRecording();
+          }, { once: true });
+
           this.mediaRecorder.start(1000);
           this.isRecording = true;
           document.getElementById('btn-record-start').style.display = 'none';
@@ -1509,7 +1391,9 @@
           console.error('Không thể bắt đầu ghi video:', err);
           this.cleanupRecordingCapture();
           this.isRecording = false;
-          alert('Không thể bắt đầu ghi video: ' + (err.message || err));
+          alert(err && err.name === 'NotAllowedError'
+            ? 'Bạn đã hủy quyền ghi tab. Hãy thử lại và chọn tab Visual Novel.'
+            : 'Không thể bắt đầu ghi video: ' + (err.message || err));
         }
       }
 
@@ -1520,8 +1404,16 @@
           this.recordingStream.getTracks().forEach(track => track.stop());
           this.recordingStream = null;
         }
+        if (this.recordingDisplayStream) {
+          this.recordingDisplayStream.getTracks().forEach(track => track.stop());
+          this.recordingDisplayStream = null;
+        }
+        if (this.recordingSourceVideo) {
+          this.recordingSourceVideo.pause();
+          this.recordingSourceVideo.srcObject = null;
+          this.recordingSourceVideo = null;
+        }
         this.recordingCanvas = null;
-        this.recordingContext = null;
       }
 
       stopRecording() {
@@ -1531,7 +1423,6 @@
         this.ttsRemainingText = '';
         this.currentTtsResolve = null;
         if (this.ttsSynth) this.ttsSynth.cancel();
-        this.audioTts.pause();
         clearInterval(this.hienChuInterval);
         this.audioBgm.pause();
         this.audioSfx.pause();
