@@ -457,8 +457,18 @@
     </div>
   </div>
 
-  <audio id="audio-bgm" loop></audio>
-  <audio id="audio-sfx"></audio>
+  <div id="tts-server-panel" style="width:100%;max-width:1000px;margin-top:8px;padding:10px 14px;border-radius:8px;background:rgba(15,23,42,.85);border:1px solid rgba(168,85,247,.3);">
+    <label for="tts-server-url" style="display:block;font-size:.8rem;color:#e2e8f0;margin-bottom:6px;">🌐 Máy chủ TTS MP3 (cần thiết để ghi giọng đọc vào video)</label>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <input id="tts-server-url" type="url" inputmode="url" placeholder="https://ten-may-chu.onrender.com" style="flex:1;min-width:180px;padding:8px;border-radius:6px;border:1px solid #475569;background:#0f172a;color:white;">
+      <button class="btn" type="button" onclick="trinhPhat.luuTTS()">Lưu</button>
+      <button class="btn" type="button" onclick="trinhPhat.kiemTraTTS()">Kiểm tra</button>
+    </div>
+    <div id="tts-server-status" style="font-size:.72rem;color:#94a3b8;margin-top:6px;">Không cần máy chủ để phát giọng trình duyệt; cần máy chủ để ghi giọng đọc sạch vào video.</div>
+  </div>
+  <audio id="audio-bgm" loop crossorigin="anonymous"></audio>
+  <audio id="audio-sfx" crossorigin="anonymous"></audio>
+  <audio id="audio-tts" crossorigin="anonymous"></audio>
 
   <script>
     class TrinhPhatKichBanWeb {
@@ -496,11 +506,19 @@
         this.ttsRemainingText = "";
         this.currentSpeaker = "";
 
-        // Ghi lại toàn bộ tab bằng MediaRecorder (giữ nguyên SpeechSynthesis TTS).
+        // Ghi trực tiếp khung game bằng Canvas + trộn âm thanh bằng Web Audio.
         this.recordingStream = null;
         this.mediaRecorder = null;
         this.recordedChunks = [];
         this.isRecording = false;
+        this.recordingCanvas = null;
+        this.recordingFrameId = null;
+        this.audioContext = null;
+        this.audioDestination = null;
+        this.audioTts = document.getElementById('audio-tts');
+        this.ttsServerUrl = localStorage.getItem('visualNovelTtsServerUrl') || '';
+        const ttsInput = document.getElementById('tts-server-url');
+        if (ttsInput) ttsInput.value = this.ttsServerUrl;
 
         this.cauHinhGiongNhanVat = {};
         this.ttsSynth = window.speechSynthesis || null;
@@ -974,7 +992,9 @@
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           if (this.layerChar.style.display === 'block') this.layerChar.play().catch(()=>{});
           
-          if (this.ttsRemainingText && this.currentTtsResolve) {
+          if (this.audioTts.src && this.audioTts.paused && this.ttsServerUrl) {
+            this.audioTts.play().catch(() => {});
+          } else if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
           }
           return;
@@ -1009,6 +1029,7 @@
           this.dangTamDung = true;
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
           if (this.ttsSynth) this.ttsSynth.cancel();
+          this.audioTts.pause();
 
           this.audioBgm.pause();
           this.audioSfx.pause();
@@ -1160,49 +1181,111 @@
         await this.sleep(thoiGianCho * 1000);
       }
 
-      docVanBanBangTTS(nhanVat, text, resolveCallback) {
-        if (!text || !this.ttsSynth) {
-          resolveCallback();
-          return;
-        }
-
-        this.ttsSynth.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat]) 
-          ? this.cauHinhGiongNhanVat[nhanVat] 
+      async docVanBanBangTTS(nhanVat, text, resolveCallback) {
+        if (!text) { resolveCallback(); return; }
+        const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat])
+          ? this.cauHinhGiongNhanVat[nhanVat]
           : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: this.ngonNguMacDinh };
 
-        utterance.lang = cfg.lang || 'ja-JP';
-
-        // Chỉ gán voice khi ngôn ngữ khớp; không lấy giọng đầu tiên làm mặc định.
-        if (cfg.voiceIndex >= 0 && this.danhSachVoices[cfg.voiceIndex]) {
-          utterance.voice = this.danhSachVoices[cfg.voiceIndex];
+        // MP3 được dùng khi máy chủ được cấu hình; Web Audio có thể thu được nguồn này.
+        if (this.ttsServerUrl) {
+          try {
+            const base = this.ttsServerUrl.replace(/\\/+$/, '');
+            const response = await fetch(base + '/tts', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                text,
+                lang: cfg.lang || 'vi-VN',
+                rate: cfg.rate || 1,
+                pitch: cfg.pitch || 1
+              })
+            });
+            if (!response.ok) throw new Error('TTS server trả về HTTP ' + response.status);
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            this.audioTts.pause();
+            this.audioTts.src = url;
+            this.audioTts.volume = this.ttsVolume;
+            this.audioTts.onended = () => {
+              URL.revokeObjectURL(url);
+              this.ttsRemainingText = '';
+              this.currentTtsResolve = null;
+              resolveCallback();
+            };
+            this.audioTts.onerror = () => {
+              URL.revokeObjectURL(url);
+              this.currentTtsResolve = null;
+              resolveCallback();
+            };
+            await this.audioTts.play();
+            return;
+          } catch (err) {
+            console.error('Lỗi TTS MP3:', err);
+            const status = document.getElementById('tts-server-status');
+            if (status) status.textContent = 'Lỗi TTS: ' + err.message;
+            this.currentTtsResolve = null;
+            resolveCallback();
+            return;
+          }
         }
 
+        if (!this.ttsSynth) { resolveCallback(); return; }
+        this.ttsSynth.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = cfg.lang || 'vi-VN';
+        if (cfg.voiceIndex >= 0 && this.danhSachVoices[cfg.voiceIndex]) utterance.voice = this.danhSachVoices[cfg.voiceIndex];
         utterance.volume = this.ttsVolume;
         utterance.rate = cfg.rate;
         utterance.pitch = cfg.pitch;
-
-        utterance.onboundary = (event) => {
-          if (event.name === 'word') {
-            this.ttsRemainingText = text.substring(event.charIndex);
-          }
+        utterance.onboundary = event => {
+          if (event.name === 'word') this.ttsRemainingText = text.substring(event.charIndex);
         };
-
-        utterance.onend = () => {
-          this.ttsRemainingText = "";
+        utterance.onend = utterance.onerror = () => {
+          this.ttsRemainingText = '';
           this.currentTtsResolve = null;
           resolveCallback();
         };
-
-        utterance.onerror = () => {
-          this.ttsRemainingText = "";
-          this.currentTtsResolve = null;
-          resolveCallback();
-        };
-
         this.ttsSynth.speak(utterance);
+      }
+
+      luuTTS() {
+        this.ttsServerUrl = document.getElementById('tts-server-url').value.trim().replace(/\\/+$/, '');
+        localStorage.setItem('visualNovelTtsServerUrl', this.ttsServerUrl);
+        const status = document.getElementById('tts-server-status');
+        if (status) status.textContent = this.ttsServerUrl ? 'Đã lưu địa chỉ máy chủ TTS.' : 'Đã xóa địa chỉ máy chủ TTS.';
+      }
+
+      async kiemTraTTS() {
+        this.luuTTS();
+        const status = document.getElementById('tts-server-status');
+        if (!this.ttsServerUrl) { status.textContent = 'Hãy nhập địa chỉ máy chủ trước.'; return; }
+        status.textContent = 'Đang kết nối máy chủ...';
+        try {
+          const response = await fetch(this.ttsServerUrl + '/health');
+          if (!response.ok) throw new Error('HTTP ' + response.status);
+          status.textContent = 'Máy chủ TTS đang hoạt động.';
+        } catch (err) {
+          status.textContent = 'Không kết nối được: ' + err.message;
+        }
+      }
+
+      khoiTaoBoTronAmThanh() {
+        if (this.audioContext && this.audioDestination) return;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) throw new Error('Trình duyệt không hỗ trợ Web Audio API.');
+        this.audioContext = new AudioCtx();
+        this.audioDestination = this.audioContext.createMediaStreamDestination();
+        [this.audioBgm, this.audioSfx, this.audioTts].forEach(audio => {
+          if (!audio.__vnSource) {
+            const source = this.audioContext.createMediaElementSource(audio);
+            const gain = this.audioContext.createGain();
+            source.connect(gain);
+            gain.connect(this.audioContext.destination);
+            gain.connect(this.audioDestination);
+            audio.__vnSource = source;
+          }
+        });
       }
 
       hienLoiThoai(ten, noiDung) {
@@ -1251,6 +1334,7 @@
         document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
         clearInterval(this.hienChuInterval);
         if (this.ttsSynth) this.ttsSynth.cancel();
+        this.audioTts.pause();
         this.audioBgm.pause();
         this.audioSfx.pause();
         this.layerBgVideo.pause();
@@ -1265,39 +1349,24 @@
 
       async startRecording() {
         if (this.isRecording) return;
-        if (!navigator.mediaDevices?.getDisplayMedia || !window.MediaRecorder) {
-          alert('Trình duyệt chưa hỗ trợ ghi tab. Hãy dùng Chrome hoặc Edge mới trên máy tính.');
+        if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) {
+          alert('Trình duyệt này chưa hỗ trợ ghi Canvas. Hãy cập nhật Chrome, Edge hoặc Safari mới.');
           return;
         }
         if (this.dangChay || this.dangTamDung) {
           alert('Hãy dừng kịch bản hiện tại trước khi bắt đầu ghi video.');
           return;
         }
+        this.luuTTS();
+        if (!this.ttsServerUrl) {
+          alert('Để video có cả giọng đọc nhân vật, hãy nhập và lưu địa chỉ máy chủ TTS MP3 trước. Máy chủ này dùng chung cho PC và điện thoại.');
+          return;
+        }
 
         try {
-          // Chọn Toàn bộ màn hình + bật Chia sẻ âm thanh hệ thống để thu cả speechSynthesis/TTS.
-          // Hình từ màn hình vẫn được crop riêng về đúng khung #game-container.
           this.recordingFps = Number(document.getElementById('record-fps')?.value || 30);
-          alert('Trong hộp thoại chia sẻ, hãy chọn Toàn bộ màn hình (Entire Screen) và bật Chia sẻ âm thanh hệ thống (Share system audio). Không chọn riêng tab nếu muốn thu giọng TTS.');
-          this.recordingDisplayStream = await navigator.mediaDevices.getDisplayMedia({
-            video: { frameRate: { ideal: this.recordingFps, max: this.recordingFps } },
-            audio: true,
-            preferCurrentTab: true
-          });
-
-          const sourceTrack = this.recordingDisplayStream.getVideoTracks()[0];
-          if (!sourceTrack) throw new Error('Không nhận được hình ảnh từ tab được chia sẻ.');
-
-          // Dùng video nguồn + canvas để crop chính xác khung game, không ghi các nút/trình duyệt.
-          this.recordingSourceVideo = document.createElement('video');
-          this.recordingSourceVideo.muted = true;
-          this.recordingSourceVideo.playsInline = true;
-          this.recordingSourceVideo.srcObject = new MediaStream([sourceTrack]);
-          await new Promise((resolve, reject) => {
-            this.recordingSourceVideo.onloadedmetadata = resolve;
-            this.recordingSourceVideo.onerror = () => reject(new Error('Không đọc được hình ảnh tab.'));
-          });
-          await this.recordingSourceVideo.play();
+          this.khoiTaoBoTronAmThanh();
+          await this.audioContext.resume();
 
           const portrait = this.container.classList.contains('portrait');
           const outWidth = portrait ? 1080 : 1920;
@@ -1306,38 +1375,102 @@
           this.recordingCanvas.width = outWidth;
           this.recordingCanvas.height = outHeight;
           const ctx = this.recordingCanvas.getContext('2d', { alpha: false });
-          const drawGameFrame = () => {
-            if (!this.recordingCanvas || !this.recordingSourceVideo) return;
-            const rect = this.container.getBoundingClientRect();
-            const scaleX = this.recordingSourceVideo.videoWidth / window.innerWidth;
-            const scaleY = this.recordingSourceVideo.videoHeight / window.innerHeight;
-            const sx = Math.max(0, rect.left * scaleX);
-            const sy = Math.max(0, rect.top * scaleY);
-            const sw = Math.min(rect.width * scaleX, this.recordingSourceVideo.videoWidth - sx);
-            const sh = Math.min(rect.height * scaleY, this.recordingSourceVideo.videoHeight - sy);
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(0, 0, outWidth, outHeight);
-            if (sw > 0 && sh > 0 && this.recordingSourceVideo.readyState >= 2) {
-              // Cover khung đầu ra, tránh viền đen do sai khác tỷ lệ khung hình.
-              const scale = Math.max(outWidth / sw, outHeight / sh);
-              const dw = sw * scale, dh = sh * scale;
-              ctx.drawImage(this.recordingSourceVideo, sx, sy, sw, sh,
-                            (outWidth - dw) / 2, (outHeight - dh) / 2, dw, dh);
-            }
-            this.recordingFrameId = requestAnimationFrame(drawGameFrame);
+          if (!ctx) throw new Error('Không tạo được Canvas 2D.');
+
+          const drawImageCover = (img, x, y, w, h) => {
+            if (!img || !img.complete || !img.naturalWidth) return;
+            const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+            const dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
+            ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
           };
-          drawGameFrame();
+          const drawVideo = (video, x, y, w, h, fit = 'contain') => {
+            if (!video || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
+            const scale = fit === 'cover'
+              ? Math.max(w / video.videoWidth, h / video.videoHeight)
+              : Math.min(w / video.videoWidth, h / video.videoHeight);
+            const dw = video.videoWidth * scale, dh = video.videoHeight * scale;
+            ctx.drawImage(video, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+          };
+
+          const drawFrame = () => {
+            if (!this.recordingCanvas) return;
+            const rect = this.container.getBoundingClientRect();
+            const sx = outWidth / Math.max(1, rect.width);
+            const sy = outHeight / Math.max(1, rect.height);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, outWidth, outHeight);
+
+            if (this.layerBgVideo.style.display !== 'none' && this.layerBgVideo.style.display !== '') {
+              drawVideo(this.layerBgVideo, 0, 0, outWidth, outHeight, 'cover');
+            } else if (this.layerBgImg.style.display !== 'none' && this.layerBgImg.style.display !== '') {
+              drawImageCover(this.layerBgImg, 0, 0, outWidth, outHeight);
+            }
+
+            if (this.layerChar.style.display !== 'none' && this.layerChar.style.display !== '') {
+              const cr = this.layerChar.getBoundingClientRect();
+              const x = (cr.left - rect.left) * sx;
+              const y = (cr.top - rect.top) * sy;
+              const w = cr.width * sx, h = cr.height * sy;
+              drawVideo(this.layerChar, x, y, w, h, 'contain');
+            }
+
+            if (this.layerVfx.style.display !== 'none' && this.layerVfx.style.display !== '') {
+              drawImageCover(this.layerVfx, 0, 0, outWidth, outHeight);
+            }
+
+            if (this.dialogueCanvas.style.display !== 'none') {
+              const dr = this.dialogueCanvas.getBoundingClientRect();
+              const x = (dr.left - rect.left) * sx;
+              const y = (dr.top - rect.top) * sy;
+              const w = dr.width * sx, h = dr.height * sy;
+              ctx.save();
+              ctx.fillStyle = 'rgba(5, 8, 17, 0.62)';
+              ctx.beginPath();
+              const radius = 18;
+              ctx.roundRect(x, y, w, h, radius);
+              ctx.fill();
+              const style = getComputedStyle(this.dialogueText);
+              const fontSize = parseFloat(style.fontSize) * sy;
+              ctx.font = `${style.fontWeight || '400'} ${fontSize}px ${style.fontFamily || 'sans-serif'}`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.lineJoin = 'round';
+              ctx.lineWidth = Math.max(2, fontSize * 0.055);
+              ctx.strokeStyle = '#000';
+              ctx.fillStyle = '#fff';
+              const raw = this.dialogueText.innerText || '';
+              const maxWidth = w - 48;
+              const words = raw.split(/\\s+/);
+              const lines = [];
+              let line = '';
+              for (const word of words) {
+                const test = line ? line + ' ' + word : word;
+                if (line && ctx.measureText(test).width > maxWidth) {
+                  lines.push(line);
+                  line = word;
+                } else line = test;
+              }
+              if (line) lines.push(line);
+              const lineHeight = fontSize * 1.4;
+              const startY = y + h / 2 - ((lines.length - 1) * lineHeight) / 2;
+              lines.forEach((lineText, i) => {
+                ctx.strokeText(lineText, x + w / 2, startY + i * lineHeight, maxWidth);
+                ctx.fillText(lineText, x + w / 2, startY + i * lineHeight, maxWidth);
+              });
+              ctx.restore();
+            }
+            this.recordingFrameId = requestAnimationFrame(drawFrame);
+          };
+          drawFrame();
 
           const canvasStream = this.recordingCanvas.captureStream(this.recordingFps);
           this.recordingStream = new MediaStream([
             ...canvasStream.getVideoTracks(),
-            ...this.recordingDisplayStream.getAudioTracks()
+            ...this.audioDestination.stream.getAudioTracks()
           ]);
-          if (!this.recordingStream.getAudioTracks().length) {
-            alert('Không nhận được âm thanh hệ thống. Hãy dừng và thử lại, chọn Toàn bộ màn hình và bật Chia sẻ âm thanh hệ thống.');
-          }
-
           const mimeCandidates = [
+            'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+            'video/mp4',
             'video/webm;codecs=vp9,opus',
             'video/webm;codecs=vp8,opus',
             'video/webm'
@@ -1360,14 +1493,13 @@
               const url = URL.createObjectURL(blob);
               const link = document.createElement('a');
               link.href = url;
-              link.download = 'visual-novel-' + new Date().toISOString().replace(/[:.]/g, '-') + '.webm';
+              const ext = type.includes('mp4') ? 'mp4' : 'webm';
+              link.download = 'visual-novel-' + new Date().toISOString().replace(/[:.]/g, '-') + '.' + ext;
               document.body.appendChild(link);
               link.click();
               link.remove();
               setTimeout(() => URL.revokeObjectURL(url), 60000);
-            } else {
-              alert('Không có dữ liệu video được ghi. Hãy thử lại và chọn chia sẻ tab.');
-            }
+            } else alert('Không có dữ liệu video được ghi. Hãy thử lại.');
             this.recordedChunks = [];
             this.cleanupRecordingCapture();
             this.mediaRecorder = null;
@@ -1375,14 +1507,12 @@
             document.getElementById('btn-record-start').style.display = 'inline-block';
             document.getElementById('btn-record-stop').style.display = 'none';
             document.getElementById('record-status').classList.remove('active');
+            this.container.classList.remove('is-recording');
           };
-
-          sourceTrack.addEventListener('ended', () => {
-            if (this.isRecording) this.stopRecording();
-          }, { once: true });
 
           this.mediaRecorder.start(1000);
           this.isRecording = true;
+          this.container.classList.add('is-recording');
           document.getElementById('btn-record-start').style.display = 'none';
           document.getElementById('btn-record-stop').style.display = 'inline-block';
           document.getElementById('record-status').classList.add('active');
@@ -1391,9 +1521,7 @@
           console.error('Không thể bắt đầu ghi video:', err);
           this.cleanupRecordingCapture();
           this.isRecording = false;
-          alert(err && err.name === 'NotAllowedError'
-            ? 'Bạn đã hủy quyền ghi tab. Hãy thử lại và chọn tab Visual Novel.'
-            : 'Không thể bắt đầu ghi video: ' + (err.message || err));
+          alert('Không thể bắt đầu ghi video: ' + (err.message || err));
         }
       }
 
@@ -1403,15 +1531,6 @@
         if (this.recordingStream) {
           this.recordingStream.getTracks().forEach(track => track.stop());
           this.recordingStream = null;
-        }
-        if (this.recordingDisplayStream) {
-          this.recordingDisplayStream.getTracks().forEach(track => track.stop());
-          this.recordingDisplayStream = null;
-        }
-        if (this.recordingSourceVideo) {
-          this.recordingSourceVideo.pause();
-          this.recordingSourceVideo.srcObject = null;
-          this.recordingSourceVideo = null;
         }
         this.recordingCanvas = null;
       }
