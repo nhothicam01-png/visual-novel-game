@@ -16,9 +16,9 @@ input[type=url],select{width:100%;padding:13px 14px;border-radius:11px;border:1p
 .btn{border:0;border-radius:12px;padding:13px 18px;font:inherit;font-weight:700;cursor:pointer;background:linear-gradient(100deg,var(--accent),var(--accent2));color:white}.btn:disabled{opacity:.45;cursor:not-allowed}.btn.secondary{background:#273653;border:1px solid var(--line)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .note{color:var(--muted);font-size:13px}.warning{border-left:3px solid #e7b65b;padding:10px 13px;background:#302919;color:#f4dca8;border-radius:8px;font-size:13px;margin-top:14px}
 .status{display:flex;align-items:center;gap:10px;color:var(--muted);margin:15px 0 8px}.dot{width:9px;height:9px;border-radius:50%;background:#71809e}.dot.busy{background:#e7b65b;box-shadow:0 0 0 5px #e7b65b22}.dot.done{background:var(--good)}
-progress{width:100%;height:8px;accent-color:var(--accent);display:none}
+progress{width:100%;height:8px;accent-color:var(--accent);display:none;border-radius:20px;overflow:hidden}
 textarea{width:100%;min-height:260px;resize:vertical;background:#0c1425;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:15px;font:14px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace}
-.hidden{display:none!important}.result-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.result-head h2{font-size:18px;margin:0}.count{font-size:12px;color:var(--muted)}
+.hidden{display:none!important}.tab:disabled{opacity:.45;cursor:not-allowed}.result-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.result-head h2{font-size:18px;margin:0}.count{font-size:12px;color:var(--muted)}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
 @media(max-width:600px){body{padding:20px 12px}.card{padding:16px}.row{grid-template-columns:1fr}.tabs{flex-direction:column}.result-head{align-items:flex-start;flex-direction:column}}
 </style>
@@ -57,69 +57,184 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
   <textarea id="output" placeholder="Văn bản nhận dạng sẽ xuất hiện ở đây. Bạn cũng có thể chỉnh sửa nội dung trước khi tải xuống..."></textarea>
   <div class="actions"><button class="btn" id="downloadBtn" disabled>⬇ Tải file TXT</button><button class="btn secondary" id="copyBtn">Sao chép văn bản</button></div>
  </section>
- <footer>Nhận dạng chạy trên trình duyệt sau khi tải mô hình lần đầu. File âm thanh không được tải lên máy chủ của trang này.</footer>
+ <footer>Nhận dạng chạy trong Web Worker để giao diện không bị đơ khi chuyển tab. Trình duyệt điện thoại có thể tạm dừng tab nền khi tiết kiệm pin hoặc khóa màn hình. File âm thanh được xử lý trên thiết bị.</footer>
 </main>
 <script type="module">
-import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2';
-env.allowLocalModels = false;
-env.useBrowserCache = true;
-
 const $ = id => document.getElementById(id);
-let selectedFile = null, transcriber = null, busy = false;
-const setStatus = (text, state='') => { $('statusText').textContent=text; $('statusDot').className='dot '+state; };
-const setBusy = v => { busy=v; $('startBtn').disabled=v || !selectedFile; $('clearBtn').disabled=v; };
-function updateCount(){const t=$('output').value;const words=t.trim()?t.trim().split(/\s+/).length:0;$('wordCount').textContent=`${words.toLocaleString('vi-VN')} từ · ${t.length.toLocaleString('vi-VN')} ký tự`;$('downloadBtn').disabled=!t.trim();}
-$('output').addEventListener('input',updateCount);
-function chooseFile(file){if(!file)return;if(!file.type.startsWith('audio/')&&!/\.(mp3|wav|m4a|ogg|flac|aac|webm)$/i.test(file.name)){setStatus('Định dạng file có thể không được hỗ trợ.');return;}selectedFile=file;$('fileInfo').textContent=`Đã chọn: ${file.name} · ${(file.size/1024/1024).toFixed(1)} MB`;$('startBtn').disabled=busy?true:false;setStatus('Đã sẵn sàng. Nhấn bắt đầu để nhận dạng.');}
-$('audioFile').addEventListener('change',e=>chooseFile(e.target.files[0]));
-$('dropZone').addEventListener('dragover',e=>{e.preventDefault();$('dropZone').classList.add('drag')});
-$('dropZone').addEventListener('dragleave',()=>$('dropZone').classList.remove('drag'));
-$('dropZone').addEventListener('drop',e=>{e.preventDefault();$('dropZone').classList.remove('drag');chooseFile(e.dataTransfer.files[0]);});
-$('fileTab').onclick=()=>{$('filePane').classList.remove('hidden');$('youtubePane').classList.add('hidden');$('fileTab').classList.add('active');$('youtubeTab').classList.remove('active')};
-$('youtubeTab').onclick=()=>{$('youtubePane').classList.remove('hidden');$('filePane').classList.add('hidden');$('youtubeTab').classList.add('active');$('fileTab').classList.remove('active')};
-$('clearBtn').onclick=()=>{if(busy)return;selectedFile=null;$('audioFile').value='';$('fileInfo').textContent='Chưa chọn file nào.';$('startBtn').disabled=true;setStatus('Đã xóa file đã chọn.');};
-function resampleTo16k(audioBuffer){
- const channels=[];for(let c=0;c<audioBuffer.numberOfChannels;c++)channels.push(audioBuffer.getChannelData(c));
- const length=audioBuffer.length, mono=new Float32Array(length);
- for(let c=0;c<channels.length;c++)for(let i=0;i<length;i++)mono[i]+=channels[c][i]/channels.length;
- const ratio=audioBuffer.sampleRate/16000, outLength=Math.floor(length/ratio), out=new Float32Array(outLength);
- for(let i=0;i<outLength;i++){const pos=i*ratio, left=Math.floor(pos), right=Math.min(left+1,length-1), frac=pos-left;out[i]=mono[left]*(1-frac)+mono[right]*frac;}
- return out;
+let selectedFile = null, worker = null, busy = false, workerUrl = null;
+
+const workerSource = [
+"import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2';",
+"env.allowLocalModels = false;",
+"env.useBrowserCache = true;",
+"let transcriber = null, currentModel = null;",
+"self.onmessage = async (event) => {",
+"  const data = event.data;",
+"  try {",
+"    if (data.type === 'transcribe') {",
+"      if (!transcriber || currentModel !== data.model) {",
+"        self.postMessage({type:'status', text:'Đang tải mô hình nhận dạng...'});",
+"        transcriber = await pipeline('automatic-speech-recognition', data.model, {dtype:'q8', progress_callback: p => {",
+"          if (p.status === 'progress') self.postMessage({type:'modelprogress', value:Math.round(p.progress || 0), text:'Đang tải mô hình nhận dạng...'});",
+"        }});",
+"        currentModel = data.model;",
+"      }",
+"      const audio = new Float32Array(data.audio);",
+"      const rate = 16000, chunkSize = 30 * rate, overlap = 2 * rate, step = chunkSize - overlap;",
+"      const total = Math.max(1, Math.ceil(Math.max(0, audio.length - overlap) / step));",
+"      let fullText = '';",
+"      for (let i=0; i<total; i++) {",
+"        const chunk = audio.subarray(i * step, Math.min(audio.length, i * step + chunkSize));",
+"        const opts = {chunk_length_s:30};",
+"        if (data.language !== 'auto') { opts.language=data.language; opts.task='transcribe'; }",
+"        const result = await transcriber(chunk, opts);",
+"        const piece = (result.text || '').trim();",
+"        if (piece) fullText += (fullText ? '\\n' : '') + piece;",
+"        self.postMessage({type:'progress', value:Math.round(((i+1)/total)*100), current:i+1, total, text:fullText});",
+"      }",
+"      self.postMessage({type:'done', text:fullText});",
+"    }",
+"  } catch (error) { self.postMessage({type:'error', message:error?.message || String(error)}); }",
+"};"
+].join("\n");
+
+function makeWorker() {
+  if (worker) return;
+  const blob = new Blob([workerSource], {type:'text/javascript'});
+  workerUrl = URL.createObjectURL(blob);
+  worker = new Worker(workerUrl, {type:'module'});
+  worker.onmessage = e => {
+    const d = e.data;
+    if (d.type === 'status') setStatus(d.text, 'busy');
+    if (d.type === 'modelprogress') {
+      $('progress').value = d.value;
+      $('progressNote').textContent = d.text + ' ' + d.value + '%';
+    }
+    if (d.type === 'progress') {
+      $('progress').value = d.value;
+      $('progressNote').textContent = 'Đang nhận dạng: đoạn ' + d.current + '/' + d.total + ' · ' + d.value + '%';
+      $('output').value = d.text; updateCount();
+    }
+    if (d.type === 'done') {
+      $('output').value = d.text.trim(); updateCount();
+      $('progress').value = 100;
+      setStatus('Hoàn tất! Bạn có thể chỉnh sửa và tải file TXT.', 'done');
+      $('progressNote').textContent = 'Đã nhận dạng xong toàn bộ âm thanh.';
+      setBusy(false);
+    }
+    if (d.type === 'error') {
+      setStatus('Có lỗi khi xử lý. Hãy thử file khác hoặc mô hình nhẹ hơn.');
+      $('progressNote').textContent = d.message;
+      setBusy(false);
+    }
+  };
+  worker.onerror = e => {
+    setStatus('Worker gặp lỗi. Hãy tải lại trang và thử lại.');
+    $('progressNote').textContent = e.message || 'Không thể chạy tác vụ nền.';
+    setBusy(false);
+  };
 }
-$('startBtn').onclick=async()=>{
- if(!selectedFile||busy)return;setBusy(true);$('progress').style.display='block';$('progress').value=0;$('progressNote').textContent='Đang chuẩn bị âm thanh...';$('output').value='';updateCount();
- try{
-  setStatus('Đang đọc file âm thanh...','busy');
-  const bytes=await selectedFile.arrayBuffer();const AudioCtx=window.AudioContext||window.webkitAudioContext;const ctx=new AudioCtx();
-  const audioBuffer=await ctx.decodeAudioData(bytes);const seconds=audioBuffer.duration;
-  $('progressNote').textContent=`Thời lượng: ${Math.floor(seconds/60)} phút ${Math.round(seconds%60)} giây. Đang chuyển đổi âm thanh...`;
-  const audio=resampleTo16k(audioBuffer);await ctx.close();
-  const model=$('model').value;
-  if(!transcriber || transcriber.modelName!==model){
-    setStatus('Đang tải mô hình nhận dạng lần đầu...','busy');
-    transcriber=await pipeline('automatic-speech-recognition',model,{dtype:'q8',progress_callback:p=>{
-      if(p.status==='progress'&&p.total){$('progress').value=Math.round(p.progress||0);$('progressNote').textContent=`Đang tải mô hình: ${Math.round(p.progress||0)}%`;}
-      else if(p.status==='done'){$('progress').value=100;}
-    }});
-    transcriber.modelName=model;
+
+const setStatus = (text, state='') => {
+  $('statusText').textContent = text;
+  $('statusDot').className = 'dot ' + state;
+};
+const setBusy = v => {
+  busy = v;
+  $('startBtn').disabled = v || !selectedFile;
+  $('clearBtn').disabled = v;
+  $('fileTab').disabled = v;
+  $('youtubeTab').disabled = v;
+};
+function updateCount() {
+  const t = $('output').value;
+  const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+  $('wordCount').textContent = words.toLocaleString('vi-VN') + ' từ · ' + t.length.toLocaleString('vi-VN') + ' ký tự';
+  $('downloadBtn').disabled = !t.trim();
+}
+$('output').addEventListener('input', updateCount);
+
+function chooseFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('audio/') && !/\.(mp3|wav|m4a|ogg|flac|aac|webm)$/i.test(file.name)) {
+    setStatus('Định dạng file có thể không được hỗ trợ.'); return;
   }
-  setStatus('Đang nhận dạng giọng nói. File dài có thể cần nhiều thời gian...','busy');
-  $('progress').value=0;$('progressNote').textContent='Đang xử lý theo từng đoạn để hỗ trợ file dài. Vui lòng giữ tab này mở.';
-  const lang=$('language').value;
-  const opts={chunk_length_s:30,stride_length_s:5};
-  if(lang!=='auto'){opts.language=lang;opts.task='transcribe';}
-  const result=await transcriber(audio,opts);
-  $('output').value=(result.text||'').trim();updateCount();
-  $('progress').value=100;setStatus('Hoàn tất! Bạn có thể chỉnh sửa và tải file TXT.','done');$('progressNote').textContent=`Đã xử lý xong file dài ${Math.floor(seconds/60)} phút ${Math.round(seconds%60)} giây.`;
- }catch(err){console.error(err);setStatus('Có lỗi khi xử lý. Hãy thử file khác hoặc mô hình nhẹ hơn.');$('progressNote').textContent=err.message||String(err);}
- finally{setBusy(false);}
+  selectedFile = file;
+  $('fileInfo').textContent = 'Đã chọn: ' + file.name + ' · ' + (file.size/1024/1024).toFixed(1) + ' MB';
+  $('startBtn').disabled = busy;
+  setStatus('Đã sẵn sàng. Nhấn bắt đầu để nhận dạng.');
+}
+$('audioFile').addEventListener('change', e => chooseFile(e.target.files[0]));
+$('dropZone').addEventListener('dragover', e => {e.preventDefault(); $('dropZone').classList.add('drag');});
+$('dropZone').addEventListener('dragleave', () => $('dropZone').classList.remove('drag'));
+$('dropZone').addEventListener('drop', e => {e.preventDefault(); $('dropZone').classList.remove('drag'); chooseFile(e.dataTransfer.files[0]);});
+$('fileTab').onclick = () => {
+  $('filePane').classList.remove('hidden'); $('youtubePane').classList.add('hidden');
+  $('fileTab').classList.add('active'); $('youtubeTab').classList.remove('active');
 };
-$('downloadBtn').onclick=()=>{
- const text=$('output').value;if(!text.trim())return;
- const blob=new Blob(['\ufeff'+text],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);
- const a=document.createElement('a');a.href=url;const base=(selectedFile?.name||'transcript').replace(/\.[^.]+$/,'');a.download=base+'.txt';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+$('youtubeTab').onclick = () => {
+  $('youtubePane').classList.remove('hidden'); $('filePane').classList.add('hidden');
+  $('youtubeTab').classList.add('active'); $('fileTab').classList.remove('active');
 };
-$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText($('output').value);setStatus('Đã sao chép văn bản.','done');}catch{setStatus('Không thể tự sao chép. Hãy chọn và sao chép thủ công.');}};
+
+function resampleTo16k(buffer) {
+  const channels = [];
+  for (let c=0; c<buffer.numberOfChannels; c++) channels.push(buffer.getChannelData(c));
+  const length = buffer.length, mono = new Float32Array(length);
+  for (let c=0; c<channels.length; c++) for (let i=0; i<length; i++) mono[i] += channels[c][i] / channels.length;
+  const ratio = buffer.sampleRate / 16000, outLength = Math.floor(length / ratio), out = new Float32Array(outLength);
+  for (let i=0; i<outLength; i++) {
+    const pos = i * ratio, left = Math.floor(pos), right = Math.min(left+1, length-1), frac = pos-left;
+    out[i] = mono[left] * (1-frac) + mono[right] * frac;
+  }
+  return out;
+}
+
+$('startBtn').onclick = async () => {
+  if (!selectedFile || busy) return;
+  setBusy(true);
+  $('progress').style.display = 'block'; $('progress').value = 0;
+  $('progressNote').textContent = 'Đang đọc và chuẩn bị âm thanh...';
+  $('output').value = ''; updateCount();
+  try {
+    setStatus('Đang giải mã file âm thanh...', 'busy');
+    const bytes = await selectedFile.arrayBuffer();
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AudioCtx();
+    const audioBuffer = await ctx.decodeAudioData(bytes);
+    const seconds = audioBuffer.duration;
+    $('progressNote').textContent = 'Thời lượng: ' + Math.floor(seconds/60) + ' phút ' + Math.round(seconds%60) + ' giây. Đang chuyển đổi âm thanh...';
+    const audio = resampleTo16k(audioBuffer);
+    await ctx.close();
+    makeWorker();
+    setStatus('Đang chạy nhận dạng trong Web Worker...', 'busy');
+    $('progress').value = 0;
+    $('progressNote').textContent = 'Bạn có thể chuyển sang tab khác; tác vụ được chạy tách khỏi giao diện chính.';
+    worker.postMessage({type:'transcribe', audio:audio.buffer, model:$('model').value, language:$('language').value}, [audio.buffer]);
+  } catch (err) {
+    console.error(err);
+    setStatus('Có lỗi khi đọc file. Hãy thử định dạng âm thanh khác.');
+    $('progressNote').textContent = err.message || String(err);
+    setBusy(false);
+  }
+};
+
+$('clearBtn').onclick = () => {
+  if (busy) return;
+  selectedFile = null; $('audioFile').value = ''; $('fileInfo').textContent = 'Chưa chọn file nào.';
+  $('startBtn').disabled = true; setStatus('Đã xóa file đã chọn.');
+};
+$('downloadBtn').onclick = () => {
+  const text = $('output').value; if (!text.trim()) return;
+  const blob = new Blob(['\ufeff' + text], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  const base = (selectedFile?.name || 'transcript').replace(/\.[^.]+$/, '');
+  a.href = url; a.download = base + '.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+$('copyBtn').onclick = async () => {
+  try {await navigator.clipboard.writeText($('output').value); setStatus('Đã sao chép văn bản.', 'done');}
+  catch {setStatus('Không thể tự sao chép. Hãy chọn và sao chép thủ công.');}
+};
 </script>
 </body>
 </html>
