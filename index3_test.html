@@ -548,6 +548,40 @@
         return tiengViet || danhSachNgonNgu[0] || navigator.language || 'vi-VN';
       }
 
+      // Nhận diện ngôn ngữ từ nội dung thoại, không phụ thuộc ngôn ngữ thiết bị.
+      phatHienNgonNguTuNoiDung(ds, tenNhanVat) {
+        const vanBan = ds
+          .filter(khung => (khung.nhan_vat || '').trim() === tenNhanVat)
+          .map(khung => khung.noi_dung || '')
+          .join(' ')
+          .trim();
+
+        if (!vanBan) return 'vi-VN';
+
+        // Các hệ chữ có thể nhận diện khá chắc chắn bằng Unicode.
+        if (/[\\u3040-\\u30ff]/.test(vanBan)) return 'ja-JP';
+        if (/[\\uac00-\\ud7af]/.test(vanBan)) return 'ko-KR';
+        if (/[\\u0600-\\u06ff]/.test(vanBan)) return 'ar-SA';
+        if (/[\\u0400-\\u04ff]/.test(vanBan)) return 'ru-RU';
+
+        // Có chữ Hán nhưng không có Hiragana/Katakana: ưu tiên tiếng Trung.
+        if (/[\\u4e00-\\u9fff]/.test(vanBan)) return 'zh-CN';
+
+        // Dấu và ký tự đặc trưng của tiếng Việt.
+        if (/[ăâđêôơưĂÂĐÊÔƠƯáàảãạấầẩẫậắằẳẵặéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ]/.test(vanBan)) {
+          return 'vi-VN';
+        }
+
+        // Một số ngôn ngữ Latin có dấu đặc trưng.
+        if (/[ñ¿¡]/i.test(vanBan)) return 'es-ES';
+        if (/[ãõ]/i.test(vanBan)) return 'pt-PT';
+        if (/[äöüß]/i.test(vanBan)) return 'de-DE';
+        if (/[àâçéèêëîïôûùüÿœæ]/i.test(vanBan)) return 'fr-FR';
+
+        // Văn bản Latin không có dấu đặc trưng: mặc định tiếng Anh.
+        return 'en-US';
+      }
+
       timGiongTheoNgonNgu(maNgonNgu) {
         if (!this.danhSachVoices || this.danhSachVoices.length === 0) return -1;
         const ma = (maNgonNgu || 'vi-VN').toLowerCase();
@@ -703,11 +737,14 @@
 
         setNhanVat.forEach(ten => {
           if (!this.cauHinhGiongNhanVat[ten]) {
+            // Lần khởi tạo đầu tiên: lấy ngôn ngữ từ noi_dung của chính nhân vật.
+            // Người dùng vẫn có thể đổi ngôn ngữ/giọng đọc sau trong bảng cấu hình.
+            const ngonNguNoiDung = this.phatHienNgonNguTuNoiDung(ds, ten);
             this.cauHinhGiongNhanVat[ten] = {
-              voiceIndex: this.timGiongTheoNgonNgu(this.ngonNguMacDinh),
+              voiceIndex: this.timGiongTheoNgonNgu(ngonNguNoiDung),
               rate: 1.1,
               pitch: 1.0,
-              lang: this.ngonNguMacDinh
+              lang: ngonNguNoiDung
             };
           }
         });
