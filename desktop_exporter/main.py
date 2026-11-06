@@ -3,6 +3,8 @@ import os
 import queue
 import subprocess
 import threading
+import wave
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from pathlib import Path
@@ -119,16 +121,13 @@ class OfflineRenderer:
             self.engine.setProperty("voice", voice_id)
         self.engine.save_to_file(text, str(output_path))
         self.engine.runAndWait()
-        # SAPI save_to_file is synchronous after runAndWait.
-        probe = subprocess.run(
-            [ffmpeg_path(), "-i", str(output_path), "-f", "null", "-"],
-            stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True
-        )
-        import re
-        match = re.search(r"Duration: (\d+):(\d+):(\d+(?:\.\d+)?)", probe.stderr)
-        if not match:
+        # Đọc duration trực tiếp từ WAV, tránh chạy FFmpeg thêm một lần cho mỗi câu thoại.
+        try:
+            with wave.open(str(output_path), "rb") as wav:
+                sample_rate = wav.getframerate()
+                return wav.getnframes() / float(sample_rate) if sample_rate else 0.0
+        except Exception:
             return 0.0
-        return int(match.group(1)) * 3600 + int(match.group(2)) * 60 + float(match.group(3))
 
     def render(self, json_path, asset_root, output_path, width, height, fps, rate, bgm_volume, sfx_volume):
         data = json.loads(Path(json_path).read_text(encoding="utf-8-sig"))
@@ -150,6 +149,8 @@ class OfflineRenderer:
             voice_map[speaker] = ""
 
         try:
+            scene_jobs = []
+            # Chuẩn bị timeline, TTS và overlay trước khi dựng video.
             for i, scene in enumerate(scenes):
                 self.check_cancel()
                 speaker = str(scene.get("nhan_vat") or "").strip()
@@ -163,8 +164,7 @@ class OfflineRenderer:
                     if current_bgm and timeline > bgm_start:
                         bgm_events.append((root / "assets" / "AmThanh" / "Nen" / current_bgm,
                                            bgm_start, timeline - bgm_start, bgm_volume))
-                    current_bgm = bgm
-                    bgm_start = timeline
+                    current_bgm, bgm_start = bgm, timeline
                 tts_path = work_dir / f"tts_{i:05d}.wav"
                 duration = self.make_tts(text, speaker, voice_map, rate, tts_path) if text else 0
                 if text and duration <= 0:
@@ -183,14 +183,34 @@ class OfflineRenderer:
                 if text:
                     make_dialogue_overlay(text, width, height, overlay_path)
                 segment_path = work_dir / f"scene_{i:05d}.mp4"
-                self.render_scene(bg_path, char_path, vfx_path, overlay_path if text else None,
-                                  segment_path, duration, width, height, fps)
-                segments.append((segment_path, duration))
+                scene_jobs.append((i, bg_path, char_path, vfx_path,
+                                   overlay_path if text else None, segment_path, duration))
                 timeline += duration
-                self.progress((i + 1) / len(scenes) * 85, f"Đã dựng cảnh {i + 1}/{len(scenes)}")
+                self.progress((i + 1) / len(scenes) * 15, f"Đang chuẩn bị thoại {i + 1}/{len(scenes)}")
+
             if current_bgm and timeline > bgm_start:
                 bgm_events.append((root / "assets" / "AmThanh" / "Nen" / current_bgm,
                                    bgm_start, timeline - bgm_start, bgm_volume))
+
+            # Dựng nhiều cảnh cùng lúc, giới hạn luồng để tránh chiếm toàn bộ CPU.
+            workers = max(1, min(4, (os.cpu_count() or 2) // 2))
+            rendered = {}
+            completed = 0
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                futures = {
+                    pool.submit(self.render_scene, bg, char, vfx, overlay, segment,
+                                 duration, width, height, fps): (idx, segment, duration)
+                    for idx, bg, char, vfx, overlay, segment, duration in scene_jobs
+                }
+                for future in as_completed(futures):
+                    self.check_cancel()
+                    idx, segment, duration = futures[future]
+                    future.result()
+                    rendered[idx] = (segment, duration)
+                    completed += 1
+                    self.progress(15 + completed / len(scene_jobs) * 70,
+                                  f"Đã dựng cảnh {completed}/{len(scene_jobs)} (song song {workers} luồng)")
+            segments = [rendered[i] for i in range(len(scene_jobs))]
             self.join_segments(segments, work_dir / "video_silent.mp4", fps)
             self.mix_audio(audio_events, bgm_events, timeline, work_dir / "mix.wav")
             self.mux(work_dir / "video_silent.mp4", work_dir / "mix.wav", output_path)
@@ -235,7 +255,7 @@ class OfflineRenderer:
             filters.append(f"[{current}]null[outv]")
         args += ["-filter_complex", ";".join(filters), "-map", "[outv]",
                  "-t", str(duration), "-r", str(fps), "-an", "-c:v", "libx264",
-                 "-preset", "ultrafast", "-pix_fmt", "yuv420p", str(output)]
+                 "-preset", "ultrafast", "-threads", "0", "-pix_fmt", "yuv420p", str(output)]
         self.run(args)
 
     def run(self, args):
@@ -316,7 +336,10 @@ class App:
                         value="landscape").pack(side="left", padx=8)
         ttk.Radiobutton(opts, text="Dọc 1080 × 1920", variable=self.orientation,
                         value="portrait").pack(side="left", padx=8)
-        ttk.Label(opts, text="FPS: 30").pack(side="right", padx=8)
+        ttk.Label(opts, text="FPS:").pack(side="left", padx=(14, 4))
+        self.fps_var = tk.StringVar(value="30")
+        ttk.Combobox(opts, textvariable=self.fps_var, values=("15", "24", "25", "30", "50", "60"),
+                     state="readonly", width=5).pack(side="left", padx=4)
         self.progress = ttk.Progressbar(frame, maximum=100)
         self.progress.pack(fill="x", pady=(10, 4))
         ttk.Label(frame, textvariable=self.status, wraplength=660).pack(anchor="w")
@@ -370,7 +393,7 @@ class App:
                     lambda: self.cancelled
                 )
                 renderer.render(self.json_var.get(), self.assets_var.get(), self.output_var.get(),
-                                width, height, DEFAULT_FPS, 180, 0.3, 0.4)
+                                width, height, int(self.fps_var.get()), 180, 0.3, 0.4)
                 self.events.put(("done", None, "Xuất video thành công."))
             except Exception as exc:
                 self.events.put(("error", None, str(exc)))
