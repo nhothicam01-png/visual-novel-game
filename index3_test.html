@@ -993,7 +993,9 @@
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           if (this.layerChar.style.display === 'block') this.layerChar.play().catch(()=>{});
           
-          if (this.ttsRemainingText && this.currentTtsResolve) {
+          if (this.ttsServerUrl && this.audioTts.src) {
+            this.audioTts.play().catch(err => console.warn('Không thể tiếp tục MP3 TTS:', err));
+          } else if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
           }
           return;
@@ -1028,6 +1030,7 @@
           this.dangTamDung = true;
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
           if (this.ttsSynth) this.ttsSynth.cancel();
+          if (this.ttsServerUrl) this.audioTts.pause();
 
           this.audioBgm.pause();
           this.audioSfx.pause();
@@ -1040,7 +1043,9 @@
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
           if (this.layerChar.style.display === 'block') this.layerChar.play().catch(()=>{});
 
-          if (this.ttsRemainingText && this.currentTtsResolve) {
+          if (this.ttsServerUrl && this.audioTts.src) {
+            this.audioTts.play().catch(err => console.warn('Không thể tiếp tục MP3 TTS:', err));
+          } else if (this.ttsRemainingText && this.currentTtsResolve) {
             this.docVanBanBangTTS(this.currentSpeaker, this.ttsRemainingText, this.currentTtsResolve);
           }
         }
