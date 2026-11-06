@@ -466,6 +466,7 @@
         this.cauHinhGiongNhanVat = {};
         this.ttsSynth = window.speechSynthesis || null;
         this.danhSachVoices = [];
+        this.ngonNguMacDinh = this.layNgonNguMacDinh();
 
         this.isPortrait = false; 
 
@@ -536,10 +537,26 @@
         }
       }
 
+      layNgonNguMacDinh() {
+        // Lấy ngôn ngữ ưu tiên của trình duyệt/thiết bị người dùng.
+        const ngonNgu = (navigator.languages && navigator.languages[0]) || navigator.language || 'vi-VN';
+        return ngonNgu;
+      }
+
       khoiTaoTTS() {
         if (this.ttsSynth) {
           const capNhatVoices = () => {
             this.danhSachVoices = this.ttsSynth.getVoices();
+            // Chọn giọng đọc khớp với ngôn ngữ thiết bị nếu trình duyệt có cung cấp.
+            Object.values(this.cauHinhGiongNhanVat).forEach(cfg => {
+              if (cfg.lang === this.ngonNguMacDinh) {
+                const idx = this.danhSachVoices.findIndex(v =>
+                  v.lang.toLowerCase() === this.ngonNguMacDinh.toLowerCase() ||
+                  v.lang.toLowerCase().startsWith(this.ngonNguMacDinh.split('-')[0].toLowerCase() + '-')
+                );
+                if (idx !== -1) cfg.voiceIndex = idx;
+              }
+            });
             if (this.duLieu && this.danhSachVoices.length > 0) {
               this.quetVaKhoiTaoNhanVat();
             }
@@ -645,7 +662,7 @@
               voiceIndex: 0,
               rate: 1.1,
               pitch: 1.0,
-              lang: 'ja-JP'
+              lang: this.ngonNguMacDinh
             };
           }
         });
@@ -674,6 +691,13 @@
             { code: 'ko-KR', name: '🇰🇷 Tiếng Hàn (Korean)' },
             { code: 'zh-CN', name: '🇨🇳 Tiếng Trung (Chinese)' }
           ];
+
+          if (!presetLangs.some(lang => lang.code.toLowerCase() === this.ngonNguMacDinh.toLowerCase())) {
+            presetLangs.unshift({
+              code: this.ngonNguMacDinh,
+              name: `🌐 Ngôn ngữ thiết bị (${this.ngonNguMacDinh})`
+            });
+          }
 
           presetLangs.forEach(lang => {
             const selected = (cfg.lang === lang.code) ? 'selected' : '';
@@ -1017,7 +1041,7 @@
         const utterance = new SpeechSynthesisUtterance(text);
         const cfg = (nhanVat && this.cauHinhGiongNhanVat[nhanVat]) 
           ? this.cauHinhGiongNhanVat[nhanVat] 
-          : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: 'ja-JP' };
+          : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: this.ngonNguMacDinh };
 
         utterance.lang = cfg.lang || 'ja-JP';
 
