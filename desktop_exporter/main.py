@@ -106,7 +106,7 @@ class OfflineRenderer:
         if any(ch in text for ch in "ăâđêôơưáàảãạấầẩẫậắằẳẵặéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởợúùủũụứừửữựýỳỷỹỵ"):
             for voice in self.voices:
                 desc = (voice.id + " " + voice.name).lower()
-                if "vi-vn" in desc or "vietnam" in desc or "an" in desc:
+                if "vi-vn" in desc or "vietnam" in desc or "vietnamese" in desc:
                     return voice.id
         return None
 
