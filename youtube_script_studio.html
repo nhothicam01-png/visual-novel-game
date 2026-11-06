@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="YouTube Script Studio - viết kịch bản YouTube dài với Gemini, lưu tiến độ và xuất bản thảo.">
+<title>YouTube Script Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2d;--panel2:#18233a;--line:#293651;--text:#edf2ff;--muted:#9aa9c4;--accent:#8b7cff;--accent2:#45d6b5;--danger:#ff7185;--warn:#ffc66d;--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% -10%,#25204f 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:11px 16px;background:var(--accent);color:white;font-weight:700}button.secondary{background:#26334f;color:var(--text);border:1px solid var(--line)}button.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}button.danger{background:#572638;color:#ffdce2}button:disabled{opacity:.45;cursor:not-allowed}
+.wrap{max-width:1180px;margin:auto;padding:22px 18px 60px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px}.brand{display:flex;gap:12px;align-items:center}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#8b7cff,#45d6b5);display:grid;place-items:center;font-size:22px;font-weight:900;color:#0b1020}.brand h1{font-size:20px;margin:0}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}.status{font-size:12px;color:var(--accent2);border:1px solid #28675e;padding:6px 10px;border-radius:999px}
+.layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:18px;align-items:start}.panel{background:linear-gradient(180deg,#151f34,#11192a);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:0 14px 40px #0002}.panel h2,.panel h3{margin:0 0 12px}.panel h2{font-size:17px}.panel h3{font-size:14px}.muted{color:var(--muted)}.small{font-size:12px}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:12px;font-weight:700;color:#c4cde0}.field input,.field select,.field textarea{width:100%;background:#0c1425;color:var(--text);border:1px solid #34425f;border-radius:11px;padding:11px 12px;outline:none}.field textarea{min-height:95px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent)}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.row .fit{flex:0 0 auto}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.actions button{flex:1}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.tab{padding:8px 12px;border-radius:999px;background:#1d2941;color:#cbd5e8;border:1px solid var(--line);font-size:13px}.tab.active{background:#5549a6;border-color:#8275ff;color:white}.notice{padding:11px 13px;border:1px solid #5a4b28;background:#2b2519;color:#f7dca5;border-radius:12px;font-size:12px;margin:12px 0}.notice.info{border-color:#2b5361;background:#142b37;color:#b9e8f4}.notice.good{border-color:#28675e;background:#132d2a;color:#b9f3e7}.hidden{display:none!important}.progress{height:9px;border-radius:99px;background:#25314a;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s}.chapter{border:1px solid var(--line);border-radius:13px;padding:12px;margin:9px 0;background:#10192a}.chapter-head{display:flex;justify-content:space-between;gap:8px;align-items:center}.chapter-title{font-weight:750}.pill{font-size:11px;padding:3px 8px;border-radius:99px;background:#26334b;color:#cbd5e8}.pill.done{background:#16483e;color:#b5f1df}.pill.error{background:#552638;color:#ffd6df}.chapter p{margin:8px 0 0;color:var(--muted);font-size:12px}.editor{min-height:380px;white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1425;border:1px solid var(--line);border-radius:13px;padding:16px;font:14px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;color:#e1e9fb}.editor:focus{outline:1px solid var(--accent)}.resultbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0}.meter{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px}.meter b{color:var(--text)}.footer{text-align:center;color:#71809b;font-size:11px;margin-top:24px}.keyline{display:flex;gap:6px}.keyline input{min-width:0}.keyline button{white-space:nowrap}.listideas{padding-left:20px}.listideas li{margin:10px 0}.link{color:#b9b0ff}.mobilehint{display:none}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.top{align-items:flex-start}.wrap{padding:14px 12px 40px}.panel{padding:15px}.mobilehint{display:block}.editor{min-height:320px}}
+@media(max-width:480px){.top{gap:8px}.brand h1{font-size:17px}.status{font-size:10px}.actions button{min-width:100%}.row{align-items:stretch}.keyline{flex-direction:column}.keyline button{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand"><div class="logo">YS</div><div><h1>YouTube Script Studio</h1><p>AI biên kịch · Gemini · Bản thảo dài 15–30 phút</p></div></div>
+  <div class="status" id="saveStatus">● Lưu trên thiết bị</div>
+</header>
+<div class="notice info">Một file HTML độc lập. Dùng Gemini API trực tiếp từ trình duyệt; cần có API key. Không chia sẻ file đã lưu khóa API cho người khác.</div>
+<div class="layout">
+<aside>
+<section class="panel">
+<h2>⚙️ Kết nối Gemini</h2>
+<div class="field"><label>Gemini API key</label><div class="keyline"><input id="apiKey" type="password" placeholder="Dán API key tại đây" autocomplete="off"><button class="secondary" id="toggleKey" type="button">Hiện</button></div></div>
+<div class="field"><label>Mô hình</label><select id="model"><option value="gemini-2.5-flash">Gemini 2.5 Flash (khuyên dùng)</option><option value="gemini-2.5-pro">Gemini 2.5 Pro</option></select></div>
+<div class="small muted">Tạo API key miễn phí tại <a class="link" href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio ↗</a>. Hạn mức miễn phí phụ thuộc tài khoản, khu vực và mô hình.</div>
+<div class="field"><label>Độ dài kịch bản</label><select id="duration"><option value="15">15 phút</option><option value="20" selected>20 phút</option><option value="25">25 phút</option><option value="30">30 phút</option></select></div>
+<div class="field"><label>Thể loại</label><select id="genre"><option>Học đường</option><option>Kinh dị</option><option>Tình cảm</option><option>Hài hước</option><option>Trinh thám</option><option>Giả tưởng</option><option>Phiêu lưu</option><option>Tâm lý - xã hội</option><option>Tài liệu / khám phá</option><option>Khác</option></select></div>
+<div class="field"><label>Phong cách kể chuyện</label><select id="style"><option value="storytelling">Storytelling: cuốn hút, có hook, leo thang xung đột, cao trào và kết thúc thỏa mãn</option><option value="cinematic">Điện ảnh: giàu hình ảnh, mô tả cảnh và cảm xúc</option><option value="documentary">Thuyết minh / documentary: rõ ràng, giàu thông tin</option><option value="comedy">Hài hước, nhịp nhanh, nhiều tình huống</option></select></div>
+<div class="field"><label>Đối tượng khán giả</label><input id="audience" value="Khán giả YouTube nói tiếng Việt, 13 tuổi trở lên"></div>
+<div class="field"><label>Thông điệp (không bắt buộc)</label><input id="message" placeholder="Ví dụ: Tin vào bản thân"></div>
+</section>
+<section class="panel" style="margin-top:14px">
+<h2>💡 Ý tưởng của bạn</h2>
+<div class="field"><label>Chủ đề / ý tưởng / cốt truyện</label><textarea id="idea" placeholder="Mô tả ý tưởng bạn muốn làm phim. Có thể viết ngắn hoặc dài..."></textarea></div>
+<div class="field"><label>Ghi chú thêm (nhân vật, bối cảnh, điều cần tránh...)</label><textarea id="notes" placeholder="Ví dụ: 5 nhân vật học sinh, bối cảnh trường học, kết thúc tích cực..."></textarea></div>
+<div class="actions"><button id="buildBtn">✦ Tạo dàn ý & kịch bản</button></div>
+<div class="small muted" style="margin-top:9px">Nếu để trống ý tưởng, bạn có thể dùng nút tổng hợp xu hướng để AI nghiên cứu và đề xuất ý tưởng.</div>
+</section>
+</aside>
+<main>
+<section class="panel">
+<div class="tabs"><button class="tab active" data-tab="trend">🔥 Xu hướng & ý tưởng</button><button class="tab" data-tab="script">📝 Kịch bản</button><button class="tab" data-tab="projects">📚 Dự án đã lưu</button></div>
+<div id="tab-trend">
+<h2>Tìm xu hướng và phát triển ý tưởng</h2>
+<p class="muted small">Gemini sẽ dùng Google Search grounding để tìm thông tin công khai, tóm tắt tín hiệu xu hướng và đề xuất chủ đề video phù hợp.</p>
+<div class="field"><label>Ngách / lĩnh vực muốn nghiên cứu</label><input id="niche" placeholder="Ví dụ: phim hoạt hình học đường, chuyện lạ, tâm lý tuổi teen..."></div>
+<div class="field"><label>Thị trường</label><select id="market"><option>Việt Nam</option><option>Toàn cầu</option><option>Hoa Kỳ</option><option>Đông Nam Á</option></select></div>
+<button id="trendBtn">🔎 Tìm xu hướng & đề xuất ý tưởng</button>
+<div id="trendState" class="small muted" style="margin-top:10px"></div>
+<div id="trendOutput" class="editor" contenteditable="true" style="min-height:240px;margin-top:12px" aria-label="Kết quả xu hướng">Kết quả nghiên cứu sẽ xuất hiện ở đây...</div>
+<div id="trendSources" class="small" style="margin-top:10px"></div>
+<div class="actions"><button class="secondary" id="useIdeaBtn">Dùng ý tưởng này để tạo kịch bản →</button><button class="ghost" id="copyTrendBtn">Sao chép kết quả</button></div>
+</div>
+<div id="tab-script" class="hidden">
+<h2>Trình tạo kịch bản dài</h2>
+<div class="meter"><span>Trạng thái: <b id="projectState">Chưa có dự án</b></span><span>Tiến độ: <b id="progressText">0/0 chương</b></span></div>
+<div class="progress" style="margin:10px 0 14px"><i id="progressBar"></i></div>
+<div id="storyInfo" class="notice info">Nhập ý tưởng rồi bấm “Tạo dàn ý & kịch bản”. Website sẽ lưu từng bước để bạn có thể tiếp tục sau.</div>
+<div id="chapterList"></div>
+<div class="actions"><button id="writeBtn" disabled>▶ Viết / tiếp tục các chương</button><button id="pauseBtn" class="secondary" disabled>Ⅱ Tạm dừng</button><button id="retryBtn" class="ghost" disabled>↻ Viết lại chương lỗi</button></div>
+<div class="resultbar"><h3 style="margin:0">Bản thảo tổng hợp</h3><div class="row" style="flex:0 0 auto"><button class="secondary" id="saveEditBtn">Lưu chỉnh sửa</button><button class="ghost" id="copyScriptBtn">Sao chép</button></div></div>
+<div id="scriptEditor" class="editor" contenteditable="true" spellcheck="false">Kịch bản hoàn chỉnh sẽ xuất hiện tại đây. Bạn có thể chỉnh sửa trực tiếp rồi nhấn “Lưu chỉnh sửa”.</div>
+<div class="resultbar"><div class="meter"><span>Ký tự: <b id="charCount">0</b></span><span>Từ: <b id="wordCount">0</b></span></div><div class="row" style="flex:0 0 auto"><button id="txtBtn" class="secondary">⬇ Tải TXT</button><button id="jsonBtn" class="ghost">Tải bản sao lưu JSON</button></div></div>
+</div>
+<div id="tab-projects" class="hidden">
+<h2>Dự án đã lưu trên thiết bị</h2><p class="small muted">Dự án được lưu trong bộ nhớ trình duyệt (IndexedDB). Dùng “Tải bản sao lưu JSON” để chuyển sang thiết bị khác.</p>
+<div id="projectList"></div>
+<div class="actions"><button id="newBtn" class="secondary">＋ Dự án mới</button><button id="importBtn" class="ghost">Nhập bản sao lưu JSON</button><input type="file" id="importFile" accept="application/json" class="hidden"></div>
+</div>
+</section>
+<div class="notice">Mẹo: kịch bản 15–30 phút thường cần nhiều lượt tạo. Hãy giữ tab mở khi đang viết; mỗi chương hoàn thành sẽ được lưu tự động. Không đóng trang khi một lượt API vẫn đang chạy.</div>
+</main>
+</div>
+<div class="footer">YouTube Script Studio · HTML + CSS + JavaScript · Dữ liệu nằm trên thiết bị của bạn</div>
+</div>
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const DB_NAME="YTScriptStudioDB", STORE="projects", DB_VERSION=1;
+let db=null, current=null, running=false, pauseRequested=false;
+const defaults = {model:"gemini-2.5-flash",duration:"20",genre:"Học đường",style:"storytelling",audience:"Khán giả YouTube nói tiếng Việt, 13 tuổi trở lên",market:"Việt Nam"};
+function uid(){return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains(STORE))req.result.createObjectStore(STORE,{keyPath:"id"})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+function dbReq(mode,fn){return new Promise((resolve,reject)=>{const tx=db.transaction(STORE,mode),store=tx.objectStore(STORE);let req;try{req=fn(store)}catch(e){reject(e);return}if(req){req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)}else{tx.oncomplete=()=>resolve(true);tx.onerror=()=>reject(tx.error)}})}
+async function saveProject(){if(!current)return;current.updatedAt=Date.now();await dbReq("readwrite",s=>s.put(current));$("saveStatus").textContent="● Đã lưu trên thiết bị";updateProjectUI()}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function settings(){return {duration:Number($("duration").value),genre:$("genre").value,style:$("style").value,audience:$("audience").value,message:$("message").value.trim(),notes:$("notes").value.trim(),model:$("model").value}}
+function key(){const k=$("apiKey").value.trim();if(!k)throw Error("Bạn cần nhập Gemini API key trước.");return k}
+function promptStyle(s){return s.style==="storytelling"?"Kể chuyện cuốn hút, mở đầu có hook mạnh, liên tục tạo câu hỏi, xung đột leo thang, cao trào rõ, kết thúc thỏa mãn.":s.style==="cinematic"?"Ngôn ngữ điện ảnh, mô tả hình ảnh, âm thanh, nhịp dựng và cảm xúc.":s.style==="documentary"?"Phong cách documentary, có cấu trúc rõ, thông tin kiểm chứng, lời dẫn dễ nghe.":"Hài hước, nhịp nhanh, tình huống bất ngờ và lời thoại tự nhiên."}
+async function gemini(prompt,{search=false,maxTokens=8192}={}){
+ const k=key(), model=$("model").value;
+ const body={contents:[{role:"user",parts:[{text:prompt}]}],generationConfig:{temperature:.85,topP:.95,maxOutputTokens:maxTokens}};
+ if(search)body.tools=[{google_search:{}}];
+ const url=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+ let response;
+ try{response=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":k},body:JSON.stringify(body)})}
+ catch(e){throw Error("Không kết nối được Gemini. Hãy kiểm tra mạng hoặc mở file qua một website HTTPS (ví dụ GitHub Pages). Chi tiết: "+e.message)}
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok){const msg=data?.error?.message||`HTTP ${response.status}`;throw Error(msg+" (hãy kiểm tra API key, model và hạn mức)")}
+ const candidate=data.candidates?.[0], text=(candidate?.content?.parts||[]).map(p=>p.text||"").join("\n").trim();
+ if(!text)throw Error("Gemini không trả về nội dung. Lý do kết thúc: "+(candidate?.finishReason||"không rõ"));
+ return {text,candidate,usage:data.usageMetadata||{},raw:data};
+}
+function extractSources(result){
+ const chunks=result.candidate?.groundingMetadata?.groundingChunks||[];
+ const seen=new Set(), out=[];
+ chunks.forEach(c=>{const w=c.web;if(w?.uri&&!seen.has(w.uri)){seen.add(w.uri);out.push({title:w.title||w.uri,uri:w.uri})}});
+ return out;
+}
+function getActiveTab(name){document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));["trend","script","projects"].forEach(t=>$("tab-"+t).classList.toggle("hidden",t!==name))}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>getActiveTab(b.dataset.tab)));
+$("toggleKey").onclick=()=>{$("apiKey").type=$("apiKey").type==="password"?"text":"password";$("toggleKey").textContent=$("apiKey").type==="password"?"Hiện":"Ẩn"};
+$("apiKey").value=sessionStorage.getItem("ytss_key")||"";
+$("apiKey").addEventListener("change",()=>sessionStorage.setItem("ytss_key",$("apiKey").value.trim()));
+$("model").value=localStorage.getItem("ytss_model")||defaults.model;
+$("model").onchange=()=>localStorage.setItem("ytss_model",$("model").value);
+$("duration").value=defaults.duration;
+function setBusy(b){running=b;$("buildBtn").disabled=b;$("trendBtn").disabled=b;$("writeBtn").disabled=b||!current;$("pauseBtn").disabled=!b;$("retryBtn").disabled=b||!current}
+function setProgress(){if(!current)return;const total=current.chapters?.length||0,done=current.chapters?.filter(c=>c.status==="done").length||0;$("progressText").textContent=`${done}/${total} chương`;$("progressBar").style.width=(total?done/total*100:0)+"%";$("projectState").textContent=current.status||"Đang soạn";$("writeBtn").disabled=running||!current||done===total;$("retryBtn").disabled=running||!current||!current.chapters.some(c=>c.status==="error");$("chapterList").innerHTML=(current.chapters||[]).map((c,i)=>`<div class="chapter"><div class="chapter-head"><span class="chapter-title">${i+1}. ${esc(c.title)}</span><span class="pill ${c.status==="done"?"done":c.status==="error"?"error":""}">${c.status==="done"?"Hoàn thành":c.status==="error"?"Lỗi":c.status==="writing"?"Đang viết":"Chờ viết"}</span></div><p>${esc(c.summary||"")}</p>${c.error?`<p style="color:#ff9cac">${esc(c.error)}</p>`:""}</div>`).join("");}
+function buildScriptText(){if(!current)return "";let parts=[`# ${current.title||"KỊCH BẢN YOUTUBE"}\n`,current.logline||"",`\nTHỂ LOẠI: ${current.settings.genre} | THỜI LƯỢNG: ${current.settings.duration} phút\n`,current.storyBible?`\n## HỒ SƠ CÂU CHUYỆN\n${current.storyBible}\n`:""];(current.chapters||[]).forEach((c,i)=>{parts.push(`\n\n# CHƯƠNG ${i+1}: ${c.title}\n\n${c.content|| (c.status==="done"?"":"[Chưa viết]")}`)});return parts.join("\n")}
+function renderEditor(){const t=current?.manualDraft||buildScriptText();$("scriptEditor").textContent=t;$("charCount").textContent=t.length.toLocaleString("vi-VN");$("wordCount").textContent=(t.trim().match(/\S+/g)||[]).length.toLocaleString("vi-VN");}
+async function newProject(){
+ const s=settings(),idea=$("idea").value.trim();current={id:uid(),title:"Dự án chưa đặt tên",idea,settings:s,storyBible:"",logline:"",chapters:[],status:"Chưa tạo dàn ý",createdAt:Date.now(),updatedAt:Date.now(),trendSources:[]};await saveProject();setProgress();renderEditor();$("storyInfo").textContent="Đang chuẩn bị dàn ý...";
+}
+async function createOutline(){
+ try{key();if(running)return;setBusy(true);await newProject();const s=current.settings;const count=Math.max(6,Math.round(s.duration/2.5));const targetWords=Math.round(s.duration*135);const prompt=`Bạn là biên kịch chuyên nghiệp viết kịch bản YouTube bằng tiếng Việt. Hãy phát triển ý tưởng thành một dàn ý phim hoàn chỉnh.\nÝ tưởng: ${current.idea||"Hãy đề xuất một cốt truyện độc đáo phù hợp thể loại "+s.genre}.\nGhi chú: ${s.notes||"Không có"}\nThể loại: ${s.genre}. Thời lượng: ${s.duration} phút. Đối tượng: ${s.audience}. Thông điệp: ${s.message||"phù hợp câu chuyện"}.\nPhong cách: ${promptStyle(s)}\nMục tiêu lời thoại/lời dẫn khoảng ${targetWords} từ tiếng Việt, chia chính xác ${count} chương/cụm cảnh để viết lần lượt.\nTrả lời theo đúng cấu trúc:\nTÊN PHIM: ...\nLOGLINE: ...\nTÓM TẮT TOÀN BỘ: ...\nHỒ SƠ CÂU CHUYỆN: (nhân vật, tính cách, mục tiêu, quan hệ, bối cảnh, quy tắc liên tục)\nDANH SÁCH CHƯƠNG:\n1. TÊN: ... | TÓM TẮT: ...\n... đến ${count}.\nKẾT THÚC: ...\nĐảm bảo có mở đầu lôi cuốn, xung đột tăng dần, cao trào, tháo gỡ và kết thúc có ý nghĩa. Không viết kịch bản chi tiết ở bước này.`;
+ const r=await gemini(prompt,{maxTokens:6500});const t=r.text;
+ const title=(t.match(/TÊN PHIM:\s*(.+)/i)||[])[1]?.trim()||"Kịch bản YouTube";
+ const logline=(t.match(/LOGLINE:\s*(.+)/i)||[])[1]?.trim()||"";
+ current.title=title;current.logline=logline;current.storyBible=t;current.outline=t;
+ const section=t.split(/DANH SÁCH CHƯƠNG:/i)[1]||"";
+ const lines=section.split(/\n/).filter(x=>/^\s*\d+[\.\)]/.test(x));
+ current.chapters=lines.slice(0,count).map((line,i)=>{let m=line.match(/^\s*\d+[\.\)]\s*(?:TÊN:\s*)?(.*?)\s*\|\s*TÓM TẮT:\s*(.*)$/i);if(m)return {title:m[1].trim(),summary:m[2].trim(),status:"pending",content:""};return {title:line.replace(/^\s*\d+[\.\)]\s*/,"").trim()||`Chương ${i+1}`,summary:"",status:"pending",content:""}});
+ if(current.chapters.length===0)current.chapters=Array.from({length:count},(_,i)=>({title:`Chương ${i+1}`,summary:"Phát triển phần tiếp theo của câu chuyện theo dàn ý tổng thể.",status:"pending",content:""}));
+ current.status="Đã có dàn ý";await saveProject();$("storyInfo").textContent=`Đã tạo dàn ý: ${title}. ${current.chapters.length} chương. Bấm “Viết / tiếp tục các chương” để bắt đầu.`;setProgress();renderEditor();getActiveTab("script");
+ }catch(e){$("storyInfo").textContent="Lỗi: "+e.message;if(current){current.status="Lỗi tạo dàn ý";await saveProject()}}finally{setBusy(false);setProgress()}
+}
+$("buildBtn").onclick=createOutline;
+async function writeChapters(onlyErrors=false){
+ if(!current||running)return;try{key()}catch(e){alert(e.message);return}
+ setBusy(true);pauseRequested=false;current.status="Đang viết";await saveProject();setProgress();getActiveTab("script");
+ try{
+ for(let i=0;i<current.chapters.length;i++){
+  const ch=current.chapters[i];if(ch.status==="done"|| (onlyErrors&&ch.status!=="error"))continue;if(pauseRequested)break;
+  ch.status="writing";ch.error="";await saveProject();setProgress();
+  const previous=current.chapters.slice(0,i).filter(c=>c.status==="done").slice(-3).map((c,j)=>`Chương trước: ${c.title}\nTóm tắt nội dung đã viết: ${c.summary}`).join("\n\n");
+  const prompt=`Bạn là biên kịch viết kịch bản YouTube tiếng Việt. Hãy viết CHỈ chương ${i+1}/${current.chapters.length} trong kịch bản dưới đây, chi tiết, dài và có thể đưa thẳng vào sản xuất.\nTÊN: ${current.title}\nLOGLINE: ${current.logline}\nHỒ SƠ CÂU CHUYỆN VÀ DÀN Ý GỐC:\n${current.storyBible}\nCHƯƠNG CẦN VIẾT: ${ch.title}\nTÓM TẮT CHƯƠNG: ${ch.summary}\nCÁC CHƯƠNG TRƯỚC (để giữ liên tục):\n${previous||"Đây là chương đầu tiên."}\nTHIẾT LẬP: ${current.settings.duration} phút tổng thời lượng; thể loại ${current.settings.genre}; khán giả ${current.settings.audience}; phong cách ${promptStyle(current.settings)}; thông điệp ${current.settings.message||"theo cốt truyện"}.\nYÊU CẦU BẮT BUỘC:\n- Viết tiếng Việt tự nhiên, không tóm tắt, không bỏ qua cảnh quan trọng.\n- Mở chương bằng tiêu đề cảnh, bối cảnh, thời gian và mô tả hình ảnh/hành động.\n- Có lời thoại cụ thể cho từng nhân vật, ghi tên nhân vật trước lời thoại; thêm chỉ dẫn diễn xuất khi cần.\n- Có lời dẫn/voice-over nếu phù hợp; mô tả âm thanh, chuyển cảnh, nhịp dựng vừa đủ.\n- Mỗi cảnh phải có mục đích, diễn biến và kết nối logic; giữ nguyên tên, tính cách, quan hệ và các sự kiện đã xác lập.\n- Chương phải có độ dài đáng kể, mục tiêu khoảng ${Math.ceil(current.settings.duration*135/current.chapters.length)} từ; ưu tiên chất lượng, không kéo dài bằng câu lặp.\n- Chỉ viết nội dung chương này. Không viết chương kế tiếp, không lặp lại dàn ý, không kết thúc toàn phim nếu đây chưa phải chương cuối.\n- Kết chương bằng một nhịp chuyển tự nhiên sang chương kế tiếp.`;
+  try{
+   let result=await gemini(prompt,{maxTokens:8192});let content=result.text;
+   if(result.candidate?.finishReason==="MAX_TOKENS"||content.length<500){let continuation=await gemini(`Hãy tiếp tục và hoàn tất chương "${ch.title}" đang bị ngắt. Không lặp lại phần đã có. Đây là nội dung đã nhận:\n${content}\nHãy nối tiếp đúng mạch, hoàn tất cảnh và kết chương tự nhiên.`,{maxTokens:8192});content+="\n\n"+continuation.text}
+   ch.content=content;ch.status="done";ch.completedAt=Date.now();ch.summary=ch.summary||content.slice(0,450);
+  }catch(e){ch.status="error";ch.error=e.message;await saveProject();setProgress();break}
+  await saveProject();setProgress();renderEditor();
+ }
+ const allDone=current.chapters.every(c=>c.status==="done");current.status=allDone?"Hoàn thành":"Đã lưu tiến độ";await saveProject();$("storyInfo").textContent=allDone?"🎉 Đã hoàn thành tất cả chương. Bạn có thể chỉnh sửa và tải kịch bản.":pauseRequested?"Đã tạm dừng. Tiến độ được lưu; bấm tiếp tục khi sẵn sàng.":"Đã dừng ở chương gặp lỗi. Bạn có thể bấm “Viết lại chương lỗi”.";
+ }finally{setBusy(false);setProgress();renderEditor()}
+}
+$("writeBtn").onclick=()=>writeChapters(false);
+$("pauseBtn").onclick=()=>{pauseRequested=true;$("storyInfo").textContent="Đang dừng sau khi hoàn tất yêu cầu hiện tại..."};
+$("retryBtn").onclick=()=>writeChapters(true);
+$("trendBtn").onclick=async()=>{
+ try{key();$("trendBtn").disabled=true;$("trendState").textContent="Đang tìm kiếm và phân tích xu hướng bằng Google Search...";$("trendOutput").textContent="Đang nghiên cứu...";$("trendSources").innerHTML="";
+ const niche=$("niche").value.trim()||$("genre").value,market=$("market").value;
+ const p=`Hãy nghiên cứu xu hướng video YouTube hiện tại trong lĩnh vực "${niche}" tại thị trường "${market}". Dùng Google Search để tìm các tín hiệu mới và nguồn đáng tin cậy. Ưu tiên dữ liệu gần đây, ghi rõ ngày/thời điểm của thông tin nếu tìm được. Không bịa số liệu lượt xem hay tốc độ tăng trưởng.\nTrình bày tiếng Việt theo cấu trúc:\n1. TÓM TẮT 5-8 xu hướng/chủ đề đáng chú ý (mỗi mục: mô tả, vì sao đáng chú ý, bằng chứng/tín hiệu và mức độ chắc chắn).\n2. Khoảng trống nội dung/cơ hội cho kênh nhỏ.\n3. 10 ý tưởng video cụ thể, mỗi ý tưởng có tiêu đề thu hút, hook 10 giây đầu, nội dung cốt lõi, điểm khác biệt và độ phù hợp với video 15-30 phút.\n4. Chọn 3 ý tưởng tiềm năng nhất và giải thích.\n5. Nêu rõ giới hạn dữ liệu và tránh khẳng định xu hướng nếu không có bằng chứng. Đính kèm nguồn/citation từ kết quả tìm kiếm.`;
+ const r=await gemini(p,{search:true,maxTokens:8192});$("trendOutput").textContent=r.text;$("trendState").textContent="Đã hoàn tất nghiên cứu. Kiểm tra ngày và nguồn trước khi sử dụng.";
+ const src=extractSources(r);$("trendSources").innerHTML=src.length?"<b>Nguồn tham khảo:</b><ul>"+src.map(x=>`<li><a class="link" href="${esc(x.uri)}" target="_blank" rel="noopener">${esc(x.title)}</a></li>`).join("")+"</ul>":"Gemini không trả về liên kết nguồn riêng cho lượt này.";
+ }catch(e){$("trendState").textContent="Không thể hoàn thành: "+e.message;$("trendOutput").textContent="Hãy kiểm tra API key, kết nối mạng và quyền Google Search grounding của model/tài khoản. Nếu tính năng Search không có trong hạn mức miễn phí, bạn vẫn có thể nhập ý tưởng thủ công."}
+ finally{$("trendBtn").disabled=false}
+};
+$("useIdeaBtn").onclick=()=>{$("idea").value=$("trendOutput").innerText.trim();getActiveTab("script");$("idea").focus()};
+$("copyTrendBtn").onclick=()=>navigator.clipboard?.writeText($("trendOutput").innerText).then(()=>alert("Đã sao chép kết quả.")).catch(()=>alert("Trình duyệt không cho phép sao chép tự động; hãy chọn và sao chép thủ công.")); 
+$("saveEditBtn").onclick=async()=>{if(!current){alert("Chưa có dự án.");return}const text=$("scriptEditor").innerText;current.manualDraft=text;await saveProject();$("storyInfo").textContent="Đã lưu bản chỉnh sửa thủ công. Lưu ý: nội dung chỉnh sửa tổng hợp không tự phân ngược về từng chương."};
+$("copyScriptBtn").onclick=()=>navigator.clipboard?.writeText($("scriptEditor").innerText).then(()=>alert("Đã sao chép kịch bản.")).catch(()=>alert("Hãy chọn nội dung và sao chép thủ công."));
+function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$("txtBtn").onclick=()=>{if(!current)return;download((current.title||"kich-ban").replace(/[\\/:*?"<>|]/g,"_")+".txt",current.manualDraft||buildScriptText(),"text/plain;charset=utf-8")};
+$("jsonBtn").onclick=()=>{if(!current)return;download("youtube-script-backup-"+current.id+".json",JSON.stringify(current,null,2),"application/json")};
+async function updateProjectUI(){if(!db)return;const arr=await dbReq("readonly",s=>s.getAll());$("projectList").innerHTML=arr.sort((a,b)=>b.updatedAt-a.updatedAt).map(p=>`<div class="chapter"><div class="chapter-head"><span class="chapter-title">${esc(p.title)}</span><span class="pill">${esc(p.status||"Đã lưu")}</span></div><p>${esc(p.settings?.genre||"")} · ${p.settings?.duration||0} phút · ${(p.chapters||[]).filter(c=>c.status==="done").length}/${(p.chapters||[]).length} chương</p><div class="actions"><button class="secondary" data-open="${p.id}">Mở dự án</button><button class="ghost" data-export="${p.id}">Tải JSON</button><button class="danger" data-delete="${p.id}">Xóa</button></div></div>`).join("")||'<p class="muted">Chưa có dự án nào được lưu.</p>';
+ $("projectList").querySelectorAll("[data-open]").forEach(b=>b.onclick=async()=>{current=await dbReq("readonly",s=>s.get(b.dataset.open));if(current){$("idea").value=current.idea||"";$("duration").value=current.settings.duration;$("genre").value=current.settings.genre;$("style").value=current.settings.style;$("audience").value=current.settings.audience;$("message").value=current.settings.message||"";$("notes").value=current.settings.notes||"";getActiveTab("script");setProgress();renderEditor();$("storyInfo").textContent="Đã mở dự án đã lưu."}});
+ $("projectList").querySelectorAll("[data-export]").forEach(b=>b.onclick=async()=>{const p=await dbReq("readonly",s=>s.get(b.dataset.export));download("backup-"+p.id+".json",JSON.stringify(p,null,2),"application/json")});
+ $("projectList").querySelectorAll("[data-delete]").forEach(b=>b.onclick=async()=>{if(confirm("Xóa dự án này khỏi thiết bị?")){await dbReq("readwrite",s=>s.delete(b.dataset.delete));if(current?.id===b.dataset.delete)current=null;await updateProjectUI()}});
+}
+$("newBtn").onclick=()=>{current=null;$("idea").value="";$("scriptEditor").textContent="Kịch bản hoàn chỉnh sẽ xuất hiện tại đây.";setProgress();getActiveTab("script")};
+$("importBtn").onclick=()=>$("importFile").click();
+$("importFile").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const p=JSON.parse(await f.text());if(!p.id||!Array.isArray(p.chapters))throw Error("Tệp sao lưu không hợp lệ");await dbReq("readwrite",s=>s.put(p));alert("Đã nhập dự án.");await updateProjectUI()}catch(err){alert("Không thể nhập: "+err.message)}e.target.value=""};
+(async()=>{try{db=await openDB();await updateProjectUI();const arr=await dbReq("readonly",s=>s.getAll());if(arr.length){current=arr.sort((a,b)=>b.updatedAt-a.updatedAt)[0];$("idea").value=current.idea||"";$("duration").value=current.settings?.duration||20;$("genre").value=current.settings?.genre||"Học đường";$("style").value=current.settings?.style||"storytelling";$("audience").value=current.settings?.audience||defaults.audience;$("message").value=current.settings?.message||"";$("notes").value=current.settings?.notes||"";setProgress();renderEditor();$("storyInfo").textContent="Đã khôi phục dự án gần nhất từ bộ nhớ thiết bị."}}catch(e){$("saveStatus").textContent="⚠ Bộ nhớ không khả dụng";$("storyInfo").textContent="Trình duyệt không hỗ trợ IndexedDB hoặc đang chặn lưu trữ."}})();
+})();
+</script>
+</body>
+</html>
