@@ -375,6 +375,19 @@
       .char-voice-row select { max-width: 120px; }
     }
   
+    /* Tùy chỉnh hiển thị lời thoại */
+    #dialogue-text { font-size: var(--dialogue-font-size, clamp(1rem, 2.2vw, 1.6rem)); color: var(--dialogue-color, #fff); -webkit-text-stroke: var(--dialogue-stroke-width, 0.8px) var(--dialogue-stroke-color, #000); font-family: var(--dialogue-font-family, 'Segoe UI', sans-serif); }
+    #dialogue-text .tts-word { transition: color .08s, background-color .08s; border-radius: 3px; }
+    #dialogue-text .tts-word.active { color: var(--dialogue-highlight-color, #ffe66d); background: rgba(255,230,109,.16); }
+    #dialogue-settings { width:100%; max-width:1000px; margin-top:8px; padding:12px 14px; background:rgba(15,23,42,.88); border:1px solid rgba(168,85,247,.3); border-radius:10px; color:#e2e8f0; display:flex; flex-direction:column; gap:10px; }
+    #dialogue-settings h4 { font-size:.9rem; color:#c4b5fd; }
+    .dialogue-settings-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:10px; }
+    .dialogue-setting { display:flex; flex-direction:column; gap:5px; font-size:.78rem; color:#cbd5e1; min-width:0; }
+    .dialogue-setting input[type="range"] { width:100%; accent-color:#a855f7; }
+    .dialogue-setting input[type="color"], .dialogue-setting select { width:100%; min-height:30px; background:#1e293b; color:#fff; border:1px solid #475569; border-radius:5px; padding:4px; }
+    .dialogue-setting .setting-value { color:#c4b5fd; }
+    .dialogue-toggle { display:flex; align-items:center; gap:8px; font-size:.8rem; }
+    .dialogue-toggle input { accent-color:#a855f7; }
     /* Giao diện ghi video */
     #record-status {
       display: none;
@@ -463,6 +476,29 @@
     <button class="btn" type="button" onclick="trinhPhat.tuaMotDoan(1)">Tiến 1 ⏭</button>
   </div>
 
+  <section id="dialogue-settings" aria-label="Cài đặt chữ thoại">
+    <h4>💬 Tùy chỉnh chữ thoại</h4>
+    <label class="dialogue-toggle"><input id="dialogue-visible" type="checkbox" checked onchange="trinhPhat.capNhatCaiDatThoai('visible', this.checked)"> Hiển thị khung thoại</label>
+    <div class="dialogue-settings-grid">
+      <label class="dialogue-setting">Cỡ chữ <span class="setting-value" id="dialogue-size-value">28 px</span><input id="dialogue-size" type="range" min="14" max="52" step="1" value="28" oninput="trinhPhat.capNhatCaiDatThoai('fontSize', this.value)"></label>
+      <label class="dialogue-setting">Màu chữ <input id="dialogue-color" type="color" value="#ffffff" onchange="trinhPhat.capNhatCaiDatThoai('color', this.value)"></label>
+      <label class="dialogue-setting">Màu viền (stroke) <input id="dialogue-stroke-color" type="color" value="#000000" onchange="trinhPhat.capNhatCaiDatThoai('strokeColor', this.value)"></label>
+      <label class="dialogue-setting">Độ dày viền <span class="setting-value" id="dialogue-stroke-value">0.8 px</span><input id="dialogue-stroke-width" type="range" min="0" max="5" step="0.1" value="0.8" oninput="trinhPhat.capNhatCaiDatThoai('strokeWidth', this.value)"></label>
+      <label class="dialogue-setting">Màu chữ đang đọc <input id="dialogue-highlight-color" type="color" value="#ffe66d" onchange="trinhPhat.capNhatCaiDatThoai('highlightColor', this.value)"></label>
+      <label class="dialogue-setting">Font chữ
+        <select id="dialogue-font" onchange="trinhPhat.capNhatCaiDatThoai('fontFamily', this.value)">
+          <option value="'Segoe UI', sans-serif">Segoe UI</option><option value="Arial, sans-serif">Arial</option><option value="Tahoma, sans-serif">Tahoma</option><option value="Georgia, serif">Georgia</option><option value="'Times New Roman', serif">Times New Roman</option><option value="Verdana, sans-serif">Verdana</option><option value="system-ui, sans-serif">System UI</option>
+        </select>
+      </label>
+      <label class="dialogue-setting">Hiệu ứng chữ
+        <select id="dialogue-effect" onchange="trinhPhat.capNhatCaiDatThoai('effect', this.value)">
+          <option value="typewriter">Chạy từng chữ (typewriter)</option><option value="tts">Tô từ theo TTS</option><option value="static">Hiện toàn bộ, đứng im</option>
+        </select>
+      </label>
+    </div>
+    <button class="btn" type="button" onclick="trinhPhat.datLaiCaiDatThoai()">↺ Đặt lại chữ thoại</button>
+  </section>
+
   <div id="volume-controls">
     <label>
       🔊 BGM: 
@@ -500,6 +536,9 @@
         this.dialogueCanvas = document.getElementById('dialogue-canvas');
         this.speakerText = document.getElementById('speaker-name');
         this.dialogueText = document.getElementById('dialogue-text');
+        this.caiDatThoaiMacDinh = { visible: true, fontSize: 28, color: '#ffffff', strokeColor: '#000000', strokeWidth: 0.8, highlightColor: '#ffe66d', fontFamily: "'Segoe UI', sans-serif", effect: 'typewriter' };
+        this.caiDatThoai = { ...this.caiDatThoaiMacDinh };
+        this.docCaiDatThoai();
         this.audioBgm = document.getElementById('audio-bgm');
         this.audioSfx = document.getElementById('audio-sfx');
 
@@ -554,6 +593,68 @@
         // Ưu tiên tự tải ailahungthu.json khi mở trang, chưa cần bấm Import.
         // Nếu file không tồn tại hoặc nội dung lỗi, giữ duLieu = null để dùng mẫu gốc trong batDau().
         this.taiKichBanMacDinhPromise = this.taiKichBanMacDinh();
+      }
+
+      docCaiDatThoai() {
+        try {
+          const saved = JSON.parse(localStorage.getItem('vn-dialogue-settings') || '{}');
+          this.caiDatThoai = { ...this.caiDatThoaiMacDinh, ...saved };
+        } catch (_) {}
+        this.apDungCaiDatThoai();
+      }
+
+      apDungCaiDatThoai() {
+        const s = this.caiDatThoai;
+        const root = this.dialogueText;
+        root.style.setProperty('--dialogue-font-size', `${s.fontSize}px`);
+        root.style.setProperty('--dialogue-color', s.color);
+        root.style.setProperty('--dialogue-stroke-color', s.strokeColor);
+        root.style.setProperty('--dialogue-stroke-width', `${s.strokeWidth}px`);
+        root.style.setProperty('--dialogue-highlight-color', s.highlightColor);
+        root.style.setProperty('--dialogue-font-family', s.fontFamily);
+        this.dialogueCanvas.style.display = s.visible ? (this.dialogueCanvas.dataset.hasDialogue === 'true' ? 'flex' : 'none') : 'none';
+        const values = { 'dialogue-visible': s.visible, 'dialogue-size': s.fontSize, 'dialogue-color': s.color, 'dialogue-stroke-color': s.strokeColor, 'dialogue-stroke-width': s.strokeWidth, 'dialogue-highlight-color': s.highlightColor, 'dialogue-font': s.fontFamily, 'dialogue-effect': s.effect };
+        Object.entries(values).forEach(([id,value]) => { const el=document.getElementById(id); if(el) el.type==='checkbox' ? el.checked=!!value : el.value=value; });
+        const sizeLabel=document.getElementById('dialogue-size-value'); if(sizeLabel) sizeLabel.textContent=`${s.fontSize} px`;
+        const strokeLabel=document.getElementById('dialogue-stroke-value'); if(strokeLabel) strokeLabel.textContent=`${s.strokeWidth} px`;
+      }
+
+      capNhatCaiDatThoai(key, value) {
+        if (!(key in this.caiDatThoai)) return;
+        if (key === 'fontSize' || key === 'strokeWidth') value = Number(value);
+        this.caiDatThoai[key] = value;
+        try { localStorage.setItem('vn-dialogue-settings', JSON.stringify(this.caiDatThoai)); } catch (_) {}
+        this.apDungCaiDatThoai();
+      }
+
+      datLaiCaiDatThoai() {
+        this.caiDatThoai = { ...this.caiDatThoaiMacDinh };
+        try { localStorage.removeItem('vn-dialogue-settings'); } catch (_) {}
+        this.apDungCaiDatThoai();
+      }
+
+      hienThiTuDangDoc(text, charIndex) {
+        const words = [...text.matchAll(/[\\p{L}\\p{N}_]+/gu)];
+        if (!words.length) { this.dialogueText.textContent = text; return; }
+        let html = '', cursor = 0, activeFound = false;
+        for (const match of words) {
+          const start = match.index, end = start + match[0].length;
+          html += this.escapeHtmlThoai(text.slice(cursor, start));
+          const active = charIndex >= start && charIndex < end;
+          if (active) activeFound = true;
+          html += `<span class="tts-word${active ? ' active' : ''}" data-start="${start}" data-end="${end}">${this.escapeHtmlThoai(match[0])}</span>`;
+          cursor = end;
+        }
+        html += this.escapeHtmlThoai(text.slice(cursor));
+        this.dialogueText.innerHTML = html;
+        if (!activeFound && charIndex >= 0) {
+          const next = [...this.dialogueText.querySelectorAll('.tts-word')].find(el => Number(el.dataset.start) >= charIndex);
+          if (next) next.classList.add('active');
+        }
+      }
+
+      escapeHtmlThoai(value) {
+        return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
       }
 
       async taiKichBanMacDinh() {
@@ -1321,10 +1422,14 @@
         utterance.rate = cfg.rate;
         utterance.pitch = cfg.pitch;
         utterance.onboundary = event => {
-          if (event.name === 'word') this.ttsRemainingText = text.substring(event.charIndex);
+          if (event.name === 'word') {
+            this.ttsRemainingText = text.substring(event.charIndex);
+            if (this.caiDatThoai.effect === 'tts') this.hienThiTuDangDoc(text, event.charIndex);
+          }
         };
         utterance.onend = utterance.onerror = () => {
           this.ttsRemainingText = '';
+          if (this.caiDatThoai.effect === 'tts') this.dialogueText.querySelectorAll('.tts-word.active').forEach(el => el.classList.remove('active'));
           this.currentTtsResolve = null;
           resolveCallback();
         };
@@ -1350,27 +1455,26 @@
       }
 
       hienLoiThoai(ten, noiDung) {
-        this.dialogueCanvas.style.display = 'flex';
+        this.dialogueCanvas.dataset.hasDialogue = 'true';
+        this.dialogueCanvas.style.display = this.caiDatThoai.visible ? 'flex' : 'none';
         if (ten && ten.trim() !== "") {
           this.speakerText.innerText = ten;
           this.speakerText.style.display = 'block';
         } else {
           this.speakerText.style.display = 'none';
         }
-
-        let idx = 0;
-        this.dialogueText.innerText = '';
         clearInterval(this.hienChuInterval);
-        
-        const speed = (this.duLieu ? this.duLieu.toc_do_go_chu : 0.03) * 1000;
+        this.dialogueText.textContent = '';
+        if (this.caiDatThoai.effect === 'static' || this.caiDatThoai.effect === 'tts') {
+          this.dialogueText.textContent = noiDung;
+          return;
+        }
+        let idx = 0;
+        const speed = Math.max(5, (this.duLieu ? this.duLieu.toc_do_go_chu : 0.03) * 1000);
         this.hienChuInterval = setInterval(() => {
           if (!this.dangTamDung && this.dangChay) {
-            if (idx < noiDung.length) {
-              this.dialogueText.innerText += noiDung.charAt(idx);
-              idx++;
-            } else {
-              clearInterval(this.hienChuInterval);
-            }
+            if (idx < noiDung.length) this.dialogueText.textContent += noiDung.charAt(idx++);
+            else clearInterval(this.hienChuInterval);
           }
         }, speed);
       }
