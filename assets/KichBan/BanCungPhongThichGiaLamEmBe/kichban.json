@@ -1,0 +1,2095 @@
+{
+  "thoi_gian_giu_khung": 1,
+  "thoi_gian_cho_giua": 0.02,
+  "toc_do_go_chu": 0.03,
+  "danh_sach": [
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Khoan đã... cái bàn chải điện của tớ đâu rồi? Sao nó nằm cạnh đôi giày dính đầy bùn thế này?",
+      "anh_nen": "bg_school.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "bgm_gentle.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Hana, cậu đang dùng bàn chải của tớ để cọ giày à?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Ơ kìa, Aki về rồi hả? Hân... à không, Hana chỉ mượn một chút xíu thôi mà.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Một chút xíu mà lông bàn chải xòe như chổi quét sân?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Embarrassed",
+      "noi_dung": "Tại giày bẩn quá, chà mãi không sạch. Cái bàn chải của cậu rung rung tiện ghê.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Cậu lấy bàn chải đánh răng đi cọ đế giày thật á? Tớ tưởng tớ nghe nhầm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Apologetic",
+      "noi_dung": "Hai người làm gì căng vậy? Tớ có biết nó đắt đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Tớ mua nó bằng tiền làm thêm. Cậu không hỏi mà tự tiện lấy, đó mới là vấn đề.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Thôi mà, đừng mắng em bé. Em bé mới có ba tuổi rưỡi thôi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Ba tuổi rưỡi mà cao gần mét bảy, biết đặt đồ ăn, biết chuyển khoản, chỉ không biết xin phép?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Xin lỗi, tớ không nên cười... nhưng câu đó nghe đau thật.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Yui, cậu đứng về phe ai vậy?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ đứng về phe vệ sinh răng miệng. Bàn chải đánh răng không phải dụng cụ chăm sóc giày.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Đầu bàn chải hỏng rồi. Thân máy cũng có thể bị nước xi giày ngấm vào.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Tớ đền, được chưa? Bao nhiêu?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Chín trăm. Tớ gửi ảnh giá mua và hóa đơn cho cậu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Chín trăm?! Một cái bàn chải mà bằng tiền ăn cả tuần?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Vậy lần sau hỏi trước khi biến đồ người khác thành đồ dùng chung.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Được rồi, tớ chuyển. Nhưng cậu đừng có làm mặt đáng sợ như vậy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ đang cố nói chuyện bình thường đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Nếu đây là bình thường thì lúc Aki nổi giận chắc nhiệt độ phòng giảm âm luôn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Cảm ơn lời nhận xét rất có ích của cậu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Hai người hợp nhau ghê. Cứ chờ đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Khoan, hộp mỹ phẩm của tớ bị mở rồi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Worried",
+      "noi_dung": "Hũ kem dưỡng nấm cục đen... sao nhẹ thế này?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cậu kiểm tra kỹ đi. Hôm qua tớ thấy Hana đứng cạnh bàn cậu khá lâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Lại gì nữa? Tớ chỉ ngắm cái hũ đẹp thôi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Bên trong bị vét gần hết, còn bị đổ kem rẻ tiền vào để giả vờ như chưa ai động tới.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Embarrassed",
+      "noi_dung": "Tớ... tớ lấy một ít thôi. Bạn trai tớ bị khô tay, tớ muốn chăm sóc anh ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Một ít mà cái hũ ba mươi gram gần như trống không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Hôm qua tớ còn thấy cậu chiết kem vào mấy lọ nhỏ. Cậu bảo đó là hàng mua sỉ mà.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Yui! Cậu đừng có xen vào chuyện của tớ!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Cậu lấy đồ của tớ, đem cho người khác, rồi thay bằng thứ rẻ tiền. Cậu định gọi đó là mượn à?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ tưởng cậu có nhiều mỹ phẩm, dùng không hết thì phí.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Đồ của tớ không phải kho hàng miễn phí. Cậu muốn dùng thì hỏi, bị từ chối cũng phải tôn trọng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Cậu lúc nào cũng tính toán từng đồng. Sống chung mà ích kỷ thế thì ai chịu nổi?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Người ta giữ đồ của mình không phải ích kỷ. Tự tiện lấy mới là vô duyên.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Cậu im đi!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Không cần cãi nữa. Tớ có hóa đơn, ảnh hũ kem trước khi bị mở và cả tin nhắn cậu khoe đã chiết kem.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cậu chụp màn hình tin nhắn của tớ từ bao giờ?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ không cần hack điện thoại. Cậu gửi nhầm vào nhóm phòng rồi thu hồi, nhưng thông báo vẫn hiện trên máy tớ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Trời ơi, tự để lại bằng chứng luôn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Apologetic",
+      "noi_dung": "Tớ trả tiền kem cho cậu, được chưa?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ muốn cậu trả đúng giá trị và cam kết không đụng vào đồ của tớ nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Được. Nhưng đừng mong tớ xin lỗi kiểu quỳ lạy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ cũng chẳng có nhu cầu xem cậu diễn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ chỉ mong từ giờ phòng mình yên ổn một chút.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Hai người cứ chờ xem. Tớ không để chuyện này kết thúc đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Worried",
+      "noi_dung": "Câu đó nghe chẳng giống lời của người vừa nhận lỗi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Tớ cũng thấy vậy. Cậu nên khóa ngăn kéo lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ đã đổi ổ khóa nhỏ rồi. Cảm ơn cậu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Ít nhất lần này cậu không phải tự xử lý một mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Có cậu ở đây, tớ yên tâm hơn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Không thể nào... mô hình đồ án của tớ biến mất rồi!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cái sa bàn kiến trúc sinh thái cậu làm suốt ba đêm ấy hả?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Ừ. Hộp mica vẫn còn, nhưng mô hình bên trong không thấy đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Sáng nay tớ ngủ suốt. Có khi cậu tự để quên ở xưởng?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Tớ đặt nó ngay trên bàn, còn chụp ảnh trước khi ra ngoài.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Tớ rời phòng lúc bảy giờ. Hana vẫn ở đây khi tớ đi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Cậu định nói tớ lấy à? Có bằng chứng không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ chưa kết luận. Nhưng trong mười lăm phút đó chỉ có cậu ở phòng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Vậy thì đi tìm đi. Đừng đứng đây nhìn tớ như thám tử.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Còn bốn mươi phút nữa là nộp. Chúng ta chia nhau tìm nhé.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ kiểm tra hành lang và phòng chứa đồ. Yui xem khu giặt ủi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Rõ, đội cứu hộ mô hình xuất phát!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Cửa phòng chứa đồ khép hờ... bình thường nó luôn khóa mà.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Worried",
+      "noi_dung": "Có vết xước mới ở cạnh ổ khóa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Aki! Tớ tìm thấy mảnh xốp chèn mô hình trong thùng đồ lau dọn!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Vậy là nó từng được giấu ở đây.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Hai người tìm được gì chưa? Hay muốn tớ gọi bảo vệ?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Cậu đến đúng lúc thật đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Embarrassed",
+      "noi_dung": "Tớ đi ngang thôi. Không lẽ hành lang là của riêng hai người?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Aki, nhìn dưới tấm bạt kia kìa!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Mô hình của tớ! Một góc mái bị gãy rồi!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Hana, cậu giải thích đi. Vì sao nó nằm trong phòng chứa đồ?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ không biết. Có thể ai đó mang vào đây.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Trong phòng chỉ có ba người, và cậu là người duy nhất ở lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Không có chứng cứ thì đừng vu khống!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ sẽ chụp hiện trạng, giữ lại mảnh xốp và báo quản lý ký túc xá.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cậu định làm lớn chuyện thật sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Cậu đã đụng đến đồ án quyết định điểm số của tớ. Chuyện này vốn đã lớn rồi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Sad",
+      "noi_dung": "Aki, thầy có thể cho cậu nộp muộn nếu có biên bản sự cố không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ sẽ trình bày sự việc, nhưng vẫn phải cố sửa mô hình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Cậu nghĩ mình lúc nào cũng đúng à?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Không. Tớ chỉ biết ai làm thì phải chịu trách nhiệm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Tớ sẽ giúp cậu dán lại phần mái. Còn nước còn tát!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Cảm ơn. Chúng ta làm nhanh thôi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Hai người cứ diễn cảnh tình bạn cảm động đi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Không ai cần cậu ở lại. Cậu có thể đi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Và nhớ đừng chạm vào đồ của bọn tớ nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Mô hình đã nộp được rồi. Dù có vết sửa, ít nhất tớ không bỏ cuộc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Tớ đã chụp ảnh từng bước sửa chữa. Nếu ai hỏi, mình có hồ sơ đầy đủ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tốt. Từ giờ tớ sẽ lưu bản sao mọi thứ ở nhiều nơi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Cậu làm như thể tớ là tội phạm ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ không gọi cậu là gì cả. Tớ chỉ bảo vệ công sức của mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Còn cuộc thi thiết kế biểu tượng trường tuần sau thì sao? Cậu vẫn tham gia chứ?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Có. Tớ đã chuẩn bị bản thiết kế từ tháng trước.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Ồ, cuộc thi có giải thưởng lớn đúng không? Nghe hấp dẫn đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Ừ, nhưng tớ tham gia vì muốn thử sức, không phải chỉ vì tiền.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Nói hay ghê. Chắc cậu nghĩ mình sẽ thắng chắc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ đã xem bản phác thảo của Aki. Ý tưởng rất riêng, nhìn là nhận ra ngay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Tớ còn bản thuyết minh, bảng màu và file gốc có lịch sử chỉnh sửa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cậu lưu kỹ đến vậy à?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tác phẩm là công sức của tớ. Cẩn thận không thừa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Đúng kiểu dân thiết kế. File nào cũng có backup, backup của backup.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Đừng trêu. Một lần mất đồ án là đủ rồi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Tớ cũng có ý tưởng riêng. Không phải ai cũng cần cậu công nhận.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Vậy thì cứ làm tốt phần của mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Hana nhìn cậu lạ lắm. Cậu ấy vẫn chưa bỏ ý định trả đũa đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ biết. Nhưng tớ không thể bỏ cuộc thi chỉ vì sợ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Hai người nói nhỏ thôi. Tớ nghe hết đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Vậy càng tốt. Đừng thử thêm trò nào nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Tớ sẽ đi cùng cậu nộp bài.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Đi thôi. Lần này mọi thứ phải rõ ràng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Ồ, cậu đến sớm thế?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ muốn tự tay bỏ phong bì vào thùng và ghi lại thời gian nộp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Tớ đứng cạnh làm chứng. Không ai tráo được đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Hai người làm như đang nộp hồ sơ mật quốc gia.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Sau những gì đã xảy ra, tớ thấy vậy cũng hợp lý.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Phong bì đã vào thùng. Tớ chụp được cả mã niêm phong.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Cảm ơn. Giờ chỉ còn chờ công bố.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Chúc may mắn nhé. Biết đâu người thắng lại là tớ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Chúc cậu may mắn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Tớ không thích nụ cười vừa rồi của Hana.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ cũng vậy. Nhưng mình có bản gốc và lịch sử chỉnh sửa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Aki, nhìn màn hình đi! Người vừa nhận giải nhất là Hana!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Không thể nào... đó chính là thiết kế của tớ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Happy",
+      "noi_dung": "Cảm ơn mọi người! Tớ đã dành rất nhiều đêm để hoàn thiện tác phẩm này.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Angry",
+      "noi_dung": "Cậu ấy nói dối! Bản thiết kế đó tớ đã xem trên máy Aki từ tuần trước!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Hana, cậu vừa nhận giải bằng tác phẩm của tớ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Aki, cậu đừng phá hỏng khoảnh khắc của tớ. Đây là bài dự thi của tớ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Vậy trả lời một câu thôi: tỷ lệ vàng cậu dùng để tạo đường cong chiếc lá là bao nhiêu?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Embarrassed",
+      "noi_dung": "Tớ... tớ làm theo cảm hứng, đâu cần nhớ mấy con số.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Mã màu chủ đạo? Hệ CMYK hay RGB? Thông số cụ thể?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Sao cậu hỏi như đang thi vấn đáp vậy?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Vì người làm ra nó phải biết chứ!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Tớ không có nghĩa vụ trả lời cậu!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ không yêu cầu cậu trả lời cho tớ. Tớ đang yêu cầu hội đồng kiểm tra tính xác thực.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Aki, cậu còn bản thuyết minh viết tay chứ?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Có. Và cả file thiết kế gốc, bản xuất theo từng ngày.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cậu không thể chứng minh chỉ bằng mấy file đó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Vậy hãy kiểm tra hai phong bì dự thi và chữ ký niêm phong.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Khoan, phong bì mang tên Aki có nét chữ ký khác hẳn!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Đúng. Chữ ký thật dùng mực nhũ bạc chuyên dụng. Dưới đèn flash sẽ phản quang.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Cậu đang bày trò gì vậy?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Yui, cậu bật đèn flash điện thoại giúp tớ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Đã bật. Mọi người nhìn kỹ nhé.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Chữ ký trên bản gốc lấp lánh. Còn chữ ký trên phong bì mang tên tớ thì không.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Chuyện đó... có thể do ánh sáng thôi!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Không. Cậu đã làm giả phong bì của tớ, lấy bản thiết kế thật rồi nhét bản nháp khác vào.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Angry",
+      "noi_dung": "Vậy cậu lấy tác phẩm của Aki rồi tráo tên để nhận giải?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Tớ không làm! Các người đang hợp sức vu oan cho tớ!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Hội đồng có thể kiểm tra file gốc, dấu thời gian, bản thuyết minh và phong bì.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ còn ảnh chụp lúc Aki hoàn thiện từng lớp thiết kế, có ngày giờ rõ ràng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cậu... cậu chụp từ khi nào?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Từ lúc cậu còn bảo tác phẩm của Aki rất đẹp. Tớ đâu ngờ cậu định lấy nó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Tớ không cần cậu thú nhận trước đám đông. Tớ cần sự thật được xác minh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ chỉ muốn một lần được mọi người công nhận...",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Muốn được công nhận thì tự làm ra thứ đáng tự hào. Đừng cướp của người khác.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Sad",
+      "noi_dung": "Cậu có thể xin lỗi, nhưng giải thưởng và hậu quả phải để hội đồng quyết định.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Tớ ghét cậu, Aki! Từ ngày cậu xuất hiện, chẳng ai nhìn tớ nữa!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Tớ không cướp ánh nhìn của ai cả. Cậu tự biến mình thành kẻ đáng nghi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Hana, đừng tiến lại gần. Bảo vệ đang tới.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Không! Trả cúp cho tớ! Đó là của tớ!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Cúp không thuộc về người lấy trộm tác phẩm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Hội đồng đã xác nhận file gốc và hủy kết quả của Hana rồi!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Giải thưởng được trao lại cho tớ sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Đúng! Cậu thắng bằng chính công sức của mình!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ mất hết rồi... phòng ở, cuộc thi, cả cơ hội ở lại trường.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Đó là hậu quả từ những lựa chọn của cậu. Tớ không thể gánh thay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Aki, nghe nói Hana bị đình chỉ rồi. Cậu có thấy nhẹ nhõm không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Sad",
+      "noi_dung": "Có, nhưng tớ cũng không vui khi mọi chuyện thành ra thế này.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Cậu đã làm đúng khi báo sự thật. Đừng tự trách mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Tớ muốn tập trung hoàn thiện đồ án và chuẩn bị buổi thuyết trình cuối kỳ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Aki... cậu tưởng chuyện đã kết thúc thật sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Hana? Cậu làm gì ở phòng học này? Cậu đã bị đình chỉ rồi mà.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Tớ đến để lấy lại thứ cậu đã cướp khỏi cuộc đời tớ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Worried",
+      "noi_dung": "Đừng lại gần. Cậu đang cầm chai gì vậy?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Cậu thích sạch sẽ, thích mọi thứ hoàn hảo. Hôm nay tớ sẽ phá nát buổi thuyết trình của cậu!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Đừng! Đặt chai xuống!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Muộn rồi!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cẩn thận! Chất lỏng bắn lên bàn và cặp của tớ!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Aki! Tớ nghe tiếng động nên chạy tới. Cậu có bị thương không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Worried",
+      "noi_dung": "Tớ không sao, nhưng tài liệu suýt bị dính. Đừng chạm vào chất lỏng đó!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Sao cậu vẫn bình tĩnh được? Tớ đã phá hỏng mọi thứ rồi mà!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Angry",
+      "noi_dung": "Cậu đang tự đẩy mình vào rắc rối nghiêm trọng hơn. Lùi lại!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Tớ đã gọi bảo vệ và báo giảng viên. Cửa bên kia có người đang tới.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Đừng có gọi ai! Đây là chuyện giữa tớ và Aki!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Không. Cậu mang chất bẩn vào lớp, khóa cửa và tấn công tớ. Đây không còn là chuyện riêng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Tớ... tớ chỉ muốn cậu mất suất học bổng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Angry",
+      "noi_dung": "Cậu định làm hại người khác chỉ vì ghen tị sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ đã mất tất cả. Tớ chẳng còn gì để sợ nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Cậu vẫn còn quyền dừng lại trước khi mọi thứ tệ hơn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Đừng giảng đạo cho tớ!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Aki, tránh xa cô ấy. Bảo vệ đang vào!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Họ tới rồi. Hana, bỏ chai xuống sàn ngay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ không muốn bị bắt...",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Vậy hãy hợp tác. Đừng khiến ai bị thương thêm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Bảo vệ đã khống chế được tình hình. Giảng viên đang kiểm tra camera hành lang.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Camera...? Không thể nào...",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Cậu nghĩ không ai nhìn thấy cậu đi vào đây sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Annoyed",
+      "noi_dung": "Tớ còn giữ tin nhắn cậu gửi trước đó, trong đó cậu đe dọa Aki.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Surprised",
+      "noi_dung": "Cậu giữ cả tin nhắn đó?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ không xóa bằng chứng khi biết có người đang gặp nguy hiểm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ từng nghĩ chỉ cần cậu chịu dừng lại thì mọi chuyện có thể kết thúc êm đẹp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Angry",
+      "noi_dung": "Tớ không cần lòng thương hại của cậu!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Đây không phải thương hại. Tớ chỉ muốn cậu chịu trách nhiệm và không làm hại ai nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Worried",
+      "noi_dung": "Aki, giảng viên muốn cậu kiểm tra sức khỏe trước. Phần thuyết trình có thể dời lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Cảm ơn, nhưng tài liệu vẫn còn nguyên. Tớ muốn trình bày khi mọi người đã kiểm tra an toàn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Cậu đúng là cứng đầu thật đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Tớ đã chuẩn bị quá lâu để bỏ cuộc vì một chai bùn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tại sao cậu vẫn có thể đứng đó như không có chuyện gì?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Vì cậu không thể quyết định tương lai của tớ bằng sự tức giận của cậu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Hội đồng xác nhận cậu đủ điều kiện tiếp tục. Họ cũng đã ghi nhận hành vi phá hoại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Vậy bắt đầu thôi. Tớ muốn mọi người nhớ đến tác phẩm, không phải vụ bê bối.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Aki... tớ biết mình không thể xin cậu tha thứ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Đúng. Lời xin lỗi không tự động xóa hậu quả.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Sad",
+      "noi_dung": "Nhưng ít nhất cậu có thể nói thật, thay vì tiếp tục đổ lỗi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ đã lấy đồ của cậu, phá mô hình, đánh cắp thiết kế và còn định phá buổi thuyết trình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ nghe rồi. Những việc đó sẽ được nhà trường và cơ quan có trách nhiệm xử lý.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Worried",
+      "noi_dung": "Cậu có ghét tớ không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ ghét những gì cậu đã làm. Còn việc cậu sẽ trở thành người thế nào sau này là lựa chọn của cậu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Neutral",
+      "noi_dung": "Tớ mong cậu học được điều gì đó, dù đã quá muộn để sửa lại mọi chuyện ở đây.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Hana",
+      "bieu_cam": "Sad",
+      "noi_dung": "Tớ hiểu...",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Yui, đi thôi. Tớ còn phải hoàn thành bài thuyết trình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Ừ. Và lần này tớ sẽ ngồi hàng đầu cổ vũ cậu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Cảm ơn cậu. Sau tất cả, điều đáng quý nhất vẫn là có người tin mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Còn điều đáng quý thứ hai?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Là nhớ khóa ngăn kéo và sao lưu file mỗi ngày.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Chuẩn! Bài học đắt giá nhất học kỳ này.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Aki",
+      "bieu_cam": "Happy",
+      "noi_dung": "Và đừng bao giờ dùng bàn chải đánh răng để cọ giày.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "Yui",
+      "bieu_cam": "Happy",
+      "noi_dung": "Câu đó phải in thành nội quy phòng 402 mới được!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    }
+  ]
+}
