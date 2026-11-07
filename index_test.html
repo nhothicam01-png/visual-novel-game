@@ -605,6 +605,7 @@
         this.subtitlePlaybackStartedAt = null;
         this.subtitlePlaybackPausedAt = null;
         this.subtitlePlaybackPausedTotal = 0;
+        this.subtitlePlaybackInvalidated = false;
         this.currentPlaybackFrameIndex = null;
 
         this.audioTts = document.getElementById('audio-tts');
@@ -1557,6 +1558,7 @@
           this.subtitlePlaybackStartedAt = performance.now();
           this.subtitlePlaybackPausedAt = null;
           this.subtitlePlaybackPausedTotal = 0;
+          this.subtitlePlaybackInvalidated = false;
         } else if (this.subtitlePlaybackStartedAt === null) {
           // Nếu tiếp tục từ tiến độ đã lưu sau khi tải lại trang, chỉ ghi nhận phần đã phát trong phiên này.
           this.subtitlePlaybackStartedAt = performance.now();
@@ -1629,6 +1631,7 @@
         const target = Math.max(0, Math.min(ds.length - 1, Math.round(Number(value) || 0)));
         const wasPlaying = this.dangChay && !this.dangTamDung;
         const wasPaused = this.dangChay && this.dangTamDung;
+        if (wasPlaying || wasPaused) this.subtitlePlaybackInvalidated = true;
 
         // Hủy lượt thoại/TTS đang chờ để không làm phát chồng lên nhau.
         this.playbackGeneration++;
@@ -1930,6 +1933,9 @@
           }
         };
         utterance.onend = utterance.onerror = () => {
+          // speechSynthesis.cancel() khi tạm dừng không được kết thúc lượt thoại;
+          // khi tiếp tục, phần văn bản còn lại sẽ được đọc tiếp và timestamp vẫn chính xác.
+          if (this.dangTamDung) return;
           this.ttsRemainingText = '';
           if (this.caiDatThoai.effect === 'tts') this.dialogueText.querySelectorAll('.tts-word.active').forEach(el => el.classList.remove('active'));
           this.currentTtsResolve = null;
@@ -2020,6 +2026,7 @@
       taoDuLieuPhuDe() {
         const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
         if (!ds.length) throw new Error('Chưa có kịch bản. Hãy import JSON trước.');
+        if (this.subtitlePlaybackInvalidated) throw new Error('Bạn đã tua trong lúc phát nên timeline không còn liên tục. Hãy dừng, chạy lại từ đầu đến cuối rồi tạo SRT.');
         const records = [...(this.subtitlePlaybackRecords || new Map()).values()].sort((a, b) => a.frameIndex - b.frameIndex);
         if (records.length !== ds.length) {
           const missing = Math.max(0, ds.length - records.length);
