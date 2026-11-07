@@ -480,7 +480,7 @@
 
   <section id="subtitle-tools" aria-label="Tạo phụ đề YouTube">
     <h4>📝 Tạo phụ đề CC cho YouTube (.SRT)</h4>
-    <div style="font-size:.76rem;color:#94a3b8;">Tạo một file SRT gốc theo ngôn ngữ lời thoại trong kịch bản JSON. Sau khi tải file này, bạn dùng phần mềm dịch phụ đề bên ngoài (ví dụ Google Dịch) để chuyển sang các ngôn ngữ khác. Mốc thời gian hiện được ước tính theo tốc độ đọc, cần kiểm tra với video hoàn chỉnh.</div>
+    <div style="font-size:.76rem;color:#94a3b8;">Tạo một file SRT gốc theo ngôn ngữ lời thoại trong kịch bản JSON. Sau khi tải file này, bạn dùng phần mềm dịch phụ đề bên ngoài (ví dụ Google Dịch) để chuyển sang các ngôn ngữ khác. Mốc thời gian được ghi nhận trực tiếp khi player phát kịch bản. Hãy chạy hết kịch bản từ đầu đến cuối rồi tạo SRT để có phụ đề đầy đủ; nếu chưa phát hết, trang sẽ báo số lượt còn thiếu.</div>
     <div class="subtitle-options">
       <label>Tốc độ đọc ước tính (từ/phút)<input id="subtitle-wpm" type="number" min="60" max="300" step="5" value="165"></label>
       <label>Độ trễ đầu video (giây)<input id="subtitle-offset" type="number" min="0" max="3600" step="0.1" value="0"></label>
@@ -601,6 +601,11 @@
         this.currentTtsResolve = null;
         this.ttsRemainingText = "";
         this.currentSpeaker = "";
+        this.subtitlePlaybackRecords = new Map();
+        this.subtitlePlaybackStartedAt = null;
+        this.subtitlePlaybackPausedAt = null;
+        this.subtitlePlaybackPausedTotal = 0;
+        this.currentPlaybackFrameIndex = null;
 
         this.audioTts = document.getElementById('audio-tts');
         this.ttsServerUrl = '';
@@ -1510,6 +1515,10 @@
         this.kichHoatAmThanhMobile();
 
         if (this.dangTamDung) {
+          if (this.subtitlePlaybackPausedAt !== null) {
+            this.subtitlePlaybackPausedTotal += performance.now() - this.subtitlePlaybackPausedAt;
+            this.subtitlePlaybackPausedAt = null;
+          }
           this.dangTamDung = false;
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
           if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
@@ -1542,7 +1551,18 @@
         }
 
         document.getElementById('btn-pause').style.display = 'inline-block';
-        if (!this.playbackStarted) this.currentIndex = 0;
+        if (!this.playbackStarted) {
+          this.currentIndex = 0;
+          this.subtitlePlaybackRecords = new Map();
+          this.subtitlePlaybackStartedAt = performance.now();
+          this.subtitlePlaybackPausedAt = null;
+          this.subtitlePlaybackPausedTotal = 0;
+        } else if (this.subtitlePlaybackStartedAt === null) {
+          // Nếu tiếp tục từ tiến độ đã lưu sau khi tải lại trang, chỉ ghi nhận phần đã phát trong phiên này.
+          this.subtitlePlaybackStartedAt = performance.now();
+          this.subtitlePlaybackPausedAt = null;
+          this.subtitlePlaybackPausedTotal = 0;
+        }
         this.playbackStarted = true;
         this.capNhatThanhTua();
         this.chayToanBo();
@@ -1553,6 +1573,7 @@
 
         if (!this.dangTamDung) {
           this.dangTamDung = true;
+          if (this.subtitlePlaybackStartedAt !== null && this.subtitlePlaybackPausedAt === null) this.subtitlePlaybackPausedAt = performance.now();
           this.luuTienDoPhat();
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
           if (this.ttsSynth) this.ttsSynth.cancel();
@@ -1563,6 +1584,10 @@
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.pause();
           if (this.layerChar.style.display === 'block') this.layerChar.pause();
         } else {
+          if (this.subtitlePlaybackPausedAt !== null) {
+            this.subtitlePlaybackPausedTotal += performance.now() - this.subtitlePlaybackPausedAt;
+            this.subtitlePlaybackPausedAt = null;
+          }
           this.dangTamDung = false;
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
           if (this.audioBgm.play) this.audioBgm.play().catch(()=>{});
@@ -1658,7 +1683,9 @@
           }
           if (!this.dangChay || generation !== this.playbackGeneration) break;
 
-          const khung = this.layKhungKeThua(this.currentIndex);
+          const frameIndex = this.currentIndex;
+          const khung = this.layKhungKeThua(frameIndex);
+          this.currentPlaybackFrameIndex = frameIndex;
           await this.xuLyKhung(khung, false, generation);
           if (generation !== this.playbackGeneration) break;
 
@@ -1846,7 +1873,11 @@
           this.audioSfx.play().catch(() => {});
         }
 
+        const subtitleFrameStart = !preview ? this.layThoiGianPhatPhuDe() : null;
+        let subtitleDialogueStart = null;
+        let subtitleDialogueEnd = null;
         if (noiDung && !preview) {
+          subtitleDialogueStart = this.layThoiGianPhatPhuDe();
           this.hienLoiThoai(nhanVat, noiDung);
           this.currentSpeaker = nhanVat;
           this.ttsRemainingText = noiDung;
@@ -1855,6 +1886,7 @@
             this.currentTtsResolve = resolve;
             this.docVanBanBangTTS(nhanVat, noiDung, resolve);
           });
+          subtitleDialogueEnd = this.layThoiGianPhatPhuDe();
         } else if (!preview) {
           await this.sleep(1000);
         }
@@ -1862,6 +1894,17 @@
         if (!preview) {
           const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
           await this.sleep(thoiGianCho * 1000);
+          if (this.currentPlaybackFrameIndex !== null && subtitleFrameStart !== null) {
+            this.subtitlePlaybackRecords.set(this.currentPlaybackFrameIndex, {
+              frameIndex: this.currentPlaybackFrameIndex,
+              start: subtitleFrameStart,
+              end: this.layThoiGianPhatPhuDe(),
+              dialogueStart: subtitleDialogueStart,
+              dialogueEnd: subtitleDialogueEnd,
+              text: typeof noiDung === 'string' ? noiDung.trim() : '',
+              speaker: nhanVat || ''
+            });
+          }
         }
       }
 
@@ -1966,19 +2009,26 @@
       }
 
 
-      // Tạo phụ đề SRT từ các lượt thoại trong JSON.
+      // Đồng hồ phát phụ đề: loại trừ thời gian tạm dừng để khớp timeline nội dung.
+      layThoiGianPhatPhuDe() {
+        if (this.subtitlePlaybackStartedAt === null) return 0;
+        const now = this.subtitlePlaybackPausedAt !== null ? this.subtitlePlaybackPausedAt : performance.now();
+        return Math.max(0, (now - this.subtitlePlaybackStartedAt - this.subtitlePlaybackPausedTotal) / 1000);
+      }
+
+      // Tạo phụ đề theo timestamp thực tế được ghi nhận trong lúc player phát.
       taoDuLieuPhuDe() {
         const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
         if (!ds.length) throw new Error('Chưa có kịch bản. Hãy import JSON trước.');
-        const wpmInput = Number(document.getElementById('subtitle-wpm')?.value || 165);
-        const wpm = Math.max(60, Math.min(300, Number.isFinite(wpmInput) ? wpmInput : 165));
-        const offsetInput = Number(document.getElementById('subtitle-offset')?.value || 0);
-        let clock = Math.max(0, Number.isFinite(offsetInput) ? offsetInput : 0);
+        const records = [...(this.subtitlePlaybackRecords || new Map()).values()].sort((a, b) => a.frameIndex - b.frameIndex);
+        if (records.length !== ds.length) {
+          const missing = Math.max(0, ds.length - records.length);
+          throw new Error('Chưa có timestamp đầy đủ: đã ghi ' + records.length + '/' + ds.length + ' lượt. Hãy chạy kịch bản từ đầu đến cuối, sau đó tạo SRT.');
+        }
         const includeSpeaker = !!document.getElementById('subtitle-speaker')?.checked;
-        const gap = Math.max(0, Number(this.duLieu.thoi_gian_cho_giua ?? 0.02));
         const cues = [];
         const splitCaption = value => {
-          const words = String(value).trim().split(/\s+/).filter(Boolean);
+          const words = String(value).trim().split(/\\s+/).filter(Boolean);
           const chunks = []; let line = '';
           for (const word of words) {
             const candidate = line ? line + ' ' + word : word;
@@ -1988,28 +2038,26 @@
           if (line) chunks.push(line);
           return chunks;
         };
-        for (let i = 0; i < ds.length; i++) {
-          const frame = ds[i] || {};
-          const dialogue = typeof frame.noi_dung === 'string' ? frame.noi_dung.trim() : '';
-          if (dialogue) {
-            const chunks = splitCaption(dialogue);
-            const totalWords = Math.max(1, dialogue.split(/\s+/).filter(Boolean).length);
-            const speechDuration = Math.max(0.9, totalWords * 60 / wpm + (/[.!?…]["')\]]*$/.test(dialogue) ? 0.22 : 0.08));
-            let cursor = clock;
-            for (const chunk of chunks) {
-              const chunkWords = Math.max(1, chunk.split(/\s+/).length);
-              const duration = speechDuration * chunkWords / totalWords;
-              const text = includeSpeaker && frame.nhan_vat ? String(frame.nhan_vat).trim() + ': ' + chunk : chunk;
-              cues.push({ start: cursor, end: cursor + duration, text });
-              cursor += duration;
-            }
-            clock += speechDuration + gap;
-          } else {
-            // Player chờ khoảng 1 giây ở lượt không có lời thoại.
-            clock += 1 + gap;
+        for (const record of records) {
+          if (!record.text) continue;
+          const chunks = splitCaption(record.text);
+          const totalWords = Math.max(1, record.text.split(/\\s+/).filter(Boolean).length);
+          const start = Number(record.dialogueStart);
+          const end = Number(record.dialogueEnd);
+          const duration = Math.max(0.5, end - start);
+          let cursor = start;
+          for (const chunk of chunks) {
+            const chunkWords = Math.max(1, chunk.split(/\\s+/).length);
+            const chunkDuration = duration * chunkWords / totalWords;
+            const text = includeSpeaker && record.speaker ? String(record.speaker).trim() + ': ' + chunk : chunk;
+            cues.push({ start: cursor, end: cursor + chunkDuration, text });
+            cursor += chunkDuration;
           }
         }
-        return cues;
+        if (!cues.length) throw new Error('Kịch bản không có trường noi_dung chứa lời thoại.');
+        const offsetInput = Number(document.getElementById('subtitle-offset')?.value || 0);
+        const offset = Math.max(0, Number.isFinite(offsetInput) ? offsetInput : 0);
+        return cues.map(cue => ({ ...cue, start: cue.start + offset, end: cue.end + offset }));
       }
 
       dinhDangThoiGianSRT(seconds) {
@@ -2031,7 +2079,7 @@
           this.subtitleSrt = cues.map((cue, index) => (index + 1) + '\n' + this.dinhDangThoiGianSRT(cue.start) + ' --> ' + this.dinhDangThoiGianSRT(Math.max(cue.start + 0.5, cue.end)) + '\n' + cue.text).join('\n\n') + '\n';
           preview.value = this.subtitleSrt;
           download.disabled = false;
-          status.textContent = 'Đã tạo ' + cues.length + ' đoạn phụ đề · thời lượng ước tính ' + this.dinhDangThoiGianSRT(cues[cues.length - 1].end) + '. Hãy kiểm tra độ khớp trước khi tải lên YouTube.';
+          status.textContent = 'Đã tạo ' + cues.length + ' đoạn phụ đề từ timestamp phát thực tế · thời lượng ' + this.dinhDangThoiGianSRT(cues[cues.length - 1].end) + '.';
         } catch (error) {
           this.subtitleSrt = '';
           download.disabled = true;
