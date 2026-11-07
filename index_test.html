@@ -146,6 +146,7 @@
       left: 50%;
       transform: translateX(-50%);
       width: 92%;
+      background-color: var(--dialogue-bg-color, rgba(5, 8, 17, 0.62));
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border-radius: 10px;
@@ -481,6 +482,8 @@
     <label class="dialogue-toggle"><input id="dialogue-visible" type="checkbox" checked onchange="trinhPhat.capNhatCaiDatThoai('visible', this.checked)"> Hiển thị khung thoại</label>
     <div class="dialogue-settings-grid">
       <label class="dialogue-setting">Cỡ chữ <span class="setting-value" id="dialogue-size-value">28 px</span><input id="dialogue-size" type="range" min="14" max="52" step="1" value="28" oninput="trinhPhat.capNhatCaiDatThoai('fontSize', this.value)"></label>
+      <label class="dialogue-setting">Màu nền hộp thoại <input id="dialogue-bg-color" type="color" value="#050811" onchange="trinhPhat.capNhatCaiDatThoai('bgColor', this.value)"></label>
+      <label class="dialogue-setting">Độ trong suốt nền <span class="setting-value" id="dialogue-bg-opacity-value">62%</span><input id="dialogue-bg-opacity" type="range" min="0" max="100" step="1" value="62" oninput="trinhPhat.capNhatCaiDatThoai('bgOpacity', this.value)"></label>
       <label class="dialogue-setting">Màu chữ <input id="dialogue-color" type="color" value="#ffffff" onchange="trinhPhat.capNhatCaiDatThoai('color', this.value)"></label>
       <label class="dialogue-setting">Màu viền (stroke) <input id="dialogue-stroke-color" type="color" value="#000000" onchange="trinhPhat.capNhatCaiDatThoai('strokeColor', this.value)"></label>
       <label class="dialogue-setting">Độ dày viền <span class="setting-value" id="dialogue-stroke-value">0.8 px</span><input id="dialogue-stroke-width" type="range" min="0" max="5" step="0.1" value="0.8" oninput="trinhPhat.capNhatCaiDatThoai('strokeWidth', this.value)"></label>
@@ -536,7 +539,7 @@
         this.dialogueCanvas = document.getElementById('dialogue-canvas');
         this.speakerText = document.getElementById('speaker-name');
         this.dialogueText = document.getElementById('dialogue-text');
-        this.caiDatThoaiMacDinh = { visible: true, fontSize: 28, color: '#ffffff', strokeColor: '#000000', strokeWidth: 0.8, highlightColor: '#ffe66d', fontFamily: "'Segoe UI', sans-serif", effect: 'typewriter' };
+        this.caiDatThoaiMacDinh = { visible: true, bgColor: '#050811', bgOpacity: 62, fontSize: 28, color: '#ffffff', strokeColor: '#000000', strokeWidth: 0.8, highlightColor: '#ffe66d', fontFamily: "'Segoe UI', sans-serif", effect: 'typewriter' };
         this.caiDatThoai = { ...this.caiDatThoaiMacDinh };
         this.docCaiDatThoai();
         this.audioBgm = document.getElementById('audio-bgm');
@@ -606,6 +609,10 @@
       apDungCaiDatThoai() {
         const s = this.caiDatThoai;
         const root = this.dialogueText;
+        const bgHex = String(s.bgColor || '#050811').replace('#', '');
+        const bgR = parseInt(bgHex.slice(0, 2), 16), bgG = parseInt(bgHex.slice(2, 4), 16), bgB = parseInt(bgHex.slice(4, 6), 16);
+        const bgAlpha = Math.max(0, Math.min(100, Number(s.bgOpacity))) / 100;
+        this.dialogueCanvas.style.backgroundColor = `rgba(${bgR}, ${bgG}, ${bgB}, ${bgAlpha})`;
         root.style.setProperty('--dialogue-font-size', `${s.fontSize}px`);
         root.style.setProperty('--dialogue-color', s.color);
         root.style.setProperty('--dialogue-stroke-color', s.strokeColor);
@@ -613,15 +620,16 @@
         root.style.setProperty('--dialogue-highlight-color', s.highlightColor);
         root.style.setProperty('--dialogue-font-family', s.fontFamily);
         this.dialogueCanvas.style.display = s.visible ? (this.dialogueCanvas.dataset.hasDialogue === 'true' ? 'flex' : 'none') : 'none';
-        const values = { 'dialogue-visible': s.visible, 'dialogue-size': s.fontSize, 'dialogue-color': s.color, 'dialogue-stroke-color': s.strokeColor, 'dialogue-stroke-width': s.strokeWidth, 'dialogue-highlight-color': s.highlightColor, 'dialogue-font': s.fontFamily, 'dialogue-effect': s.effect };
+        const values = { 'dialogue-visible': s.visible, 'dialogue-bg-color': s.bgColor, 'dialogue-bg-opacity': s.bgOpacity, 'dialogue-size': s.fontSize, 'dialogue-color': s.color, 'dialogue-stroke-color': s.strokeColor, 'dialogue-stroke-width': s.strokeWidth, 'dialogue-highlight-color': s.highlightColor, 'dialogue-font': s.fontFamily, 'dialogue-effect': s.effect };
         Object.entries(values).forEach(([id,value]) => { const el=document.getElementById(id); if(el) el.type==='checkbox' ? el.checked=!!value : el.value=value; });
+        const bgOpacityLabel=document.getElementById('dialogue-bg-opacity-value'); if(bgOpacityLabel) bgOpacityLabel.textContent=`${s.bgOpacity}%`;
         const sizeLabel=document.getElementById('dialogue-size-value'); if(sizeLabel) sizeLabel.textContent=`${s.fontSize} px`;
         const strokeLabel=document.getElementById('dialogue-stroke-value'); if(strokeLabel) strokeLabel.textContent=`${s.strokeWidth} px`;
       }
 
       capNhatCaiDatThoai(key, value) {
         if (!(key in this.caiDatThoai)) return;
-        if (key === 'fontSize' || key === 'strokeWidth') value = Number(value);
+        if (key === 'fontSize' || key === 'strokeWidth' || key === 'bgOpacity') value = Number(value);
         this.caiDatThoai[key] = value;
         try { localStorage.setItem('vn-dialogue-settings', JSON.stringify(this.caiDatThoai)); } catch (_) {}
         this.apDungCaiDatThoai();
@@ -1583,7 +1591,7 @@
             if (this.layerVfx.style.display !== 'none' && this.layerVfx.style.display !== '') drawImageCover(this.layerVfx, 0, 0, outWidth, outHeight);
             if (this.dialogueCanvas.style.display !== 'none') {
               const dr = this.dialogueCanvas.getBoundingClientRect(), x=(dr.left-rect.left)*sx, y=(dr.top-rect.top)*sy, w=dr.width*sx, h=dr.height*sy;
-              ctx.save(); ctx.fillStyle='rgba(5,8,17,.62)'; ctx.beginPath();
+              ctx.save(); ctx.fillStyle=getComputedStyle(this.dialogueCanvas).backgroundColor || 'rgba(5,8,17,.62)'; ctx.beginPath();
               if (ctx.roundRect) ctx.roundRect(x,y,w,h,18); else ctx.rect(x,y,w,h); ctx.fill();
               const style=getComputedStyle(this.dialogueText), fs=parseFloat(style.fontSize)*sy;
               ctx.font=`${style.fontWeight||'400'} ${fs}px ${style.fontFamily||'sans-serif'}`;
