@@ -1799,7 +1799,8 @@
         this.layerBgImg.style.display = 'none';
         this.layerBgVideo.style.display = 'none';
         this.layerChar.style.display = 'none';
-        this.layerChar.classList.remove('character-talking');
+        this.layerChar.classList.remove('character-entering', 'character-exiting');
+        this.layerChar.style.opacity = '0';
         this.layerVfx.style.display = 'none';
       }
 
@@ -1864,7 +1865,10 @@
             else if (this.layerBgImg.style.display !== 'none' && this.layerBgImg.style.display !== '') drawImageCover(this.layerBgImg, 0, 0, outWidth, outHeight);
             if (this.layerChar.style.display !== 'none' && this.layerChar.style.display !== '') {
               const cr = this.layerChar.getBoundingClientRect();
+              ctx.save();
+              ctx.globalAlpha = Number.parseFloat(getComputedStyle(this.layerChar).opacity || '1');
               drawVideo(this.layerChar, (cr.left-rect.left)*sx, (cr.top-rect.top)*sy, cr.width*sx, cr.height*sy, 'contain');
+              ctx.restore();
             }
             if (this.layerVfx.style.display !== 'none' && this.layerVfx.style.display !== '') drawImageCover(this.layerVfx, 0, 0, outWidth, outHeight);
             if (this.dialogueCanvas.style.display !== 'none') {
