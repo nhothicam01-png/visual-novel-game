@@ -1970,7 +1970,7 @@
         const gap = Math.max(0, Number(this.duLieu.thoi_gian_cho_giua ?? 0.02));
         const cues = [];
         const splitCaption = value => {
-          const words = String(value).trim().split(/\\s+/).filter(Boolean);
+          const words = String(value).trim().split(/\s+/).filter(Boolean);
           const chunks = []; let line = '';
           for (const word of words) {
             const candidate = line ? line + ' ' + word : word;
@@ -1985,11 +1985,11 @@
           const dialogue = typeof frame.noi_dung === 'string' ? frame.noi_dung.trim() : '';
           if (dialogue) {
             const chunks = splitCaption(dialogue);
-            const totalWords = Math.max(1, dialogue.split(/\\s+/).filter(Boolean).length);
-            const speechDuration = Math.max(0.9, totalWords * 60 / wpm + (/[.!?…]["')\\]]*$/.test(dialogue) ? 0.22 : 0.08));
+            const totalWords = Math.max(1, dialogue.split(/\s+/).filter(Boolean).length);
+            const speechDuration = Math.max(0.9, totalWords * 60 / wpm + (/[.!?…]["')\]]*$/.test(dialogue) ? 0.22 : 0.08));
             let cursor = clock;
             for (const chunk of chunks) {
-              const chunkWords = Math.max(1, chunk.split(/\\s+/).length);
+              const chunkWords = Math.max(1, chunk.split(/\s+/).length);
               const duration = Math.max(0.85, speechDuration * chunkWords / totalWords);
               const text = includeSpeaker && frame.nhan_vat ? String(frame.nhan_vat).trim() + ': ' + chunk : chunk;
               cues.push({ start: cursor, end: cursor + duration, text });
@@ -2020,7 +2020,7 @@
         try {
           const cues = this.taoDuLieuPhuDe();
           if (!cues.length) throw new Error('Kịch bản không có trường noi_dung chứa lời thoại.');
-          this.subtitleSrt = cues.map((cue, index) => (index + 1) + '\\n' + this.dinhDangThoiGianSRT(cue.start) + ' --> ' + this.dinhDangThoiGianSRT(Math.max(cue.start + 0.5, cue.end)) + '\\n' + cue.text).join('\\n\\n') + '\\n';
+          this.subtitleSrt = cues.map((cue, index) => (index + 1) + '\n' + this.dinhDangThoiGianSRT(cue.start) + ' --> ' + this.dinhDangThoiGianSRT(Math.max(cue.start + 0.5, cue.end)) + '\n' + cue.text).join('\n\n') + '\n';
           preview.value = this.subtitleSrt;
           download.disabled = false;
           status.textContent = 'Đã tạo ' + cues.length + ' đoạn phụ đề · thời lượng ước tính ' + this.dinhDangThoiGianSRT(cues[cues.length - 1].end) + '. Hãy kiểm tra độ khớp trước khi tải lên YouTube.';
@@ -2034,7 +2034,7 @@
       taiPhuDeSRT() {
         const content = document.getElementById('subtitle-preview')?.value || this.subtitleSrt || '';
         if (!content.trim()) { alert('Hãy tạo phụ đề trước.'); return; }
-        const blob = new Blob(['\\uFEFF', content], { type: 'text/plain;charset=utf-8' });
+        const blob = new Blob(['\uFEFF', content], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         const baseName = (this.duLieu?.ten_kich_ban || this.duLieu?.title || 'youtube-captions').toString().replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'youtube-captions';
