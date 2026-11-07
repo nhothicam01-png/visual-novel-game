@@ -108,7 +108,7 @@ function splitSpeakerLine(text,knownNames){
   for(const prefix of ['['+name+']',name]){
    if(raw.slice(0,prefix.length).toLowerCase()!==prefix.toLowerCase())continue;
    const rest=raw.slice(prefix.length);
-   const sep=new RegExp('^\\\\s*[:：—-]\\\\s*').exec(rest);
+    const sep=new RegExp('^\\s*[:：—-]\\s*').exec(rest);
    if(sep)return {speaker:name,text:rest.slice(sep[0].length).trim()};
   }
  }
