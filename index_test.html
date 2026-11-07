@@ -475,6 +475,9 @@
       onchange="trinhPhat.tuaDen(this.value)">
     <span id="seek-position">0 / 0</span>
     <button class="btn" type="button" onclick="trinhPhat.tuaMotDoan(1)">Tiến 1 ⏭</button>
+    <span id="progress-status" style="font-size:.78rem;color:#cbd5e1;width:100%;text-align:center;">Tiến độ được tự lưu trên thiết bị này.</span>
+    <button class="btn" id="btn-resume-progress" type="button" style="display:none;" onclick="trinhPhat.tiepTucTienDo()">▶ Tiếp tục từ lượt đã lưu</button>
+    <button class="btn" id="btn-clear-progress" type="button" onclick="trinhPhat.xoaTienDoPhat()">↺ Xóa tiến độ đã lưu</button>
   </div>
 
   <section id="dialogue-settings" aria-label="Cài đặt chữ thoại">
@@ -565,6 +568,9 @@
         this.playbackGeneration = 0;
         this.seekDragging = false;
         this.playbackStarted = false;
+        this.progressStorageKey = 'vn-playback-progress';
+        this.progressScriptId = '';
+        this.videoPreloadCache = new Map();
 
         this.currentTtsResolve = null;
         this.ttsRemainingText = "";
@@ -596,7 +602,60 @@
         // Ưu tiên tự tải ailahungthu.json khi mở trang, chưa cần bấm Import.
         // Nếu file không tồn tại hoặc nội dung lỗi, giữ duLieu = null để dùng mẫu gốc trong batDau().
         this.taiKichBanMacDinhPromise = this.taiKichBanMacDinh();
+        window.addEventListener('pagehide', () => this.luuTienDoPhat());
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') this.luuTienDoPhat(); });
       }
+
+      taoMaKichBan(data) {
+        const raw = JSON.stringify(data); let hash = 2166136261;
+        for (let i = 0; i < raw.length; i++) { hash ^= raw.charCodeAt(i); hash = Math.imul(hash, 16777619); }
+        return 'script-' + (hash >>> 0).toString(16);
+      }
+
+      napTienDoPhat() {
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        const status = document.getElementById('progress-status'), resume = document.getElementById('btn-resume-progress');
+        if (!this.progressScriptId || !ds.length) return;
+        try {
+          const all = JSON.parse(localStorage.getItem(this.progressStorageKey) || '{}'), saved = all[this.progressScriptId];
+          if (!saved || !Number.isInteger(saved.index) || saved.index < 0 || saved.index >= ds.length) {
+            this.currentIndex = 0; this.playbackStarted = false;
+            if (saved) { delete all[this.progressScriptId]; localStorage.setItem(this.progressStorageKey, JSON.stringify(all)); }
+            if (status) status.textContent = 'Chưa có tiến độ đã lưu.'; if (resume) resume.style.display = 'none'; return;
+          }
+          this.currentIndex = saved.index; this.playbackStarted = true; this.capNhatThanhTua();
+          if (status) status.textContent = 'Đã khôi phục lượt ' + (saved.index + 1) + '/' + ds.length + '.';
+          if (resume) resume.style.display = 'inline-block';
+        } catch (err) {
+          this.currentIndex = 0; this.playbackStarted = false;
+          try { const all = JSON.parse(localStorage.getItem(this.progressStorageKey) || '{}'); delete all[this.progressScriptId]; localStorage.setItem(this.progressStorageKey, JSON.stringify(all)); } catch (_) {}
+          if (status) status.textContent = 'Không đọc được tiến độ, sẽ phát lại từ đầu.'; if (resume) resume.style.display = 'none';
+          console.warn('Tiến độ lưu bị lỗi, bắt đầu lại từ đầu:', err);
+        }
+      }
+
+      luuTienDoPhat() {
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        if (!this.progressScriptId || !ds.length || this.currentIndex >= ds.length) return;
+        try {
+          const all = JSON.parse(localStorage.getItem(this.progressStorageKey) || '{}');
+          all[this.progressScriptId] = { index: Math.max(0, Math.min(this.currentIndex, ds.length - 1)), total: ds.length, savedAt: Date.now() };
+          localStorage.setItem(this.progressStorageKey, JSON.stringify(all));
+          const status = document.getElementById('progress-status'), resume = document.getElementById('btn-resume-progress');
+          if (status) status.textContent = 'Đã tự lưu tại lượt ' + (this.currentIndex + 1) + '/' + ds.length + '.';
+          if (resume) resume.style.display = this.currentIndex > 0 ? 'inline-block' : 'none';
+        } catch (err) { console.warn('Không thể tự lưu tiến độ:', err); }
+      }
+
+      xoaTienDoPhat() {
+        try { const all = JSON.parse(localStorage.getItem(this.progressStorageKey) || '{}'); if (this.progressScriptId) delete all[this.progressScriptId]; localStorage.setItem(this.progressStorageKey, JSON.stringify(all)); }
+        catch (_) { localStorage.removeItem(this.progressStorageKey); }
+        this.currentIndex = 0; this.playbackStarted = false; this.capNhatThanhTua();
+        const status = document.getElementById('progress-status'), resume = document.getElementById('btn-resume-progress');
+        if (status) status.textContent = 'Đã xóa tiến độ. Sẽ phát từ đầu.'; if (resume) resume.style.display = 'none';
+      }
+
+      tiepTucTienDo() { if (this.currentIndex > 0 && this.duLieu) this.batDau(); }
 
       docCaiDatThoai() {
         try {
@@ -678,6 +737,8 @@
           }
 
           this.duLieu = data;
+          this.progressScriptId = this.taoMaKichBan(data);
+          this.napTienDoPhat();
           // Chuẩn bị sẵn file MP3 đầu tiên trước khi người dùng bấm chạy.
           this.chuanBiNhacNen();
           await this.taiTruocDuLieu();
@@ -890,6 +951,8 @@
         reader.onload = async (e) => {
           try {
             this.duLieu = JSON.parse(e.target.result);
+            this.progressScriptId = this.taoMaKichBan(this.duLieu);
+            this.napTienDoPhat();
             // Chuẩn bị sẵn file MP3 của kịch bản vừa import.
             this.chuanBiNhacNen();
             
@@ -1104,6 +1167,31 @@
         });
       }
 
+      // Tải trước video nhân vật kế tiếp trong lúc TTS của cảnh hiện tại đang đọc.
+      chuanBiVideoNhanVat(src) {
+        if (!src) return Promise.resolve();
+        if (this.videoPreloadCache.has(src)) return this.videoPreloadCache.get(src).promise;
+        const video = document.createElement('video'); video.preload = 'auto'; video.muted = true; video.playsInline = true; video.src = src;
+        const promise = new Promise(resolve => {
+          let done = false;
+          const finish = ok => { if (done) return; done = true; clearTimeout(timer); video.removeEventListener('loadeddata', onReady); video.removeEventListener('canplay', onReady); video.removeEventListener('error', onError); resolve(ok); };
+          const onReady = () => finish(true), onError = () => finish(false), timer = setTimeout(() => finish(false), 20000);
+          video.addEventListener('loadeddata', onReady); video.addEventListener('canplay', onReady); video.addEventListener('error', onError); video.load();
+          if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) finish(true);
+        });
+        this.videoPreloadCache.set(src, { video, promise });
+        while (this.videoPreloadCache.size > 2) { const key = this.videoPreloadCache.keys().next().value, old = this.videoPreloadCache.get(key); this.videoPreloadCache.delete(key); try { old.video.removeAttribute('src'); old.video.load(); } catch (_) {} }
+        return promise;
+      }
+
+      chuanBiVideoTiepTheo(generation) {
+        if (generation !== this.playbackGeneration) return;
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [], next = ds[this.currentIndex + 1];
+        if (!next) return;
+        const name = next.nhan_vat, expression = next.bieu_cam || next.expression;
+        if (name && expression) { const src = 'assets/NhanVat/' + name + '/' + expression + '.webm'; if (!(this.layerChar.getAttribute('src') || '').includes(src)) this.chuanBiVideoNhanVat(src); }
+      }
+
       // Chờ video có thể giải mã khung hình đầu tiên trước khi hiển thị/phát.
       choVideoSanSang(video, timeout = 15000) {
         if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) return Promise.resolve();
@@ -1180,6 +1268,7 @@
 
         if (!this.dangTamDung) {
           this.dangTamDung = true;
+          this.luuTienDoPhat();
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
           if (this.ttsSynth) this.ttsSynth.cancel();
           this.audioTts.pause();
@@ -1246,6 +1335,7 @@
         this.currentIndex = target;
         this.playbackStarted = true;
         this.seekDragging = false;
+        this.luuTienDoPhat();
         this.capNhatThanhTua();
 
         if (wasPlaying) {
@@ -1288,11 +1378,17 @@
           if (generation !== this.playbackGeneration) break;
 
           this.currentIndex++;
+          this.luuTienDoPhat();
           this.capNhatThanhTua();
         }
 
         if (generation !== this.playbackGeneration) return;
-        if (this.currentIndex >= ds.length) this.playbackStarted = false;
+        if (this.currentIndex >= ds.length) {
+          this.playbackStarted = false;
+          try { const all = JSON.parse(localStorage.getItem(this.progressStorageKey) || '{}'); delete all[this.progressScriptId]; localStorage.setItem(this.progressStorageKey, JSON.stringify(all)); } catch (_) {}
+          const status = document.getElementById('progress-status'), resume = document.getElementById('btn-resume-progress');
+          if (status) status.textContent = 'Đã phát hết kịch bản.'; if (resume) resume.style.display = 'none';
+        }
         this.dangChay = false;
         document.getElementById('btn-pause').style.display = 'none';
         this.capNhatThanhTua();
@@ -1346,6 +1442,9 @@
           const currentSrc = this.layerChar.getAttribute('src') || '';
           
           if (!currentSrc.includes(videoPath)) {
+            const warm = this.videoPreloadCache.get(videoPath);
+            if (warm) await warm.promise;
+            if (generation !== this.playbackGeneration) return;
             this.layerChar.src = videoPath;
             this.layerChar.load();
           }
@@ -1373,6 +1472,8 @@
         } else {
           this.layerVfx.style.display = 'none';
         }
+
+        if (!preview) this.chuanBiVideoTiepTheo(generation);
 
         if (!preview && amThanhNen && amThanhNen.trim() !== "") {
           const bgmPath = `assets/AmThanh/Nen/${amThanhNen}`;
@@ -1500,6 +1601,7 @@
       }
 
       dung() {
+        this.luuTienDoPhat();
         this.playbackGeneration++;
         this.playbackStarted = false;
         this.dangChay = false;
