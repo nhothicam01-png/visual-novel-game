@@ -260,6 +260,18 @@
       transform: scale(0.96);
     }
 
+    /* Thanh tua tiến độ kịch bản */
+    #seek-panel {
+      width: 100%; max-width: 1000px; margin-top: 10px; padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: rgba(15,23,42,.72); border: 1px solid rgba(168,85,247,.25);
+      border-radius: 10px; color: #e2e8f0; font-size: .82rem;
+    }
+    #seek-panel input[type="range"] { flex: 1; min-width: 150px; accent-color: #a855f7; cursor: pointer; }
+    #seek-position { min-width: 86px; text-align: center; font-variant-numeric: tabular-nums; color: #c4b5fd; }
+    #seek-panel .btn { padding: 6px 10px; }
+    @media (max-width:600px) { #seek-panel { gap:7px; padding:8px; } #seek-position { min-width:70px; } }
+
     #volume-controls {
       margin-top: 8px;
       display: flex;
@@ -402,6 +414,15 @@
     <button id="btn-fullscreen" class="btn" onclick="trinhPhat.toggleFullscreen()">⛶ Toàn màn hình</button>
   </div>
 
+  <div id="seek-panel" aria-label="Điều khiển tiến độ kịch bản">
+    <button class="btn" type="button" onclick="trinhPhat.tuaMotDoan(-1)">⏮ Lùi 1</button>
+    <input id="seek-slider" type="range" min="0" max="0" value="0" step="1"
+      aria-label="Tua đến lượt thoại" oninput="trinhPhat.capNhatViTriTua(this.value)"
+      onchange="trinhPhat.tuaDen(this.value)">
+    <span id="seek-position">0 / 0</span>
+    <button class="btn" type="button" onclick="trinhPhat.tuaMotDoan(1)">Tiến 1 ⏭</button>
+  </div>
+
   <div id="volume-controls">
     <label>
       🔊 BGM: 
@@ -458,6 +479,9 @@
         this.dangTamDung = false;
         this.hienChuInterval = null;
         this.currentIndex = 0;
+        this.playbackGeneration = 0;
+        this.seekDragging = false;
+        this.playbackStarted = false;
 
         this.currentTtsResolve = null;
         this.ttsRemainingText = "";
@@ -500,6 +524,7 @@
             this.danhSachVoices = this.ttsSynth.getVoices();
           }
           this.quetVaKhoiTaoNhanVat();
+          this.capNhatThanhTua();
           console.info('Đã tự động tải kịch bản ailahungthu.json');
         } catch (err) {
           // Không báo lỗi làm phiền người dùng; batDau() sẽ dùng đoạn text mẫu gốc.
@@ -959,7 +984,9 @@
         }
 
         document.getElementById('btn-pause').style.display = 'inline-block';
-        this.currentIndex = 0;
+        if (!this.playbackStarted) this.currentIndex = 0;
+        this.playbackStarted = true;
+        this.capNhatThanhTua();
         this.chayToanBo();
       }
 
@@ -988,30 +1015,93 @@
         }
       }
 
+      capNhatThanhTua() {
+        const slider = document.getElementById('seek-slider');
+        const label = document.getElementById('seek-position');
+        if (!slider || !label) return;
+        const total = this.duLieu?.danh_sach?.length || this.duLieu?.KichBanToanBo?.length || 0;
+        slider.max = String(Math.max(0, total - 1));
+        if (!this.seekDragging) slider.value = String(Math.min(this.currentIndex, Math.max(0, total - 1)));
+        label.textContent = total ? (Math.min(this.currentIndex + (this.dangChay ? 1 : 0), total) + ' / ' + total) : '0 / 0';
+      }
+
+      capNhatViTriTua(value) {
+        const total = this.duLieu?.danh_sach?.length || this.duLieu?.KichBanToanBo?.length || 0;
+        document.getElementById('seek-position').textContent = total ? (Number(value) + 1) + ' / ' + total : '0 / 0';
+      }
+
+      tuaMotDoan(delta) {
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        if (!ds.length) return;
+        this.tuaDen(Math.max(0, Math.min(ds.length - 1, this.currentIndex + delta)));
+      }
+
+      tuaDen(value) {
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        if (!ds.length) return;
+        const target = Math.max(0, Math.min(ds.length - 1, Math.round(Number(value) || 0)));
+        const wasPlaying = this.dangChay && !this.dangTamDung;
+        const wasPaused = this.dangChay && this.dangTamDung;
+
+        this.playbackGeneration++;
+        if (this.ttsSynth) this.ttsSynth.cancel();
+        clearInterval(this.hienChuInterval);
+        if (this.currentTtsResolve) {
+          const finish = this.currentTtsResolve;
+          this.currentTtsResolve = null;
+          finish();
+        }
+        this.ttsRemainingText = '';
+        this.currentIndex = target;
+        this.playbackStarted = true;
+        this.seekDragging = false;
+        this.capNhatThanhTua();
+
+        if (wasPlaying) {
+          this.dangTamDung = false;
+          this.dangChay = true;
+          document.getElementById('btn-pause').style.display = 'inline-block';
+          this.chayToanBo();
+        } else {
+          this.dangChay = false;
+          this.dangTamDung = false;
+          document.getElementById('btn-pause').style.display = 'none';
+          // Nếu đang tạm dừng hoặc dừng, chỉ cập nhật hình; không tự đọc thoại.
+          this.xoaChuKhongAnCanvas();
+          this.xuLyKhung(ds[target], true);
+        }
+      }
+
       async chayToanBo() {
         this.dangChay = true;
+        const generation = this.playbackGeneration;
         const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo || [];
-        
+        this.capNhatThanhTua();
+
         while (this.currentIndex < ds.length) {
-          if (!this.dangChay) break;
+          if (!this.dangChay || generation !== this.playbackGeneration) break;
           while (this.dangTamDung) {
             await this.sleep(100);
-            if (!this.dangChay) break;
+            if (!this.dangChay || generation !== this.playbackGeneration) break;
           }
-          if (!this.dangChay) break;
+          if (!this.dangChay || generation !== this.playbackGeneration) break;
 
           const khung = ds[this.currentIndex];
           await this.xuLyKhung(khung);
-          
+          if (generation !== this.playbackGeneration) break;
           this.currentIndex++;
+          this.capNhatThanhTua();
         }
 
+        if (generation !== this.playbackGeneration) return;
+        if (this.currentIndex >= ds.length) this.playbackStarted = false;
         this.dangChay = false;
         document.getElementById('btn-pause').style.display = 'none';
+        this.capNhatThanhTua();
         this.xoaChu();
       }
 
-      async xuLyKhung(khung) {
+      async xuLyKhung(khung, preview = false) {
         this.xoaChuKhongAnCanvas();
 
         const anhNen = khung.anh_nen || khung.background;
@@ -1081,7 +1171,7 @@
           this.layerVfx.style.display = 'none';
         }
 
-        if (amThanhNen && amThanhNen.trim() !== "") {
+        if (!preview && amThanhNen && amThanhNen.trim() !== "") {
           const bgmPath = `assets/AmThanh/Nen/${amThanhNen}`;
           if (!this.audioBgm.src.includes(amThanhNen)) {
             this.audioBgm.src = bgmPath;
@@ -1097,12 +1187,12 @@
           }
         }
 
-        if (amThanhHieuUng && amThanhHieuUng.trim() !== "") {
+        if (!preview && amThanhHieuUng && amThanhHieuUng.trim() !== "") {
           this.audioSfx.src = `assets/AmThanh/HieuUng/${amThanhHieuUng}`;
           this.audioSfx.play().catch(() => {});
         }
 
-        if (noiDung) {
+        if (noiDung && !preview) {
           this.hienLoiThoai(nhanVat, noiDung);
           this.currentSpeaker = nhanVat;
           this.ttsRemainingText = noiDung;
@@ -1111,12 +1201,14 @@
             this.currentTtsResolve = resolve;
             this.docVanBanBangTTS(nhanVat, noiDung, resolve);
           });
-        } else {
+        } else if (!preview) {
           await this.sleep(1000);
         }
 
-        const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
-        await this.sleep(thoiGianCho * 1000);
+        if (!preview) {
+          const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
+          await this.sleep(thoiGianCho * 1000);
+        }
       }
 
       docVanBanBangTTS(nhanVat, text, resolveCallback) {
@@ -1202,6 +1294,8 @@
       }
 
       dung() {
+        this.playbackGeneration++;
+        this.playbackStarted = false;
         this.dangChay = false;
         this.dangTamDung = false;
         this.ttsRemainingText = "";
@@ -1215,6 +1309,8 @@
         this.layerBgVideo.pause();
         this.layerChar.pause();
         this.xoaChu();
+        this.currentIndex = 0;
+        this.capNhatThanhTua();
         this.layerBgImg.style.display = 'none';
         this.layerBgVideo.style.display = 'none';
         this.layerChar.style.display = 'none';
