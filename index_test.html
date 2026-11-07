@@ -130,18 +130,12 @@
     }
 
     #layer-character.character-exiting {
-      animation: characterFadeOut 0.4s ease-in both;
       pointer-events: none;
     }
 
     @keyframes characterFadeIn {
       from { opacity: 0; }
       to   { opacity: 1; }
-    }
-
-    @keyframes characterFadeOut {
-      from { opacity: 1; }
-      to   { opacity: 0; }
     }
 
     #dialogue-canvas {
@@ -1595,7 +1589,7 @@
           }
         }
 
-        // Nhân vật: chỉ fade khi thực sự đổi/ẩn nhân vật; giữ nguyên hình khi thoại tiếp nối.
+        // Nhân vật: xuất hiện bằng fade-in; khi đổi hoặc ẩn thì tắt ngay, không fade-out.
         if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
           const videoPath = `assets/NhanVat/${nhanVat}/${bieuCam}.webm`;
           const currentSrc = this.layerChar.getAttribute('src') || '';
@@ -1603,8 +1597,6 @@
           const wasVisible = this.layerChar.style.display === 'block' && !this.layerChar.classList.contains('character-exiting');
 
           if (!sameCharacterVideo && wasVisible) {
-            await this.choHieuUngNhanVat('character-exiting', 400);
-            if (generation !== this.playbackGeneration) return;
             this.layerChar.style.display = 'none';
             this.layerChar.classList.remove('character-exiting', 'character-entering');
             this.layerChar.style.opacity = '0';
@@ -1631,10 +1623,6 @@
             this.layerChar.classList.add('character-entering');
           }
         } else {
-          if (this.layerChar.style.display === 'block' && !this.layerChar.classList.contains('character-exiting')) {
-            await this.choHieuUngNhanVat('character-exiting', 400);
-            if (generation !== this.playbackGeneration) return;
-          }
           this.layerChar.style.display = 'none';
           this.layerChar.pause();
           this.layerChar.classList.remove('character-entering', 'character-exiting');
