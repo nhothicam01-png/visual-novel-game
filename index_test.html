@@ -634,7 +634,7 @@
       }
 
       hienThiTuDangDoc(text, charIndex) {
-        const words = [...text.matchAll(/[\\p{L}\\p{N}_]+/gu)];
+        const words = [...text.matchAll(/[\p{L}\p{N}_]+/gu)];
         if (!words.length) { this.dialogueText.textContent = text; return; }
         let html = '', cursor = 0, activeFound = false;
         for (const match of words) {
@@ -1483,6 +1483,7 @@
         clearInterval(this.hienChuInterval);
         this.dialogueText.innerText = '';
         this.speakerText.innerText = '';
+        this.dialogueCanvas.dataset.hasDialogue = 'false';
       }
 
       xoaChu() {
