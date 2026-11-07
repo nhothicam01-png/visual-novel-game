@@ -1147,8 +1147,6 @@
         add(vfx, 'assets/HieuUng/', this.isMediaVideo(vfx || '') ? 'video' : 'image');
         add(bgm, 'assets/AmThanh/Nen/', 'audio');
         add(sfx, 'assets/AmThanh/HieuUng/', 'audio');
-        const character = khung.nhan_vat, expression = khung.bieu_cam || khung.expression;
-        if (character && expression) add(expression + '.webm', 'assets/NhanVat/' + character + '/', 'video');
         // Cho phép kịch bản mở rộng khai báo thêm tài nguyên tùy ý.
         const extra = khung.tai_nguyen || khung.assets || khung.resources;
         const collect = value => {
