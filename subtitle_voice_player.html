@@ -157,8 +157,24 @@ async function readSubtitleFile(file){
  setStatus('Đang tải và phân tích file phụ đề…');
  try{
   let raw='';
-  if(typeof file.text==='function') raw=await file.text();
-  else raw=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('Không đọc được file. Hãy thử tải lại file về điện thoại.'));reader.readAsText(file,'UTF-8')});
+  // Ưu tiên FileReader vì tương thích tốt hơn với file được chọn từ Android Storage Access Framework.
+  const readWithReader=()=>new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onload=()=>resolve(String(reader.result||''));
+   reader.onerror=()=>reject(new Error('Trình duyệt không đọc được nội dung file đã chọn (FileReader).'));
+   reader.onabort=()=>reject(new Error('Việc đọc file đã bị hủy.'));
+   reader.readAsText(file,'UTF-8');
+  });
+  try{
+   if(typeof FileReader!=='undefined') raw=await readWithReader();
+   else if(typeof file.text==='function') raw=await file.text();
+   else throw new Error('Trình duyệt không hỗ trợ đọc file cục bộ.');
+  }catch(readErr){
+   if(typeof file.text==='function'){
+    try{raw=await file.text()}catch(textErr){throw new Error('Không đọc được file bằng FileReader hoặc file.text(): '+(textErr.message||readErr.message))}
+   }else throw readErr;
+  }
+  if(!raw.trim())throw new Error('File được chọn nhưng nội dung đang rỗng hoặc không thể giải mã UTF-8.');
   const parsed=parseSub(raw);
   if(!parsed.length)throw new Error('File đã được chọn nhưng không tìm thấy phụ đề hợp lệ. Hãy kiểm tra nội dung file SRT/VTT.');
   stop();cues=parsed;cueErrors.clear();
@@ -166,8 +182,8 @@ async function readSubtitleFile(file){
   render();$('current').textContent='Đã tải phụ đề. Nhấn Phát để nghe.';
   setStatus('Đã đọc thành công '+parsed.length+' câu phụ đề.');
  }catch(err){
-  $('filename').textContent='Không thể tải: '+file.name;
-  setStatus('Chi tiết lỗi: '+(err&&err.message?err.message:String(err||'Không rõ nguyên nhân')));
+  $('filename').textContent='Không thể tải: '+file.name+' — '+(err&&err.message?err.message:String(err||'Không rõ nguyên nhân'));
+  setStatus('Import thất bại. Hãy kiểm tra tên file và thông báo lỗi ở trên.');
  }
 }
 $('choose').addEventListener('click',()=>{$('file').value='';$('file').click()});
