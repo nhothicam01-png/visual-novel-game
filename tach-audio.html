@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tách Audio thành nhiều phần</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1020;--panel:#151e33;--line:#30405f;--muted:#aab8d2;--accent:#91a8ff}
+*{box-sizing:border-box}body{margin:0;padding:28px 15px;min-height:100vh;background:radial-gradient(ellipse at top,#1d2d54,var(--bg) 65%);color:#f3f6ff;font:16px/1.5 system-ui,sans-serif}
+main{max-width:760px;margin:auto}header{text-align:center;margin:10px 0 26px}h1{font-size:clamp(27px,5vw,38px);margin:0 0 8px}header p,.muted,.hint{color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;margin:16px 0;box-shadow:0 12px 35px #0003}
+.drop{display:block;text-align:center;padding:32px 14px;border:2px dashed #61739a;border-radius:14px;background:#10192b;cursor:pointer}.drop:hover,.drop.drag{border-color:var(--accent);background:#1b2947}.drop strong{display:block;font-size:18px;margin-bottom:5px}input[type=file]{display:none}
+.file{color:#8fe0b4;margin-top:12px;overflow-wrap:anywhere}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}label.field{font-size:14px;color:var(--muted)}input[type=number],select{width:100%;padding:12px;margin-top:7px;border-radius:10px;border:1px solid var(--line);background:#202c45;color:white;font:inherit}
+button{border:0;border-radius:11px;padding:13px 18px;font:700 15px system-ui;cursor:pointer;background:linear-gradient(100deg,#91a8ff,#b4a4ff);color:#10172b}button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:#293955;color:white;border:1px solid #405578}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+.progress{height:9px;background:#293753;border-radius:20px;overflow:hidden;margin-top:16px}.bar{height:100%;width:0;background:linear-gradient(90deg,#91a8ff,#c0a5ff);transition:width .2s}
+#status{min-height:24px;color:var(--muted);margin-top:10px}#results a{display:block;color:#bdcbff;padding:10px 12px;margin-top:8px;border:1px solid var(--line);border-radius:9px;text-decoration:none;overflow-wrap:anywhere}#results a:hover{background:#202e4b}.note{font-size:13px;border-left:3px solid #e5b967;padding-left:12px;color:#e8d8b8}.hint{font-size:13px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.panel{padding:17px}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>🎧 Tách Audio thành nhiều phần</h1><p>Chia file âm thanh dài thành các đoạn nhỏ ngay trên trình duyệt.</p></header>
+<section class="panel">
+<label class="drop" id="drop" for="file"><strong>Chọn file audio hoặc kéo thả vào đây</strong><span class="muted">MP3, WAV, M4A, AAC, OGG, FLAC…</span><input id="file" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac"></label>
+<div id="fileInfo" class="file"></div>
+</section>
+<section class="panel">
+<h2 style="margin-top:0">Thiết lập chia đoạn</h2>
+<div class="grid">
+<label class="field">Độ dài mỗi phần<input id="amount" type="number" min="1" max="1440" value="10"></label>
+<label class="field">Đơn vị<select id="unit"><option value="60">Phút</option><option value="1">Giây</option></select></label>
+</div>
+<p class="hint">Ví dụ nhập 10 phút: audio sẽ được chia thành các phần khoảng 10 phút; phần cuối có thể ngắn hơn.</p>
+<p class="note">File được xử lý trong trình duyệt, không tải lên máy chủ. File dài cần RAM và thời gian xử lý; hãy giữ trang mở. Tách không mã hóa lại nên thường nhanh và giữ nguyên chất lượng, nhưng điểm cắt có thể lệch nhẹ theo khung âm thanh.</p>
+<div class="actions"><button id="split" disabled>Chia audio</button><button class="secondary" id="reset">Làm mới</button></div>
+<div class="progress"><div class="bar" id="bar"></div></div><div id="status" role="status">Đang tải bộ xử lý audio…</div>
+</section>
+<section class="panel" id="resultPanel" hidden><h2 style="margin-top:0">Các phần đã tách</h2><div id="results"></div><div class="actions"><button id="zip">Tải tất cả dạng ZIP</button></div></section>
+</main>
+<script type="module">
+import { FFmpeg } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js';
+import { fetchFile, toBlobURL } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js';
+import JSZip from 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm';
+const $=id=>document.getElementById(id),ffmpeg=new FFmpeg();
+let ready=false,busy=false,file=null,parts=[];
+const status=t=>$('status').textContent=t,progress=n=>$('bar').style.width=Math.max(0,Math.min(100,n))+'%';
+const size=n=>{let u=['B','KB','MB','GB'],i=0;while(n>=1024&&i<3){n/=1024;i++}return n.toFixed(i?1:0)+' '+u[i]};
+async function init(){try{const base='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';await ffmpeg.load({coreURL:await toBlobURL(base+'/ffmpeg-core.js','text/javascript'),wasmURL:await toBlobURL(base+'/ffmpeg-core.wasm','application/wasm')});ready=true;$('split').disabled=!file;status('Sẵn sàng. Hãy chọn audio rồi nhấn “Chia audio”.')}catch(e){console.error(e);status('Không tải được bộ xử lý. Kiểm tra Internet và thử Chrome/Edge phiên bản mới.');}}
+function choose(f){if(!f)return;if(!f.type.startsWith('audio/')&&!/\.(mp3|wav|m4a|aac|ogg|flac)$/i.test(f.name)){status('Vui lòng chọn một file audio.');return}file=f;parts=[];$('resultPanel').hidden=true;$('fileInfo').textContent='Đã chọn: '+f.name+' · '+size(f.size);$('split').disabled=!ready||busy;status(ready?'Đã nhận file. Có thể bắt đầu chia.':'Đang tải bộ xử lý…')}
+$('file').addEventListener('change',e=>choose(e.target.files[0]));
+const drop=$('drop');['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('drag')}));['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('drag')}));drop.addEventListener('drop',e=>choose(e.dataTransfer.files[0]));
+ffmpeg.on('progress',({progress:p})=>progress(p*100));
+$('split').addEventListener('click',async()=>{if(!file||!ready||busy)return;const n=Number($('amount').value),seconds=Math.floor(n*Number($('unit').value));if(!Number.isFinite(n)||n<=0||seconds<1){status('Nhập độ dài mỗi phần hợp lệ.');return}
+busy=true;$('split').disabled=true;$('zip').disabled=true;$('results').replaceChildren();$('resultPanel').hidden=true;parts=[];progress(0);
+const ext=(file.name.split('.').pop()||'mp3').toLowerCase().replace(/[^a-z0-9]/g,'')||'mp3',input='source_'+Date.now()+'.'+ext,pattern='chunk_%03d.'+ext;
+try{status('Đang nạp file…');await ffmpeg.writeFile(input,await fetchFile(file));status('Đang chia audio. Hãy giữ trang mở…');
+await ffmpeg.exec(['-i',input,'-map','0:a:0','-f','segment','-segment_time',String(seconds),'-reset_timestamps','1','-c','copy',pattern]);
+const entries=(await ffmpeg.listDir('/')).filter(x=>!x.isDir&&/^chunk_\d+\./.test(x.name)).sort((a,b)=>a.name.localeCompare(b.name));
+for(const ent of entries){const data=await ffmpeg.readFile(ent.name),blob=new Blob([data],{type:file.type||'application/octet-stream'});parts.push({name:ent.name,blob});const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=ent.name;a.textContent='⬇ '+ent.name+' · '+size(blob.size);$('results').append(a)}
+if(!parts.length)throw Error('Không tạo được phần audio nào.');$('resultPanel').hidden=false;progress(100);status('Hoàn tất! Đã chia thành '+parts.length+' phần.')}
+catch(e){console.error(e);status('Có lỗi khi xử lý: '+(e.message||e)+'. Thử file nhỏ hơn hoặc tăng độ dài mỗi phần.')}
+finally{try{await ffmpeg.deleteFile(input)}catch{}busy=false;$('split').disabled=!file||!ready;$('zip').disabled=!parts.length}});
+$('zip').addEventListener('click',async()=>{if(!parts.length)return;$('zip').disabled=true;try{status('Đang đóng gói ZIP…');const zip=new JSZip();parts.forEach(p=>zip.file(p.name,p.blob));const blob=await zip.generateAsync({type:'blob'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='audio-da-chia.zip';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);status('Đã tạo file ZIP.')}catch(e){status('Không tạo được ZIP: '+e.message)}finally{$('zip').disabled=false}});
+$('reset').addEventListener('click',()=>{if(busy)return;file=null;parts=[];$('file').value='';$('fileInfo').textContent='';$('results').replaceChildren();$('resultPanel').hidden=true;$('split').disabled=true;progress(0);status(ready?'Đã làm mới. Chọn file khác.':'Đang tải bộ xử lý…')});
+init();
+</script>
+</body>
+</html>
