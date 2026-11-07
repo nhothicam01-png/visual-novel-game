@@ -997,6 +997,11 @@
         loadButton.disabled = true;
         status.textContent = 'Đang tải ' + path + '...';
         try {
+          // Chờ lần tự tải mặc định kết thúc để không xảy ra hai lượt preload chồng nhau.
+          if (this.taiKichBanMacDinhPromise) {
+            await this.taiKichBanMacDinhPromise;
+            this.taiKichBanMacDinhPromise = null;
+          }
           const encodedPath = path.split('/').map(part => encodeURIComponent(part)).join('/');
           const url = 'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/' + encodedPath;
           const response = await fetch(url, { cache: 'no-store' });
