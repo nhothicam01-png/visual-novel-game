@@ -405,6 +405,16 @@
     .dialogue-setting .setting-value { color:#c4b5fd; }
     .dialogue-toggle { display:flex; align-items:center; gap:8px; font-size:.8rem; }
     .dialogue-toggle input { accent-color:#a855f7; }
+
+    /* Công cụ tạo phụ đề YouTube */
+    #subtitle-tools { width:100%; max-width:1000px; margin-top:8px; padding:12px 14px; background:rgba(15,23,42,.9); border:1px solid rgba(34,211,238,.28); border-radius:10px; color:#e2e8f0; display:flex; flex-direction:column; gap:9px; }
+    #subtitle-tools h4 { color:#67e8f9; font-size:.9rem; }
+    .subtitle-options { display:flex; gap:12px; flex-wrap:wrap; align-items:end; }
+    .subtitle-options label { display:flex; flex-direction:column; gap:4px; font-size:.76rem; color:#cbd5e1; }
+    .subtitle-options input { width:100px; min-height:32px; padding:5px 7px; color:#fff; background:#1e293b; border:1px solid #475569; border-radius:6px; }
+    .subtitle-options .subtitle-check { flex-direction:row; align-items:center; min-height:32px; }
+    #subtitle-preview { width:100%; min-height:120px; resize:vertical; padding:9px; color:#dbeafe; background:#020617; border:1px solid #334155; border-radius:7px; font: .75rem/1.5 ui-monospace,monospace; user-select:text; }
+    #subtitle-status { font-size:.76rem; color:#94a3b8; }
   </style>
 </head>
 <body>
@@ -466,6 +476,24 @@
     <button class="btn" id="btn-resume-progress" type="button" style="display:none;" onclick="trinhPhat.tiepTucTienDo()">▶ Tiếp tục từ lượt đã lưu</button>
     <button class="btn" id="btn-clear-progress" type="button" onclick="trinhPhat.xoaTienDoPhat()">↺ Xóa tiến độ đã lưu</button>
   </div>
+
+
+  <section id="subtitle-tools" aria-label="Tạo phụ đề YouTube">
+    <h4>📝 Tạo phụ đề CC cho YouTube (.SRT)</h4>
+    <div style="font-size:.76rem;color:#94a3b8;">Tự lấy lời thoại từ kịch bản JSON và tạo file phụ đề có mốc thời gian. Thời gian là ước tính theo tốc độ đọc, cần kiểm tra với bản video hoàn chỉnh.</div>
+    <div class="subtitle-options">
+      <label>Tốc độ đọc ước tính (từ/phút)<input id="subtitle-wpm" type="number" min="60" max="300" step="5" value="165"></label>
+      <label>Độ trễ đầu video (giây)<input id="subtitle-offset" type="number" min="0" max="3600" step="0.1" value="0"></label>
+      <label class="subtitle-check"><input id="subtitle-speaker" type="checkbox" style="width:auto;"> Thêm tên nhân vật</label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn" type="button" onclick="trinhPhat.taoBanXemTruocPhuDe()">⚙ Tạo phụ đề</button>
+      <button class="btn" type="button" id="btn-download-srt" onclick="trinhPhat.taiPhuDeSRT()" disabled>⬇ Tải file .SRT</button>
+      <button class="btn" type="button" onclick="trinhPhat.saoChepPhuDe()">📋 Sao chép SRT</button>
+    </div>
+    <div id="subtitle-status" role="status">Hãy tải/import kịch bản JSON trước, sau đó bấm “Tạo phụ đề”.</div>
+    <textarea id="subtitle-preview" spellcheck="false" placeholder="Nội dung SRT sẽ xuất hiện ở đây sau khi tạo..." aria-label="Xem trước nội dung SRT"></textarea>
+  </section>
 
   <section id="dialogue-settings" aria-label="Cài đặt chữ thoại">
     <h4>💬 Tùy chỉnh chữ thoại</h4>
@@ -1927,6 +1955,101 @@
         this.layerChar.style.opacity = '1';
         this.layerCharBuffer.style.opacity = '1';
         this.layerVfx.style.display = 'none';
+      }
+
+
+      // Tạo phụ đề SRT từ các lượt thoại trong JSON.
+      taoDuLieuPhuDe() {
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        if (!ds.length) throw new Error('Chưa có kịch bản. Hãy import JSON trước.');
+        const wpmInput = Number(document.getElementById('subtitle-wpm')?.value || 165);
+        const wpm = Math.max(60, Math.min(300, Number.isFinite(wpmInput) ? wpmInput : 165));
+        const offsetInput = Number(document.getElementById('subtitle-offset')?.value || 0);
+        let clock = Math.max(0, Number.isFinite(offsetInput) ? offsetInput : 0);
+        const includeSpeaker = !!document.getElementById('subtitle-speaker')?.checked;
+        const gap = Math.max(0, Number(this.duLieu.thoi_gian_cho_giua ?? 0.02));
+        const cues = [];
+        const splitCaption = value => {
+          const words = String(value).trim().split(/\\s+/).filter(Boolean);
+          const chunks = []; let line = '';
+          for (const word of words) {
+            const candidate = line ? line + ' ' + word : word;
+            if (candidate.length > 76 && line) { chunks.push(line); line = word; }
+            else line = candidate;
+          }
+          if (line) chunks.push(line);
+          return chunks;
+        };
+        for (let i = 0; i < ds.length; i++) {
+          const frame = ds[i] || {};
+          const dialogue = typeof frame.noi_dung === 'string' ? frame.noi_dung.trim() : '';
+          if (dialogue) {
+            const chunks = splitCaption(dialogue);
+            const totalWords = Math.max(1, dialogue.split(/\\s+/).filter(Boolean).length);
+            const speechDuration = Math.max(0.9, totalWords * 60 / wpm + (/[.!?…]["')\\]]*$/.test(dialogue) ? 0.22 : 0.08));
+            let cursor = clock;
+            for (const chunk of chunks) {
+              const chunkWords = Math.max(1, chunk.split(/\\s+/).length);
+              const duration = Math.max(0.85, speechDuration * chunkWords / totalWords);
+              const text = includeSpeaker && frame.nhan_vat ? String(frame.nhan_vat).trim() + ': ' + chunk : chunk;
+              cues.push({ start: cursor, end: cursor + duration, text });
+              cursor += duration;
+            }
+            clock += speechDuration + gap;
+          } else {
+            // Player chờ khoảng 1 giây ở lượt không có lời thoại.
+            clock += 1 + gap;
+          }
+        }
+        return cues;
+      }
+
+      dinhDangThoiGianSRT(seconds) {
+        const ms = Math.max(0, Math.round(seconds * 1000));
+        const h = Math.floor(ms / 3600000);
+        const m = Math.floor((ms % 3600000) / 60000);
+        const sec = Math.floor((ms % 60000) / 1000);
+        const milli = ms % 1000;
+        return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0') + ',' + String(milli).padStart(3,'0');
+      }
+
+      taoBanXemTruocPhuDe() {
+        const status = document.getElementById('subtitle-status');
+        const preview = document.getElementById('subtitle-preview');
+        const download = document.getElementById('btn-download-srt');
+        try {
+          const cues = this.taoDuLieuPhuDe();
+          if (!cues.length) throw new Error('Kịch bản không có trường noi_dung chứa lời thoại.');
+          this.subtitleSrt = cues.map((cue, index) => (index + 1) + '\\n' + this.dinhDangThoiGianSRT(cue.start) + ' --> ' + this.dinhDangThoiGianSRT(Math.max(cue.start + 0.5, cue.end)) + '\\n' + cue.text).join('\\n\\n') + '\\n';
+          preview.value = this.subtitleSrt;
+          download.disabled = false;
+          status.textContent = 'Đã tạo ' + cues.length + ' đoạn phụ đề · thời lượng ước tính ' + this.dinhDangThoiGianSRT(cues[cues.length - 1].end) + '. Hãy kiểm tra độ khớp trước khi tải lên YouTube.';
+        } catch (error) {
+          this.subtitleSrt = '';
+          download.disabled = true;
+          status.textContent = error.message;
+        }
+      }
+
+      taiPhuDeSRT() {
+        const content = document.getElementById('subtitle-preview')?.value || this.subtitleSrt || '';
+        if (!content.trim()) { alert('Hãy tạo phụ đề trước.'); return; }
+        const blob = new Blob(['\\uFEFF', content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const baseName = (this.duLieu?.ten_kich_ban || this.duLieu?.title || 'youtube-captions').toString().replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'youtube-captions';
+        link.href = url; link.download = baseName + '.srt';
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      async saoChepPhuDe() {
+        const content = document.getElementById('subtitle-preview')?.value || '';
+        if (!content.trim()) { this.taoBanXemTruocPhuDe(); }
+        const text = document.getElementById('subtitle-preview')?.value || '';
+        if (!text) return;
+        try { await navigator.clipboard.writeText(text); document.getElementById('subtitle-status').textContent = 'Đã sao chép nội dung SRT.'; }
+        catch (_) { document.getElementById('subtitle-preview').select(); document.getElementById('subtitle-status').textContent = 'Không thể tự sao chép; hãy nhấn Ctrl+C trong ô xem trước.'; }
       }
 
       sleep(ms) {
