@@ -655,7 +655,22 @@
         if (status) status.textContent = 'Đã xóa tiến độ. Sẽ phát từ đầu.'; if (resume) resume.style.display = 'none';
       }
 
-      tiepTucTienDo() { if (this.currentIndex > 0 && this.duLieu) this.batDau(); }
+      tiepTucTienDo() {
+        if (!this.duLieu) return;
+        if (this.currentIndex <= 0 && this.progressScriptId) {
+          try {
+            const all = JSON.parse(localStorage.getItem(this.progressStorageKey) || '{}');
+            const saved = all[this.progressScriptId];
+            const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo || [];
+            if (saved && Number.isInteger(saved.index) && saved.index >= 0 && saved.index < ds.length) {
+              this.currentIndex = saved.index;
+              this.playbackStarted = true;
+              this.capNhatThanhTua();
+            }
+          } catch (_) { this.xoaTienDoPhat(); return; }
+        }
+        if (this.currentIndex > 0) this.batDau();
+      }
 
       docCaiDatThoai() {
         try {
