@@ -120,22 +120,13 @@
 
     #layer-vfx { z-index: 3; pointer-events: none; display: none; }
 
-    /* Nhân vật xuất hiện / biến mất bằng hiệu ứng mờ dần, không còn nhún nhảy. */
+    /* Nhân vật hiển thị ngay lập tức, không dùng hiệu ứng mờ dần. */
     #layer-character {
-      opacity: 0;
-    }
-
-    #layer-character.character-entering {
-      animation: characterFadeIn 0.5s ease-out both;
+      opacity: 1;
     }
 
     #layer-character.character-exiting {
       pointer-events: none;
-    }
-
-    @keyframes characterFadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
     }
 
     #dialogue-canvas {
@@ -1589,7 +1580,7 @@
           }
         }
 
-        // Nhân vật: xuất hiện bằng fade-in; khi đổi hoặc ẩn thì tắt ngay, không fade-out.
+        // Nhân vật: hiển thị ngay; khi đổi hoặc ẩn thì tắt ngay, không dùng hiệu ứng mờ dần.
         if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
           const videoPath = `assets/NhanVat/${nhanVat}/${bieuCam}.webm`;
           const currentSrc = this.layerChar.getAttribute('src') || '';
@@ -1599,7 +1590,7 @@
           if (!sameCharacterVideo && wasVisible) {
             this.layerChar.style.display = 'none';
             this.layerChar.classList.remove('character-exiting', 'character-entering');
-            this.layerChar.style.opacity = '0';
+            this.layerChar.style.opacity = '1';
           }
 
           if (!sameCharacterVideo) {
@@ -1615,18 +1606,13 @@
           if (this.layerChar.paused) await this.layerChar.play().catch(()=>{});
 
           this.layerChar.style.display = 'block';
-          if (!wasVisible || !sameCharacterVideo) {
-            this.layerChar.classList.remove('character-exiting', 'character-entering');
-            this.layerChar.style.opacity = '0';
-            // Ép trình duyệt ghi nhận opacity 0 trước khi chạy fade-in.
-            void this.layerChar.offsetWidth;
-            this.layerChar.classList.add('character-entering');
-          }
+          this.layerChar.classList.remove('character-entering', 'character-exiting');
+          this.layerChar.style.opacity = '1';
         } else {
           this.layerChar.style.display = 'none';
           this.layerChar.pause();
           this.layerChar.classList.remove('character-entering', 'character-exiting');
-          this.layerChar.style.opacity = '0';
+          this.layerChar.style.opacity = '1';
         }
 
         if (anhHieuUng && anhHieuUng.trim() !== "") {
@@ -1788,7 +1774,7 @@
         this.layerBgVideo.style.display = 'none';
         this.layerChar.style.display = 'none';
         this.layerChar.classList.remove('character-entering', 'character-exiting');
-        this.layerChar.style.opacity = '0';
+        this.layerChar.style.opacity = '1';
         this.layerVfx.style.display = 'none';
       }
 
