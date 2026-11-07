@@ -507,8 +507,9 @@
         <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="es" checked> Español (Spanish)</label>
         <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="pt" checked> Português (Portuguese)</label>
         <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="hi" checked> हिन्दी (Hindi)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="vi" checked> Tiếng Việt (Vietnamese)</label>
       </div>
-      <div id="subtitle-translation-status" style="font-size:.74rem;color:#fbbf24;">Đã chọn 12 ngôn ngữ. Chức năng dịch tự động sẽ hoạt động sau khi kết nối dịch vụ AI/API.</div>
+      <div id="subtitle-translation-status" style="font-size:.74rem;color:#fbbf24;">Đã chọn 13 ngôn ngữ. Chức năng dịch tự động sẽ hoạt động sau khi kết nối dịch vụ AI/API.</div>
     </div>
     <div id="subtitle-status" role="status">Hãy tải/import kịch bản JSON trước, sau đó bấm “Tạo phụ đề”.</div>
     <textarea id="subtitle-preview" spellcheck="false" placeholder="Nội dung SRT sẽ xuất hiện ở đây sau khi tạo..." aria-label="Xem trước nội dung SRT"></textarea>
@@ -1990,7 +1991,8 @@
           de: 'German',
           es: 'Spanish',
           pt: 'Portuguese',
-          hi: 'Hindi'
+          hi: 'Hindi',
+          vi: 'Vietnamese'
         };
         return Array.from(document.querySelectorAll('#subtitle-tools .subtitle-lang:checked'))
           .map(input => ({ code: input.value, name: tenNgonNgu[input.value] || input.value }));
