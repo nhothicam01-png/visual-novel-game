@@ -611,11 +611,10 @@
         this.ttsServerUrl = '';
 
         this.cauHinhGiongNhanVat = {};
-        this.khoaLuuGiongNhanVat = 'vn-character-tts-settings';
-        try {
-          this.cauHinhGiongNhanVatDaLuu = JSON.parse(localStorage.getItem(this.khoaLuuGiongNhanVat) || '{}');
-          if (!this.cauHinhGiongNhanVatDaLuu || typeof this.cauHinhGiongNhanVatDaLuu !== 'object' || Array.isArray(this.cauHinhGiongNhanVatDaLuu)) this.cauHinhGiongNhanVatDaLuu = {};
-        } catch (_) { this.cauHinhGiongNhanVatDaLuu = {}; }
+        this.cauHinhGiongNhanVatDaLuu = {};
+        this.duongDanTTSKichBan = '';
+        this.khoaLuuTTSTheoKichBan = '';
+        this.ttsConfigLoadToken = 0;
         this.ttsSynth = window.speechSynthesis || null;
         this.danhSachVoices = [];
         this.ngonNguMacDinh = this.layNgonNguMacDinh();
@@ -776,6 +775,8 @@
           const data = await response.json();
           if (!data || !Array.isArray(data.danh_sach) || data.danh_sach.length === 0) throw new Error('ailahungthu.json không đúng cấu trúc hoặc không có lời thoại');
           this.duLieu = data;
+          this.duongDanTTSKichBan = path.replace(/\\.json$/i, '_tts.json');
+          await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
           this.progressScriptId = this.taoMaKichBan(data);
           this.napTienDoPhat();
           this.quetVaKhoiTaoNhanVat();
@@ -1114,6 +1115,8 @@
         reader.onload = async (e) => {
           try {
             this.duLieu = JSON.parse(e.target.result);
+            this.duongDanTTSKichBan = (file.name || 'kichban.json').replace(/\\.json$/i, '_tts.json');
+            await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan, true);
             this.progressScriptId = this.taoMaKichBan(this.duLieu);
             this.napTienDoPhat();
             this.hienLoading(true);
@@ -1131,6 +1134,32 @@
         reader.readAsText(file);
       }
 
+      async taiCauHinhTTSKichBan(path, boQuaTaiMang = false) {
+        const token = ++this.ttsConfigLoadToken;
+        this.khoaLuuTTSTheoKichBan = 'vn-character-tts:' + path;
+        let cauHinh = {};
+        try {
+          const local = JSON.parse(localStorage.getItem(this.khoaLuuTTSTheoKichBan) || '{}');
+          if (local && typeof local === 'object' && !Array.isArray(local)) cauHinh = local;
+        } catch (_) {}
+        if (!boQuaTaiMang && path) {
+          try {
+            const encoded = path.split('/').map(part => encodeURIComponent(part)).join('/');
+            const response = await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/' + encoded, { cache: 'no-store' });
+            if (response.ok) {
+              const remote = await response.json();
+              const remoteVoices = remote.nhan_vat || remote.characters || remote;
+              if (remoteVoices && typeof remoteVoices === 'object' && !Array.isArray(remoteVoices)) {
+                cauHinh = { ...remoteVoices, ...cauHinh };
+              }
+            }
+          } catch (error) { console.info('Chưa có file TTS riêng trên GitHub, dùng cấu hình trên thiết bị:', error); }
+        }
+        if (token !== this.ttsConfigLoadToken) return;
+        this.cauHinhGiongNhanVatDaLuu = cauHinh;
+        this.cauHinhGiongNhanVat = {};
+      }
+
       quetVaKhoiTaoNhanVat() {
         if (!this.duLieu) return;
         const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo || [];
@@ -1143,7 +1172,8 @@
         });
 
         setNhanVat.forEach(ten => {
-          if (!this.cauHinhGiongNhanVat[ten]) {
+          {
+            // Mỗi lần nạp kịch bản, tạo cấu hình mới từ file TTS của chính kịch bản đó.
             // Lần khởi tạo đầu tiên: lấy ngôn ngữ từ noi_dung của chính nhân vật.
             // Người dùng vẫn có thể đổi ngôn ngữ/giọng đọc sau trong bảng cấu hình.
             const ngonNguNoiDung = this.phatHienNgonNguTuNoiDung(ds, ten);
@@ -1154,10 +1184,22 @@
               lang: ngonNguNoiDung
             };
             // Khôi phục thiết lập TTS đã lưu riêng cho nhân vật này.
-            this.cauHinhGiongNhanVat[ten] = {
-              ...macDinh,
-              ...(this.cauHinhGiongNhanVatDaLuu[ten] || {})
-            };
+            const saved = this.cauHinhGiongNhanVatDaLuu[ten] || {};
+            const cfg = { ...macDinh, ...saved };
+            cfg.voiceIndex = -1;
+            if (saved.voiceURI && this.danhSachVoices.length) {
+              cfg.voiceIndex = this.danhSachVoices.findIndex(v => v.voiceURI === saved.voiceURI);
+            }
+            if (cfg.voiceIndex < 0 && saved.voiceName && this.danhSachVoices.length) {
+              cfg.voiceIndex = this.danhSachVoices.findIndex(v => v.name === saved.voiceName && (!saved.lang || v.lang === saved.lang));
+            }
+            if (cfg.voiceIndex < 0) cfg.voiceIndex = this.timGiongTheoNgonNgu(cfg.lang);
+            if (cfg.voiceIndex >= 0 && this.danhSachVoices[cfg.voiceIndex]) {
+              cfg.voiceURI = this.danhSachVoices[cfg.voiceIndex].voiceURI;
+              cfg.voiceName = this.danhSachVoices[cfg.voiceIndex].name;
+              cfg.lang = this.danhSachVoices[cfg.voiceIndex].lang || cfg.lang;
+            }
+            this.cauHinhGiongNhanVat[ten] = cfg;
           }
         });
 
@@ -1249,10 +1291,21 @@
       }
 
       luuCauHinhGiongNhanVat() {
+        if (!this.khoaLuuTTSTheoKichBan) return;
         try {
-          localStorage.setItem(this.khoaLuuGiongNhanVat, JSON.stringify(this.cauHinhGiongNhanVat));
+          const data = {};
+          Object.entries(this.cauHinhGiongNhanVat).forEach(([ten, cfg]) => {
+            data[ten] = {
+              voiceURI: cfg.voiceURI || '',
+              voiceName: cfg.voiceName || '',
+              lang: cfg.lang || 'vi-VN',
+              rate: Number(cfg.rate ?? 1.1),
+              pitch: Number(cfg.pitch ?? 1)
+            };
+          });
+          localStorage.setItem(this.khoaLuuTTSTheoKichBan, JSON.stringify(data));
         } catch (err) {
-          console.warn('Không thể lưu cấu hình TTS theo nhân vật:', err);
+          console.warn('Không thể lưu cấu hình TTS riêng cho kịch bản:', err);
         }
       }
 
