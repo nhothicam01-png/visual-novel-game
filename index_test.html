@@ -571,6 +571,7 @@
         this.progressStorageKey = 'vn-playback-progress';
         this.progressScriptId = '';
         this.videoPreloadCache = new Map();
+        this.preloadResourceCache = new Map();
 
         this.currentTtsResolve = null;
         this.ttsRemainingText = "";
@@ -1126,46 +1127,116 @@
         } catch (e) { console.log(e); }
       }
 
+      // Bộ tải trước đa định dạng: chỉ ưu tiên một cửa sổ cảnh gần hiện tại.
       async taiTruocDuLieu() {
-        const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo;
-        if (!ds) return;
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        if (!ds.length) return;
+        await this.taiTruocCacCanh(0, 3, true);
+      }
 
-        const tasks = [];
-        for (const khung of ds) {
-          const anhNen = khung.anh_nen || khung.background;
-          const anhHieuUng = khung.anh_hieu_ung || khung.vfx;
+      layTaiNguyenCuaCanh(khung) {
+        const assets = [];
+        const add = (path, folder, kind) => {
+          if (typeof path === 'string' && path.trim()) assets.push({ path: folder + path.trim(), kind, key: path.trim() });
+        };
+        const bg = khung.anh_nen || khung.background;
+        const vfx = khung.anh_hieu_ung || khung.vfx;
+        const bgm = khung.am_thanh_nen || khung.bgm;
+        const sfx = khung.am_thanh_hieu_ung || khung.sfx;
+        add(bg, 'assets/Nen/', this.isMediaVideo(bg || '') ? 'video' : 'image');
+        add(vfx, 'assets/HieuUng/', this.isMediaVideo(vfx || '') ? 'video' : 'image');
+        add(bgm, 'assets/AmThanh/Nen/', 'audio');
+        add(sfx, 'assets/AmThanh/HieuUng/', 'audio');
+        const character = khung.nhan_vat, expression = khung.bieu_cam || khung.expression;
+        if (character && expression) add(expression + '.webm', 'assets/NhanVat/' + character + '/', 'video');
+        return assets;
+      }
 
-          if (anhNen && !this.isMediaVideo(anhNen) && !this.boDemAnhNen.has(anhNen)) {
-            tasks.push({
-              name: `Nền: ${anhNen}`,
-              run: () => this.preloadImage(`assets/Nen/${anhNen}`, img => this.boDemAnhNen.set(anhNen, img))
-            });
-          }
-          if (anhHieuUng && !this.boDemHieuUng.has(anhHieuUng)) {
-            tasks.push({
-              name: `VFX: ${anhHieuUng}`,
-              run: () => this.preloadImage(`assets/HieuUng/${anhHieuUng}`, img => this.boDemHieuUng.set(anhHieuUng, img))
-            });
-          }
+      async taiTruocCacCanh(startIndex, count = 3, showProgress = false) {
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        const unique = new Map();
+        for (let i = startIndex; i < Math.min(ds.length, startIndex + count); i++) {
+          for (const asset of this.layTaiNguyenCuaCanh(ds[i])) unique.set(asset.path, asset);
         }
+        const tasks = [...unique.values()].filter(asset => !this.preloadResourceCache?.has(asset.path));
+        if (!tasks.length) return;
+        let completed = 0, cursor = 0;
+        const worker = async () => {
+          while (cursor < tasks.length) {
+            const asset = tasks[cursor++];
+            await this.taiTruocTaiNguyen(asset);
+            completed++;
+            if (showProgress) this.capNhatTienDoLoad((completed / tasks.length) * 100, 'Đang chuẩn bị: ' + asset.path.split('/').pop());
+          }
+        };
+        if (showProgress) this.capNhatTienDoLoad(0, 'Đang tải trước tài nguyên đa định dạng...');
+        await Promise.all(Array.from({ length: Math.min(2, tasks.length) }, worker));
+        if (showProgress) this.capNhatTienDoLoad(100, 'Đã chuẩn bị các cảnh đầu tiên.');
+      }
 
-        const totalTasks = tasks.length;
-        if (totalTasks === 0) {
-          this.capNhatTienDoLoad(100, "Hoàn tất!");
-          return;
-        }
-
-        let completedTasks = 0;
-        this.capNhatTienDoLoad(0, `Đang tải đồng thời ${totalTasks} tài nguyên...`);
-
-        const promises = tasks.map(async (task) => {
-          await task.run();
-          completedTasks++;
-          this.capNhatTienDoLoad((completedTasks / totalTasks) * 100, `Đã hoàn thành: ${task.name}`);
+      taiTruocTaiNguyen(asset) {
+        if (!asset?.path) return Promise.resolve(false);
+        if (!this.preloadResourceCache) this.preloadResourceCache = new Map();
+        if (this.preloadResourceCache.has(asset.path)) return this.preloadResourceCache.get(asset.path).promise;
+        const ext = asset.path.split('.').pop().toLowerCase();
+        let element = null;
+        const promise = new Promise(resolve => {
+          let done = false;
+          const finish = ok => {
+            if (done) return;
+            done = true; clearTimeout(timer);
+            if (element) {
+              element.removeEventListener('load', onReady);
+              element.removeEventListener('loadeddata', onReady);
+              element.removeEventListener('canplay', onReady);
+              element.removeEventListener('loadedmetadata', onReady);
+              element.removeEventListener('error', onError);
+            }
+            if (ok && element instanceof HTMLImageElement) {
+              if (asset.path.startsWith('assets/Nen/')) this.boDemAnhNen.set(asset.key, element);
+              if (asset.path.startsWith('assets/HieuUng/')) this.boDemHieuUng.set(asset.key, element);
+            }
+            resolve(ok);
+          };
+          const onReady = () => finish(true), onError = () => finish(false);
+          const timer = setTimeout(() => finish(false), 10000);
+          if (asset.kind === 'image' || /^(png|jpe?g|gif|webp|avif|svg|bmp)$/i.test(ext)) {
+            element = new Image();
+            element.addEventListener('load', onReady, { once: true });
+            element.addEventListener('error', onError, { once: true });
+            element.src = asset.path;
+            if (element.complete && element.naturalWidth) finish(true);
+          } else if (asset.kind === 'video' || /^(mp4|webm|ogv|ogg|mov|m4v)$/i.test(ext)) {
+            element = document.createElement('video');
+            element.preload = 'auto'; element.muted = true; element.playsInline = true;
+            element.addEventListener('loadeddata', onReady, { once: true });
+            element.addEventListener('canplay', onReady, { once: true });
+            element.addEventListener('error', onError, { once: true });
+            element.src = asset.path; element.load();
+            if (element.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) finish(true);
+          } else if (asset.kind === 'audio' || /^(mp3|wav|m4a|aac|flac|opus|oga)$/i.test(ext)) {
+            element = new Audio();
+            element.preload = 'auto';
+            element.addEventListener('loadedmetadata', onReady, { once: true });
+            element.addEventListener('canplay', onReady, { once: true });
+            element.addEventListener('error', onError, { once: true });
+            element.src = asset.path; element.load();
+          } else {
+            fetch(asset.path, { cache: 'force-cache' }).then(response => finish(response.ok)).catch(() => finish(false));
+          }
         });
-
-        await Promise.all(promises);
-        this.capNhatTienDoLoad(100, "Tải hoàn tất!");
+        this.preloadResourceCache.set(asset.path, { promise, element });
+        // Giữ cache có giới hạn; không giữ hàng trăm video/audio trong RAM.
+        while (this.preloadResourceCache.size > 12) {
+          const [key, old] = this.preloadResourceCache.entries().next().value;
+          if (key === asset.path) break;
+          this.preloadResourceCache.delete(key);
+          const media = old.element;
+          if (media && (media instanceof HTMLMediaElement)) {
+            try { media.pause(); media.removeAttribute('src'); media.load(); } catch (_) {}
+          }
+        }
+        return promise;
       }
 
       isMediaVideo(filename) {
@@ -1201,10 +1272,8 @@
 
       chuanBiVideoTiepTheo(generation) {
         if (generation !== this.playbackGeneration) return;
-        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [], next = ds[this.currentIndex + 1];
-        if (!next) return;
-        const name = next.nhan_vat, expression = next.bieu_cam || next.expression;
-        if (name && expression) { const src = 'assets/NhanVat/' + name + '/' + expression + '.webm'; if (!(this.layerChar.getAttribute('src') || '').includes(src)) this.chuanBiVideoNhanVat(src); }
+        // Tải nền 3 cảnh kế tiếp, gồm ảnh, video, âm thanh và các tệp dữ liệu.
+        this.taiTruocCacCanh(this.currentIndex + 1, 3, false).catch(err => console.warn('Preload tài nguyên:', err));
       }
 
       // Chờ video có thể giải mã khung hình đầu tiên trước khi hiển thị/phát.
