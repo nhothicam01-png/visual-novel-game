@@ -544,6 +544,10 @@
 
   <div id="character-voice-panel">
     <h4>🎙️ Cấu hình giọng đọc riêng theo nhân vật</h4>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <button class="btn" type="button" onclick="trinhPhat.xuatCauHinhTTS()">⬇ Xuất file cấu hình TTS JSON</button>
+      <span id="tts-config-status" style="font-size:.72rem;color:#94a3b8;">Cấu hình được lưu riêng trên thiết bị cho từng kịch bản.</span>
+    </div>
     <div id="character-voice-list">
       <span style="color: #64748b; font-style: italic;">Chưa có kịch bản hoặc nhân vật nào được tải. Hãy Import JSON trước!</span>
     </div>
@@ -775,7 +779,7 @@
           const data = await response.json();
           if (!data || !Array.isArray(data.danh_sach) || data.danh_sach.length === 0) throw new Error('ailahungthu.json không đúng cấu trúc hoặc không có lời thoại');
           this.duLieu = data;
-          this.duongDanTTSKichBan = path.replace(/\\.json$/i, '_tts.json');
+          this.duongDanTTSKichBan = 'ailahungthu_tts.json';
           await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
           this.progressScriptId = this.taoMaKichBan(data);
           this.napTienDoPhat();
@@ -1010,6 +1014,8 @@
           this.dung();
           this.hienLoading(true);
           this.duLieu = data;
+          this.duongDanTTSKichBan = path.replace(/\\.json$/i, '_tts.json');
+          await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
           this.progressScriptId = this.taoMaKichBan(data);
           this.napTienDoPhat();
           this.quetVaKhoiTaoNhanVat();
@@ -1116,7 +1122,7 @@
           try {
             this.duLieu = JSON.parse(e.target.result);
             this.duongDanTTSKichBan = (file.name || 'kichban.json').replace(/\\.json$/i, '_tts.json');
-            await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan, true);
+            await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
             this.progressScriptId = this.taoMaKichBan(this.duLieu);
             this.napTienDoPhat();
             this.hienLoading(true);
@@ -1288,6 +1294,32 @@
           document.getElementById(`pitch-val-${tenNhanVat}`).innerText = giaTri;
         }
         this.luuCauHinhGiongNhanVat();
+      }
+
+      xuatCauHinhTTS() {
+        if (!this.duongDanTTSKichBan || !Object.keys(this.cauHinhGiongNhanVat).length) {
+          alert('Hãy tải một kịch bản có nhân vật trước.');
+          return;
+        }
+        const nhanVat = {};
+        Object.entries(this.cauHinhGiongNhanVat).forEach(([ten, cfg]) => {
+          nhanVat[ten] = {
+            voiceURI: cfg.voiceURI || '',
+            voiceName: cfg.voiceName || '',
+            lang: cfg.lang || 'vi-VN',
+            rate: Number(cfg.rate ?? 1.1),
+            pitch: Number(cfg.pitch ?? 1)
+          };
+        });
+        const blob = new Blob([JSON.stringify({ nhan_vat: nhanVat }, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = this.duongDanTTSKichBan.split('/').pop();
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        const status = document.getElementById('tts-config-status');
+        if (status) status.textContent = 'Đã xuất ' + link.download + '. Hãy tải file này lên đúng thư mục cùng kịch bản trên GitHub để đồng bộ.';
       }
 
       luuCauHinhGiongNhanVat() {
