@@ -942,6 +942,27 @@
         });
       }
 
+      // Chờ video có thể giải mã khung hình đầu tiên trước khi hiển thị/phát.
+      choVideoSanSang(video, timeout = 15000) {
+        if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) return Promise.resolve();
+        return new Promise(resolve => {
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            video.removeEventListener('loadeddata', finish);
+            video.removeEventListener('canplay', finish);
+            video.removeEventListener('error', finish);
+            resolve();
+          };
+          const timer = setTimeout(finish, timeout);
+          video.addEventListener('loadeddata', finish, { once: true });
+          video.addEventListener('canplay', finish, { once: true });
+          video.addEventListener('error', finish, { once: true });
+        });
+      }
+
       async batDau() {
         this.kichHoatAmThanhMobile(); 
 
@@ -1068,7 +1089,7 @@
           document.getElementById('btn-pause').style.display = 'none';
           // Nếu đang tạm dừng hoặc dừng, chỉ cập nhật hình; không tự đọc thoại.
           this.xoaChuKhongAnCanvas();
-          this.xuLyKhung(ds[target], true);
+          this.xuLyKhung(ds[target], true, this.playbackGeneration);
         }
       }
 
@@ -1087,7 +1108,7 @@
           if (!this.dangChay || generation !== this.playbackGeneration) break;
 
           const khung = ds[this.currentIndex];
-          await this.xuLyKhung(khung);
+          await this.xuLyKhung(khung, false, generation);
           if (generation !== this.playbackGeneration) break;
           this.currentIndex++;
           this.capNhatThanhTua();
@@ -1101,7 +1122,8 @@
         this.xoaChu();
       }
 
-      async xuLyKhung(khung, preview = false) {
+      async xuLyKhung(khung, preview = false, generation = this.playbackGeneration) {
+        if (generation !== this.playbackGeneration) return;
         this.xoaChuKhongAnCanvas();
 
         const anhNen = khung.anh_nen || khung.background;
@@ -1119,6 +1141,8 @@
               this.layerBgVideo.src = `assets/Nen/${anhNen}`;
               this.layerBgVideo.load();
             }
+            await this.choVideoSanSang(this.layerBgVideo);
+            if (generation !== this.playbackGeneration) return;
             this.layerBgVideo.style.display = 'block';
             await this.layerBgVideo.play().catch(()=>{});
           } else {
@@ -1145,13 +1169,13 @@
           if (!currentSrc.includes(videoPath)) {
             this.layerChar.src = videoPath;
             this.layerChar.load();
-            await this.layerChar.play().catch(()=>{});
-          } else {
-            if (this.layerChar.paused) {
-              await this.layerChar.play().catch(()=>{});
-            }
           }
-          
+          await this.choVideoSanSang(this.layerChar);
+          if (generation !== this.playbackGeneration) return;
+          if (this.layerChar.paused) {
+            await this.layerChar.play().catch(()=>{});
+          }
+
           this.layerChar.style.display = 'block';
 
           if (!this.layerChar.classList.contains('character-talking')) {
