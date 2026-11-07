@@ -1654,7 +1654,7 @@
 
             // Chỉ đổi lớp sau khi video mới đã sẵn sàng phát, không để lộ nền trống.
             const previousLayer = this.layerChar;
-            nextLayer.style.display = 'block';
+            nextLayer.style.display = 'none';
             nextLayer.classList.remove('character-entering', 'character-exiting', 'scene-entering');
             previousLayer.style.display = 'none';
             previousLayer.pause();
