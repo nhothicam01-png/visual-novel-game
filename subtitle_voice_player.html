@@ -102,7 +102,7 @@ function scheduleFrom(pos){
 function play(){if(!cues.length)return;if(paused){resume();return}if(playhead>=Math.max(...cues.map(c=>c.end)))playhead=0;playing=true;paused=false;startedAt=performance.now()-playhead*1000;scheduleFrom(playhead);$('play').disabled=true;$('pause').disabled=false;$('pause').textContent='⏸ Tạm dừng';setStatus('Đang phát theo timeline phụ đề…');clock()}
 function pause(){if(!playing||paused)return;playhead=(performance.now()-startedAt)/1000;paused=true;pausedAt=performance.now();clearTimers();synth.pause();$('pause').textContent='▶ Tiếp tục';setStatus('Đã tạm dừng.')}
 function resume(){if(!playing||!paused)return;paused=false;startedAt=performance.now()-playhead*1000;synth.resume();scheduleFrom(playhead);$('pause').textContent='⏸ Tạm dừng';setStatus('Đang tiếp tục…');clock()}
-function stop(){if(recorder&&recorder.state==='recording')finishRecording();generation++;clearTimers();synth.cancel();playing=false;paused=false;playhead=0;activeIndex=-1;$('timeline').value=0;$('now').textContent='00:00';$('pause').disabled=true;$('pause').textContent='⏸ Tạm dừng';$('play').disabled=!cues.length;document.querySelectorAll('.cue').forEach(el=>el.classList.remove('active'));if(cues.length)setActive(-1)}
+function stop(){if(recorder&&recorder.state==='recording')finishRecording();generation++;clearTimers();if(synth)synth.cancel();playing=false;paused=false;playhead=0;activeIndex=-1;$('timeline').value=0;$('now').textContent='00:00';$('pause').disabled=true;$('pause').textContent='⏸ Tạm dừng';$('play').disabled=!cues.length;document.querySelectorAll('.cue').forEach(el=>el.classList.remove('active'));if(cues.length)setActive(-1)}
 function seek(sec){if(!cues.length)return;playhead=Math.max(0,Math.min(sec,Math.max(...cues.map(c=>c.end))));$('timeline').value=playhead;$('now').textContent=fmt(playhead);if(playing){startedAt=performance.now()-playhead*1000;scheduleFrom(playhead);clock()}else{const i=cues.findIndex(c=>playhead>=c.start&&playhead<c.end);setActive(i)}}
 async function beginRecording(){
  if(recording)return true;
@@ -167,7 +167,7 @@ async function readSubtitleFile(file){
   setStatus('Đã đọc thành công '+parsed.length+' câu phụ đề.');
  }catch(err){
   $('filename').textContent='Không thể tải: '+file.name;
-  setStatus(err.message||'Có lỗi khi đọc file phụ đề.');
+  setStatus('Chi tiết lỗi: '+(err&&err.message?err.message:String(err||'Không rõ nguyên nhân')));
  }
 }
 $('choose').addEventListener('click',()=>{$('file').value='';$('file').click()});
