@@ -498,8 +498,17 @@
         <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="en" checked> English</label>
         <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="ja" checked> 日本語 (Japanese)</label>
         <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="ko" checked> 한국어 (Korean)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="th" checked> ไทย (Thai)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="zh" checked> 中文 (Chinese)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="id" checked> Bahasa Indonesia</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="fr" checked> Français (French)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="ar" checked> العربية (Arabic)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="de" checked> Deutsch (German)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="es" checked> Español (Spanish)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="pt" checked> Português (Portuguese)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="hi" checked> हिन्दी (Hindi)</label>
       </div>
-      <div id="subtitle-translation-status" style="font-size:.74rem;color:#fbbf24;">Đã chọn 3 ngôn ngữ. Chức năng dịch tự động sẽ hoạt động sau khi kết nối dịch vụ AI/API.</div>
+      <div id="subtitle-translation-status" style="font-size:.74rem;color:#fbbf24;">Đã chọn 12 ngôn ngữ. Chức năng dịch tự động sẽ hoạt động sau khi kết nối dịch vụ AI/API.</div>
     </div>
     <div id="subtitle-status" role="status">Hãy tải/import kịch bản JSON trước, sau đó bấm “Tạo phụ đề”.</div>
     <textarea id="subtitle-preview" spellcheck="false" placeholder="Nội dung SRT sẽ xuất hiện ở đây sau khi tạo..." aria-label="Xem trước nội dung SRT"></textarea>
@@ -1969,8 +1978,22 @@
 
 
       layNgonNguDichPhuDe() {
+        const tenNgonNgu = {
+          en: 'English',
+          ja: 'Japanese',
+          ko: 'Korean',
+          th: 'Thai',
+          zh: 'Chinese',
+          id: 'Indonesian',
+          fr: 'French',
+          ar: 'Arabic',
+          de: 'German',
+          es: 'Spanish',
+          pt: 'Portuguese',
+          hi: 'Hindi'
+        };
         return Array.from(document.querySelectorAll('#subtitle-tools .subtitle-lang:checked'))
-          .map(input => ({ code: input.value, name: ({ en: 'English', ja: 'Japanese', ko: 'Korean' })[input.value] || input.value }));
+          .map(input => ({ code: input.value, name: tenNgonNgu[input.value] || input.value }));
       }
 
       // Tạo phụ đề SRT từ các lượt thoại trong JSON.
