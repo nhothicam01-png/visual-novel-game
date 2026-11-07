@@ -522,6 +522,7 @@
         this.currentIndex = 0;
         this.playbackGeneration = 0;
         this.seekDragging = false;
+        this.playbackStarted = false;
 
         this.currentTtsResolve = null;
         this.ttsRemainingText = "";
@@ -576,6 +577,7 @@
             this.danhSachVoices = this.ttsSynth.getVoices();
           }
           this.quetVaKhoiTaoNhanVat();
+          this.capNhatThanhTua();
           console.info('Đã tự động tải kịch bản ailahungthu.json');
         } catch (err) {
           // Không báo lỗi làm phiền người dùng; batDau() sẽ dùng đoạn text mẫu gốc.
@@ -1037,7 +1039,8 @@
         }
 
         document.getElementById('btn-pause').style.display = 'inline-block';
-        this.currentIndex = 0;
+        if (!this.playbackStarted) this.currentIndex = 0;
+        this.playbackStarted = true;
         this.capNhatThanhTua();
         this.chayToanBo();
       }
@@ -1122,12 +1125,12 @@
           this.dangChay = false;
           this.dangTamDung = false;
           document.getElementById('btn-pause').style.display = 'none';
-          // Khi nhấn tiếp tục, phát từ đúng lượt đã chọn.
+          // Nút Chạy sẽ tiếp tục từ lượt vừa chọn.
         } else {
           this.dangChay = false;
           this.dangTamDung = false;
           this.xoaChu();
-          this.xuLyKhung(ds[target]).then(() => {
+          this.xuLyKhung(ds[target], true).then(() => {
             // Chỉ hiển thị thử khung đã chọn; không tự đọc thoại khi đang dừng.
             if (this.ttsSynth) this.ttsSynth.cancel();
             this.audioTts.pause();
@@ -1166,7 +1169,7 @@
         if (this.isRecording) this.stopRecording();
       }
 
-      async xuLyKhung(khung) {
+      async xuLyKhung(khung, preview = false) {
         this.xoaChuKhongAnCanvas();
 
         const anhNen = khung.anh_nen || khung.background;
@@ -1236,7 +1239,7 @@
           this.layerVfx.style.display = 'none';
         }
 
-        if (amThanhNen && amThanhNen.trim() !== "") {
+        if (!preview && amThanhNen && amThanhNen.trim() !== "") {
           const bgmPath = `assets/AmThanh/Nen/${amThanhNen}`;
           if (!this.audioBgm.src.includes(amThanhNen)) {
             this.audioBgm.src = bgmPath;
@@ -1252,12 +1255,12 @@
           }
         }
 
-        if (amThanhHieuUng && amThanhHieuUng.trim() !== "") {
+        if (!preview && amThanhHieuUng && amThanhHieuUng.trim() !== "") {
           this.audioSfx.src = `assets/AmThanh/HieuUng/${amThanhHieuUng}`;
           this.audioSfx.play().catch(() => {});
         }
 
-        if (noiDung) {
+        if (noiDung && !preview) {
           this.hienLoiThoai(nhanVat, noiDung);
           this.currentSpeaker = nhanVat;
           this.ttsRemainingText = noiDung;
@@ -1266,12 +1269,14 @@
             this.currentTtsResolve = resolve;
             this.docVanBanBangTTS(nhanVat, noiDung, resolve);
           });
-        } else {
+        } else if (!preview) {
           await this.sleep(1000);
         }
 
-        const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
-        await this.sleep(thoiGianCho * 1000);
+        if (!preview) {
+          const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
+          await this.sleep(thoiGianCho * 1000);
+        }
       }
 
       async docVanBanBangTTS(nhanVat, text, resolveCallback) {
@@ -1357,6 +1362,7 @@
 
       dung() {
         this.playbackGeneration++;
+        this.playbackStarted = false;
         this.dangChay = false;
         this.dangTamDung = false;
         this.ttsRemainingText = "";
