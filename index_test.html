@@ -1134,7 +1134,7 @@
       async taiTruocDuLieu() {
         const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
         if (!ds.length) return;
-        await this.taiTruocCacCanh(0, 3, true);
+        await this.taiTruocCacCanh(this.currentIndex || 0, 3, true);
       }
 
       layTaiNguyenCuaCanh(khung) {
