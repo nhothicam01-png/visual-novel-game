@@ -491,6 +491,16 @@
       <button class="btn" type="button" id="btn-download-srt" onclick="trinhPhat.taiPhuDeSRT()" disabled>⬇ Tải file .SRT</button>
       <button class="btn" type="button" onclick="trinhPhat.saoChepPhuDe()">📋 Sao chép SRT</button>
     </div>
+    <div style="border-top:1px solid rgba(148,163,184,.2);padding-top:10px;display:flex;flex-direction:column;gap:8px;">
+      <strong style="font-size:.82rem;color:#67e8f9;">🌐 Ngôn ngữ dịch hàng loạt</strong>
+      <div style="font-size:.74rem;color:#94a3b8;">Chọn một hoặc nhiều ngôn ngữ. Danh sách đã lưu mặc định theo cấu hình Limao.</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;">
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="en" checked> English</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="ja" checked> 日本語 (Japanese)</label>
+        <label style="display:flex;gap:6px;align-items:center;"><input class="subtitle-lang" type="checkbox" value="ko" checked> 한국어 (Korean)</label>
+      </div>
+      <div id="subtitle-translation-status" style="font-size:.74rem;color:#fbbf24;">Đã chọn 3 ngôn ngữ. Chức năng dịch tự động sẽ hoạt động sau khi kết nối dịch vụ AI/API.</div>
+    </div>
     <div id="subtitle-status" role="status">Hãy tải/import kịch bản JSON trước, sau đó bấm “Tạo phụ đề”.</div>
     <textarea id="subtitle-preview" spellcheck="false" placeholder="Nội dung SRT sẽ xuất hiện ở đây sau khi tạo..." aria-label="Xem trước nội dung SRT"></textarea>
   </section>
@@ -1957,6 +1967,11 @@
         this.layerVfx.style.display = 'none';
       }
 
+
+      layNgonNguDichPhuDe() {
+        return Array.from(document.querySelectorAll('#subtitle-tools .subtitle-lang:checked'))
+          .map(input => ({ code: input.value, name: ({ en: 'English', ja: 'Japanese', ko: 'Korean' })[input.value] || input.value }));
+      }
 
       // Tạo phụ đề SRT từ các lượt thoại trong JSON.
       taoDuLieuPhuDe() {
