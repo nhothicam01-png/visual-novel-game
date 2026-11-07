@@ -433,26 +433,16 @@
     <input type="file" id="jsonFile" accept=".json" style="display: none;">
     <button class="btn" id="btn-import">📂 Import JSON</button>
     
-    <button id="btn-record-start" class="btn" onclick="trinhPhat.startRecording()">📦 Xuất ZIP ảnh + âm thanh & chạy</button>
-    <button id="btn-record-stop" class="btn" onclick="trinhPhat.stopRecording()" style="display:none;">⏹ Kết thúc & tải ZIP</button>
-    <span id="record-status" aria-live="polite">🔴 Đang thu: 0 khung hình</span>
+    <button id="btn-record-start" class="btn" onclick="trinhPhat.startRecording()">🎬 Chuẩn bị TTS & xuất MP4</button>
+    <button id="btn-record-stop" class="btn" onclick="trinhPhat.stopRecording()" style="display:none;">⏹ Dừng và xuất MP4</button>
+    <span id="record-status" aria-live="polite">🎬 Sẵn sàng xuất video</span>
     <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">🎞 FPS
       <select id="record-fps" style="background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:5px;padding:3px 6px;">
         <option value="12">12</option><option value="24">24</option><option value="25">25</option>
         <option value="30" selected>30</option><option value="50">50</option><option value="60">60</option>
       </select>
     </label>
-    <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">🔊 Âm thanh
-      <select id="record-audio-mode" style="background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:5px;padding:3px 6px;">
-        <option value="game" selected>Âm thanh game</option><option value="system">Âm thanh tab / hệ thống</option>
-      </select>
-    </label>
-    <label class="btn" style="display:inline-flex;align-items:center;gap:6px;">🖼 JPG
-      <select id="record-jpg-quality" style="background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:5px;padding:3px 6px;">
-        <option value="0.65">Nhẹ</option><option value="0.8" selected>Cân bằng</option><option value="0.92">Nét cao</option>
-      </select>
-    </label>
-    <span id="record-progress" style="font-size:.78rem;color:#cbd5e1;">Ảnh JPG tuần tự + audio riêng trong ZIP</span>
+    <span id="record-progress" style="font-size:.78rem;color:#cbd5e1;">TTS được tạo trước, sau đó kết xuất MP4.</span>
     <button id="btn-play" class="btn" onclick="trinhPhat.batDau()">▶ Chạy kịch bản</button>
     <button id="btn-pause" class="btn" onclick="trinhPhat.tamDung()" style="display: none;">⏸ Tạm dừng</button>
     <button id="btn-stop" class="btn" onclick="trinhPhat.dung()">⏹ Dừng phát</button>
@@ -519,6 +509,22 @@
       <span style="color: #64748b; font-style: italic;">Chưa có kịch bản hoặc nhân vật nào được tải. Hãy Import JSON trước!</span>
     </div>
   </div>
+  <section id="azure-tts-panel" style="width:100%;max-width:1000px;margin-top:8px;padding:12px 14px;background:rgba(15,23,42,.9);border:1px solid rgba(34,197,94,.35);border-radius:10px;color:#e2e8f0;display:flex;flex-direction:column;gap:9px;">
+    <h4 style="color:#86efac;font-size:.9rem;">☁️ Microsoft Azure Neural TTS – dùng khi xuất MP4</h4>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;">
+      <label style="font-size:.78rem;color:#cbd5e1;">Speech Region
+        <input id="azure-region" type="text" value="southeastasia" placeholder="southeastasia" autocomplete="off" style="display:block;width:100%;margin-top:4px;padding:8px;background:#1e293b;color:#fff;border:1px solid #475569;border-radius:6px;">
+      </label>
+      <label style="font-size:.78rem;color:#cbd5e1;">Speech Key
+        <input id="azure-key" type="password" placeholder="Dán Azure Speech Key" autocomplete="off" style="display:block;width:100%;margin-top:4px;padding:8px;background:#1e293b;color:#fff;border:1px solid #475569;border-radius:6px;">
+      </label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <button class="btn" type="button" onclick="trinhPhat.taiDanhSachGiongAzure()">🔄 Tải danh sách giọng Azure</button>
+      <span id="azure-tts-status" style="font-size:.78rem;color:#cbd5e1;">Nhập Region và Key để tải giọng. Key không được lưu vào GitHub hoặc localStorage.</span>
+    </div>
+    <p style="font-size:.72rem;color:#94a3b8;line-height:1.45;">Lưu ý: nhập Key trực tiếp trên trình duyệt chỉ phù hợp thử nghiệm cá nhân. Khi đưa website công khai, hãy chuyển yêu cầu Azure qua máy chủ trung gian để bảo vệ Key.</p>
+  </section>
 
   <audio id="audio-bgm" loop crossorigin="anonymous"></audio>
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
@@ -583,6 +589,11 @@
         this.audioDestination = null;
         this.audioTts = document.getElementById('audio-tts');
         this.ttsServerUrl = '';
+        this.azureVoices = [];
+        this.azureAudioCache = new Map();
+        this.azureObjectUrls = [];
+        this.usePreparedTts = false;
+        this.azureRegion = 'southeastasia';
 
         this.cauHinhGiongNhanVat = {};
         this.khoaLuuGiongNhanVat = 'vn-character-tts-settings';
@@ -1071,11 +1082,17 @@
             optionsHtml += `<option value="${lang.code}" ${selected}>${lang.name}</option>`;
           });
 
+          this.azureVoices.forEach(v => {
+            const selected = cfg.azureVoice === v.ShortName ? 'selected' : '';
+            optionsHtml += `<option value="azure:${this.escapeHtmlThoai(v.ShortName)}" ${selected}>☁️ ${this.escapeHtmlThoai(v.DisplayName || v.ShortName)} (${v.Locale})</option>`;
+          });
           if (this.danhSachVoices.length > 0) {
+            optionsHtml += '<optgroup label="Giọng có sẵn trên thiết bị">';
             this.danhSachVoices.forEach((v, idx) => {
-              const selected = (cfg.voiceIndex === idx || (cfg.voiceURI && cfg.voiceURI === v.voiceURI)) ? 'selected' : '';
-              optionsHtml += `<option value="${idx}" ${selected}>${v.name} (${v.lang})</option>`;
+              const selected = (!cfg.azureVoice && (cfg.voiceIndex === idx || (cfg.voiceURI && cfg.voiceURI === v.voiceURI))) ? 'selected' : '';
+              optionsHtml += `<option value="${idx}" ${selected}>${this.escapeHtmlThoai(v.name)} (${v.lang})</option>`;
             });
+            optionsHtml += '</optgroup>';
           }
 
           const row = document.createElement('div');
@@ -1094,6 +1111,14 @@
         if (!this.cauHinhGiongNhanVat[tenNhanVat]) return;
 
         if (loai === 'voice') {
+          if (String(giaTri).startsWith('azure:')) {
+            const voiceName = String(giaTri).slice(6);
+            this.cauHinhGiongNhanVat[tenNhanVat].azureVoice = voiceName;
+            const azureVoice = this.azureVoices.find(v => v.ShortName === voiceName);
+            if (azureVoice) this.cauHinhGiongNhanVat[tenNhanVat].lang = azureVoice.Locale;
+          } else {
+            this.cauHinhGiongNhanVat[tenNhanVat].azureVoice = '';
+          }
           if (isNaN(giaTri)) {
             this.cauHinhGiongNhanVat[tenNhanVat].lang = giaTri;
             const foundIdx = this.danhSachVoices.findIndex(v => v.lang.toLowerCase().includes(giaTri.toLowerCase().split('-')[0]));
@@ -1751,7 +1776,19 @@
           ? this.cauHinhGiongNhanVat[nhanVat]
           : { voiceIndex: 0, rate: 1.1, pitch: 1.0, lang: this.ngonNguMacDinh };
 
-        // Dùng giọng đọc có sẵn trong trình duyệt, không cần máy chủ bên ngoài.
+        // Khi xuất MP4, phát bản Azure đã được tổng hợp trước để âm thanh đi vào luồng ghi.
+        if (this.usePreparedTts && this.azureAudioCache.has(this.currentIndex)) {
+          const prepared = this.azureAudioCache.get(this.currentIndex);
+          this.audioTts.pause();
+          this.audioTts.src = prepared.url;
+          this.audioTts.currentTime = 0;
+          this.audioTts.volume = this.ttsVolume;
+          this.audioTts.onended = () => { this.ttsRemainingText = ''; this.currentTtsResolve = null; resolveCallback(); };
+          this.audioTts.onerror = () => { this.currentTtsResolve = null; resolveCallback(); };
+          this.audioTts.play().catch(err => { console.error('Không phát được TTS đã chuẩn bị:', err); resolveCallback(); });
+          return;
+        }
+        // Phát bình thường bằng giọng có sẵn của trình duyệt khi không ở chế độ xuất.
         if (!this.ttsSynth) { resolveCallback(); return; }
         this.ttsSynth.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
@@ -1863,41 +1900,132 @@
         this.layerVfx.style.display = 'none';
       }
 
+      async taiDanhSachGiongAzure() {
+        const key = document.getElementById('azure-key').value.trim();
+        const region = document.getElementById('azure-region').value.trim();
+        const status = document.getElementById('azure-tts-status');
+        if (!key || !region) { alert('Hãy nhập Azure Speech Key và Region.'); return; }
+        status.textContent = 'Đang lấy danh sách giọng từ Microsoft...';
+        try {
+          const response = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/voices/list`, {
+            method: 'GET', headers: { 'Ocp-Apim-Subscription-Key': key }
+          });
+          if (!response.ok) throw new Error(`Azure trả về HTTP ${response.status}: ${await response.text()}`);
+          const voices = await response.json();
+          this.azureVoices = voices.filter(v => v && v.ShortName && v.Locale);
+          this.azureRegion = region;
+          this.quetVaKhoiTaoNhanVat();
+          status.textContent = `Đã tải ${this.azureVoices.length} giọng. Giọng Azure được thêm vào danh sách của từng nhân vật.`;
+        } catch (err) {
+          status.textContent = 'Không tải được danh sách giọng: ' + err.message;
+          alert('Lỗi Azure Voice List: ' + err.message);
+        }
+      }
+
+      taoSsmlAzure(text, cfg) {
+        const voice = cfg.azureVoice || this.azureVoices.find(v => v.Locale === (cfg.lang || 'vi-VN'))?.ShortName ||
+          this.azureVoices.find(v => (v.Locale || '').startsWith((cfg.lang || 'vi-VN').split('-')[0]))?.ShortName;
+        if (!voice) throw new Error('Chưa chọn giọng Azure cho nhân vật. Hãy tải danh sách giọng và chọn giọng Azure trong cấu hình nhân vật.');
+        const lang = (this.azureVoices.find(v => v.ShortName === voice)?.Locale || cfg.lang || 'vi-VN');
+        const rate = Math.round((Number(cfg.rate ?? 1) - 1) * 100);
+        const pitch = Math.round((Number(cfg.pitch ?? 1) - 1) * 50);
+        const prosody = `<prosody rate="${rate >= 0 ? '+' : ''}${rate}%" pitch="${pitch >= 0 ? '+' : ''}${pitch}%">${this.escapeHtmlThoai(text)}</prosody>`;
+        return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}"><voice name="${voice}">${prosody}</voice></speak>`;
+      }
+
+      async taoTruocToanBoTTS() {
+        const key = document.getElementById('azure-key').value.trim();
+        const region = document.getElementById('azure-region').value.trim();
+        if (!key || !region) throw new Error('Hãy nhập Azure Speech Key và Region trước khi xuất MP4.');
+        if (!this.azureVoices.length) await this.taiDanhSachGiongAzure();
+        if (!this.azureVoices.length) throw new Error('Chưa tải được danh sách giọng Azure.');
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        const jobs = ds.map((scene, index) => ({ scene, index })).filter(x => typeof x.scene.noi_dung === 'string' && x.scene.noi_dung.trim());
+        this.azureAudioCache.clear();
+        this.azureObjectUrls.forEach(url => URL.revokeObjectURL(url));
+        this.azureObjectUrls = [];
+        const status = document.getElementById('record-progress');
+        for (let i = 0; i < jobs.length; i++) {
+          const { scene, index } = jobs[i];
+          const speaker = scene.nhan_vat;
+          const cfg = (speaker && this.cauHinhGiongNhanVat[speaker]) || { lang: 'vi-VN', rate: 1, pitch: 1 };
+          const ssml = this.taoSsmlAzure(scene.noi_dung, cfg);
+          if (status) status.textContent = `Đang tạo TTS ${i + 1}/${jobs.length}: ${speaker || 'Người dẫn'}...`;
+          const response = await fetch(`https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`, {
+            method: 'POST',
+            headers: {
+              'Ocp-Apim-Subscription-Key': key,
+              'Content-Type': 'application/ssml+xml',
+              'X-Microsoft-OutputFormat': 'audio-24khz-48kbitrate-mono-mp3',
+              'User-Agent': 'VisualNovelWebPlayer'
+            },
+            body: ssml
+          });
+          if (!response.ok) throw new Error(`TTS cảnh ${index + 1} lỗi HTTP ${response.status}: ${await response.text()}`);
+          const blob = await response.blob();
+          if (!blob.size) throw new Error(`Azure trả về âm thanh rỗng ở cảnh ${index + 1}.`);
+          const url = URL.createObjectURL(blob);
+          this.azureObjectUrls.push(url);
+          this.azureAudioCache.set(index, { url, blob });
+        }
+        if (status) status.textContent = `Đã tạo xong ${jobs.length} đoạn TTS. Bắt đầu kết xuất video...`;
+      }
+
+      async taiFFmpeg() {
+        if (window.FFmpeg?.createFFmpeg) return window.FFmpeg;
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Không tải được FFmpeg. Kiểm tra kết nối Internet rồi thử lại.'));
+          document.head.appendChild(script);
+        });
+        if (!window.FFmpeg?.createFFmpeg) throw new Error('Thư viện FFmpeg không khởi tạo được.');
+        return window.FFmpeg;
+      }
+
+      async chuyenWebMThanhMP4(blob) {
+        const FFmpeg = await this.taiFFmpeg();
+        const ffmpeg = FFmpeg.createFFmpeg({
+          log: false,
+          corePath: 'https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
+          progress: ({ ratio }) => {
+            const status = document.getElementById('record-progress');
+            if (status && Number.isFinite(ratio)) status.textContent = 'Đang mã hóa MP4: ' + Math.round(ratio * 100) + '%';
+          }
+        });
+        if (!ffmpeg.isLoaded()) await ffmpeg.load();
+        ffmpeg.FS('writeFile', 'input.webm', new Uint8Array(await blob.arrayBuffer()));
+        await ffmpeg.run('-i', 'input.webm', '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', 'output.mp4');
+        const data = ffmpeg.FS('readFile', 'output.mp4');
+        const mp4 = new Blob([data.buffer], { type: 'video/mp4' });
+        try { ffmpeg.FS('unlink', 'input.webm'); ffmpeg.FS('unlink', 'output.mp4'); } catch (_) {}
+        return mp4;
+      }
+
       async startRecording() {
         if (this.isRecording) return;
-        if (!window.MediaRecorder || !HTMLCanvasElement.prototype.toBlob) {
-          alert('Trình duyệt chưa hỗ trợ xuất ảnh Canvas / MediaRecorder. Hãy thử Chrome, Edge hoặc Safari mới.');
+        if (!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream) {
+          alert('Trình duyệt không hỗ trợ ghi video Canvas. Hãy dùng Chrome, Edge hoặc Safari phiên bản mới.');
           return;
         }
         if (this.dangChay || this.dangTamDung) {
           alert('Hãy dừng kịch bản hiện tại trước khi bắt đầu xuất.');
           return;
         }
+        if (!this.duLieu) { alert('Hãy tải hoặc Import JSON trước khi xuất video.'); return; }
         try {
           this.recordingFps = Number(document.getElementById('record-fps')?.value || 30);
-          this.jpgQuality = Number(document.getElementById('record-jpg-quality')?.value || 0.8);
-          this.audioMode = document.getElementById('record-audio-mode')?.value || 'game';
+          const portrait = this.container.classList.contains('portrait');
+          const outWidth = portrait ? 1080 : 1920, outHeight = portrait ? 1920 : 1080;
+          this.hienLoading(true);
+          this.capNhatTienDoLoad(2, 'Đang tạo trước toàn bộ giọng đọc Azure...');
+          await this.taoTruocToanBoTTS();
+          this.hienLoading(false);
+
           this.khoiTaoBoTronAmThanh();
           await this.audioContext.resume();
-
-          this.systemAudioStream = null;
-          if (this.audioMode === 'system') {
-            if (!navigator.mediaDevices?.getDisplayMedia) throw new Error('Trình duyệt này không hỗ trợ chọn chia sẻ tab/màn hình có âm thanh.');
-            const shared = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
-            shared.getVideoTracks().forEach(track => track.stop());
-            const tracks = shared.getAudioTracks();
-            if (!tracks.length) {
-              shared.getTracks().forEach(track => track.stop());
-              throw new Error('Nguồn chia sẻ không cung cấp âm thanh. Hãy chọn tab có bật chia sẻ âm thanh hoặc chuyển sang “Âm thanh game”.');
-            }
-            this.systemAudioStream = shared;
-            this.systemAudioSource = this.audioContext.createMediaStreamSource(new MediaStream(tracks));
-            this.systemAudioSource.connect(this.audioDestination);
-          }
-
-          const portrait = this.container.classList.contains('portrait');
-          const outWidth = portrait ? 1080 : 1920;
-          const outHeight = portrait ? 1920 : 1080;
+          this.audioTts.volume = this.ttsVolume;
           this.recordingCanvas = document.createElement('canvas');
           this.recordingCanvas.width = outWidth;
           this.recordingCanvas.height = outHeight;
@@ -1924,147 +2052,111 @@
             else if (this.layerBgImg.style.display !== 'none' && this.layerBgImg.style.display !== '') drawImageCover(this.layerBgImg, 0, 0, outWidth, outHeight);
             if (this.layerChar.style.display !== 'none' && this.layerChar.style.display !== '') {
               const cr = this.layerChar.getBoundingClientRect();
-              ctx.save();
-              ctx.globalAlpha = Number.parseFloat(getComputedStyle(this.layerChar).opacity || '1');
-              drawVideo(this.layerChar, (cr.left-rect.left)*sx, (cr.top-rect.top)*sy, cr.width*sx, cr.height*sy, 'contain');
-              ctx.restore();
+              ctx.save(); ctx.globalAlpha = Number.parseFloat(getComputedStyle(this.layerChar).opacity || '1');
+              drawVideo(this.layerChar, (cr.left - rect.left) * sx, (cr.top - rect.top) * sy, cr.width * sx, cr.height * sy, 'contain'); ctx.restore();
+            }
+            if (this.layerCharBuffer.style.display !== 'none' && this.layerCharBuffer.style.display !== '') {
+              const cr = this.layerCharBuffer.getBoundingClientRect();
+              ctx.save(); ctx.globalAlpha = Number.parseFloat(getComputedStyle(this.layerCharBuffer).opacity || '1');
+              drawVideo(this.layerCharBuffer, (cr.left - rect.left) * sx, (cr.top - rect.top) * sy, cr.width * sx, cr.height * sy, 'contain'); ctx.restore();
             }
             if (this.layerVfx.style.display !== 'none' && this.layerVfx.style.display !== '') drawImageCover(this.layerVfx, 0, 0, outWidth, outHeight);
             if (this.dialogueCanvas.style.display !== 'none') {
-              const dr = this.dialogueCanvas.getBoundingClientRect(), x=(dr.left-rect.left)*sx, y=(dr.top-rect.top)*sy, w=dr.width*sx, h=dr.height*sy;
-              ctx.save(); ctx.fillStyle=getComputedStyle(this.dialogueCanvas).backgroundColor || 'rgba(5,8,17,.62)'; ctx.beginPath();
-              if (ctx.roundRect) ctx.roundRect(x,y,w,h,18); else ctx.rect(x,y,w,h); ctx.fill();
-              const style=getComputedStyle(this.dialogueText), fs=parseFloat(style.fontSize)*sy;
-              ctx.font=`${style.fontWeight||'400'} ${fs}px ${style.fontFamily||'sans-serif'}`;
-              ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.lineJoin='round'; ctx.lineWidth=Math.max(2,fs*.055);
-              ctx.strokeStyle='#000'; ctx.fillStyle='#fff';
-              const raw=this.dialogueText.innerText||'', maxW=w-48, lines=[]; let line='';
-              for (const word of raw.split(/\\s+/)) { const test=line?line+' '+word:word; if(line&&ctx.measureText(test).width>maxW){lines.push(line);line=word;}else line=test; }
-              if(line) lines.push(line);
-              const lh=fs*1.4, sy0=y+h/2-((lines.length-1)*lh)/2;
-              lines.forEach((t,i)=>{ctx.strokeText(t,x+w/2,sy0+i*lh,maxW);ctx.fillText(t,x+w/2,sy0+i*lh,maxW);});
+              const dr = this.dialogueCanvas.getBoundingClientRect(), x = (dr.left - rect.left) * sx, y = (dr.top - rect.top) * sy, w = dr.width * sx, h = dr.height * sy;
+              ctx.save(); ctx.fillStyle = getComputedStyle(this.dialogueCanvas).backgroundColor || 'rgba(5,8,17,.62)';
+              ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, 18); else ctx.rect(x, y, w, h); ctx.fill();
+              const style = getComputedStyle(this.dialogueText), fs = parseFloat(style.fontSize) * sy;
+              ctx.font = `${style.fontWeight || '400'} ${fs}px ${style.fontFamily || 'sans-serif'}`;
+              ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(2, fs * .055);
+              ctx.strokeStyle = style.webkitTextStrokeColor || '#000'; ctx.fillStyle = style.color || '#fff';
+              const raw = this.dialogueText.innerText || '', maxW = w - 48, lines = []; let line = '';
+              for (const word of raw.split(/\\s+/)) { const test = line ? line + ' ' + word : word; if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = word; } else line = test; }
+              if (line) lines.push(line);
+              const lh = fs * 1.4, y0 = y + h / 2 - ((lines.length - 1) * lh) / 2;
+              lines.forEach((t, i) => { ctx.strokeText(t, x + w / 2, y0 + i * lh, maxW); ctx.fillText(t, x + w / 2, y0 + i * lh, maxW); });
               ctx.restore();
             }
           };
 
-          this.frameBlobs = [];
-          this.frameCount = 0;
-          this.stopFrameCapture = false;
-          this.audioChunks = [];
-          const audioStream = this.audioDestination.stream;
-          const audioMime = ['audio/webm;codecs=opus','audio/mp4','audio/ogg;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t)) || '';
-          this.audioRecorder = new MediaRecorder(audioStream, audioMime ? {mimeType:audioMime,audioBitsPerSecond:192000} : {audioBitsPerSecond:192000});
-          this.audioRecorder.ondataavailable = e => { if(e.data?.size) this.audioChunks.push(e.data); };
-          this.audioRecorder.onstop = async () => {
+          const canvasStream = this.recordingCanvas.captureStream(this.recordingFps);
+          const tracks = [...canvasStream.getVideoTracks(), ...this.audioDestination.stream.getAudioTracks()];
+          this.recordingStream = new MediaStream(tracks);
+          const preferred = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
+          this.recordingMime = preferred.find(type => MediaRecorder.isTypeSupported(type)) || '';
+          this.recordedChunks = [];
+          this.mediaRecorder = new MediaRecorder(this.recordingStream, this.recordingMime ? { mimeType: this.recordingMime, videoBitsPerSecond: 8000000, audioBitsPerSecond: 192000 } : { videoBitsPerSecond: 8000000, audioBitsPerSecond: 192000 });
+          this.mediaRecorder.ondataavailable = event => { if (event.data?.size) this.recordedChunks.push(event.data); };
+          this.mediaRecorder.onstop = async () => {
             try {
-              const audioBlob = new Blob(this.audioChunks,{type:this.audioRecorder?.mimeType||'audio/webm'});
-              await this.downloadRecordingZip(audioBlob, outWidth, outHeight);
-            } catch(err) { console.error(err); alert('Không thể tạo ZIP: '+err.message); }
-            finally { this.cleanupRecordingCapture(); this.resetRecordingUI(); }
-          };
-          this.audioRecorder.start(1000);
-          this.isRecording = true;
-          this.container.classList.add('is-recording');
-          document.getElementById('btn-record-start').style.display='none';
-          document.getElementById('btn-record-stop').style.display='inline-block';
-          document.getElementById('record-status').classList.add('active');
-          document.getElementById('record-progress').textContent='Đang chuẩn bị khung hình...';
-          this.frameCapturePromise = this.captureJpgFrames();
-          await this.batDau();
-        } catch(err) {
-          console.error('Không thể bắt đầu xuất ZIP:',err);
-          this.stopFrameCapture = true;
-          if(this.audioRecorder && this.audioRecorder.state!=='inactive') this.audioRecorder.stop();
-          else { this.cleanupRecordingCapture(); this.resetRecordingUI(); }
-          alert('Không thể bắt đầu: '+(err.message||err));
-        }
-      }
-
-      async captureJpgFrames() {
-        const interval=1000/this.recordingFps;
-        let next=performance.now();
-        while(!this.stopFrameCapture) {
-          const now=performance.now();
-          if(now>=next) {
-            this.drawRecordingFrame();
-            const blob=await new Promise(resolve=>this.recordingCanvas.toBlob(resolve,'image/jpeg',this.jpgQuality));
-            if(blob) {
-              this.frameBlobs.push(blob); this.frameCount++;
-              const status=document.getElementById('record-status');
-              if(status) status.textContent='🔴 Đang thu: '+this.frameCount.toLocaleString('vi-VN')+' khung hình';
-              const progress=document.getElementById('record-progress');
-              if(progress) progress.textContent='Đã tạo '+this.frameCount.toLocaleString('vi-VN')+' ảnh JPG';
+              const raw = new Blob(this.recordedChunks, { type: this.mediaRecorder.mimeType || this.recordingMime || 'video/webm' });
+              const mp4 = raw.type.includes('mp4') ? raw : await this.chuyenWebMThanhMP4(raw);
+              const url = URL.createObjectURL(mp4), link = document.createElement('a');
+              link.href = url; link.download = 'visual-novel-' + new Date().toISOString().replace(/[:.]/g, '-') + '.mp4';
+              document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 180000);
+              const status = document.getElementById('record-progress');
+              if (status) status.textContent = 'Hoàn tất! Đã xuất MP4 ' + outWidth + '×' + outHeight + '.';
+            } catch (err) {
+              console.error('MP4 export error:', err);
+              alert('Không thể tạo MP4: ' + err.message + '. Hãy thử lại trên Chrome/Edge mới và giữ tab mở trong lúc mã hóa.');
+            } finally {
+              this.cleanupRecordingCapture(); this.resetRecordingUI();
+              this.usePreparedTts = false;
+              this.azureAudioCache.clear();
+              this.azureObjectUrls.forEach(url => URL.revokeObjectURL(url));
+              this.azureObjectUrls = [];
+              this.hienLoading(false);
             }
-            next+=interval;
-            if(next<performance.now()-interval) next=performance.now()+interval;
-          } else await new Promise(resolve=>setTimeout(resolve,Math.min(8,next-now)));
+          };
+          this.isRecording = true;
+          this.usePreparedTts = true;
+          this.container.classList.add('is-recording');
+          document.getElementById('btn-record-start').style.display = 'none';
+          document.getElementById('btn-record-stop').style.display = 'inline-block';
+          document.getElementById('record-status').classList.add('active');
+          document.getElementById('record-progress').textContent = 'Đang ghi video ' + outWidth + '×' + outHeight + ' @ ' + this.recordingFps + ' FPS...';
+          this.drawRecordingFrame();
+          this.recordingFrameTimer = setInterval(() => this.drawRecordingFrame(), 1000 / this.recordingFps);
+          this.mediaRecorder.start(1000);
+          this.currentIndex = 0;
+          this.playbackStarted = true;
+          await this.batDau();
+        } catch (err) {
+          this.hienLoading(false);
+          this.usePreparedTts = false;
+          this.isRecording = false;
+          this.cleanupRecordingCapture();
+          alert('Không thể bắt đầu xuất MP4: ' + (err.message || err));
+          console.error(err);
         }
       }
 
       async stopRecording() {
-        if(!this.isRecording) return;
-        this.dangChay=false; this.dangTamDung=false; this.stopFrameCapture=true;
-        this.ttsRemainingText=''; this.currentTtsResolve=null;
-        if(this.ttsSynth) this.ttsSynth.cancel();
-        this.audioTts.pause(); clearInterval(this.hienChuInterval);
-        this.audioBgm.pause(); this.audioSfx.pause(); this.layerBgVideo.pause(); this.layerChar.pause(); this.xoaChu();
-        if(this.frameCapturePromise) await this.frameCapturePromise;
-        const status=document.getElementById('record-status');
-        if(status) status.textContent='⏳ Đang đóng gói ZIP...';
-        if(this.audioRecorder && this.audioRecorder.state!=='inactive') this.audioRecorder.stop();
+        if (!this.isRecording) return;
+        this.dangChay = false; this.dangTamDung = false; this.playbackGeneration++;
+        this.ttsRemainingText = ''; this.currentTtsResolve = null;
+        if (this.ttsSynth) this.ttsSynth.cancel();
+        this.audioTts.pause(); this.audioTts.onended = null;
+        clearInterval(this.hienChuInterval);
+        this.audioBgm.pause(); this.audioSfx.pause(); this.layerBgVideo.pause(); this.layerChar.pause(); this.layerCharBuffer.pause(); this.xoaChu();
+        clearInterval(this.recordingFrameTimer);
+        const status = document.getElementById('record-status');
+        if (status) status.textContent = '⏳ Đang hoàn tất và mã hóa MP4...';
+        if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') this.mediaRecorder.stop();
       }
-
-      async downloadRecordingZip(audioBlob, width, height) {
-        if(!this.frameBlobs?.length) throw new Error('Không có khung hình nào được ghi.');
-        const files=this.frameBlobs.map((blob,i)=>({name:'images/frame_'+String(i+1).padStart(6,'0')+'.jpg',blob}));
-        if(audioBlob?.size) files.push({name:audioBlob.type.includes('mp4')?'audio.mp4':audioBlob.type.includes('ogg')?'audio.ogg':'audio.webm',blob:audioBlob});
-        const meta='Visual Novel export\\nResolution: '+width+'x'+height+'\\nFPS: '+this.recordingFps+'\\nFrames: '+this.frameBlobs.length+'\\nAudio mode: '+this.audioMode+'\\nAudio format: '+(audioBlob?.type||'none')+'\\n';
-        files.push({name:'metadata.txt',blob:new Blob([meta],{type:'text/plain;charset=utf-8'})});
-        const zip=await this.createStoredZip(files);
-        const url=URL.createObjectURL(zip), link=document.createElement('a');
-        link.href=url; link.download='visual-novel-frames-'+new Date().toISOString().replace(/[:.]/g,'-')+'.zip';
-        document.body.appendChild(link); link.click(); link.remove(); setTimeout(()=>URL.revokeObjectURL(url),120000);
-        const progress=document.getElementById('record-progress');
-        if(progress) progress.textContent='Hoàn tất: '+files.length+' tệp trong ZIP.';
-      }
-
-      async createStoredZip(files) {
-        const enc=new TextEncoder(), locals=[], centrals=[]; let offset=0;
-        const crcTable=TrinhPhatKichBanWeb.crcTable || (TrinhPhatKichBanWeb.crcTable=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1);t[n]=c>>>0;}return t;})());
-        const crc32=data=>{let c=0xffffffff;for(let i=0;i<data.length;i++)c=crcTable[(c^data[i])&255]^(c>>>8);return (c^0xffffffff)>>>0;};
-        const dosDate=new Date(), time=(dosDate.getHours()<<11)|(dosDate.getMinutes()<<5)|(Math.floor(dosDate.getSeconds()/2)), date=((Math.max(1980,dosDate.getFullYear())-1980)<<9)|((dosDate.getMonth()+1)<<5)|dosDate.getDate();
-        for(const file of files) {
-          const name=enc.encode(file.name), data=new Uint8Array(await file.blob.arrayBuffer()), crc=crc32(data);
-          const local=new Uint8Array(30+name.length), lv=new DataView(local.buffer);
-          lv.setUint32(0,0x04034b50,true);lv.setUint16(4,20,true);lv.setUint16(6,0x0800,true);lv.setUint16(8,0,true);
-          lv.setUint16(10,time,true);lv.setUint16(12,date,true);lv.setUint32(14,crc,true);lv.setUint32(18,data.length,true);lv.setUint32(22,data.length,true);lv.setUint16(26,name.length,true);lv.setUint16(28,0,true);local.set(name,30);
-          locals.push(local,data);
-          const central=new Uint8Array(46+name.length), cv=new DataView(central.buffer);
-          cv.setUint32(0,0x02014b50,true);cv.setUint16(4,20,true);cv.setUint16(6,20,true);cv.setUint16(8,0x0800,true);cv.setUint16(10,0,true);
-          cv.setUint16(12,time,true);cv.setUint16(14,date,true);cv.setUint32(16,crc,true);cv.setUint32(20,data.length,true);cv.setUint32(24,data.length,true);
-          cv.setUint16(28,name.length,true);cv.setUint16(30,0,true);cv.setUint16(32,0,true);cv.setUint16(34,0,true);cv.setUint16(36,0,true);cv.setUint32(38,0,true);cv.setUint32(42,offset,true);central.set(name,46);
-          centrals.push(central); offset+=local.length+data.length;
-        }
-        const centralSize=centrals.reduce((s,a)=>s+a.length,0), end=new Uint8Array(22), ev=new DataView(end.buffer);
-        ev.setUint32(0,0x06054b50,true);ev.setUint16(4,0,true);ev.setUint16(6,0,true);ev.setUint16(8,files.length,true);ev.setUint16(10,files.length,true);ev.setUint32(12,centralSize,true);ev.setUint32(16,offset,true);ev.setUint16(20,0,true);
-        return new Blob([...locals,...centrals,end],{type:'application/zip'});
-      }
-
-      static crcTable = null;
 
       resetRecordingUI() {
-        this.isRecording=false; this.mediaRecorder=null; this.audioRecorder=null;
-        this.recordedChunks=[]; this.audioChunks=[]; this.frameBlobs=[];
+        this.isRecording = false; this.mediaRecorder = null;
+        this.recordedChunks = [];
         this.container.classList.remove('is-recording');
-        document.getElementById('btn-record-start').style.display='inline-block';
-        document.getElementById('btn-record-stop').style.display='none';
+        document.getElementById('btn-record-start').style.display = 'inline-block';
+        document.getElementById('btn-record-stop').style.display = 'none';
         document.getElementById('record-status').classList.remove('active');
       }
 
       cleanupRecordingCapture() {
-        if(this.systemAudioSource) { try{this.systemAudioSource.disconnect();}catch(e){} this.systemAudioSource=null; }
-        if(this.systemAudioStream) { this.systemAudioStream.getTracks().forEach(t=>t.stop()); this.systemAudioStream=null; }
-        this.recordingCanvas=null; this.drawRecordingFrame=null;
+        clearInterval(this.recordingFrameTimer);
+        if (this.recordingStream) { this.recordingStream.getTracks().forEach(track => track.stop()); this.recordingStream = null; }
+        this.recordingCanvas = null; this.drawRecordingFrame = null;
       }
 
       sleep(ms) {
