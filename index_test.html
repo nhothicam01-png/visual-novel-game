@@ -120,24 +120,28 @@
 
     #layer-vfx { z-index: 3; pointer-events: none; display: none; }
 
-    .character-talking {
-      animation: characterTalkAnim 1.2s ease-in-out infinite;
+    /* Nhân vật xuất hiện / biến mất bằng hiệu ứng mờ dần, không còn nhún nhảy. */
+    #layer-character {
+      opacity: 0;
     }
 
-    #game-container.portrait .character-talking {
-      animation: characterTalkAnimPortrait 1.2s ease-in-out infinite;
+    #layer-character.character-entering {
+      animation: characterFadeIn 0.5s ease-out both;
     }
 
-    @keyframes characterTalkAnim {
-      0%   { transform: translateX(-50%) translateY(0) scaleY(1); }
-      50%  { transform: translateX(-50%) translateY(-1.5%) scaleY(1.01); }
-      100% { transform: translateX(-50%) translateY(0) scaleY(1); }
+    #layer-character.character-exiting {
+      animation: characterFadeOut 0.4s ease-in both;
+      pointer-events: none;
     }
 
-    @keyframes characterTalkAnimPortrait {
-      0%   { transform: translateX(-50%) translateY(0) scaleY(1); }
-      50%  { transform: translateX(-50%) translateY(+1.5%) scaleY(1.01); }
-      100% { transform: translateX(-50%) translateY(0) scaleY(1); }
+    @keyframes characterFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes characterFadeOut {
+      from { opacity: 1; }
+      to   { opacity: 0; }
     }
 
     #dialogue-canvas {
@@ -1530,6 +1534,28 @@
         if (this.isRecording) this.stopRecording();
       }
 
+      async choHieuUngNhanVat(className, duration) {
+        const el = this.layerChar;
+        el.classList.remove('character-entering', 'character-exiting');
+        void el.offsetWidth;
+        el.classList.add(className);
+        await new Promise(resolve => {
+          let finished = false;
+          const done = () => {
+            if (finished) return;
+            finished = true;
+            el.removeEventListener('animationend', onEnd);
+            clearTimeout(fallback);
+            resolve();
+          };
+          const onEnd = event => {
+            if (event.target === el) done();
+          };
+          const fallback = setTimeout(done, duration + 100);
+          el.addEventListener('animationend', onEnd);
+        });
+      }
+
       async xuLyKhung(khung, preview = false, generation = this.playbackGeneration) {
         if (generation !== this.playbackGeneration) return;
         this.xoaChuKhongAnCanvas();
@@ -1569,33 +1595,50 @@
           }
         }
 
-        // Xử lý nhân vật bằng Video WebM trong suốt (Giữ nguyên tiến trình nếu biểu cảm giống cảnh trước)
+        // Nhân vật: chỉ fade khi thực sự đổi/ẩn nhân vật; giữ nguyên hình khi thoại tiếp nối.
         if (nhanVat && bieuCam && nhanVat.trim() !== "" && bieuCam.trim() !== "") {
           const videoPath = `assets/NhanVat/${nhanVat}/${bieuCam}.webm`;
           const currentSrc = this.layerChar.getAttribute('src') || '';
-          
-          if (!currentSrc.includes(videoPath)) {
+          const sameCharacterVideo = currentSrc.includes(videoPath);
+          const wasVisible = this.layerChar.style.display === 'block' && !this.layerChar.classList.contains('character-exiting');
+
+          if (!sameCharacterVideo && wasVisible) {
+            await this.choHieuUngNhanVat('character-exiting', 400);
+            if (generation !== this.playbackGeneration) return;
+            this.layerChar.style.display = 'none';
+            this.layerChar.classList.remove('character-exiting', 'character-entering');
+            this.layerChar.style.opacity = '0';
+          }
+
+          if (!sameCharacterVideo) {
             const warm = this.videoPreloadCache.get(videoPath);
             if (warm) await warm.promise;
             if (generation !== this.playbackGeneration) return;
             this.layerChar.src = videoPath;
             this.layerChar.load();
           }
+
           await this.choVideoSanSang(this.layerChar);
           if (generation !== this.playbackGeneration) return;
-          if (this.layerChar.paused) {
-            await this.layerChar.play().catch(()=>{});
-          }
+          if (this.layerChar.paused) await this.layerChar.play().catch(()=>{});
 
           this.layerChar.style.display = 'block';
-
-          if (!this.layerChar.classList.contains('character-talking')) {
-            this.layerChar.classList.add('character-talking');
+          if (!wasVisible || !sameCharacterVideo) {
+            this.layerChar.classList.remove('character-exiting', 'character-entering');
+            this.layerChar.style.opacity = '0';
+            // Ép trình duyệt ghi nhận opacity 0 trước khi chạy fade-in.
+            void this.layerChar.offsetWidth;
+            this.layerChar.classList.add('character-entering');
           }
         } else {
+          if (this.layerChar.style.display === 'block' && !this.layerChar.classList.contains('character-exiting')) {
+            await this.choHieuUngNhanVat('character-exiting', 400);
+            if (generation !== this.playbackGeneration) return;
+          }
           this.layerChar.style.display = 'none';
           this.layerChar.pause();
-          this.layerChar.classList.remove('character-talking');
+          this.layerChar.classList.remove('character-entering', 'character-exiting');
+          this.layerChar.style.opacity = '0';
         }
 
         if (anhHieuUng && anhHieuUng.trim() !== "") {
