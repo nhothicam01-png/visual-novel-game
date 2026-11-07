@@ -37,6 +37,14 @@ input[type=range]{padding:0;accent-color:var(--accent)}
     <label class="field">Tốc độ tối đa khi cần khớp <span id="maxVal" class="pill">2.0×</span><input id="maxRate" type="range" min="1" max="3.5" step=".1" value="2"></label>
     <label class="field">Âm lượng <span id="volVal" class="pill">100%</span><input id="volume" type="range" min="0" max="1" step=".05" value="1"></label>
     <label class="field">Xử lý câu quá dài<input value="Tăng tốc, sau đó ngắt ở mốc kế tiếp" readonly></label>
+    <label class="field">File cấu hình TTS (.json)
+      <input id="ttsConfigFile" type="file" accept=".json,application/json" style="display:block;min-height:auto;padding:7px">
+    </label>
+    <div class="field" style="justify-content:end">
+      <span class="note">Nhận diện người nói từ tiền tố: Tên nhân vật: lời thoại</span>
+      <button id="applyTtsConfig" type="button" class="secondary">🎭 Áp dụng cấu hình TTS</button>
+      <span id="ttsConfigStatus" class="note">Chưa nạp cấu hình nhân vật.</span>
+    </div>
   </div>
   <div class="note" style="margin-top:12px">Tốc độ sẽ tự tăng trong giới hạn đã chọn nếu câu dài. Nếu vẫn không kịp, mặc định trang sẽ dừng câu ở mốc kế tiếp để giữ đồng bộ. Chất lượng và danh sách giọng phụ thuộc trình duyệt/hệ điều hành.</div>
 </section>
@@ -63,6 +71,7 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 const $=id=>document.getElementById(id);
 let cues=[], voices=[], timers=[], playing=false, paused=false, startedAt=0, pausedAt=0, playhead=0, raf=0, activeIndex=-1, activeUtterance=null, generation=0, cueErrors=new Set();
 let displayStream=null, recorder=null, recordChunks=[], recording=false, recordingFinalizing=false, mp3Url=null;
+let ttsCharacterConfig={}, ttsConfigLoaded=false, speakerByCue=new Map();
 const synth=window.speechSynthesis;
 const fmt=s=>{s=Math.max(0,s||0);const m=Math.floor(s/60),sec=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
 function parseTime(s){
@@ -86,6 +95,45 @@ function parseSub(raw){
 }
 function loadVoices(){voices=synth?synth.getVoices():[];const sel=$('voice'),old=sel.value;sel.innerHTML='<option value="">Tự động chọn giọng phù hợp</option>';voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name+' ('+v.lang+')';sel.append(o)});if(old)sel.value=old}
 function chosenVoice(){if($('voice').value!=='')return voices[+$('voice').value]||null;const lang=$('lang').value.toLowerCase();return voices.find(v=>v.lang.toLowerCase()===lang)||voices.find(v=>v.lang.toLowerCase().startsWith(lang.split('-')[0]))||null}
+function matchConfiguredVoice(cfg,lang){
+ const list=voices||[];
+ if(cfg.voiceURI){const v=list.find(x=>x.voiceURI===cfg.voiceURI);if(v)return v}
+ if(cfg.voiceName){const v=list.find(x=>x.name===cfg.voiceName&&(!cfg.lang||x.lang===cfg.lang));if(v)return v}
+ const wanted=String(lang||'').toLowerCase();
+ return list.find(v=>(v.lang||'').toLowerCase()===wanted)||list.find(v=>(v.lang||'').toLowerCase().startsWith(wanted.split('-')[0]))||null;
+}
+function splitSpeakerLine(text,knownNames){
+ const raw=String(text||'').trim();
+ for(const name of knownNames){
+  for(const prefix of ['['+name+']',name]){
+   if(raw.slice(0,prefix.length).toLowerCase()!==prefix.toLowerCase())continue;
+   const rest=raw.slice(prefix.length);
+   const sep=new RegExp('^\\\\s*[:：—-]\\\\s*').exec(rest);
+   if(sep)return {speaker:name,text:rest.slice(sep[0].length).trim()};
+  }
+ }
+ return {speaker:'',text:raw};
+}
+function applySpeakerDetection(){
+ speakerByCue.clear();let matched=0;const names=Object.keys(ttsCharacterConfig);
+ cues=cues.map((cue,i)=>{const parsed=splitSpeakerLine(cue.text,names);if(parsed.speaker){speakerByCue.set(i,parsed.speaker);matched++}return {...cue,text:parsed.text||cue.text}});
+ render();return {matched,total:cues.length};
+}
+async function loadTtsConfigFile(file){
+ if(!file)return;
+ try{const data=JSON.parse(await file.text());const chars=data.nhan_vat||data.characters||data;
+  if(!chars||typeof chars!=='object'||Array.isArray(chars))throw new Error('Cấu trúc JSON không hợp lệ.');
+  ttsCharacterConfig=chars;ttsConfigLoaded=true;$('ttsConfigStatus').textContent='Đã nạp '+Object.keys(chars).length+' nhân vật. Nhấn Áp dụng.';
+ }catch(err){ttsCharacterConfig={};ttsConfigLoaded=false;$('ttsConfigStatus').textContent='Không đọc được cấu hình: '+err.message}
+}
+function applyTtsConfig(){
+ if(!ttsConfigLoaded){$('ttsConfigStatus').textContent='Hãy chọn file _tts.json trước.';return}
+ const result=applySpeakerDetection(),found=new Set(speakerByCue.values());
+ const missing=Object.keys(ttsCharacterConfig).filter(name=>!found.has(name));
+ const noVoice=[...found].filter(name=>{const cfg=ttsCharacterConfig[name]||{};return !matchConfiguredVoice(cfg,cfg.lang||$('lang').value)});
+ $('ttsConfigStatus').textContent='Nhận diện '+result.matched+'/'+result.total+' câu · '+found.size+' nhân vật.'+(missing.length?' Không thấy trong phụ đề: '+missing.join(', ')+'.':'')+(noVoice.length?' Thiết bị thiếu giọng phù hợp: '+noVoice.join(', ')+'.':'');
+ setStatus('Đã áp dụng cấu hình TTS theo nhân vật. Câu không có tên sẽ dùng giọng mặc định.');
+}
 function setStatus(s){$('status').textContent=s}
 function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length;$('recordPlay').disabled=!cues.length}
 function setActive(i){if(i===activeIndex)return;activeIndex=i;document.querySelectorAll('.cue').forEach((el)=>el.classList.toggle('active',+el.dataset.i===i));if(i>=0){const c=cues[i];$('current').innerHTML='';const small=document.createElement('small');small.textContent='CÂU '+(i+1)+' · '+fmt(c.start)+' → '+fmt(c.end);const body=document.createElement('div');body.textContent=c.text;$('current').append(small,body);const el=document.querySelector('.cue[data-i="'+i+'"]');if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'})}}
@@ -94,10 +142,14 @@ function clock(){if(!playing||paused)return;playhead=(performance.now()-startedA
 function speakCue(i,token){
  if(token!==generation||!playing||paused)return;const c=cues[i];if(!c)return;
  const remaining=Math.max(.15,c.end-Math.max(playhead,c.start));setActive(i);
- const utter=new SpeechSynthesisUtterance(c.text);utter.lang=$('lang').value;utter.voice=chosenVoice();utter.volume=+$('volume').value;
- const base=+$('rate').value,max=+$('maxRate').value;
- // Ước lượng thời lượng dựa trên độ dài văn bản; tự tăng tốc nếu gần chạm mốc kết thúc.
- const chars=[...c.text].length;const estimated=chars/(13*base);const required=estimated/remaining;
+ const speaker=speakerByCue.get(i)||'',cfg=ttsCharacterConfig[speaker]||{};
+ const utter=new SpeechSynthesisUtterance(c.text);
+ const base=Math.max(.1,Math.min(2,Number(cfg.rate)||+$('rate').value));
+ const max=Math.max(base,Math.min(3.5,+$('maxRate').value));
+ const lang=cfg.lang||$('lang').value;
+ utter.lang=lang;utter.voice=matchConfiguredVoice(cfg,lang)||chosenVoice();
+ utter.pitch=Math.max(.1,Math.min(2,Number(cfg.pitch)||1));utter.volume=+$('volume').value;
+ const chars=[...c.text].length,estimated=chars/(13*base),required=estimated/remaining;
  utter.rate=Math.min(max,Math.max(base,base*required));
  activeUtterance=utter;
  utter.onerror=e=>{if(token===generation&&e.error!=='canceled'&&e.error!=='interrupted'){cueErrors.add(i);setStatus('Một câu không đọc được: '+(e.error||'lỗi giọng đọc'))}};
@@ -196,6 +248,8 @@ async function readSubtitleFile(file){
   setStatus('Import thất bại. Hãy kiểm tra tên file và thông báo lỗi ở trên.');
  }
 }
+$('ttsConfigFile').addEventListener('change',e=>loadTtsConfigFile(e.target.files&&e.target.files[0]));
+$('applyTtsConfig').addEventListener('click',applyTtsConfig);
 $('choose').addEventListener('click',()=>{$('file').value='';$('file').click()});
 $('file').addEventListener('change',e=>readSubtitleFile(e.target.files&&e.target.files[0]));
 const dz=$('dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)readSubtitleFile(f)});
