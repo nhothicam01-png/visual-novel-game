@@ -1119,7 +1119,9 @@
           } else {
             this.cauHinhGiongNhanVat[tenNhanVat].azureVoice = '';
           }
-          if (isNaN(giaTri)) {
+          if (String(giaTri).startsWith('azure:')) {
+            // Đã lưu azureVoice và Locale ở trên; không ghi đè bằng chuỗi lựa chọn.
+          } else if (isNaN(giaTri)) {
             this.cauHinhGiongNhanVat[tenNhanVat].lang = giaTri;
             const foundIdx = this.danhSachVoices.findIndex(v => v.lang.toLowerCase().includes(giaTri.toLowerCase().split('-')[0]));
             if (foundIdx !== -1) {
