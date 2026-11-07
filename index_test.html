@@ -923,7 +923,7 @@
       async chuanBiNhacNen() {
         if (!this.duLieu) return;
         const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo || [];
-        const firstScene = ds[this.currentIndex] || ds[0];
+        const firstScene = this.layKhungKeThua(this.currentIndex) || ds[0];
         const tenNhac = firstScene && (firstScene.am_thanh_nen || firstScene.bgm);
         if (!tenNhac || typeof tenNhac !== 'string' || !tenNhac.trim()) return;
         if (!this.audioBgm.src.includes(tenNhac.trim())) {
@@ -1137,6 +1137,28 @@
         await this.taiTruocCacCanh(this.currentIndex || 0, 3, true);
       }
 
+      // Dựng lại trạng thái tài nguyên có tính kế thừa đến một lượt bất kỳ.
+      // Các trường để trống sẽ dùng giá trị gần nhất đã khai báo ở những lượt trước.
+      // Chỉ kế thừa nền và nhạc nền; hiệu ứng/SFX vẫn là tài nguyên riêng từng lượt.
+      layKhungKeThua(index) {
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        if (!ds.length || index < 0 || index >= ds.length) return ds[index] || null;
+        const resolved = { ...ds[index] };
+        const timGiaTriGanNhat = keys => {
+          for (let i = index; i >= 0; i--) {
+            const scene = ds[i] || {};
+            for (const key of keys) {
+              const value = scene[key];
+              if (typeof value === 'string' && value.trim()) return value.trim();
+            }
+          }
+          return '';
+        };
+        resolved.anh_nen = timGiaTriGanNhat(['anh_nen', 'background']);
+        resolved.am_thanh_nen = timGiaTriGanNhat(['am_thanh_nen', 'bgm']);
+        return resolved;
+      }
+
       layTaiNguyenCuaCanh(khung) {
         const assets = [];
         const add = (path, folder, kind) => {
@@ -1172,7 +1194,7 @@
         const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
         const unique = new Map();
         for (let i = startIndex; i < Math.min(ds.length, startIndex + count); i++) {
-          for (const asset of this.layTaiNguyenCuaCanh(ds[i])) unique.set(asset.path, asset);
+          for (const asset of this.layTaiNguyenCuaCanh(this.layKhungKeThua(i))) unique.set(asset.path, asset);
         }
         const tasks = [...unique.values()].filter(asset => asset.kind === 'character-video' ? !this.videoPreloadCache?.has(asset.path) : !this.preloadResourceCache?.has(asset.path));
         if (!tasks.length) { if (showProgress) this.capNhatTienDoLoad(100, 'Tài nguyên mở đầu đã có sẵn trong bộ nhớ đệm.'); return; }
@@ -1462,7 +1484,7 @@
           this.dangChay = false;
           this.dangTamDung = false;
           this.xoaChu();
-          this.xuLyKhung(ds[target], true, this.playbackGeneration).then(() => {
+          this.xuLyKhung(this.layKhungKeThua(target), true, this.playbackGeneration).then(() => {
             // Chỉ hiển thị thử khung đã chọn; không tự đọc thoại khi đang dừng.
             if (this.ttsSynth) this.ttsSynth.cancel();
             this.audioTts.pause();
@@ -1484,7 +1506,7 @@
           }
           if (!this.dangChay || generation !== this.playbackGeneration) break;
 
-          const khung = ds[this.currentIndex];
+          const khung = this.layKhungKeThua(this.currentIndex);
           await this.xuLyKhung(khung, false, generation);
           if (generation !== this.playbackGeneration) break;
 
