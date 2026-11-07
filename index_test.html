@@ -1114,6 +1114,7 @@
         }
         this.ttsRemainingText = '';
         this.currentIndex = target;
+        this.playbackStarted = true;
         this.seekDragging = false;
         this.capNhatThanhTua();
 
@@ -1161,6 +1162,7 @@
         }
 
         if (generation !== this.playbackGeneration) return;
+        if (this.currentIndex >= ds.length) this.playbackStarted = false;
         this.dangChay = false;
         document.getElementById('btn-pause').style.display = 'none';
         this.capNhatThanhTua();
