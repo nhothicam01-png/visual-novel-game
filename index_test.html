@@ -628,7 +628,7 @@
           if (resume) resume.style.display = 'inline-block';
         } catch (err) {
           this.currentIndex = 0; this.playbackStarted = false;
-          try { const all = JSON.parse(localStorage.getItem(this.progressStorageKey) || '{}'); delete all[this.progressScriptId]; localStorage.setItem(this.progressStorageKey, JSON.stringify(all)); } catch (_) {}
+          try { const all = JSON.parse(localStorage.getItem(this.progressStorageKey) || '{}'); delete all[this.progressScriptId]; localStorage.setItem(this.progressStorageKey, JSON.stringify(all)); } catch (_) { try { localStorage.removeItem(this.progressStorageKey); } catch (_) {} }
           if (status) status.textContent = 'Không đọc được tiến độ, sẽ phát lại từ đầu.'; if (resume) resume.style.display = 'none';
           console.warn('Tiến độ lưu bị lỗi, bắt đầu lại từ đầu:', err);
         }
@@ -1175,7 +1175,7 @@
         const promise = new Promise(resolve => {
           let done = false;
           const finish = ok => { if (done) return; done = true; clearTimeout(timer); video.removeEventListener('loadeddata', onReady); video.removeEventListener('canplay', onReady); video.removeEventListener('error', onError); resolve(ok); };
-          const onReady = () => finish(true), onError = () => finish(false), timer = setTimeout(() => finish(false), 20000);
+          const onReady = () => finish(true), onError = () => finish(false), timer = setTimeout(() => finish(false), 8000);
           video.addEventListener('loadeddata', onReady); video.addEventListener('canplay', onReady); video.addEventListener('error', onError); video.load();
           if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) finish(true);
         });
