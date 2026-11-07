@@ -93,7 +93,7 @@
     #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
     
     /* Mặc định - Màn hình Ngang (1920x1080): Bám sát mép ĐỈNH (top: 0) */
-    #layer-character {
+    #layer-character, #layer-character-buffer {
       position: absolute;
       top: 0;
       left: 50%;
@@ -108,7 +108,7 @@
     }
 
     /* Màn hình Dọc (.portrait - 1080x1920): Bám sát mép ĐÁY (bottom: 0) */
-    #game-container.portrait #layer-character {
+    #game-container.portrait #layer-character, #layer-character-buffer {
       top: auto;
       bottom: 0;
       width: auto;
@@ -121,11 +121,11 @@
     #layer-vfx { z-index: 3; pointer-events: none; display: none; }
 
     /* Nhân vật hiển thị ngay lập tức, không dùng hiệu ứng mờ dần. */
-    #layer-character {
+    #layer-character, #layer-character-buffer {
       opacity: 1;
     }
 
-    #layer-character.character-exiting {
+    #layer-character, #layer-character-buffer.character-exiting {
       pointer-events: none;
     }
 
@@ -416,6 +416,7 @@
     
     <!-- Sử dụng Video WebM trong suốt cho nhân vật -->
     <video id="layer-character" class="game-layer" autoplay muted loop playsinline></video>
+    <video id="layer-character-buffer" class="game-layer" autoplay muted loop playsinline></video>
     
     <img id="layer-vfx" class="game-layer" src="" alt="VFX Overlay" />
 
@@ -527,6 +528,8 @@
         this.layerBgImg = document.getElementById('layer-bg-img');
         this.layerBgVideo = document.getElementById('layer-bg-video');
         this.layerChar = document.getElementById('layer-character');
+        this.layerCharBuffer = document.getElementById('layer-character-buffer');
+        this.layerCharBuffer.style.display = 'none';
         this.layerVfx = document.getElementById('layer-vfx');
         this.dialogueCanvas = document.getElementById('dialogue-canvas');
         this.speakerText = document.getElementById('speaker-name');
@@ -1620,34 +1623,54 @@
           const videoPath = `assets/NhanVat/${nhanVat}/${bieuCam}.webm`;
           const currentSrc = this.layerChar.getAttribute('src') || '';
           const sameCharacterVideo = currentSrc.includes(videoPath);
-          const wasVisible = this.layerChar.style.display === 'block' && !this.layerChar.classList.contains('character-exiting');
 
-          if (!sameCharacterVideo && wasVisible) {
-            this.layerChar.style.display = 'none';
-            this.layerChar.classList.remove('character-exiting', 'character-entering');
-            this.layerChar.style.opacity = '1';
-          }
-
-          if (!sameCharacterVideo) {
+          if (sameCharacterVideo) {
+            await this.choVideoSanSang(this.layerChar);
+            if (generation !== this.playbackGeneration) return;
+            if (this.layerChar.paused) await this.layerChar.play().catch(()=>{});
+            this.layerChar.style.display = 'block';
+          } else {
+            // Nạp nhân vật mới trên lớp video đang ẩn; giữ nguyên nhân vật cũ trong lúc chờ.
+            const nextLayer = this.layerChar === document.getElementById('layer-character')
+              ? this.layerCharBuffer : document.getElementById('layer-character');
             const warm = this.videoPreloadCache.get(videoPath);
             if (warm) await warm.promise;
             if (generation !== this.playbackGeneration) return;
-            this.layerChar.src = videoPath;
-            this.layerChar.load();
+
+            nextLayer.pause();
+            nextLayer.style.display = 'none';
+            nextLayer.src = videoPath;
+            nextLayer.load();
+            await this.choVideoSanSang(nextLayer);
+            if (generation !== this.playbackGeneration) return;
+
+            await nextLayer.play().catch(() => {});
+            if (generation !== this.playbackGeneration) {
+              nextLayer.pause();
+              return;
+            }
+
+            // Chỉ đổi lớp sau khi video mới đã sẵn sàng phát, không để lộ nền trống.
+            const previousLayer = this.layerChar;
+            nextLayer.style.display = 'block';
+            nextLayer.classList.remove('character-entering', 'character-exiting');
+            nextLayer.style.opacity = '1';
+            previousLayer.style.display = 'none';
+            previousLayer.pause();
+            previousLayer.classList.remove('character-entering', 'character-exiting');
+            previousLayer.style.opacity = '1';
+            this.layerChar = nextLayer;
+            this.layerCharBuffer = previousLayer;
           }
-
-          await this.choVideoSanSang(this.layerChar);
-          if (generation !== this.playbackGeneration) return;
-          if (this.layerChar.paused) await this.layerChar.play().catch(()=>{});
-
-          this.layerChar.style.display = 'block';
-          this.layerChar.classList.remove('character-entering', 'character-exiting');
-          this.layerChar.style.opacity = '1';
         } else {
           this.layerChar.style.display = 'none';
           this.layerChar.pause();
+          this.layerCharBuffer.style.display = 'none';
+          this.layerCharBuffer.pause();
           this.layerChar.classList.remove('character-entering', 'character-exiting');
+          this.layerCharBuffer.classList.remove('character-entering', 'character-exiting');
           this.layerChar.style.opacity = '1';
+          this.layerCharBuffer.style.opacity = '1';
         }
 
         if (anhHieuUng && anhHieuUng.trim() !== "") {
@@ -1808,8 +1831,13 @@
         this.layerBgImg.style.display = 'none';
         this.layerBgVideo.style.display = 'none';
         this.layerChar.style.display = 'none';
+        this.layerChar.pause();
+        this.layerCharBuffer.style.display = 'none';
+        this.layerCharBuffer.pause();
         this.layerChar.classList.remove('character-entering', 'character-exiting');
+        this.layerCharBuffer.classList.remove('character-entering', 'character-exiting');
         this.layerChar.style.opacity = '1';
+        this.layerCharBuffer.style.opacity = '1';
         this.layerVfx.style.display = 'none';
       }
 
