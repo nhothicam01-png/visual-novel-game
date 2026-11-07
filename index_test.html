@@ -579,6 +579,11 @@
         this.ttsServerUrl = '';
 
         this.cauHinhGiongNhanVat = {};
+        this.khoaLuuGiongNhanVat = 'vn-character-tts-settings';
+        try {
+          this.cauHinhGiongNhanVatDaLuu = JSON.parse(localStorage.getItem(this.khoaLuuGiongNhanVat) || '{}');
+          if (!this.cauHinhGiongNhanVatDaLuu || typeof this.cauHinhGiongNhanVatDaLuu !== 'object' || Array.isArray(this.cauHinhGiongNhanVatDaLuu)) this.cauHinhGiongNhanVatDaLuu = {};
+        } catch (_) { this.cauHinhGiongNhanVatDaLuu = {}; }
         this.ttsSynth = window.speechSynthesis || null;
         this.danhSachVoices = [];
         this.ngonNguMacDinh = this.layNgonNguMacDinh();
@@ -849,14 +854,25 @@
             this.danhSachVoices = this.ttsSynth.getVoices();
             // Chọn giọng đọc khớp với ngôn ngữ thiết bị nếu trình duyệt có cung cấp.
             Object.values(this.cauHinhGiongNhanVat).forEach(cfg => {
-              const ma = (cfg.lang || this.ngonNguMacDinh).toLowerCase();
-              let idx = this.danhSachVoices.findIndex(v => (v.lang || '').toLowerCase() === ma);
-              if (idx === -1) {
-                const nhom = ma.split('-')[0];
-                idx = this.danhSachVoices.findIndex(v => (v.lang || '').toLowerCase().startsWith(nhom + '-'));
+              // Ưu tiên khôi phục đúng giọng bằng voiceURI; chỉ dò theo tên/ngôn ngữ khi cần.
+              let idx = cfg.voiceURI ? this.danhSachVoices.findIndex(v => v.voiceURI === cfg.voiceURI) : -1;
+              if (idx === -1 && cfg.voiceName) {
+                idx = this.danhSachVoices.findIndex(v => v.name === cfg.voiceName && (!cfg.lang || v.lang === cfg.lang));
               }
-              // Không chọn voiceIndex 0 nếu đó là giọng của ngôn ngữ khác.
+              if (idx === -1) {
+                const ma = (cfg.lang || this.ngonNguMacDinh).toLowerCase();
+                idx = this.danhSachVoices.findIndex(v => (v.lang || '').toLowerCase() === ma);
+                if (idx === -1) {
+                  const nhom = ma.split('-')[0];
+                  idx = this.danhSachVoices.findIndex(v => (v.lang || '').toLowerCase().startsWith(nhom + '-'));
+                }
+              }
               cfg.voiceIndex = idx;
+              if (idx >= 0) {
+                cfg.voiceURI = this.danhSachVoices[idx].voiceURI;
+                cfg.voiceName = this.danhSachVoices[idx].name;
+                cfg.lang = this.danhSachVoices[idx].lang || cfg.lang;
+              }
             });
             if (this.duLieu && this.danhSachVoices.length > 0) {
               this.quetVaKhoiTaoNhanVat();
@@ -998,11 +1014,16 @@
             // Lần khởi tạo đầu tiên: lấy ngôn ngữ từ noi_dung của chính nhân vật.
             // Người dùng vẫn có thể đổi ngôn ngữ/giọng đọc sau trong bảng cấu hình.
             const ngonNguNoiDung = this.phatHienNgonNguTuNoiDung(ds, ten);
-            this.cauHinhGiongNhanVat[ten] = {
+            const macDinh = {
               voiceIndex: this.timGiongTheoNgonNgu(ngonNguNoiDung),
               rate: 1.1,
               pitch: 1.0,
               lang: ngonNguNoiDung
+            };
+            // Khôi phục thiết lập TTS đã lưu riêng cho nhân vật này.
+            this.cauHinhGiongNhanVat[ten] = {
+              ...macDinh,
+              ...(this.cauHinhGiongNhanVatDaLuu[ten] || {})
             };
           }
         });
@@ -1046,7 +1067,7 @@
 
           if (this.danhSachVoices.length > 0) {
             this.danhSachVoices.forEach((v, idx) => {
-              const selected = (cfg.voiceIndex === idx) ? 'selected' : '';
+              const selected = (cfg.voiceIndex === idx || (cfg.voiceURI && cfg.voiceURI === v.voiceURI)) ? 'selected' : '';
               optionsHtml += `<option value="${idx}" ${selected}>${v.name} (${v.lang})</option>`;
             });
           }
@@ -1079,12 +1100,26 @@
               this.cauHinhGiongNhanVat[tenNhanVat].lang = this.danhSachVoices[giaTri].lang;
             }
           }
+          const selectedVoice = this.danhSachVoices[this.cauHinhGiongNhanVat[tenNhanVat].voiceIndex];
+          if (selectedVoice) {
+            this.cauHinhGiongNhanVat[tenNhanVat].voiceURI = selectedVoice.voiceURI;
+            this.cauHinhGiongNhanVat[tenNhanVat].voiceName = selectedVoice.name;
+          }
         } else if (loai === 'rate') {
           this.cauHinhGiongNhanVat[tenNhanVat].rate = parseFloat(giaTri);
           document.getElementById(`rate-val-${tenNhanVat}`).innerText = giaTri;
         } else if (loai === 'pitch') {
           this.cauHinhGiongNhanVat[tenNhanVat].pitch = parseFloat(giaTri);
           document.getElementById(`pitch-val-${tenNhanVat}`).innerText = giaTri;
+        }
+        this.luuCauHinhGiongNhanVat();
+      }
+
+      luuCauHinhGiongNhanVat() {
+        try {
+          localStorage.setItem(this.khoaLuuGiongNhanVat, JSON.stringify(this.cauHinhGiongNhanVat));
+        } catch (err) {
+          console.warn('Không thể lưu cấu hình TTS theo nhân vật:', err);
         }
       }
 
