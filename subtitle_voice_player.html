@@ -65,14 +65,24 @@ let cues=[], voices=[], timers=[], playing=false, paused=false, startedAt=0, pau
 let displayStream=null, recorder=null, recordChunks=[], recording=false, recordingFinalizing=false, mp3Url=null;
 const synth=window.speechSynthesis;
 const fmt=s=>{s=Math.max(0,s||0);const m=Math.floor(s/60),sec=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
-function parseTime(s){const m=s.trim().replace(',','.').match(/^(?:(\d{1,2}):)?(\d{1,2}):(\d{2})\.(\d{1,3})$/);if(!m)return NaN;return (+(m[1]||0))*3600+(+m[2])*60+(+m[3])+(+(m[4]||0).padEnd(3,'0'))/1000}
+function parseTime(s){
+ const value=String(s||'').trim().replace(',','.');
+ const parts=value.split(':');if(parts.length<2||parts.length>3)return NaN;
+ const sec=parseFloat(parts.pop());const min=parseInt(parts.pop(),10);const hour=parts.length?parseInt(parts.pop(),10):0;
+ if(!Number.isFinite(sec)||!Number.isFinite(min)||!Number.isFinite(hour)||sec<0||min<0||hour<0||min>59||sec>=60)return NaN;
+ return hour*3600+min*60+sec;
+}
 function parseSub(raw){
- const text=raw.replace(/^\uFEFF/,'').replace(/\r/g,'').trim();let blocks=text.split(/\n\s*\n/),out=[];
- for(const block of blocks){const lines=block.split('\n').map(x=>x.trim()).filter(Boolean);let ti=lines.findIndex(x=>x.includes('-->'));if(ti<0)continue;
- const pair=lines[ti].split('-->');const start=parseTime(pair[0]),end=parseTime(pair[1].split(/\s+/)[0]);const body=lines.slice(ti+1).join('\n').replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').trim();
- if(Number.isFinite(start)&&Number.isFinite(end)&&end>start&&body)out.push({start,end,text:body});
+ const text=String(raw||'').replace(/^\\uFEFF/,'').replace(/[\\u200B-\\u200D\\u2060]/g,'').replace(/\\r\\n?/g,'\\n').replace(/\\u00A0/g,' ');
+ const lines=text.split('\\n'),out=[];let current=null;
+ const timeLine=/^\\s*((?:\\d{1,2}:)?\\d{1,2}:\\d{2}(?:[,.]\\d{1,3})?)\\s*-->\\s*((?:\\d{1,2}:)?\\d{1,2}:\\d{2}(?:[,.]\\d{1,3})?)(?:\\s+.*)?$/;
+ const clean=s=>s.replace(/<[^>]*>/g,'').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&quot;/gi,'"').trim();
+ const save=()=>{if(!current)return;const body=clean(current.body.join('\\n'));if(Number.isFinite(current.start)&&Number.isFinite(current.end)&&current.end>current.start&&body)out.push({start:current.start,end:current.end,text:body});current=null};
+ for(const rawLine of lines){const line=rawLine.trim();const m=line.match(timeLine);if(m){save();current={start:parseTime(m[1]),end:parseTime(m[2]),body:[]};continue}
+  if(!current||!line||/^\\d+$/.test(line)||/^WEBVTT(?:\\s|$)/i.test(line)||/^NOTE(?:\\s|$)/i.test(line)||/^STYLE$/i.test(line)||/^REGION$/i.test(line))continue;
+  current.body.push(line);
  }
- return out.sort((a,b)=>a.start-b.start);
+ save();return out.sort((a,b)=>a.start-b.start);
 }
 function loadVoices(){voices=synth?synth.getVoices():[];const sel=$('voice'),old=sel.value;sel.innerHTML='<option value="">Tự động chọn giọng phù hợp</option>';voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name+' ('+v.lang+')';sel.append(o)});if(old)sel.value=old}
 function chosenVoice(){if($('voice').value!=='')return voices[+$('voice').value]||null;const lang=$('lang').value.toLowerCase();return voices.find(v=>v.lang.toLowerCase()===lang)||voices.find(v=>v.lang.toLowerCase().startsWith(lang.split('-')[0]))||null}
