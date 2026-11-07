@@ -1704,10 +1704,29 @@
           const status = document.getElementById('progress-status'), resume = document.getElementById('btn-resume-progress');
           if (status) status.textContent = 'Đã phát hết kịch bản.'; if (resume) resume.style.display = 'none';
         }
+        const daPhatHetKichBan = this.currentIndex >= ds.length;
         this.dangChay = false;
+        this.dangTamDung = false;
         document.getElementById('btn-pause').style.display = 'none';
+        document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
         this.capNhatThanhTua();
         this.xoaChu();
+
+        // Khi hoàn tất toàn bộ kịch bản: dừng các media còn chạy và tự tạo SRT.
+        if (daPhatHetKichBan) {
+          if (this.ttsSynth) this.ttsSynth.cancel();
+          this.audioTts.pause();
+          this.audioBgm.pause();
+          this.audioSfx.pause();
+          this.layerBgVideo.pause();
+          this.layerChar.pause();
+          this.layerCharBuffer.pause();
+          this.taoBanXemTruocPhuDe();
+          const subtitleStatus = document.getElementById('subtitle-status');
+          if (subtitleStatus && this.subtitleSrt) {
+            subtitleStatus.textContent += ' Player đã tự dừng và phụ đề đã được tạo tự động. Bạn có thể tải file .SRT.';
+          }
+        }
       }
 
       async choHieuUngNhanVat(className, duration) {
