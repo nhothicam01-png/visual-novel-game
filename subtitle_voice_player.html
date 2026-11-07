@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Subtitle Voice Player</title>
+<style>
+:root{color-scheme:dark;--bg:#080d19;--panel:#111a2c;--line:#293650;--muted:#9aabc4;--accent:#9b7bff;--cyan:#55d9e8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#17213b 0,#080d19 58%);color:#eef3ff;font:15px/1.5 system-ui,Segoe UI,sans-serif;padding:24px}
+main{max-width:1100px;margin:auto}.top{margin-bottom:20px}.top h1{margin:0 0 5px;font-size:clamp(25px,4vw,36px)}.top p{color:var(--muted);margin:0}
+.panel{background:#111a2ceF;border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 12px 35px #0004}
+.upload{border:1.5px dashed #58698c;border-radius:12px;padding:24px;text-align:center;background:#0c1425}.upload.drag{border-color:var(--cyan);background:#102432}
+button,select,input{font:inherit}button{border:0;border-radius:9px;padding:10px 15px;background:linear-gradient(120deg,#6c61e9,#a16be9);color:white;font-weight:650;cursor:pointer}button.secondary{background:#26334c}button:disabled{opacity:.4;cursor:not-allowed}input[type=file]{display:none}
+.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px;margin-top:14px}
+label.field{display:flex;flex-direction:column;gap:6px;color:#b9c7dc;font-size:13px}select,input[type=number],input[type=range]{width:100%;min-height:38px;background:#0a1221;color:#eef3ff;border:1px solid #34435f;border-radius:8px;padding:7px}
+input[type=range]{padding:0;accent-color:var(--accent)}
+#timeline{width:100%;accent-color:var(--cyan)}.time-row{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.status{color:var(--cyan);font-size:13px;margin-top:10px;min-height:20px}.current{font-size:18px;min-height:76px;padding:16px;background:#091222;border:1px solid #273650;border-radius:10px;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}.current small{display:block;color:var(--cyan);font-size:12px;margin-bottom:7px}
+.list{max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:7px}.cue{display:grid;grid-template-columns:105px 1fr;gap:12px;padding:10px;border:1px solid #26344d;border-radius:9px;background:#0c1424;cursor:pointer}.cue.active{border-color:var(--cyan);background:#102532}.cue time{font-size:12px;color:var(--cyan);font-variant-numeric:tabular-nums}.cue p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.note{font-size:12px;color:var(--muted)}.pill{display:inline-block;padding:3px 8px;border-radius:20px;background:#26334c;color:#c8d5ea;font-size:12px}
+@media(max-width:600px){body{padding:12px}.panel{padding:13px}.cue{grid-template-columns:1fr;gap:3px}}
+</style>
+</head>
+<body><main>
+<header class="top"><h1>🔊 Subtitle Voice Player</h1><p>Import SRT/VTT → chọn ngôn ngữ và giọng đọc → phát lời thoại theo đúng mốc thời gian phụ đề.</p></header>
+<section class="panel">
+  <div class="upload" id="dropzone"><strong>Thả file phụ đề vào đây</strong><div class="note">Hỗ trợ .SRT và .VTT · Xử lý trực tiếp trên trình duyệt</div><div style="margin-top:13px"><button id="choose">📂 Chọn file phụ đề</button><input id="file" type="file" accept=".srt,.vtt,text/plain"></div><div id="filename" class="status">Chưa có file nào được tải lên.</div></div>
+  <div class="grid">
+    <label class="field">Ngôn ngữ đọc<select id="lang">
+      <option value="es-ES">Español (Tây Ban Nha)</option><option value="es-MX" selected>Español (Mỹ Latinh)</option>
+      <option value="en-US">English (US)</option><option value="en-GB">English (UK)</option><option value="vi-VN">Tiếng Việt</option>
+      <option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="th-TH">ไทย</option><option value="zh-CN">中文</option>
+      <option value="id-ID">Bahasa Indonesia</option><option value="fr-FR">Français</option><option value="de-DE">Deutsch</option><option value="pt-BR">Português (Brasil)</option><option value="ar-SA">العربية</option><option value="hi-IN">हिन्दी</option>
+    </select></label>
+    <label class="field">Giọng đọc có trên thiết bị<select id="voice"><option value="">Tự động chọn giọng phù hợp</option></select></label>
+    <label class="field">Tốc độ cơ bản <span id="rateVal" class="pill">1.0×</span><input id="rate" type="range" min=".7" max="1.8" step=".05" value="1"></label>
+    <label class="field">Tốc độ tối đa khi cần khớp <span id="maxVal" class="pill">2.0×</span><input id="maxRate" type="range" min="1" max="3.5" step=".1" value="2"></label>
+    <label class="field">Âm lượng <span id="volVal" class="pill">100%</span><input id="volume" type="range" min="0" max="1" step=".05" value="1"></label>
+    <label class="field">Ưu tiên khi câu quá dài<select id="overflow"><option value="cut">Cắt ở mốc kế tiếp để không chồng câu</option><option value="skip">Bỏ câu nếu không thể đọc kịp</option></select></label>
+  </div>
+  <div class="note" style="margin-top:12px">Tốc độ sẽ tự tăng trong giới hạn đã chọn nếu câu dài. Nếu vẫn không kịp, mặc định trang sẽ dừng câu ở mốc kế tiếp để giữ đồng bộ. Chất lượng và danh sách giọng phụ thuộc trình duyệt/hệ điều hành.</div>
+</section>
+<section class="panel">
+  <div class="controls"><button id="play" disabled>▶ Phát</button><button id="pause" class="secondary" disabled>⏸ Tạm dừng</button><button id="stop" class="secondary" disabled>⏹ Dừng</button><button id="test" class="secondary">🔈 Thử giọng</button><span id="count" class="pill">0 câu</span></div>
+  <div class="current" id="current"><small>PHỤ ĐỀ ĐANG ĐỌC</small>Import file SRT/VTT để bắt đầu.</div>
+  <div style="margin-top:15px"><input id="timeline" type="range" min="0" max="0" step=".05" value="0" disabled><div class="time-row"><span id="now">00:00</span><span id="duration">00:00</span></div></div>
+  <div id="status" class="status" role="status">Sẵn sàng.</div>
+</section>
+<section class="panel"><div class="controls" style="justify-content:space-between"><strong>Danh sách câu phụ đề</strong><span class="note">Bấm vào một câu để tua đến đó</span></div><div id="cueList" class="list" style="margin-top:12px"><div class="note">Chưa có dữ liệu phụ đề.</div></div></section>
+<footer class="note">Lưu ý: Web Speech API đọc bằng giọng có sẵn của thiết bị, không tạo file MP3/WAV. Muốn xuất audio thành file cần tích hợp dịch vụ TTS chuyên dụng.</footer>
+</main>
+<script>
+(() => {
+const $=id=>document.getElementById(id);
+let cues=[], voices=[], timers=[], playing=false, paused=false, startedAt=0, pausedAt=0, playhead=0, raf=0, activeIndex=-1, activeUtterance=null, generation=0, cueErrors=new Set();
+const synth=window.speechSynthesis;
+const fmt=s=>{s=Math.max(0,s||0);const m=Math.floor(s/60),sec=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
+function parseTime(s){const m=s.trim().replace(',','.').match(/^(?:(\d{1,2}):)?(\d{1,2}):(\d{2})\.(\d{1,3})$/);if(!m)return NaN;return (+(m[1]||0))*3600+(+m[2])*60+(+m[3])+(+(m[4]||0).padEnd(3,'0'))/1000}
+function parseSub(raw){
+ const text=raw.replace(/^\uFEFF/,'').replace(/\r/g,'').trim();let blocks=text.split(/\n\s*\n/),out=[];
+ for(const block of blocks){const lines=block.split('\n').map(x=>x.trim()).filter(Boolean);let ti=lines.findIndex(x=>x.includes('-->'));if(ti<0)continue;
+ const pair=lines[ti].split('-->');const start=parseTime(pair[0]),end=parseTime(pair[1].split(/\s+/)[0]);const body=lines.slice(ti+1).join('\n').replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').trim();
+ if(Number.isFinite(start)&&Number.isFinite(end)&&end>start&&body)out.push({start,end,text:body});
+ }
+ return out.sort((a,b)=>a.start-b.start);
+}
+function loadVoices(){voices=synth?synth.getVoices():[];const sel=$('voice'),old=sel.value;sel.innerHTML='<option value="">Tự động chọn giọng phù hợp</option>';voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name+' ('+v.lang+')';sel.append(o)});if(old)sel.value=old}
+function chosenVoice(){if($('voice').value!=='')return voices[+$('voice').value]||null;const lang=$('lang').value.toLowerCase();return voices.find(v=>v.lang.toLowerCase()===lang)||voices.find(v=>v.lang.toLowerCase().startsWith(lang.split('-')[0]))||null}
+function setStatus(s){$('status').textContent=s}
+function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length}
+function setActive(i){if(i===activeIndex)return;activeIndex=i;document.querySelectorAll('.cue').forEach((el)=>el.classList.toggle('active',+el.dataset.i===i));if(i>=0){const c=cues[i];$('current').innerHTML='';const small=document.createElement('small');small.textContent='CÂU '+(i+1)+' · '+fmt(c.start)+' → '+fmt(c.end);const body=document.createElement('div');body.textContent=c.text;$('current').append(small,body);const el=document.querySelector('.cue[data-i="'+i+'"]');if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'})}}
+function clearTimers(){timers.forEach(clearTimeout);timers=[];cancelAnimationFrame(raf)}
+function clock(){if(!playing||paused)return;playhead=(performance.now()-startedAt)/1000;$('timeline').value=playhead;$('now').textContent=fmt(playhead);const i=cues.findIndex(c=>playhead>=c.start&&playhead<c.end);setActive(i);if(playhead>=Math.max(...cues.map(c=>c.end))+.1){stop();setStatus('Đã phát hết phụ đề.')}else raf=requestAnimationFrame(clock)}
+function speakCue(i,token){
+ if(token!==generation||!playing||paused)return;const c=cues[i];if(!c)return;
+ const remaining=Math.max(.15,c.end-Math.max(playhead,c.start));setActive(i);
+ const utter=new SpeechSynthesisUtterance(c.text);utter.lang=$('lang').value;utter.voice=chosenVoice();utter.volume=+$('volume').value;
+ const base=+$('rate').value,max=+$('maxRate').value;
+ // Ước lượng thời lượng dựa trên độ dài văn bản; tự tăng tốc nếu gần chạm mốc kết thúc.
+ const chars=[...c.text].length;const estimated=chars/(13*base);const required=estimated/remaining;
+ utter.rate=Math.min(max,Math.max(base,base*required));
+ activeUtterance=utter;
+ utter.onerror=e=>{if(token===generation&&e.error!=='canceled'&&e.error!=='interrupted'){cueErrors.add(i);setStatus('Một câu không đọc được: '+(e.error||'lỗi giọng đọc'))}};
+ synth.speak(utter);
+ if(required>max+.02){cueErrors.add(i);setStatus('Câu '+(i+1)+' dài hơn thời gian cho phép: đang đọc nhanh nhất có thể, sẽ ngắt ở mốc kế tiếp.')}
+}
+function scheduleFrom(pos){
+ clearTimers();synth.cancel();activeUtterance=null;const token=++generation;
+ cues.forEach((c,i)=>{if(c.end<=pos)return;const delay=Math.max(0,(c.start-pos)*1000);const id=setTimeout(()=>{if(token!==generation||!playing||paused)return;playhead=Math.max(playhead,c.start);speakCue(i,token)},delay);timers.push(id);
+ const endId=setTimeout(()=>{if(token===generation&&activeUtterance){synth.cancel();activeUtterance=null}},Math.max(0,(c.end-pos)*1000));timers.push(endId)});
+}
+function play(){if(!cues.length)return;if(paused){resume();return}if(playhead>=Math.max(...cues.map(c=>c.end)))playhead=0;playing=true;paused=false;startedAt=performance.now()-playhead*1000;scheduleFrom(playhead);$('play').disabled=true;$('pause').disabled=false;$('pause').textContent='⏸ Tạm dừng';setStatus('Đang phát theo timeline phụ đề…');clock()}
+function pause(){if(!playing||paused)return;playhead=(performance.now()-startedAt)/1000;paused=true;pausedAt=performance.now();clearTimers();synth.pause();$('pause').textContent='▶ Tiếp tục';setStatus('Đã tạm dừng.')}
+function resume(){if(!playing||!paused)return;paused=false;startedAt=performance.now()-playhead*1000;synth.resume();scheduleFrom(playhead);$('pause').textContent='⏸ Tạm dừng';setStatus('Đang tiếp tục…');clock()}
+function stop(){generation++;clearTimers();synth.cancel();playing=false;paused=false;playhead=0;activeIndex=-1;$('timeline').value=0;$('now').textContent='00:00';$('pause').disabled=true;$('pause').textContent='⏸ Tạm dừng';$('play').disabled=!cues.length;document.querySelectorAll('.cue').forEach(el=>el.classList.remove('active'));if(cues.length)setActive(-1)}
+function seek(sec){if(!cues.length)return;playhead=Math.max(0,Math.min(sec,Math.max(...cues.map(c=>c.end))));$('timeline').value=playhead;$('now').textContent=fmt(playhead);if(playing){startedAt=performance.now()-playhead*1000;scheduleFrom(playhead);clock()}else{const i=cues.findIndex(c=>playhead>=c.start&&playhead<c.end);setActive(i)}}
+$('choose').onclick=()=>$('file').click();
+$('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const raw=await f.text();const parsed=parseSub(raw);if(!parsed.length)throw Error('Không tìm thấy cue hợp lệ. Hãy chọn file SRT hoặc VTT.');stop();cues=parsed;cueErrors.clear();$('filename').textContent=f.name+' · '+parsed.length+' câu';render();$('current').textContent='Đã tải phụ đề. Nhấn Phát để nghe.';setStatus('Đã đọc '+parsed.length+' câu phụ đề.')}catch(err){setStatus(err.message)}};
+const dz=$('dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f){const dt=new DataTransfer();dt.items.add(f);$('file').files=dt.files;$('file').dispatchEvent(new Event('change'))}});
+$('play').onclick=play;$('pause').onclick=()=>paused?resume():pause();$('stop').onclick=stop;
+$('timeline').oninput=e=>{const v=+e.target.value;$('now').textContent=fmt(v)};$('timeline').onchange=e=>seek(+e.target.value);
+$('test').onclick=()=>{synth.cancel();const u=new SpeechSynthesisUtterance('Hola. Esta es una prueba de voz.');u.lang=$('lang').value;u.voice=chosenVoice();u.rate=+$('rate').value;u.volume=+$('volume').value;synth.speak(u)};
+$('rate').oninput=e=>$('rateVal').textContent=(+e.target.value).toFixed(2)+'×';$('maxRate').oninput=e=>$('maxVal').textContent=(+e.target.value).toFixed(1)+'×';$('volume').oninput=e=>$('volVal').textContent=Math.round(+e.target.value*100)+'%';
+$('lang').onchange=()=>{loadVoices();if(playing){pause();resume()}};
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices}else{setStatus('Trình duyệt này không hỗ trợ Speech Synthesis. Hãy thử Chrome hoặc Edge mới nhất.')}
+})();
+</script></body></html>
