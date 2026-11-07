@@ -17,7 +17,7 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 #timeline{width:100%;accent-color:var(--cyan)}.time-row{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
 .status{color:var(--cyan);font-size:13px;margin-top:10px;min-height:20px}.current{font-size:18px;min-height:76px;padding:16px;background:#091222;border:1px solid #273650;border-radius:10px;margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}.current small{display:block;color:var(--cyan);font-size:12px;margin-bottom:7px}
 .list{max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:7px}.cue{display:grid;grid-template-columns:105px 1fr;gap:12px;padding:10px;border:1px solid #26344d;border-radius:9px;background:#0c1424;cursor:pointer}.cue.active{border-color:var(--cyan);background:#102532}.cue time{font-size:12px;color:var(--cyan);font-variant-numeric:tabular-nums}.cue p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
-.note{font-size:12px;color:var(--muted)}.pill{display:inline-block;padding:3px 8px;border-radius:20px;background:#26334c;color:#c8d5ea;font-size:12px}
+.note{font-size:12px;color:var(--muted)}.record-panel{margin-top:14px;padding:13px;border:1px solid #3a4562;border-radius:11px;background:#0b1425}.record-panel strong{display:block;margin-bottom:5px}.record-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:10px}audio{width:100%;margin-top:12px}.pill{display:inline-block;padding:3px 8px;border-radius:20px;background:#26334c;color:#c8d5ea;font-size:12px}
 @media(max-width:600px){body{padding:12px}.panel{padding:13px}.cue{grid-template-columns:1fr;gap:3px}}
 </style>
 </head>
@@ -42,17 +42,27 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 </section>
 <section class="panel">
   <div class="controls"><button id="play" disabled>▶ Phát</button><button id="pause" class="secondary" disabled>⏸ Tạm dừng</button><button id="stop" class="secondary" disabled>⏹ Dừng</button><button id="test" class="secondary">🔈 Thử giọng</button><span id="count" class="pill">0 câu</span></div>
+  <div class="record-panel">
+    <strong>🎙️ Ghi âm và xuất MP3</strong>
+    <div class="note">Bấm nút bên dưới, sau đó chọn tab trình duyệt đang mở trang này và bật tùy chọn chia sẻ âm thanh tab (Share tab audio). Khi phát hết phụ đề, ghi âm sẽ tự dừng.</div>
+    <div class="record-actions"><button id="recordPlay" disabled>● Ghi âm + Phát</button><button id="recordStop" class="secondary" disabled>■ Dừng ghi âm</button><span id="recordStatus" class="status" aria-live="polite">Chưa ghi âm.</span></div>
+    <audio id="recordPreview" controls hidden></audio>
+    <div class="record-actions"><a id="downloadMp3" hidden download="subtitle-voice.mp3" style="color:var(--cyan)">⬇ Tải file MP3</a></div>
+    <div class="note" style="margin-top:8px">Yêu cầu Chrome/Edge trên HTTPS. Trình duyệt ghi âm WebM trước rồi chuyển sang MP3 ngay trên máy; không tải âm thanh lên máy chủ. Nếu trình duyệt không hỗ trợ ghi âm tab hoặc thiếu âm thanh, hãy kiểm tra quyền chia sẻ tab audio.</div>
+  </div>
   <div class="current" id="current"><small>PHỤ ĐỀ ĐANG ĐỌC</small>Import file SRT/VTT để bắt đầu.</div>
   <div style="margin-top:15px"><input id="timeline" type="range" min="0" max="0" step=".05" value="0" disabled><div class="time-row"><span id="now">00:00</span><span id="duration">00:00</span></div></div>
   <div id="status" class="status" role="status">Sẵn sàng.</div>
 </section>
 <section class="panel"><div class="controls" style="justify-content:space-between"><strong>Danh sách câu phụ đề</strong><span class="note">Bấm vào một câu để tua đến đó</span></div><div id="cueList" class="list" style="margin-top:12px"><div class="note">Chưa có dữ liệu phụ đề.</div></div></section>
-<footer class="note">Lưu ý: Web Speech API đọc bằng giọng có sẵn của thiết bị, không tạo file MP3/WAV. Muốn xuất audio thành file cần tích hợp dịch vụ TTS chuyên dụng.</footer>
+<footer class="note">Âm thanh được tạo từ giọng đọc Speech Synthesis đang phát và âm thanh tab mà bạn cho phép chia sẻ.</footer>
 </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
 <script>
 (() => {
 const $=id=>document.getElementById(id);
 let cues=[], voices=[], timers=[], playing=false, paused=false, startedAt=0, pausedAt=0, playhead=0, raf=0, activeIndex=-1, activeUtterance=null, generation=0, cueErrors=new Set();
+let displayStream=null, recorder=null, recordChunks=[], recording=false, recordingFinalizing=false, mp3Url=null;
 const synth=window.speechSynthesis;
 const fmt=s=>{s=Math.max(0,s||0);const m=Math.floor(s/60),sec=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
 function parseTime(s){const m=s.trim().replace(',','.').match(/^(?:(\d{1,2}):)?(\d{1,2}):(\d{2})\.(\d{1,3})$/);if(!m)return NaN;return (+(m[1]||0))*3600+(+m[2])*60+(+m[3])+(+(m[4]||0).padEnd(3,'0'))/1000}
@@ -67,10 +77,10 @@ function parseSub(raw){
 function loadVoices(){voices=synth?synth.getVoices():[];const sel=$('voice'),old=sel.value;sel.innerHTML='<option value="">Tự động chọn giọng phù hợp</option>';voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name+' ('+v.lang+')';sel.append(o)});if(old)sel.value=old}
 function chosenVoice(){if($('voice').value!=='')return voices[+$('voice').value]||null;const lang=$('lang').value.toLowerCase();return voices.find(v=>v.lang.toLowerCase()===lang)||voices.find(v=>v.lang.toLowerCase().startsWith(lang.split('-')[0]))||null}
 function setStatus(s){$('status').textContent=s}
-function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length}
+function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length;$('recordPlay').disabled=!cues.length}
 function setActive(i){if(i===activeIndex)return;activeIndex=i;document.querySelectorAll('.cue').forEach((el)=>el.classList.toggle('active',+el.dataset.i===i));if(i>=0){const c=cues[i];$('current').innerHTML='';const small=document.createElement('small');small.textContent='CÂU '+(i+1)+' · '+fmt(c.start)+' → '+fmt(c.end);const body=document.createElement('div');body.textContent=c.text;$('current').append(small,body);const el=document.querySelector('.cue[data-i="'+i+'"]');if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'})}}
 function clearTimers(){timers.forEach(clearTimeout);timers=[];cancelAnimationFrame(raf)}
-function clock(){if(!playing||paused)return;playhead=(performance.now()-startedAt)/1000;$('timeline').value=playhead;$('now').textContent=fmt(playhead);const i=cues.findIndex(c=>playhead>=c.start&&playhead<c.end);setActive(i);if(playhead>=Math.max(...cues.map(c=>c.end))+.1){stop();setStatus('Đã phát hết phụ đề.')}else raf=requestAnimationFrame(clock)}
+function clock(){if(!playing||paused)return;playhead=(performance.now()-startedAt)/1000;$('timeline').value=playhead;$('now').textContent=fmt(playhead);const i=cues.findIndex(c=>playhead>=c.start&&playhead<c.end);setActive(i);if(playhead>=Math.max(...cues.map(c=>c.end))+.1){stop();setStatus('Đã phát hết phụ đề.');if(recording||recordingFinalizing)$('recordStatus').textContent='Đã phát hết — đang hoàn tất MP3…'}else raf=requestAnimationFrame(clock)}
 function speakCue(i,token){
  if(token!==generation||!playing||paused)return;const c=cues[i];if(!c)return;
  const remaining=Math.max(.15,c.end-Math.max(playhead,c.start));setActive(i);
@@ -92,8 +102,55 @@ function scheduleFrom(pos){
 function play(){if(!cues.length)return;if(paused){resume();return}if(playhead>=Math.max(...cues.map(c=>c.end)))playhead=0;playing=true;paused=false;startedAt=performance.now()-playhead*1000;scheduleFrom(playhead);$('play').disabled=true;$('pause').disabled=false;$('pause').textContent='⏸ Tạm dừng';setStatus('Đang phát theo timeline phụ đề…');clock()}
 function pause(){if(!playing||paused)return;playhead=(performance.now()-startedAt)/1000;paused=true;pausedAt=performance.now();clearTimers();synth.pause();$('pause').textContent='▶ Tiếp tục';setStatus('Đã tạm dừng.')}
 function resume(){if(!playing||!paused)return;paused=false;startedAt=performance.now()-playhead*1000;synth.resume();scheduleFrom(playhead);$('pause').textContent='⏸ Tạm dừng';setStatus('Đang tiếp tục…');clock()}
-function stop(){generation++;clearTimers();synth.cancel();playing=false;paused=false;playhead=0;activeIndex=-1;$('timeline').value=0;$('now').textContent='00:00';$('pause').disabled=true;$('pause').textContent='⏸ Tạm dừng';$('play').disabled=!cues.length;document.querySelectorAll('.cue').forEach(el=>el.classList.remove('active'));if(cues.length)setActive(-1)}
+function stop(){if(recorder&&recorder.state==='recording')finishRecording();generation++;clearTimers();synth.cancel();playing=false;paused=false;playhead=0;activeIndex=-1;$('timeline').value=0;$('now').textContent='00:00';$('pause').disabled=true;$('pause').textContent='⏸ Tạm dừng';$('play').disabled=!cues.length;document.querySelectorAll('.cue').forEach(el=>el.classList.remove('active'));if(cues.length)setActive(-1)}
 function seek(sec){if(!cues.length)return;playhead=Math.max(0,Math.min(sec,Math.max(...cues.map(c=>c.end))));$('timeline').value=playhead;$('now').textContent=fmt(playhead);if(playing){startedAt=performance.now()-playhead*1000;scheduleFrom(playhead);clock()}else{const i=cues.findIndex(c=>playhead>=c.start&&playhead<c.end);setActive(i)}}
+async function beginRecording(){
+ if(recording)return true;
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia||!window.MediaRecorder){$('recordStatus').textContent='Trình duyệt không hỗ trợ ghi âm tab. Hãy dùng Chrome hoặc Edge mới nhất trên HTTPS.';return false}
+ try{
+  $('recordStatus').textContent='Đang chờ bạn chọn tab và cho phép chia sẻ âm thanh…';
+  const stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:true});
+  const audioTracks=stream.getAudioTracks();
+  if(!audioTracks.length){stream.getTracks().forEach(t=>t.stop());throw new Error('Bạn chưa bật chia sẻ âm thanh tab. Hãy chọn tab trình duyệt và bật tùy chọn Share tab audio.')}
+  displayStream=stream;recordChunks=[];
+  const audioOnly=new MediaStream(audioTracks);
+  const mime=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'].find(t=>MediaRecorder.isTypeSupported(t));
+  recorder=new MediaRecorder(audioOnly,mime?{mimeType:mime}:undefined);
+  recorder.ondataavailable=e=>{if(e.data&&e.data.size)recordChunks.push(e.data)};
+  recorder.onerror=()=>{$('recordStatus').textContent='Có lỗi trong lúc ghi âm.'};
+  recorder.onstop=async()=>{recording=false;recordingFinalizing=true;$('recordStop').disabled=true;$('recordPlay').disabled=!cues.length;try{await createMp3()}catch(err){$('recordStatus').textContent='Không chuyển được sang MP3: '+err.message}finally{if(displayStream){displayStream.getTracks().forEach(t=>t.stop());displayStream=null}recordingFinalizing=false}};
+  recorder.start(300);recording=true;$('recordPlay').disabled=true;$('recordStop').disabled=false;$('recordPreview').hidden=true;$('downloadMp3').hidden=true;$('recordStatus').textContent='Đang ghi âm âm thanh tab…';
+  stream.getVideoTracks().forEach(t=>t.addEventListener('ended',()=>{if(recorder&&recorder.state==='recording'){finishRecording();stop()}}));
+  return true;
+ }catch(err){$('recordStatus').textContent=err.message||'Không thể bắt đầu ghi âm.';return false}
+}
+function finishRecording(){
+ if(!recorder||recorder.state!=='recording')return;
+ recording=false;recordingFinalizing=true;
+ try{recorder.stop();$('recordStatus').textContent='Đang xử lý và chuyển sang MP3…'}catch(e){recordingFinalizing=false;$('recordStatus').textContent='Không thể kết thúc bản ghi.'}
+}
+async function createMp3(){
+ if(!recordChunks.length)throw new Error('Không có dữ liệu âm thanh được ghi.');
+ if(!window.lamejs)throw new Error('Không tải được bộ mã hóa MP3. Hãy kiểm tra kết nối Internet rồi tải lại trang.');
+ const rawBlob=new Blob(recordChunks,{type:recorder.mimeType||'audio/webm'});
+ const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)throw new Error('Trình duyệt không hỗ trợ giải mã âm thanh.');
+ const ctx=new AudioCtx();let decoded;
+ try{decoded=await ctx.decodeAudioData(await rawBlob.arrayBuffer())}finally{if(ctx.state!=='closed')await ctx.close()}
+ const encoder=new lamejs.Mp3Encoder(1,decoded.sampleRate,128),channelL=decoded.getChannelData(0),channelR=decoded.numberOfChannels>1?decoded.getChannelData(1):null;
+ const block=1152,parts=[];
+ for(let pos=0;pos<decoded.length;pos+=block){
+  const len=Math.min(block,decoded.length-pos),pcm=new Int16Array(len);
+  for(let j=0;j<len;j++){let sample=channelR?(channelL[pos+j]+channelR[pos+j])*.5:channelL[pos+j];sample=Math.max(-1,Math.min(1,sample));pcm[j]=sample<0?sample*32768:sample*32767}
+  const chunk=encoder.encodeBuffer(pcm);if(chunk.length)parts.push(new Uint8Array(chunk));
+ }
+ const tail=encoder.flush();if(tail.length)parts.push(new Uint8Array(tail));
+ const mp3=new Blob(parts,{type:'audio/mpeg'});if(mp3.size<1000)throw new Error('File MP3 tạo ra quá ngắn hoặc rỗng.');
+ if(mp3Url)URL.revokeObjectURL(mp3Url);mp3Url=URL.createObjectURL(mp3);
+ $('recordPreview').src=mp3Url;$('recordPreview').hidden=false;$('downloadMp3').href=mp3Url;$('downloadMp3').hidden=false;$('recordStatus').textContent='Hoàn tất MP3 · '+(mp3.size/1024/1024).toFixed(2)+' MB';
+}
+$('recordPlay').onclick=async()=>{const ok=await beginRecording();if(ok)play()};
+$('recordStop').onclick=()=>{finishRecording();stop()};
+
 $('choose').onclick=()=>$('file').click();
 $('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const raw=await f.text();const parsed=parseSub(raw);if(!parsed.length)throw Error('Không tìm thấy cue hợp lệ. Hãy chọn file SRT hoặc VTT.');stop();cues=parsed;cueErrors.clear();$('filename').textContent=f.name+' · '+parsed.length+' câu';render();$('current').textContent='Đã tải phụ đề. Nhấn Phát để nghe.';setStatus('Đã đọc '+parsed.length+' câu phụ đề.')}catch(err){setStatus(err.message)}};
 const dz=$('dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f){const dt=new DataTransfer();dt.items.add(f);$('file').files=dt.files;$('file').dispatchEvent(new Event('change'))}});
