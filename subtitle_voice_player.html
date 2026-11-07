@@ -116,7 +116,7 @@ function splitSpeakerLine(text,knownNames){
 }
 function applySpeakerDetection(){
  speakerByCue.clear();let matched=0;const names=Object.keys(ttsCharacterConfig);
- cues=cues.map((cue,i)=>{const parsed=splitSpeakerLine(cue.text,names);if(parsed.speaker){speakerByCue.set(i,parsed.speaker);matched++}return {...cue,text:parsed.text||cue.text}});
+ cues=cues.map((cue,i)=>{const source=cue._speakerSourceText??cue.text;const parsed=splitSpeakerLine(source,names);if(parsed.speaker){speakerByCue.set(i,parsed.speaker);matched++}return {...cue,_speakerSourceText:source,text:parsed.text||source}});
  render();return {matched,total:cues.length};
 }
 async function loadTtsConfigFile(file){
@@ -148,7 +148,7 @@ function speakCue(i,token){
  const max=Math.max(base,Math.min(3.5,+$('maxRate').value));
  const lang=cfg.lang||$('lang').value;
  utter.lang=lang;utter.voice=matchConfiguredVoice(cfg,lang)||chosenVoice();
- utter.pitch=Math.max(.1,Math.min(2,Number(cfg.pitch)||1));utter.volume=+$('volume').value;
+ const pitchValue=Number(cfg.pitch);utter.pitch=Math.max(.1,Math.min(2,Number.isFinite(pitchValue)?pitchValue:1));utter.volume=+$('volume').value;
  const chars=[...c.text].length,estimated=chars/(13*base),required=estimated/remaining;
  utter.rate=Math.min(max,Math.max(base,base*required));
  activeUtterance=utter;
