@@ -1073,12 +1073,12 @@
 
           this.cloudVoices.forEach(v => {
             const selected = cfg.cloudVoice === v.id ? 'selected' : '';
-            optionsHtml += `<option value="azure:${this.escapeHtmlThoai(v.ShortName)}" ${selected}>☁️ ${this.escapeHtmlThoai(v.DisplayName || v.ShortName)} (${v.Locale})</option>`;
+            optionsHtml += `<option value="ttsai:${this.escapeHtmlThoai(v.id)}" ${selected}>🌐 ${this.escapeHtmlThoai(v.name)} (${v.language || "vi"})</option>`;
           });
           if (this.danhSachVoices.length > 0) {
             optionsHtml += '<optgroup label="Giọng có sẵn trên thiết bị">';
             this.danhSachVoices.forEach((v, idx) => {
-              const selected = (!cfg.azureVoice && (cfg.voiceIndex === idx || (cfg.voiceURI && cfg.voiceURI === v.voiceURI))) ? 'selected' : '';
+              const selected = (!cfg.cloudVoice && (cfg.voiceIndex === idx || (cfg.voiceURI && cfg.voiceURI === v.voiceURI))) ? 'selected' : '';
               optionsHtml += `<option value="${idx}" ${selected}>${this.escapeHtmlThoai(v.name)} (${v.lang})</option>`;
             });
             optionsHtml += '</optgroup>';
@@ -1108,8 +1108,8 @@
           } else {
             this.cauHinhGiongNhanVat[tenNhanVat].cloudVoice = '';
           }
-          if (String(giaTri).startsWith('azure:')) {
-            // Đã lưu azureVoice và Locale ở trên; không ghi đè bằng chuỗi lựa chọn.
+          if (String(giaTri).startsWith('ttsai:')) {
+            // Đã lưu cloudVoice và ngôn ngữ ở trên; không ghi đè bằng chuỗi lựa chọn.
           } else if (isNaN(giaTri)) {
             this.cauHinhGiongNhanVat[tenNhanVat].lang = giaTri;
             const foundIdx = this.danhSachVoices.findIndex(v => v.lang.toLowerCase().includes(giaTri.toLowerCase().split('-')[0]));
