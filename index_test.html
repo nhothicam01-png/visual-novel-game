@@ -120,9 +120,12 @@
 
     #layer-vfx { z-index: 3; pointer-events: none; display: none; }
 
-    /* Nhân vật hiển thị ngay lập tức, không dùng hiệu ứng mờ dần. */
-    #layer-character, #layer-character-buffer {
-      opacity: 1;
+    /* Nền và nhân vật cùng xuất hiện bằng một nhịp fade-in. */
+    #layer-character, #layer-character-buffer { opacity: 1; }
+    .scene-entering { animation: sceneFadeIn 0.45s ease both; }
+    @keyframes sceneFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     #layer-character, #layer-character-buffer.character-exiting {
@@ -1585,6 +1588,7 @@
 
         const anhNen = khung.anh_nen || khung.background;
         const nhanVat = khung.nhan_vat;
+        let nenCanHienThi = '';
         const bieuCam = khung.bieu_cam || khung.expression;
         const anhHieuUng = khung.anh_hieu_ung || khung.vfx;
         const noiDung = khung.noi_dung;
@@ -1593,17 +1597,16 @@
 
         if (anhNen && anhNen.trim() !== "") {
           if (this.isMediaVideo(anhNen)) {
-            this.layerBgImg.style.display = 'none';
+            nenCanHienThi = 'video';
             if (!this.layerBgVideo.src.includes(anhNen)) {
               this.layerBgVideo.src = `assets/Nen/${anhNen}`;
               this.layerBgVideo.load();
             }
             await this.choVideoSanSang(this.layerBgVideo);
             if (generation !== this.playbackGeneration) return;
-            this.layerBgVideo.style.display = 'block';
             await this.layerBgVideo.play().catch(()=>{});
           } else {
-            this.layerBgVideo.style.display = 'none';
+            nenCanHienThi = 'image';
             const bgImg = this.boDemAnhNen.get(anhNen);
             if (bgImg) {
               this.layerBgImg.src = bgImg.src;
@@ -1614,7 +1617,7 @@
                 this.layerBgImg.src = `assets/Nen/${anhNen}`;
               });
             }
-            this.layerBgImg.style.display = 'block';
+            if (generation !== this.playbackGeneration) return;
           }
         }
 
@@ -1628,7 +1631,6 @@
             await this.choVideoSanSang(this.layerChar);
             if (generation !== this.playbackGeneration) return;
             if (this.layerChar.paused) await this.layerChar.play().catch(()=>{});
-            this.layerChar.style.display = 'block';
           } else {
             // Nạp nhân vật mới trên lớp video đang ẩn; giữ nguyên nhân vật cũ trong lúc chờ.
             const nextLayer = this.layerChar === document.getElementById('layer-character')
@@ -1653,12 +1655,10 @@
             // Chỉ đổi lớp sau khi video mới đã sẵn sàng phát, không để lộ nền trống.
             const previousLayer = this.layerChar;
             nextLayer.style.display = 'block';
-            nextLayer.classList.remove('character-entering', 'character-exiting');
-            nextLayer.style.opacity = '1';
+            nextLayer.classList.remove('character-entering', 'character-exiting', 'scene-entering');
             previousLayer.style.display = 'none';
             previousLayer.pause();
-            previousLayer.classList.remove('character-entering', 'character-exiting');
-            previousLayer.style.opacity = '1';
+            previousLayer.classList.remove('character-entering', 'character-exiting', 'scene-entering');
             this.layerChar = nextLayer;
             this.layerCharBuffer = previousLayer;
           }
@@ -1671,6 +1671,28 @@
           this.layerCharBuffer.classList.remove('character-entering', 'character-exiting');
           this.layerChar.style.opacity = '1';
           this.layerCharBuffer.style.opacity = '1';
+        }
+
+        // Chỉ đưa nền và nhân vật lên màn hình sau khi cả hai đã sẵn sàng.
+        // Nhờ vậy cảnh mới luôn xuất hiện đồng bộ, kể cả khi nền giữ nguyên.
+        if (nenCanHienThi === 'video') {
+          this.layerBgImg.style.display = 'none';
+          this.layerBgVideo.style.display = 'block';
+        } else if (nenCanHienThi === 'image') {
+          this.layerBgVideo.style.display = 'none';
+          this.layerBgImg.style.display = 'block';
+        }
+        if (nenCanHienThi) {
+          const nenHienTai = nenCanHienThi === 'video' ? this.layerBgVideo : this.layerBgImg;
+          nenHienTai.classList.remove('scene-entering');
+          void nenHienTai.offsetWidth;
+          nenHienTai.classList.add('scene-entering');
+        }
+        if (nhanVat && bieuCam && nhanVat.trim() !== '' && bieuCam.trim() !== '') {
+          this.layerChar.style.display = 'block';
+          this.layerChar.classList.remove('scene-entering');
+          void this.layerChar.offsetWidth;
+          this.layerChar.classList.add('scene-entering');
         }
 
         if (anhHieuUng && anhHieuUng.trim() !== "") {
