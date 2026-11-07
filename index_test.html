@@ -1149,6 +1149,19 @@
         add(sfx, 'assets/AmThanh/HieuUng/', 'audio');
         const character = khung.nhan_vat, expression = khung.bieu_cam || khung.expression;
         if (character && expression) add(expression + '.webm', 'assets/NhanVat/' + character + '/', 'video');
+        // Cho phép kịch bản mở rộng khai báo thêm tài nguyên tùy ý.
+        const extra = khung.tai_nguyen || khung.assets || khung.resources;
+        const collect = value => {
+          if (typeof value === 'string' && /\.(json|png|jpe?g|gif|webp|avif|svg|bmp|mp4|webm|ogv|ogg|mov|m4v|mp3|wav|m4a|aac|flac|opus)(\?.*)?$/i.test(value)) {
+            const path = value.startsWith('assets/') ? value : value;
+            assets.push({ path, kind: 'auto', key: value });
+          } else if (Array.isArray(value)) value.forEach(collect);
+          else if (value && typeof value === 'object') Object.entries(value).forEach(([key, child]) => {
+            if (/^(src|url|path|file|resource)$/i.test(key)) collect(child);
+            else if (Array.isArray(child) || (child && typeof child === 'object')) collect(child);
+          });
+        };
+        collect(extra);
         return assets;
       }
 
@@ -1272,7 +1285,13 @@
 
       chuanBiVideoTiepTheo(generation) {
         if (generation !== this.playbackGeneration) return;
-        // Tải nền 3 cảnh kế tiếp, gồm ảnh, video, âm thanh và các tệp dữ liệu.
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        // Tái sử dụng bộ đệm video nhân vật chuyên dụng để chuyển cảnh không phải tải lại.
+        for (let i = this.currentIndex + 1; i < Math.min(ds.length, this.currentIndex + 3); i++) {
+          const scene = ds[i], name = scene.nhan_vat, expression = scene.bieu_cam || scene.expression;
+          if (name && expression) this.chuanBiVideoNhanVat('assets/NhanVat/' + name + '/' + expression + '.webm');
+        }
+        // Đồng thời tải nền 3 cảnh kế tiếp: ảnh, video nền, âm thanh và tệp dữ liệu bổ sung.
         this.taiTruocCacCanh(this.currentIndex + 1, 3, false).catch(err => console.warn('Preload tài nguyên:', err));
       }
 
