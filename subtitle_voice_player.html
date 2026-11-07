@@ -24,7 +24,7 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 <body><main>
 <header class="top"><h1>🔊 Subtitle Voice Player</h1><p>Import SRT/VTT → chọn ngôn ngữ và giọng đọc → phát lời thoại theo đúng mốc thời gian phụ đề.</p></header>
 <section class="panel">
-  <div class="upload" id="dropzone"><strong>Thả file phụ đề vào đây</strong><div class="note">Hỗ trợ .SRT và .VTT · Xử lý trực tiếp trên trình duyệt</div><div style="margin-top:13px"><button id="choose">📂 Chọn file phụ đề</button><input id="file" type="file" accept=".srt,.vtt,text/plain"></div><div id="filename" class="status">Chưa có file nào được tải lên.</div></div>
+  <div class="upload" id="dropzone"><strong>Thả file phụ đề vào đây</strong><div class="note">Hỗ trợ .SRT và .VTT · Xử lý trực tiếp trên trình duyệt</div><div style="margin-top:13px"><button id="choose">📂 Chọn file phụ đề</button><input id="file" type="file" accept=".srt,.vtt,text/plain,application/x-subrip"></div><div id="filename" class="status">Chưa có file nào được tải lên.</div></div>
   <div class="grid">
     <label class="field">Ngôn ngữ đọc<select id="lang">
       <option value="es-ES">Español (Tây Ban Nha)</option><option value="es-MX" selected>Español (Mỹ Latinh)</option>
@@ -151,9 +151,28 @@ async function createMp3(){
 $('recordPlay').onclick=async()=>{const ok=await beginRecording();if(ok)play()};
 $('recordStop').onclick=()=>{finishRecording();stop()};
 
-$('choose').onclick=()=>$('file').click();
-$('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const raw=await f.text();const parsed=parseSub(raw);if(!parsed.length)throw Error('Không tìm thấy cue hợp lệ. Hãy chọn file SRT hoặc VTT.');stop();cues=parsed;cueErrors.clear();$('filename').textContent=f.name+' · '+parsed.length+' câu';render();$('current').textContent='Đã tải phụ đề. Nhấn Phát để nghe.';setStatus('Đã đọc '+parsed.length+' câu phụ đề.')}catch(err){setStatus(err.message)}};
-const dz=$('dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f){const dt=new DataTransfer();dt.items.add(f);$('file').files=dt.files;$('file').dispatchEvent(new Event('change'))}});
+async function readSubtitleFile(file){
+ if(!file)return;
+ $('filename').textContent='Đang đọc: '+file.name;
+ setStatus('Đang tải và phân tích file phụ đề…');
+ try{
+  let raw='';
+  if(typeof file.text==='function') raw=await file.text();
+  else raw=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(new Error('Không đọc được file. Hãy thử tải lại file về điện thoại.'));reader.readAsText(file,'UTF-8')});
+  const parsed=parseSub(raw);
+  if(!parsed.length)throw new Error('File đã được chọn nhưng không tìm thấy phụ đề hợp lệ. Hãy kiểm tra nội dung file SRT/VTT.');
+  stop();cues=parsed;cueErrors.clear();
+  $('filename').textContent='✓ '+file.name+' · '+parsed.length+' câu';
+  render();$('current').textContent='Đã tải phụ đề. Nhấn Phát để nghe.';
+  setStatus('Đã đọc thành công '+parsed.length+' câu phụ đề.');
+ }catch(err){
+  $('filename').textContent='Không thể tải: '+file.name;
+  setStatus(err.message||'Có lỗi khi đọc file phụ đề.');
+ }
+}
+$('choose').addEventListener('click',()=>{$('file').value='';$('file').click()});
+$('file').addEventListener('change',e=>readSubtitleFile(e.target.files&&e.target.files[0]));
+const dz=$('dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)readSubtitleFile(f)});
 $('play').onclick=play;$('pause').onclick=()=>paused?resume():pause();$('stop').onclick=stop;
 $('timeline').oninput=e=>{const v=+e.target.value;$('now').textContent=fmt(v)};$('timeline').onchange=e=>seek(+e.target.value);
 $('test').onclick=()=>{synth.cancel();const u=new SpeechSynthesisUtterance('Hola. Esta es una prueba de voz.');u.lang=$('lang').value;u.voice=chosenVoice();u.rate=+$('rate').value;u.volume=+$('volume').value;synth.speak(u)};
