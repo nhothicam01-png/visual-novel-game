@@ -510,10 +510,18 @@
     </div>
   </div>
   <section id="cloud-tts-panel" style="width:100%;max-width:1000px;margin-top:8px;padding:12px 14px;background:rgba(15,23,42,.9);border:1px solid rgba(34,197,94,.35);border-radius:10px;color:#e2e8f0;display:flex;flex-direction:column;gap:9px;">
-<h4 style="color:#86efac;font-size:.9rem;">🌐 TTS đám mây miễn phí – PC và điện thoại</h4>
+<h4 style="color:#86efac;font-size:.9rem;">🌐 TTS.ai Piper – dùng trên PC và điện thoại</h4>
+<label style="font-size:.8rem;">API Key cá nhân (không bắt buộc)
+<input id="cloud-tts-key" type="password" autocomplete="off" placeholder="Dán API Key bắt đầu bằng sk-tts-..." style="width:100%;margin-top:5px;padding:9px;border-radius:7px;border:1px solid #475569;background:#0f172a;color:#f8fafc;">
+</label>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+<button class="btn" type="button" onclick="trinhPhat.luuCloudApiKey()">🔐 Dùng API Key này</button>
+<button class="btn" type="button" onclick="trinhPhat.xoaCloudApiKey()">Xóa Key</button>
 <button class="btn" type="button" onclick="trinhPhat.taiDanhSachGiongCloud()">🔄 Tải giọng Piper tiếng Việt</button>
-<span id="cloud-tts-status" style="font-size:.78rem;color:#cbd5e1;">TTS.ai · Không cần API Key cho hạn mức ẩn danh.</span>
-<p style="font-size:.72rem;color:#94a3b8;line-height:1.5;">Hạn mức công bố: 5.000 ký tự/ngày/IP, tối đa 500 ký tự mỗi yêu cầu ẩn danh. Hạn mức dùng chung theo IP, có thể thay đổi. Không gửi nội dung riêng tư.</p></section>
+</div>
+<span id="cloud-tts-status" style="font-size:.78rem;color:#cbd5e1;">Chưa nhập key: dùng hạn mức ẩn danh. Có key: dùng hạn mức tài khoản của bạn.</span>
+<p style="font-size:.72rem;color:#94a3b8;line-height:1.5;">API Key chỉ giữ trong bộ nhớ phiên trình duyệt, không lưu vào GitHub hay localStorage; tải lại trang sẽ cần nhập lại. Key được gửi trực tiếp tới TTS.ai và có thể xem trong DevTools, vì vậy chỉ nhập key của chính bạn trên thiết bị tin cậy. Không dùng key chung cho người khác.</p>
+<p style="font-size:.72rem;color:#94a3b8;">Tạo key tại <a href="https://tts.ai/account/" target="_blank" rel="noopener">TTS.ai Account Settings</a>. Xem hạn mức và bảng giá tại <a href="https://tts.ai/api/" target="_blank" rel="noopener">tài liệu API</a>.</p></section>
 
 <audio id="audio-bgm" loop crossorigin="anonymous"></audio>
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
@@ -583,6 +591,7 @@
         this.cloudObjectUrls = [];
         this.usePreparedTts = false;
         this.cloudTtsBase = 'https://api.tts.ai';
+        this.cloudApiKey = '';
 
         this.cauHinhGiongNhanVat = {};
         this.khoaLuuGiongNhanVat = 'vn-character-tts-settings';
@@ -1891,10 +1900,29 @@
         this.layerVfx.style.display = 'none';
       }
 
-      async taiDanhSachGiongCloud(){const st=document.getElementById('cloud-tts-status');if(st)st.textContent='Đang tải giọng Piper...';try{const r=await fetch(this.cloudTtsBase+'/v1/voices/?model=piper&language=vi');if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json(),list=Array.isArray(d)?d:(d.voices||d.results||[]);this.cloudVoices=list.map(v=>({id:v.id||v.voice_id||v.name,name:v.name||v.display_name||v.id||v.voice_id,language:v.language||v.lang||'vi'})).filter(v=>v.id);if(!this.cloudVoices.length)throw Error('Không tìm thấy giọng Piper tiếng Việt.');this.quetVaKhoiTaoNhanVat();if(st)st.textContent='Đã tải '+this.cloudVoices.length+' giọng Piper.';}catch(e){if(st)st.textContent='Lỗi tải giọng: '+e.message;alert('TTS: '+e.message);}}
+      layCloudHeaders(extra = {}) {
+        const headers = { ...extra };
+        if (this.cloudApiKey) headers.Authorization = 'Bearer ' + this.cloudApiKey;
+        return headers;
+      }
+      luuCloudApiKey() {
+        const input = document.getElementById('cloud-tts-key');
+        const key = (input?.value || '').trim();
+        if (!key) { alert('Hãy dán API Key TTS.ai trước.'); return; }
+        this.cloudApiKey = key;
+        const st = document.getElementById('cloud-tts-status');
+        if (st) st.textContent = 'Đã nhận API Key trong phiên này. Nhấn tải danh sách giọng để kiểm tra.';
+      }
+      xoaCloudApiKey() {
+        this.cloudApiKey = '';
+        const input = document.getElementById('cloud-tts-key'); if (input) input.value = '';
+        const st = document.getElementById('cloud-tts-status');
+        if (st) st.textContent = 'Đã xóa key khỏi bộ nhớ phiên. Đang dùng hạn mức ẩn danh.';
+      }
+      async taiDanhSachGiongCloud(){const st=document.getElementById('cloud-tts-status');if(st)st.textContent='Đang tải giọng Piper...';try{const r=await fetch(this.cloudTtsBase+'/v1/voices/?model=piper&language=vi',{headers:this.layCloudHeaders()});if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json(),list=Array.isArray(d)?d:(d.voices||d.results||[]);this.cloudVoices=list.map(v=>({id:v.id||v.voice_id||v.name,name:v.name||v.display_name||v.id||v.voice_id,language:v.language||v.lang||'vi'})).filter(v=>v.id);if(!this.cloudVoices.length)throw Error('Không tìm thấy giọng Piper tiếng Việt.');this.quetVaKhoiTaoNhanVat();if(st)st.textContent='Đã tải '+this.cloudVoices.length+' giọng Piper.';}catch(e){if(st)st.textContent='Lỗi tải giọng: '+e.message;alert('TTS: '+e.message);}}
       tachVanBanTts(text,max=450){const words=String(text||'').trim().split(/\\s+/),out=[];let cur='';for(const w of words){const n=cur?cur+' '+w:w;if(n.length>max&&cur){out.push(cur);cur=w;}else cur=n;}if(cur)out.push(cur);return out;}
-      async taoMotDoanTtsCloud(text,voice,rate){const r=await fetch(this.cloudTtsBase+'/v1/tts/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'piper',text,voice,format:'mp3',speed:Math.max(.5,Math.min(2,Number(rate)||1)),language:'vi'})});if(!r.ok)throw Error('TTS HTTP '+r.status+': '+(await r.text()).slice(0,180));const job=await r.json();if(!job.uuid)throw Error(job.error||'Thiếu mã tác vụ');const end=Date.now()+120000;while(Date.now()<end){await this.sleep(1500);const p=await fetch(this.cloudTtsBase+'/v1/speech/results/?uuid='+encodeURIComponent(job.uuid));if(!p.ok)throw Error('Poll HTTP '+p.status);const d=await p.json();if(d.status==='completed'&&d.result_url){const f=await fetch(d.result_url);if(!f.ok)throw Error('Không tải được audio');return await f.blob();}if(d.status==='failed')throw Error(d.error||'TTS thất bại');}throw Error('TTS quá thời gian chờ');}
-      async taoTruocToanBoTTS(){if(!this.cloudVoices.length)await this.taiDanhSachGiongCloud();if(!this.cloudVoices.length)throw Error('Chưa có giọng Piper.');const ds=this.duLieu?.danh_sach||this.duLieu?.KichBanToanBo||[],jobs=ds.map((scene,index)=>({scene,index})).filter(x=>typeof x.scene.noi_dung==='string'&&x.scene.noi_dung.trim());this.cloudAudioCache.clear();this.cloudObjectUrls.forEach(u=>URL.revokeObjectURL(u));this.cloudObjectUrls=[];const st=document.getElementById('record-progress');let done=0;for(const {scene,index} of jobs){const cfg=(scene.nhan_vat&&this.cauHinhGiongNhanVat[scene.nhan_vat])||{rate:1},voice=this.cloudVoices.find(v=>v.id===cfg.cloudVoice)||this.cloudVoices[0],parts=this.tachVanBanTts(scene.noi_dung),blobs=[];for(let i=0;i<parts.length;i++){if(st)st.textContent='Tạo TTS '+(done+1)+'/'+jobs.length+' · đoạn '+(i+1)+'/'+parts.length;blobs.push(await this.taoMotDoanTtsCloud(parts[i],voice.id,cfg.rate));}const blob=new Blob(blobs,{type:'audio/mpeg'}),url=URL.createObjectURL(blob);this.cloudObjectUrls.push(url);this.cloudAudioCache.set(index,{url,blob});done++;}if(st)st.textContent='Đã tạo xong '+jobs.length+' đoạn TTS. Đang kết xuất MP4...';}
+      async taoMotDoanTtsCloud(text,voice,rate){const r=await fetch(this.cloudTtsBase+'/v1/tts/',{method:'POST',headers:this.layCloudHeaders({'Content-Type':'application/json'}),body:JSON.stringify({model:'piper',text,voice,format:'mp3',speed:Math.max(.5,Math.min(2,Number(rate)||1)),language:'vi'})});if(!r.ok)throw Error('TTS HTTP '+r.status+': '+(await r.text()).slice(0,180));const job=await r.json();if(!job.uuid)throw Error(job.error||'Thiếu mã tác vụ');const end=Date.now()+120000;while(Date.now()<end){await this.sleep(1500);const p=await fetch(this.cloudTtsBase+'/v1/speech/results/?uuid='+encodeURIComponent(job.uuid));if(!p.ok)throw Error('Poll HTTP '+p.status);const d=await p.json();if(d.status==='completed'&&d.result_url){const f=await fetch(d.result_url);if(!f.ok)throw Error('Không tải được audio');return await f.blob();}if(d.status==='failed')throw Error(d.error||'TTS thất bại');}throw Error('TTS quá thời gian chờ');}
+      async taoTruocToanBoTTS(){if(!this.cloudVoices.length)await this.taiDanhSachGiongCloud();if(!this.cloudVoices.length)throw Error('Chưa có giọng Piper.');const ds=this.duLieu?.danh_sach||this.duLieu?.KichBanToanBo||[],jobs=ds.map((scene,index)=>({scene,index})).filter(x=>typeof x.scene.noi_dung==='string'&&x.scene.noi_dung.trim());this.cloudAudioCache.clear();this.cloudObjectUrls.forEach(u=>URL.revokeObjectURL(u));this.cloudObjectUrls=[];const st=document.getElementById('record-progress');let done=0;for(const {scene,index} of jobs){const cfg=(scene.nhan_vat&&this.cauHinhGiongNhanVat[scene.nhan_vat])||{rate:1},voice=this.cloudVoices.find(v=>v.id===cfg.cloudVoice)||this.cloudVoices[0],parts=this.tachVanBanTts(scene.noi_dung,this.cloudApiKey?4500:450),blobs=[];for(let i=0;i<parts.length;i++){if(st)st.textContent='Tạo TTS '+(done+1)+'/'+jobs.length+' · đoạn '+(i+1)+'/'+parts.length;blobs.push(await this.taoMotDoanTtsCloud(parts[i],voice.id,cfg.rate));}const blob=new Blob(blobs,{type:'audio/mpeg'}),url=URL.createObjectURL(blob);this.cloudObjectUrls.push(url);this.cloudAudioCache.set(index,{url,blob});done++;}if(st)st.textContent='Đã tạo xong '+jobs.length+' đoạn TTS. Đang kết xuất MP4...';}
 
       async taiFFmpeg() {
         if (window.FFmpeg?.createFFmpeg) return window.FFmpeg;
