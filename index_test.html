@@ -741,34 +741,31 @@
       }
 
       async taiKichBanMacDinh() {
+        this.hienLoading(true);
+        await new Promise(resolve => requestAnimationFrame(() => resolve()));
         try {
+          this.capNhatTienDoLoad(1, 'Đang tải kịch bản...');
           const response = await fetch('./ailahungthu.json', { cache: 'no-store' });
-          if (!response.ok) {
-            throw new Error('Không tìm thấy ailahungthu.json');
-          }
-
+          if (!response.ok) throw new Error('Không tìm thấy ailahungthu.json');
           const data = await response.json();
-          if (!data || !Array.isArray(data.danh_sach) || data.danh_sach.length === 0) {
-            throw new Error('ailahungthu.json không đúng cấu trúc hoặc không có lời thoại');
-          }
-
+          if (!data || !Array.isArray(data.danh_sach) || data.danh_sach.length === 0) throw new Error('ailahungthu.json không đúng cấu trúc hoặc không có lời thoại');
           this.duLieu = data;
           this.progressScriptId = this.taoMaKichBan(data);
           this.napTienDoPhat();
-          // Chuẩn bị sẵn file MP3 đầu tiên trước khi người dùng bấm chạy.
-          this.chuanBiNhacNen();
-          await this.taiTruocDuLieu();
-
-          if (this.ttsSynth) {
-            this.danhSachVoices = this.ttsSynth.getVoices();
-          }
           this.quetVaKhoiTaoNhanVat();
+          await this.taiTruocDuLieu();
+          await this.chuanBiNhacNen();
+          if (this.ttsSynth) this.danhSachVoices = this.ttsSynth.getVoices();
           this.capNhatThanhTua();
-          console.info('Đã tự động tải kịch bản ailahungthu.json');
+          this.capNhatTienDoLoad(100, 'Kịch bản và tài nguyên mở đầu đã sẵn sàng!');
+          console.info('Đã tự động tải kịch bản và chuẩn bị tài nguyên mở đầu.');
         } catch (err) {
-          // Không báo lỗi làm phiền người dùng; batDau() sẽ dùng đoạn text mẫu gốc.
           this.duLieu = null;
+          this.capNhatTienDoLoad(100, 'Không tải được kịch bản mặc định. Bạn vẫn có thể Import JSON.');
           console.warn('Không thể tải ailahungthu.json, sẽ dùng kịch bản mẫu gốc:', err);
+        } finally {
+          await new Promise(resolve => setTimeout(resolve, 250));
+          this.hienLoading(false);
         }
       }
 
@@ -923,22 +920,34 @@
         });
       }
 
-      chuanBiNhacNen() {
+      async chuanBiNhacNen() {
         if (!this.duLieu) return;
         const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo || [];
-        const khungCoNhac = ds.find(khung => {
-          const tenNhac = khung.am_thanh_nen || khung.bgm;
-          return typeof tenNhac === 'string' && tenNhac.trim() !== '';
-        });
-        if (!khungCoNhac) return;
-
-        const tenNhac = khungCoNhac.am_thanh_nen || khungCoNhac.bgm;
-        const bgmPath = `assets/AmThanh/Nen/${tenNhac}`;
-        if (!this.audioBgm.src.includes(tenNhac)) {
-          this.audioBgm.src = bgmPath;
+        const firstScene = ds[this.currentIndex] || ds[0];
+        const tenNhac = firstScene && (firstScene.am_thanh_nen || firstScene.bgm);
+        if (!tenNhac || typeof tenNhac !== 'string' || !tenNhac.trim()) return;
+        if (!this.audioBgm.src.includes(tenNhac.trim())) {
+          this.audioBgm.src = `assets/AmThanh/Nen/${tenNhac.trim()}`;
           this.audioBgm.loop = true;
+          this.audioBgm.preload = 'auto';
           this.audioBgm.load();
         }
+        if (this.audioBgm.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) return;
+        await new Promise(resolve => {
+          let done = false;
+          const finish = () => {
+            if (done) return;
+            done = true; clearTimeout(timer);
+            this.audioBgm.removeEventListener('canplay', finish);
+            this.audioBgm.removeEventListener('loadeddata', finish);
+            this.audioBgm.removeEventListener('error', finish);
+            resolve();
+          };
+          const timer = setTimeout(finish, 10000);
+          this.audioBgm.addEventListener('canplay', finish, { once: true });
+          this.audioBgm.addEventListener('loadeddata', finish, { once: true });
+          this.audioBgm.addEventListener('error', finish, { once: true });
+        });
       }
 
       kichHoatAmThanhMobile() {
@@ -969,18 +978,12 @@
             this.duLieu = JSON.parse(e.target.result);
             this.progressScriptId = this.taoMaKichBan(this.duLieu);
             this.napTienDoPhat();
-            // Chuẩn bị sẵn file MP3 của kịch bản vừa import.
-            this.chuanBiNhacNen();
-            
             this.hienLoading(true);
-            await this.taiTruocDuLieu();
-            this.hienLoading(false);
-            
-            if (this.ttsSynth) {
-              this.danhSachVoices = this.ttsSynth.getVoices();
-            }
-
             this.quetVaKhoiTaoNhanVat();
+            await this.taiTruocDuLieu();
+            await this.chuanBiNhacNen();
+            this.hienLoading(false);
+            if (this.ttsSynth) this.danhSachVoices = this.ttsSynth.getVoices();
             alert(`✅ Đã import kịch bản thành công!\nTổng phân cảnh: ${this.duLieu.danh_sach ? this.duLieu.danh_sach.length : 0}`);
           } catch (err) {
             this.hienLoading(false);
@@ -1147,6 +1150,8 @@
         add(vfx, 'assets/HieuUng/', this.isMediaVideo(vfx || '') ? 'video' : 'image');
         add(bgm, 'assets/AmThanh/Nen/', 'audio');
         add(sfx, 'assets/AmThanh/HieuUng/', 'audio');
+        const character = khung.nhan_vat, expression = khung.bieu_cam || khung.expression;
+        if (character && expression) assets.push({ path: 'assets/NhanVat/' + character + '/' + expression + '.webm', kind: 'character-video', key: character + '/' + expression });
         // Cho phép kịch bản mở rộng khai báo thêm tài nguyên tùy ý.
         const extra = khung.tai_nguyen || khung.assets || khung.resources;
         const collect = value => {
@@ -1169,15 +1174,16 @@
         for (let i = startIndex; i < Math.min(ds.length, startIndex + count); i++) {
           for (const asset of this.layTaiNguyenCuaCanh(ds[i])) unique.set(asset.path, asset);
         }
-        const tasks = [...unique.values()].filter(asset => !this.preloadResourceCache?.has(asset.path));
-        if (!tasks.length) return;
+        const tasks = [...unique.values()].filter(asset => asset.kind === 'character-video' ? !this.videoPreloadCache?.has(asset.path) : !this.preloadResourceCache?.has(asset.path));
+        if (!tasks.length) { if (showProgress) this.capNhatTienDoLoad(100, 'Tài nguyên mở đầu đã có sẵn trong bộ nhớ đệm.'); return; }
         let completed = 0, cursor = 0;
         const worker = async () => {
           while (cursor < tasks.length) {
             const asset = tasks[cursor++];
-            await this.taiTruocTaiNguyen(asset);
+            if (asset.kind === 'character-video') await this.chuanBiVideoNhanVat(asset.path);
+            else await this.taiTruocTaiNguyen(asset);
             completed++;
-            if (showProgress) this.capNhatTienDoLoad((completed / tasks.length) * 100, 'Đang chuẩn bị: ' + asset.path.split('/').pop());
+            if (showProgress) this.capNhatTienDoLoad(Math.max(1, (completed / tasks.length) * 100), 'Đang chuẩn bị: ' + asset.path.split('/').pop());
           }
         };
         if (showProgress) this.capNhatTienDoLoad(0, 'Đang tải trước tài nguyên đa định dạng...');
@@ -1319,11 +1325,16 @@
 
         if (this.dangChay && !this.dangTamDung) return;
 
-        // Chờ kiểm tra file JSON mặc định xong trước khi bắt đầu phát.
+        if (this.ttsSynth) this.ttsSynth.resume();
+
+        // Chờ kiểm tra file JSON và preload tài nguyên mở đầu hoàn tất trước khi phát.
         if (this.taiKichBanMacDinhPromise) {
           await this.taiKichBanMacDinhPromise;
           this.taiKichBanMacDinhPromise = null;
         }
+
+        // Chỉ phát nhạc sau khi tài nguyên của cảnh mở đầu đã sẵn sàng.
+        this.kichHoatAmThanhMobile();
 
         if (this.dangTamDung) {
           this.dangTamDung = false;
