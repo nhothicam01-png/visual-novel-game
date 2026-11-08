@@ -104,35 +104,56 @@ function matchConfiguredVoice(cfg,lang){
 }
 function splitSpeakerLine(text,knownNames){
  const raw=String(text||'').trim();
+ // Match configured names first; then also accept numeric/name prefixes even without a config.
  for(const name of knownNames){
   for(const prefix of ['['+name+']',name]){
    if(raw.slice(0,prefix.length).toLowerCase()!==prefix.toLowerCase())continue;
-   const rest=raw.slice(prefix.length);
-    const sep=new RegExp('^\\s*[:：—-]\\s*').exec(rest);
+   const rest=raw.slice(prefix.length),sep=/^\s*[:：—-]\s*/.exec(rest);
    if(sep)return {speaker:name,text:rest.slice(sep[0].length).trim()};
   }
  }
+ const generic=/^\s*(?:\[([^\]]{1,50})\]|([\p{L}\p{N}_. -]{1,40}))\s*[:：—-]\s*/u.exec(raw);
+ if(generic){
+  const speaker=(generic[1]||generic[2]||'').trim();
+  if(speaker&&!/^\d{1,2}:\d{2}$/.test(speaker))return {speaker,text:raw.slice(generic[0].length).trim()};
+ }
  return {speaker:'',text:raw};
+}
+function detectSubtitleLanguage(items){
+ const sample=items.map(c=>c.text).join(' ').slice(0,12000).toLowerCase();
+ const count=re=>[...(sample.matchAll(re))].length;
+ const scripts=[['ja-JP',count(/[ぁ-ゟ゠-ヿ]/g)],['ko-KR',count(/[가-힯]/g)],['zh-CN',count(/[一-鿿]/g)],['th-TH',count(/[ก-๙]/g)],['ar-SA',count(/[\u0600-\u06ff]/g)],['hi-IN',count(/[\u0900-\u097f]/g)]];
+ scripts.sort((a,b)=>b[1]-a[1]);if(scripts[0][1]>=3)return scripts[0][0];
+ const words=sample.match(/[\p{L}]+/gu)||[];
+ const score=list=>words.reduce((n,w)=>n+(list.includes(w)?1:0),0);
+ const sets={
+  'vi-VN':'và của là không tôi bạn mình những được một thì này với có trong nhưng cũng đang sao rồi bà ông'.split(' '),
+  'es-MX':'que de no la el y en un una es por los las del con para pero como está muy'.split(' '),
+  'en-US':'the and is are you i to of a in it that this for with but not have'.split(' '),
+  'fr-FR':'le la les de des et est un une que je vous pas pour dans avec mais'.split(' '),
+  'de-DE':'der die das und ist ich nicht ein eine zu mit auf für den von'.split(' '),
+  'pt-BR':'que de não uma um para com os as do da é você eu mais por'.split(' '),
+  'id-ID':'yang dan tidak ini itu untuk dengan saya kamu dari adalah akan bisa'.split(' ')
+ };
+ const scores=Object.entries(sets).map(([lang,list])=>[lang,score(list)]).sort((a,b)=>b[1]-a[1]);
+ const accented=count(/[áéíóúñ¿¡]/g),french=count(/[àâçèêëîïôûùüÿœ]/g),german=count(/[äöüß]/g),portuguese=count(/[ãõ]/g),vietnamese=count(/[ăâđêôơưàáảãạằắẳẵặầấẩẫậèéẻẽẹềếểễệìíỉĩịòóỏõọồốổỗộờớởỡợùúủũụừứửữựỳýỷỹỵ]/g);
+ if(vietnamese>=3)return 'vi-VN';if(german>=2)return 'de-DE';if(portuguese>=2)return 'pt-BR';
+ if(french>=2&&scores.find(x=>x[0]==='fr-FR')[1]>=1)return 'fr-FR';
+ if(accented>=2&&scores.find(x=>x[0]==='es-MX')[1]>=1)return 'es-MX';
+ return scores[0][1]>0?scores[0][0]:null;
+}
+function autoSetSubtitleLanguage(items){
+ const detected=detectSubtitleLanguage(items);if(!detected)return '';
+ $('lang').value=detected;loadVoices();return $('lang').selectedOptions[0]?.textContent||detected;
 }
 function applySpeakerDetection(){
  speakerByCue.clear();let matched=0;const names=Object.keys(ttsCharacterConfig);
- cues=cues.map((cue,i)=>{const source=cue._speakerSourceText??cue.text;const parsed=splitSpeakerLine(source,names);if(parsed.speaker){speakerByCue.set(i,parsed.speaker);matched++}return {...cue,_speakerSourceText:source,text:parsed.text||source}});
+ cues=cues.map((cue,i)=>{
+  const source=cue._speakerSourceText??cue.text,parsed=splitSpeakerLine(source,names);
+  if(parsed.speaker){speakerByCue.set(i,parsed.speaker);matched++}
+  return {...cue,_speakerSourceText:source,_speaker:parsed.speaker,text:parsed.text||source};
+ });
  render();return {matched,total:cues.length};
-}
-async function loadTtsConfigFile(file){
- if(!file)return;
- try{const data=JSON.parse(await file.text());const chars=data.nhan_vat||data.characters||data;
-  if(!chars||typeof chars!=='object'||Array.isArray(chars))throw new Error('Cấu trúc JSON không hợp lệ.');
-  ttsCharacterConfig=chars;ttsConfigLoaded=true;$('ttsConfigStatus').textContent='Đã nạp '+Object.keys(chars).length+' nhân vật. Nhấn Áp dụng.';
- }catch(err){ttsCharacterConfig={};ttsConfigLoaded=false;$('ttsConfigStatus').textContent='Không đọc được cấu hình: '+err.message}
-}
-function applyTtsConfig(){
- if(!ttsConfigLoaded){$('ttsConfigStatus').textContent='Hãy chọn file _tts.json trước.';return}
- const result=applySpeakerDetection(),found=new Set(speakerByCue.values());
- const missing=Object.keys(ttsCharacterConfig).filter(name=>!found.has(name));
- const noVoice=[...found].filter(name=>{const cfg=ttsCharacterConfig[name]||{};return !matchConfiguredVoice(cfg,cfg.lang||$('lang').value)});
- $('ttsConfigStatus').textContent='Nhận diện '+result.matched+'/'+result.total+' câu · '+found.size+' nhân vật.'+(missing.length?' Không thấy trong phụ đề: '+missing.join(', ')+'.':'')+(noVoice.length?' Thiết bị thiếu giọng phù hợp: '+noVoice.join(', ')+'.':'');
- setStatus('Đã áp dụng cấu hình TTS theo nhân vật. Câu không có tên sẽ dùng giọng mặc định.');
 }
 function setStatus(s){$('status').textContent=s}
 function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length;$('recordPlay').disabled=!cues.length}
@@ -239,10 +260,16 @@ async function readSubtitleFile(file){
   if(!raw.trim())throw new Error('File được chọn nhưng nội dung đang rỗng hoặc không thể giải mã UTF-8.');
   const parsed=parseSub(raw);
   if(!parsed.length)throw new Error('File đã được chọn nhưng không tìm thấy phụ đề hợp lệ. Hãy kiểm tra nội dung file SRT/VTT.');
-  stop();cues=parsed;cueErrors.clear();
+  stop();cues=parsed;cueErrors.clear();speakerByCue.clear();
+  const detectedLanguage=autoSetSubtitleLanguage(parsed);
+  cues=cues.map(cue=>{
+   const source=cue._speakerSourceText??cue.text,sp=splitSpeakerLine(source,Object.keys(ttsCharacterConfig));
+   return {...cue,_speakerSourceText:source,_speaker:sp.speaker,text:sp.speaker?(sp.text||source):source};
+  });
+  cues.forEach((cue,i)=>{if(cue._speaker)speakerByCue.set(i,cue._speaker)});
   $('filename').textContent='✓ '+file.name+' · '+parsed.length+' câu';
   render();$('current').textContent='Đã tải phụ đề. Nhấn Phát để nghe.';
-  setStatus('Đã đọc thành công '+parsed.length+' câu phụ đề.');
+  setStatus('Đã đọc thành công '+parsed.length+' câu phụ đề.'+(detectedLanguage?' · Tự nhận diện ngôn ngữ: '+detectedLanguage+'.':' · Chưa xác định chắc chắn ngôn ngữ, vui lòng chọn thủ công.'));
  }catch(err){
   $('filename').textContent='Không thể tải: '+file.name+' — '+(err&&err.message?err.message:String(err||'Không rõ nguyên nhân'));
   setStatus('Import thất bại. Hãy kiểm tra tên file và thông báo lỗi ở trên.');
