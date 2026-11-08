@@ -1970,7 +1970,9 @@
           window.VNEffects.apply(khung.hieu_ung || {}, {
             nen: nenCanHienThi === 'video' ? this.layerBgVideo : this.layerBgImg,
             nhan_vat: nhanVat && bieuCam ? this.layerChar : null,
-            camera: cameraTargets
+            camera: cameraTargets,
+            // Lớp dùng riêng cho hiệu ứng nhòe toàn cảnh, không làm camera chuyển động kéo nhân vật.
+            scene: [this.layerBgImg, this.layerBgVideo, this.layerChar, this.layerVfx].filter(Boolean)
           });
         }
 
