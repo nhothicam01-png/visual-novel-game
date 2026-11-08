@@ -28,7 +28,13 @@
     }
 
     clear() {
-      this.animations.forEach(animation => { try { animation.cancel(); } catch (_) {} });
+      this.animations.forEach(animation => {
+        try {
+          const target = animation.effect && animation.effect.target;
+          animation.cancel();
+          if (target && target.style) target.style.willChange = '';
+        } catch (_) {}
+      });
       this.animations = [];
     }
     pause() { this.animations.forEach(animation => { try { animation.pause(); } catch (_) {} }); }
@@ -48,7 +54,9 @@
         character: {
           shake: 'char.shake', tremble: 'char.shake', rung: 'char.shake',
           bounce: 'char.bob', jump: 'char.bob', nhay: 'char.bob',
-          walk: 'char.bob', walking: 'char.bob', 'di-bo': 'char.bob'
+          walk: 'char.bob', walking: 'char.bob', 'di-bo': 'char.bob',
+          'enter-left': 'char.walk_left', 'slide-left': 'char.walk_left',
+          'enter-right': 'char.walk_right', 'slide-right': 'char.walk_right'
         },
         background: { zoom: 'bg.zoom_slow', 'zoom-in': 'bg.zoom_slow', pan: 'bg.pan_left', move: 'bg.pan_left', shake: 'bg.shake', rung: 'bg.shake' },
         camera: { shake: 'camera.shake', rung: 'camera.shake', zoom: 'camera.zoom_in', 'zoom-in': 'camera.zoom_in', 'zoom-out': 'camera.zoom_out', pan: 'camera.pan_left', move: 'camera.pan_left', flash: 'camera.flash' }
