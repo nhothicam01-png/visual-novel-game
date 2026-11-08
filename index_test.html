@@ -427,6 +427,7 @@
     #subtitle-preview { width:100%; min-height:120px; resize:vertical; padding:9px; color:#dbeafe; background:#020617; border:1px solid #334155; border-radius:7px; font: .75rem/1.5 ui-monospace,monospace; user-select:text; }
     #subtitle-status { font-size:.76rem; color:#94a3b8; }
 
+    #tts-export-tools{width:100%;max-width:1000px;margin-top:8px;padding:12px 14px;background:rgba(15,23,42,.92);border:1px solid rgba(167,139,250,.35);border-radius:10px;color:#e2e8f0;display:flex;flex-direction:column;gap:9px}#tts-export-tools h4{color:#c4b5fd;font-size:.9rem}
     /* Thanh điều hướng nhanh giữa các công cụ */
     #site-navigation {
       width: 100%;
@@ -561,6 +562,13 @@
     <textarea id="subtitle-preview" spellcheck="false" placeholder="Nội dung SRT sẽ xuất hiện ở đây sau khi tạo..." aria-label="Xem trước nội dung SRT"></textarea>
   </section>
 
+  <section id="tts-export-tools" aria-label="Xuất âm thanh TTS">
+<h4>🎧 Xuất lời thoại thành file âm thanh (WAV)</h4>
+<p style="font-size:.76rem;color:#cbd5e1;line-height:1.5;">Tạo giọng đọc tiếng Việt bằng Piper AI ngay trên trình duyệt. Lần đầu cần tải mô hình giọng đọc; sau đó trình duyệt sẽ lưu bộ nhớ đệm. Âm thanh được ghép từ toàn bộ lời thoại trong kịch bản đang tải.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn" id="btn-tts-export" type="button">🎙️ Tạo và tải file WAV</button><button class="btn" id="btn-tts-stop" type="button" disabled>⏹ Hủy</button></div>
+<div id="tts-export-progress" role="status" style="font-size:.76rem;color:#94a3b8;">Hãy tải/import kịch bản JSON trước.</div>
+<progress id="tts-export-bar" max="100" value="0" style="width:100%;height:10px;accent-color:#a78bfa;"></progress>
+</section>
   <section id="dialogue-settings" aria-label="Cài đặt chữ thoại">
     <h4>💬 Tùy chỉnh chữ thoại</h4>
     <label class="dialogue-toggle"><input id="dialogue-visible" type="checkbox" checked onchange="trinhPhat.capNhatCaiDatThoai('visible', this.checked)"> Hiển thị khung thoại</label>
@@ -2304,5 +2312,22 @@
 
     const trinhPhat = new TrinhPhatKichBanWeb();
   </script>
+  <script>
+(()=>{let session=null,cancel=false;const $=id=>document.getElementById(id),status=s=>$('tts-export-progress').textContent=s,progress=n=>$('tts-export-bar').value=n;
+$('btn-tts-stop').addEventListener('click',()=>{cancel=true;status('Đang dừng sau đoạn thoại hiện tại...')});
+$('btn-tts-export').addEventListener('click',async()=>{const btn=$('btn-tts-export'),stop=$('btn-tts-stop'),data=typeof trinhPhat!=='undefined'?trinhPhat.duLieu:null,lines=Array.isArray(data?.danh_sach)?data.danh_sach.filter(x=>String(x?.noi_dung||'').trim()):[];
+if(!lines.length){status('Chưa có lời thoại. Hãy tải hoặc import JSON trước.');return}btn.disabled=true;stop.disabled=false;cancel=false;progress(0);
+let ctx;
+try{status('Đang khởi tạo Piper TTS...');if(!session){const lib=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');session=new lib.TtsSession({voiceId:'vi_VN-vais1000-medium',allowLocalModels:true,fallbackStrategy:'cdn',progress:p=>{if(p?.total)status('Đang tải mô hình: '+Math.round(p.loaded/p.total*100)+'%')},logger:m=>console.log('[Piper]',m)})}
+ctx=new(window.AudioContext||window.webkitAudioContext)();const buffers=[];let frames=0;
+for(let i=0;i<lines.length;i++){if(cancel)throw Error('Đã hủy theo yêu cầu.');status('Đang tạo giọng đọc '+(i+1)+'/'+lines.length+'...');const wav=await session.predict(String(lines[i].noi_dung).trim());const b=await ctx.decodeAudioData(await wav.arrayBuffer());buffers.push(b);frames+=b.length;progress((i+1)/lines.length*90)}
+if(cancel)throw Error('Đã hủy theo yêu cầu.');status('Đang ghép âm thanh...');const rate=buffers[0].sampleRate,ch=Math.min(2,buffers[0].numberOfChannels),merged=ctx.createBuffer(ch,frames,rate);let offset=0;
+for(const b of buffers){for(let k=0;k<ch;k++)merged.getChannelData(k).set(b.getChannelData(Math.min(k,b.numberOfChannels-1)),offset);offset+=b.length}
+const blob=wavEncode(merged),url=URL.createObjectURL(blob),a=document.createElement('a'),raw=String(data.ten_kich_ban||data.title||trinhPhat.tenFileKichBan||'kich-ban'),name=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'')||'kich-ban';
+a.href=url;a.download=name+'-tts.wav';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);progress(100);status('Hoàn tất! Đã ghép '+lines.length+' lượt thoại thành file WAV.')
+}catch(e){status('Không xuất được âm thanh: '+(e?.message||e));console.error('[Piper TTS]',e)}finally{if(ctx)await ctx.close().catch(()=>{});btn.disabled=false;stop.disabled=true}});
+function wavEncode(b){const n=b.numberOfChannels,rate=b.sampleRate,len=b.length,size=len*n*2,ab=new ArrayBuffer(44+size),v=new DataView(ab),w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};w(0,'RIFF');v.setUint32(4,36+size,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,n,true);v.setUint32(24,rate,true);v.setUint32(28,rate*n*2,true);v.setUint16(32,n*2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,size,true);const d=Array.from({length:n},(_,i)=>b.getChannelData(i));let p=44;for(let i=0;i<len;i++)for(let k=0;k<n;k++){const s=Math.max(-1,Math.min(1,d[k][i]));v.setInt16(p,s<0?s*32768:s*32767,true);p+=2}return new Blob([ab],{type:'audio/wav'})}
+})();
+</script>
 </body>
 </html>
