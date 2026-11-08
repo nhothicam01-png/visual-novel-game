@@ -1988,7 +1988,7 @@
         let subtitleDialogueEnd = null;
         if (noiDung && !preview) {
           subtitleDialogueStart = this.layThoiGianPhatPhuDe();
-          this.hienLoiThoai(nhanVat, noiDung);
+          this.hienLoiThoai(khung.ten_hien_thi || nhanVat, noiDung);
           this.currentSpeaker = nhanVat;
           this.ttsRemainingText = noiDung;
           
@@ -2012,7 +2012,8 @@
               dialogueStart: subtitleDialogueStart,
               dialogueEnd: subtitleDialogueEnd,
               text: typeof noiDung === 'string' ? noiDung.trim() : '',
-              speaker: nhanVat || ''
+              speaker: nhanVat || '',
+              speakerName: khung.ten_hien_thi || nhanVat || ''
             });
           }
         }
@@ -2163,7 +2164,7 @@
           for (const chunk of chunks) {
             const chunkWords = Math.max(1, chunk.split(/\\s+/).length);
             const chunkDuration = duration * chunkWords / totalWords;
-            const text = includeSpeaker && record.speaker ? String(record.speaker).trim() + ': ' + chunk : chunk;
+            const text = includeSpeaker && record.speaker ? String(record.speakerName || record.speaker).trim() + ': ' + chunk : chunk;
             cues.push({ start: cursor, end: cursor + chunkDuration, text });
             cursor += chunkDuration;
           }
