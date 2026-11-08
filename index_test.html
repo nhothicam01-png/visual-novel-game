@@ -81,16 +81,24 @@
       margin: auto !important;
     }
 
-    .game-layer {
+    #layer-bg-motion {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+      display: none;
+      transform-origin: center center;
+    }
+    #layer-bg-motion .game-layer {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
-    #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
+    #layer-bg-img, #layer-bg-video { display: none; }
     
     /* Mặc định - Màn hình Ngang (1920x1080): Bám sát mép ĐỈNH (top: 0) */
     #layer-character, #layer-character-buffer {
@@ -417,7 +425,7 @@
     #subtitle-preview { width:100%; min-height:120px; resize:vertical; padding:9px; color:#dbeafe; background:#020617; border:1px solid #334155; border-radius:7px; font: .75rem/1.5 ui-monospace,monospace; user-select:text; }
     #subtitle-status { font-size:.76rem; color:#94a3b8; }
   </style>
-  <link rel="stylesheet" href="./css/effects.css?v=3" />
+  <link rel="stylesheet" href="./css/effects.css?v=4" />
 </head>
 <body>
 
@@ -431,8 +439,10 @@
       <div class="loading-status" id="loading-status">Đang khởi tạo...</div>
     </div>
 
-    <img id="layer-bg-img" class="game-layer" src="" alt="Background Image" />
-    <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
+    <div id="layer-bg-motion" aria-hidden="true">
+      <img id="layer-bg-img" class="game-layer" src="" alt="Background Image" />
+      <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
+    </div>
     
     <!-- Sử dụng Video WebM trong suốt cho nhân vật -->
     <video id="layer-character" class="game-layer" autoplay muted loop playsinline></video>
@@ -560,11 +570,12 @@
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
   <audio id="audio-tts" crossorigin="anonymous"></audio>
 
-  <script src="./js/effect_engine.js?v=3"></script>
+  <script src="./js/effect_engine.js?v=4"></script>
   <script>
     class TrinhPhatKichBanWeb {
       constructor() {
         this.container = document.getElementById('game-container');
+        this.layerBgMotion = document.getElementById('layer-bg-motion');
         this.layerBgImg = document.getElementById('layer-bg-img');
         this.layerBgVideo = document.getElementById('layer-bg-video');
         this.layerChar = document.getElementById('layer-character');
@@ -1860,7 +1871,7 @@
         const bg = this.layerBgVideo.style.display === 'block' ? this.layerBgVideo : this.layerBgImg;
         this.effectEngine.applyFrame(khung, {
           character: this.layerChar && this.layerChar.style.display !== 'none' ? this.layerChar : null,
-          background: bg && bg.style.display !== 'none' ? bg : null,
+          background: this.layerBgMotion && this.layerBgMotion.style.display !== 'none' ? this.layerBgMotion : null,
           camera: this.container,
           flash: this.layerFxFlash
         });
@@ -1959,9 +1970,11 @@
         // Chỉ đưa nền và nhân vật lên màn hình sau khi cả hai đã sẵn sàng.
         // Nhờ vậy cảnh mới luôn xuất hiện đồng bộ, kể cả khi nền giữ nguyên.
         if (nenCanHienThi === 'video') {
+          this.layerBgMotion.style.display = 'block';
           this.layerBgImg.style.display = 'none';
           this.layerBgVideo.style.display = 'block';
         } else if (nenCanHienThi === 'image') {
+          this.layerBgMotion.style.display = 'block';
           this.layerBgVideo.style.display = 'none';
           this.layerBgImg.style.display = 'block';
         }
@@ -2139,6 +2152,7 @@
         this.capNhatThanhTua();
         this.layerBgImg.style.display = 'none';
         this.layerBgVideo.style.display = 'none';
+        this.layerBgMotion.style.display = 'none';
         this.layerChar.style.display = 'none';
         this.layerChar.pause();
         this.layerCharBuffer.style.display = 'none';
