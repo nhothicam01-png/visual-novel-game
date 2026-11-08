@@ -460,7 +460,63 @@ CẤU TRÚC JSON MẪU BẮT BUỘC:
   "thoi_gian_giu_khung": 1.0,
   "thoi_gian_cho_giua": 0.02,
   "toc_do_go_chu": 0.03,
-  "danh_sach": [
+  ==================================================
+HỆ THỐNG HIỆU ỨNG CHUYỂN ĐỘNG THEO TỪNG LƯỢT THOẠI
+==================================================
+
+Thư viện hiệu ứng nằm riêng trong file:
+- effects.js
+
+Quy tắc bắt buộc:
+- Chỉ sử dụng đúng ID có trong effects.js; không tự sáng tạo ID, tên hiệu ứng hoặc mã CSS.
+- Khi tạo kịch bản, hãy đọc danh sách ID và mô tả trong effects.js trước.
+- Mỗi lượt thoại có thể khai báo nhiều hiệu ứng trong cùng một nhóm; các hiệu ứng sẽ cộng hưởng.
+- Nếu không cần hiệu ứng, dùng mảng rỗng [] hoặc bỏ trường hieu_ung.
+- Không dùng hiệu ứng không đúng đối tượng (ví dụ hiệu ứng nhân vật không đặt vào nền).
+- Hiệu ứng camera tác động đồng thời lên nền, nhân vật và lớp hiệu ứng hình ảnh; không tác động lên hộp thoại.
+- Chọn hiệu ứng có chủ đích theo hành động, cảm xúc và nhịp cảnh; tránh lạm dụng rung/zoom/xoay.
+- Chỉ dùng các ID sau (đối chiếu effects.js nếu thư viện được cập nhật):
+
+Nhân vật:
+- char_walk_bob: nhấp nhô như đang đi
+- char_sway: nghiêng trái phải
+- char_fear_shake: run rẩy vì sợ
+- char_move_left: nhấp nhô và di chuyển sang trái
+- char_move_right: nhấp nhô và di chuyển sang phải
+- char_fade_out: mờ dần biến mất
+- char_ghost: trong suốt như linh hồn
+- char_giant: phóng to như người khổng lồ
+
+Nền:
+- bg_zoom_in, bg_zoom_out
+- bg_sway
+- bg_earthquake
+- bg_pan_left, bg_pan_right, bg_pan_up, bg_pan_down
+- bg_misty
+- bg_dizzy_spin
+
+Camera (áp dụng chung cho nền và nhân vật):
+- camera_zoom_in, camera_zoom_out
+- camera_sway, camera_shake
+- camera_pan_left, camera_pan_right, camera_pan_up, camera_pan_down
+- camera_misty, camera_spin, camera_tilt_left, camera_tilt_right
+
+Cấu trúc trường hieu_ung cho MỖI lượt thoại:
+"hieu_ung": {
+  "nhan_vat": ["char_walk_bob", "char_sway"],
+  "nen": ["bg_zoom_in", "bg_sway"],
+  "camera": ["camera_zoom_in"]
+}
+
+Lưu ý:
+- Các mảng chỉ chứa ID dạng chuỗi, không chứa mô tả tự do.
+- Có thể dùng đồng thời nhiều ID ở cả ba nhóm.
+- Chỉ khai báo hiệu ứng có ý nghĩa trong lượt thoại đó; khi sang lượt mới, hiệu ứng của lượt trước được thay bằng cấu hình mới.
+- Tránh kết hợp hai hiệu ứng đối nghịch cùng nhóm, ví dụ bg_zoom_in và bg_zoom_out.
+- Hiệu ứng char_fade_out và char_giant là hiệu ứng một lần; các hiệu ứng chuyển động khác lặp trong lúc lượt thoại đang hiển thị.
+- Tôn trọng chuyển động giảm (prefers-reduced-motion) của thiết bị.
+
+"danh_sach": [
     {
       "nhan_vat": "1",
       "ten_hien_thi": "Linh",
