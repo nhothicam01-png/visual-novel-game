@@ -247,7 +247,100 @@ Nếu cảnh tiếp theo vẫn sử dụng cùng hình nền, để trường an
 Chỉ chỉ định file nền mới khi thực sự cần chuyển bối cảnh.
 
 ==================================================
-VI. QUY TẮC SỬ DỤNG HIỆU ỨNG HÌNH ẢNH
+VI. TỰ NHẬN DIỆN TÀI NGUYÊN THÔNG MINH TỪ TÊN FILE
+==================================================
+
+ĐÂY LÀ QUY TRÌNH BẮT BUỘC TRƯỚC KHI VIẾT JSON.
+
+Mục tiêu: tự đọc tên thư mục, tên file và cấu trúc thư mục trên GitHub để suy luận tài nguyên đó có thể đại diện cho nhân vật, biểu cảm, bối cảnh, nhạc hoặc hiệu ứng gì; sau đó chọn tài nguyên phù hợp với từng đoạn truyện. Không yêu cầu người dùng phải mô tả thủ công từng file.
+
+1. KHẢO SÁT THƯ VIỆN THỰC TẾ
+- Đọc cây thư mục repository hoặc liệt kê trực tiếp từng thư mục tài nguyên:
+  - assets/NhanVat/
+  - assets/Nen/
+  - assets/HieuUng/
+  - assets/AmThanh/Nen/
+  - assets/AmThanh/HieuUng/
+- Với từng thư mục nhân vật, liệt kê các file biểu cảm thực tế bên trong.
+- Ghi nhận chính xác đường dẫn, tên file, phần mở rộng và thư mục cha.
+- Không chỉ dựa vào danh sách tài nguyên đã nhớ từ lần tạo truyện trước. Mỗi lần tạo truyện phải kiểm tra trạng thái repository hiện tại.
+- Nếu không thể đọc được một thư mục hoặc GitHub trả lỗi, phải nêu rõ giới hạn; không được giả vờ đã kiểm tra.
+
+2. SUY LUẬN Ý NGHĨA TỪ TÊN FILE
+Phân tích tên file theo nhiều tín hiệu:
+- Tách các từ được nối bằng dấu gạch dưới, dấu gạch ngang, khoảng trắng hoặc viết liền.
+- Nhận diện từ khóa tiếng Việt không dấu, tiếng Việt có dấu, tiếng Anh, từ viết tắt và các cụm từ thường dùng.
+- Kết hợp tên file với thư mục chứa nó và phần mở rộng.
+- Xét các từ chỉ địa điểm, thời gian, thời tiết, ánh sáng, cảm xúc, hành động, không khí và thể loại âm thanh.
+- Ví dụ:
+  - phong_ngu_dem.png: phòng ngủ, thời điểm ban đêm.
+  - san_truong_ban_ngay.png: sân trường, ban ngày.
+  - hanh_lang_toi.png: hành lang tối, có thể phù hợp cảnh bí ẩn hoặc căng thẳng.
+  - lop_hoc_chieu.png: lớp học vào buổi chiều.
+  - sparkle.png: hiệu ứng lấp lánh.
+  - bgm_gentle.mp3: nhạc nền nhẹ nhàng.
+  - sfx_pop.mp3: hiệu ứng âm thanh bật/nảy hoặc xuất hiện.
+- Đây chỉ là suy luận ngữ nghĩa, không phải khẳng định nội dung hình ảnh/âm thanh đã được xem hoặc nghe.
+- Không suy luận quá mức từ tên mơ hồ. Ví dụ file tên render.mp4 không đủ căn cứ để kết luận đó là cảnh nào; cần xem metadata/thumbnail nếu công cụ hỗ trợ, hoặc đánh dấu ý nghĩa chưa rõ.
+- Nếu có thể xem ảnh hoặc thumbnail video, dùng hình ảnh thực tế để xác nhận hoặc điều chỉnh suy luận từ tên file. Nếu không thể xem, chỉ ghi nhận suy luận từ tên.
+- Không phát âm thanh để đoán nội dung nếu không có công cụ nghe/phân tích thực tế.
+
+3. TẠO BẢNG DANH MỤC TÀI NGUYÊN NỘI BỘ
+Trước khi viết kịch bản, lập bảng làm việc nội bộ với các thông tin:
+- Tên file chính xác.
+- Đường dẫn/thư mục chứa file.
+- Loại tài nguyên: nhân vật, biểu cảm, nền, hiệu ứng hình ảnh, nhạc nền hoặc hiệu ứng âm thanh.
+- Ý nghĩa dự đoán.
+- Từ khóa/cảnh phù hợp.
+- Mức độ tin cậy: cao, trung bình hoặc thấp.
+- Ghi chú nếu tên file mơ hồ hoặc cần kiểm tra trực quan.
+
+Bảng này dùng để lựa chọn nhất quán trong toàn bộ truyện. Không bắt buộc ghi bảng vào JSON và không tạo thêm trường JSON ngoài schema player hỗ trợ.
+
+4. CHỌN NHÂN VẬT VÀ BIỂU CẢM
+- Dùng thư mục nhân vật có thật làm mã tài nguyên theo mục IV.
+- Nếu tên thư mục là số hoặc mã khó hiểu, không tự suy diễn danh tính nhân vật từ mã đó. Hãy phân bổ nhân vật theo các thư mục hiện có, đảm bảo nhất quán xuyên suốt truyện.
+- Đọc tên các file biểu cảm trong từng thư mục. Suy luận cảm xúc/hành động từ tên file, ví dụ vui, buồn, tức giận, ngạc nhiên, khóc, bình thường, chào hỏi... chỉ khi tên file thực tế có căn cứ.
+- Chọn biểu cảm phù hợp với cảm xúc ở đúng lượt thoại; không chọn chỉ vì biểu cảm đó tồn tại.
+- Không mặc định mọi nhân vật đều có cùng bộ biểu cảm. Phải kiểm tra riêng từng thư mục nhân vật.
+- Nếu nhân vật không có biểu cảm phù hợp, chọn biểu cảm trung tính thực sự tồn tại hoặc cách xử lý mặc định mà player hỗ trợ. Không bịa tên biểu cảm.
+- Tên hiển thị nhân vật vẫn tuân thủ mục IV; không dùng tên file biểu cảm làm tên nhân vật.
+
+5. CHỌN HÌNH NỀN THEO NGỮ CẢNH
+- Đọc bối cảnh từng đoạn truyện rồi so khớp với bảng danh mục nền.
+- Ưu tiên khớp địa điểm trước, sau đó đến thời gian, ánh sáng, thời tiết và không khí.
+- Ví dụ: cảnh nói chuyện trong phòng ngủ ban đêm ưu tiên nền có ý nghĩa phòng ngủ/ban đêm; cảnh ở sân trường buổi sáng ưu tiên nền sân trường/ban ngày nếu không có lựa chọn chính xác hơn.
+- Không chọn nền chỉ vì tên có một từ khóa chung. Phải xét toàn bộ ngữ cảnh của cảnh.
+- Nếu có nhiều nền gần nghĩa, chọn nền phù hợp nhất và sử dụng nhất quán trong cùng một cảnh.
+- Nếu không có nền khớp hoàn toàn, chọn nền gần nhất nhưng không làm sai bối cảnh cốt lõi. Nếu mọi lựa chọn đều gây hiểu nhầm, để trống theo khả năng player hỗ trợ và báo thiếu nền.
+- Khi bối cảnh không đổi, tiếp tục dùng quy tắc kế thừa nền bằng chuỗi rỗng.
+
+6. CHỌN NHẠC VÀ HIỆU ỨNG
+- Suy luận nhạc nền dựa trên tên file và đối chiếu với sắc thái cảnh: nhẹ nhàng, vui, buồn, căng thẳng, hồi hộp, bí ẩn...
+- Suy luận hiệu ứng âm thanh dựa trên tên file và hành động đang diễn ra. Chỉ dùng khi hiệu ứng thực sự giúp cảnh rõ hơn.
+- Hiệu ứng hình ảnh chỉ dùng khi hợp nội dung và player hỗ trợ.
+- Không gán file chỉ vì tên nghe có vẻ phù hợp nếu chưa chắc đó là đúng loại tài nguyên hoặc player không hỗ trợ.
+- Không lạm dụng một hiệu ứng hoặc nhạc nền cho mọi cảnh.
+- Tài nguyên không cần thiết thì để chuỗi rỗng; không bắt buộc mỗi lượt thoại phải có hiệu ứng.
+
+7. QUY TẮC ĐỘ TIN CẬY VÀ XỬ LÝ MƠ HỒ
+- Tin cậy cao: tên file rõ nghĩa và khớp trực tiếp với nội dung, ví dụ phong_ngu_dem.png.
+- Tin cậy trung bình: tên file chỉ gợi ý một phần hoặc có nhiều cách hiểu; cần xét thư mục, định dạng và ngữ cảnh.
+- Tin cậy thấp: tên chung chung, mã số hoặc tên không mô tả nội dung, ví dụ image1.png, render.mp4, 001.mp3.
+- Với độ tin cậy thấp, không được trình bày suy luận như sự thật. Nếu có thể, kiểm tra hình ảnh/thumbnail hoặc thông tin bổ sung. Nếu vẫn không rõ, không dùng cho cảnh mà ý nghĩa chính xác là quan trọng.
+- Không tự tạo tên file, không tự đổi phần mở rộng, không tự tạo thư mục hoặc biểu cảm.
+- Nếu người dùng yêu cầu tự động hoàn toàn, hãy chọn phương án an toàn nhất trong các tài nguyên đã xác minh; chỉ hỏi người dùng khi thiếu tài nguyên thiết yếu hoặc có nhiều lựa chọn gây thay đổi đáng kể ý nghĩa truyện.
+
+8. ĐỐI CHIẾU TRƯỚC KHI GHI JSON
+- Mọi tài nguyên đã chọn phải được đối chiếu với file thực tế trong đúng thư mục.
+- Phân biệt tên file với ý nghĩa suy luận: ý nghĩa có thể diễn giải, nhưng giá trị JSON phải là tên file chính xác.
+- Kiểm tra riêng mã thư mục nhân vật, file biểu cảm, nền, hiệu ứng hình ảnh, nhạc nền và hiệu ứng âm thanh.
+- Không dùng kết quả suy luận làm bằng chứng rằng file tồn tại; phải kiểm tra đường dẫn GitHub.
+- Nếu file đã bị đổi tên hoặc xóa kể từ lần khảo sát trước, cập nhật lựa chọn theo repository hiện tại.
+- Chỉ lưu JSON khi tất cả tham chiếu tài nguyên đều hợp lệ hoặc đã để trống theo đúng quy tắc.
+
+==================================================
+VII. QUY TẮC SỬ DỤNG HIỆU ỨNG HÌNH ẢNH
 ==================================================
 
 Thư viện:
