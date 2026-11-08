@@ -1,0 +1,93 @@
+/* Visual Novel Effects Library
+ * Tất cả hiệu ứng được đăng ký tại đây; JSON chỉ được gọi ID đã có.
+ * Các transform dùng Web Animations API với composite:add để có thể cộng hưởng.
+ */
+(() => {
+  'use strict';
+  const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const registry = {
+    nhan_vat: {
+      char_walk_bob: { label:'Nhân vật nhấp nhô như đang đi', transform:[{transform:'translateY(0px)'},{transform:'translateY(-12px)'},{transform:'translateY(0px)'}], duration:520 },
+      char_sway: { label:'Nhân vật nghiêng trái phải', transform:[{transform:'rotate(-5deg)'},{transform:'rotate(5deg)'},{transform:'rotate(-5deg)'}], duration:1500 },
+      char_fear_shake: { label:'Nhân vật run rẩy vì sợ', transform:[{transform:'translateX(-3px) rotate(-2deg)'},{transform:'translateX(3px) rotate(2deg)'},{transform:'translateX(-2px) rotate(-1deg)'}], duration:105 },
+      char_move_left: { label:'Nhân vật vừa nhấp nhô vừa di chuyển sang trái', transform:[{transform:'translate(-34px,0) translateY(0)'},{transform:'translate(-17px,-10px)'},{transform:'translate(0,0)'}], duration:900 },
+      char_move_right: { label:'Nhân vật vừa nhấp nhô vừa di chuyển sang phải', transform:[{transform:'translate(0,0)'},{transform:'translate(17px,-10px)'},{transform:'translate(34px,0)'}], duration:900 },
+      char_fade_out: { label:'Nhân vật mờ dần biến mất', opacity:[{opacity:1},{opacity:0}], duration:1100, once:true },
+      char_ghost: { label:'Nhân vật trong suốt như linh hồn', filter:'opacity(0.48) saturate(0.65) brightness(1.12)' },
+      char_giant: { label:'Nhân vật phóng to như người khổng lồ', transform:[{transform:'scale(1)'},{transform:'scale(1.65)'}], duration:900, once:true }
+    },
+    nen: {
+      bg_zoom_in: { label:'Nền zoom gần', transform:[{transform:'scale(1)'},{transform:'scale(1.18)'}], duration:6500 },
+      bg_zoom_out: { label:'Nền zoom xa', transform:[{transform:'scale(1.18)'},{transform:'scale(1)'}], duration:6500 },
+      bg_sway: { label:'Nền lắc lư nhẹ trái phải', transform:[{transform:'translateX(-1.2%) rotate(-0.25deg)'},{transform:'translateX(1.2%) rotate(0.25deg)'},{transform:'translateX(-1.2%) rotate(-0.25deg)'}], duration:5000 },
+      bg_earthquake: { label:'Nền rung lắc như động đất', transform:[{transform:'translate(-1.2%,0.7%) rotate(-0.6deg)'},{transform:'translate(1.1%,-0.8%) rotate(0.6deg)'},{transform:'translate(-0.8%,-0.6%) rotate(-0.4deg)'},{transform:'translate(0.8%,0.6%) rotate(0.4deg)'}], duration:115 },
+      bg_pan_left: { label:'Nền trượt sang trái', transform:[{transform:'translateX(0)'},{transform:'translateX(-12%)'}], duration:7000 },
+      bg_pan_right: { label:'Nền trượt sang phải', transform:[{transform:'translateX(-12%)'},{transform:'translateX(0)'}], duration:7000 },
+      bg_pan_up: { label:'Nền trượt lên trên', transform:[{transform:'translateY(0)'},{transform:'translateY(-10%)'}], duration:7000 },
+      bg_pan_down: { label:'Nền trượt xuống dưới', transform:[{transform:'translateY(-10%)'},{transform:'translateY(0)'}], duration:7000 },
+      bg_misty: { label:'Nền mờ ảo', filter:'blur(1.5px) brightness(1.12) saturate(0.8)' },
+      bg_dizzy_spin: { label:'Nền xoay vòng chóng mặt', transform:[{transform:'rotate(-3deg) scale(1.12)'},{transform:'rotate(3deg) scale(1.12)'},{transform:'rotate(-3deg) scale(1.12)'}], duration:1800 }
+    },
+    camera: {
+      camera_zoom_in: { label:'Camera zoom gần', transform:[{transform:'scale(1)'},{transform:'scale(1.16)'}], duration:4200 },
+      camera_zoom_out: { label:'Camera zoom xa', transform:[{transform:'scale(1.16)'},{transform:'scale(1)'}], duration:4200 },
+      camera_sway: { label:'Camera lắc lư nhẹ', transform:[{transform:'translateX(-0.7%) rotate(-0.25deg)'},{transform:'translateX(0.7%) rotate(0.25deg)'},{transform:'translateX(-0.7%) rotate(-0.25deg)'}], duration:2600 },
+      camera_shake: { label:'Camera rung lắc mạnh', transform:[{transform:'translate(-1.1%,0.7%) rotate(-0.45deg)'},{transform:'translate(1.1%,-0.7%) rotate(0.45deg)'},{transform:'translate(-0.8%,-0.6%) rotate(-0.3deg)'},{transform:'translate(0.8%,0.6%) rotate(0.3deg)'}], duration:100 },
+      camera_pan_left: { label:'Camera trượt trái', transform:[{transform:'translateX(0)'},{transform:'translateX(-5%)'}], duration:2800 },
+      camera_pan_right: { label:'Camera trượt phải', transform:[{transform:'translateX(0)'},{transform:'translateX(5%)'}], duration:2800 },
+      camera_pan_up: { label:'Camera trượt lên', transform:[{transform:'translateY(0)'},{transform:'translateY(-5%)'}], duration:2800 },
+      camera_pan_down: { label:'Camera trượt xuống', transform:[{transform:'translateY(0)'},{transform:'translateY(5%)'}], duration:2800 },
+      camera_misty: { label:'Camera mờ ảo', filter:'blur(1px) brightness(1.08)' },
+      camera_spin: { label:'Camera xoay vòng', transform:[{transform:'rotate(-2deg) scale(1.1)'},{transform:'rotate(2deg) scale(1.1)'},{transform:'rotate(-2deg) scale(1.1)'}], duration:2200 },
+      camera_tilt_left: { label:'Camera nghiêng trái', transform:[{transform:'rotate(0deg)'},{transform:'rotate(-7deg)'}], duration:900, once:true },
+      camera_tilt_right: { label:'Camera nghiêng phải', transform:[{transform:'rotate(0deg)'},{transform:'rotate(7deg)'}], duration:900, once:true }
+    }
+  };
+  const active = new WeakMap();
+  const allNodes = new Set();
+  function cancelNode(node) {
+    if (!node) return;
+    (active.get(node) || []).forEach(a => { try { a.cancel(); } catch (_) {} });
+    active.delete(node);
+    node.style.filter = '';
+  }
+  function addAnimation(node, def) {
+    if (!node || reducedMotion()) return;
+    const list = active.get(node) || [];
+    if (def.transform) {
+      const a = node.animate(def.transform, {duration:def.duration || 1000, iterations:def.once ? 1 : Infinity, easing:def.easing || 'ease-in-out', fill:def.once ? 'forwards' : 'none', composite:'add'});
+      list.push(a);
+    }
+    if (def.opacity) {
+      const a = node.animate(def.opacity, {duration:def.duration || 1000, iterations:def.once ? 1 : Infinity, easing:'ease-in-out', fill:def.once ? 'forwards' : 'none'});
+      list.push(a);
+    }
+    if (def.filter) node.style.filter = [node.style.filter, def.filter].filter(Boolean).join(' ');
+    active.set(node, list); allNodes.add(node);
+  }
+  function apply(config, targets) {
+    clear();
+    const normalized = config && typeof config === 'object' ? config : {};
+    const groups = [
+      ['nen', targets?.nen ? [targets.nen] : []],
+      ['nhan_vat', targets?.nhan_vat ? [targets.nhan_vat] : []],
+      ['camera', Array.isArray(targets?.camera) ? targets.camera : []]
+    ];
+    for (const [category, nodes] of groups) {
+      const ids = Array.isArray(normalized[category]) ? normalized[category] : [];
+      for (const id of ids) {
+        const def = registry[category]?.[id];
+        if (!def) { console.warn('[VNEffects] Bỏ qua ID hiệu ứng không tồn tại:', category, id); continue; }
+        nodes.forEach(node => addAnimation(node, def));
+      }
+    }
+  }
+  function clear() {
+    allNodes.forEach(cancelNode);
+    allNodes.clear();
+  }
+  function list() {
+    return Object.fromEntries(Object.entries(registry).map(([group, effects]) => [group, Object.entries(effects).map(([id, def]) => ({id, label:def.label}))]));
+  }
+  window.VNEffects = Object.freeze({apply, clear, list, registry});
+})();
