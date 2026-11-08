@@ -290,124 +290,110 @@ Chỉ sử dụng file thực tế tồn tại.
 Không lạm dụng hiệu ứng âm thanh khiến hội thoại khó nghe.
 
 ==================================================
-VIII. QUY TẮC TẠO HIỆU ỨNG CHUYỂN ĐỘNG
+VIII. HỆ THỐNG HIỆU ỨNG THEO THƯ VIỆN (JSON SCHEMA V2)
 ==================================================
 
-Player hỗ trợ ba nhóm hiệu ứng được điều khiển bằng JSON:
-- hieu_ung_nhan_vat: chỉ tác động lên nhân vật.
-- hieu_ung_nen: chỉ tác động lên hình nền.
-- hieu_ung_camera: tác động đồng bộ lên nền và nhân vật; camera shake/pan có thể tác động toàn khung hình.
+NGUỒN CHUẨN DUY NHẤT:
+assets/Config/effect_library.json
 
-QUY TẮC BẮT BUỘC CHO TỪNG LƯỢT THOẠI:
-- Mỗi object trong danh_sach PHẢI có đủ cả ba trường hieu_ung_nhan_vat, hieu_ung_nen và hieu_ung_camera.
-- Nếu lượt thoại không cần một nhóm hiệu ứng, ghi chính xác giá trị chuỗi rỗng "" cho trường đó. Không bỏ trường, không dùng null, không dùng {}.
-- Chỉ nhóm nào có hiệu ứng mới khai báo object. Ví dụ: "hieu_ung_nhan_vat": "".
-- Hiệu ứng được xét riêng ở từng lượt thoại. Muốn một hiệu ứng tiếp tục ở lượt thoại kế tiếp, phải khai báo lại ở lượt đó; không dựa vào kế thừa ngầm.
-- Khi lượt thoại mới bắt đầu, hiệu ứng lượt trước phải kết thúc và các lớp hình ảnh phải trở về trạng thái gốc trước khi áp dụng hiệu ứng mới.
-- Không được để transform/scale/vị trí từ lượt trước tích lũy sang lượt sau.
-- Mỗi hiệu ứng mặc định chỉ chạy một lần, không lặp vô hạn. Chỉ đặt "lap": true khi có lý do rõ ràng và chuyển động thực sự cần lặp.
-- Luôn khai báo thoi_gian bằng mili giây. Player tự kết thúc hiệu ứng sau thời lượng đó; animation phải có khung hình cuối trở về trạng thái gốc.
-- Không dùng hiệu ứng chuyển động liên tục kéo dài suốt nhiều lượt thoại nếu không có chủ đích đặc biệt.
+Trước khi tạo kịch bản:
+1. Đọc file effect_library.json mới nhất từ repository.
+2. Đọc danh sách effects, id, target, description, complexity, engine_type và thông số mặc định.
+3. Chỉ sử dụng ID đang tồn tại trong thư viện.
+4. Không được tự bịa ID, engine_type hoặc thông số ngoài schema.
+5. Nếu không tải/đọc được thư viện, dừng bước tạo hiệu ứng và báo rõ; không tự đoán.
 
-1. HIỆU ỨNG NHÂN VẬT — hieu_ung_nhan_vat
-Các kiểu hỗ trợ:
-- idle, breath, breathing, sway: chuyển động nhẹ như thở/đung đưa.
-- walk: chuyển động bước.
-- bounce: nhún hoặc nảy nhẹ.
-- shake: rung ngắn.
-- zoom: nhấn nhẹ bằng phóng to rồi trở về kích thước gốc.
-- enter-left, enter-right: đi vào từ hai bên.
-- nod: gật đầu một lần.
+CƠ CHẾ BỔ SUNG HIỆU ỨNG:
+- Hiệu ứng đơn giản: chỉ được tự bổ sung vào effect_library.json khi có thể cấu hình hoàn toàn bằng engine_type/primitive đã được js/effect_engine.js hỗ trợ. Phải kiểm tra ID trùng, target hợp lệ, thông số nằm trong giới hạn và không làm thay đổi hành vi ID cũ.
+- Hiệu ứng phức tạp hoặc cần kỹ thuật JavaScript/renderer mới: không tự ý sửa engine hay thư viện chính. Tạo đề xuất riêng gồm tên, ID dự kiến, mục tiêu, mô tả, cách hoạt động, thời lượng, tài nguyên cần có, rủi ro tương thích và cách kiểm thử; chờ người dùng duyệt.
+- Chỉ sau khi người dùng duyệt và triển khai thành công mới được dùng ID mới trong JSON.
+- Không tải/chạy mã JavaScript tùy ý từ thư viện. effect_library.json chỉ là dữ liệu khai báo.
+- Khi sửa hoặc xóa một hiệu ứng, kiểm tra các kịch bản đang tham chiếu ID đó; không âm thầm làm hỏng kịch bản cũ.
 
-2. HIỆU ỨNG NỀN — hieu_ung_nen
-Các kiểu hỗ trợ:
-- pan, move, slide, parallax: lia nền nhẹ rồi trở về vị trí gốc.
-- zoom, zoom-in: tiến gần nhẹ rồi trở về kích thước gốc.
-- zoom-out: thu nhẹ rồi trở về kích thước gốc.
-- shake: rung nền ngắn rồi trở về vị trí gốc.
+CÁC HIỆU ỨNG NHÂN VẬT ĐƯỢC ƯU TIÊN:
+Chỉ dùng bốn hiệu ứng chuyển động nhân vật hiện có trong thư viện:
+- char.shake: rung lắc, choáng váng, run rẩy, xúc động.
+- char.bob: nhấp nhô lên xuống, bước chân/chạy tại chỗ.
+- char.walk_left: vừa nhấp nhô vừa di chuyển sang trái.
+- char.walk_right: vừa nhấp nhô vừa di chuyển sang phải.
+Không tự thêm các kiểu thở, lắc lư, gật đầu, zoom nhân vật hoặc hiệu ứng nhân vật khác vào thư viện mặc định. Nếu người dùng yêu cầu kiểu mới, phân loại đơn giản/phức tạp theo năng lực engine và áp dụng quy trình duyệt tương ứng.
 
-3. HIỆU ỨNG CAMERA — hieu_ung_camera
-Các kiểu hỗ trợ:
-- shake: rung toàn khung hình ngắn, có điểm dừng.
-- zoom, zoom-in: phóng đồng bộ nền và nhân vật rồi trở về kích thước gốc.
-- zoom-out: thu nhẹ đồng bộ nền và nhân vật rồi trở về kích thước gốc.
-- pan: lia toàn khung hình nhẹ rồi trở về vị trí gốc.
-- flash: chớp sáng ngắn.
+Các hiệu ứng nền/camera chỉ dùng ID target tương ứng trong effect_library.json. Không gán hiệu ứng nền cho nhân vật hoặc ngược lại.
 
-4. THUỘC TÍNH
-- kieu: loại hiệu ứng.
-- huong: hướng chuyển động (khi kiểu hiệu ứng cần hướng).
-- toc_do: tốc độ, thường dùng 0.8–1.2.
-- cuong_do: cường độ; ưu tiên mức nhẹ 0.5–1.
-- lap: mặc định false; chỉ true nếu thật sự cần lặp.
-- thoi_gian: thời lượng tính bằng mili giây; nên chọn khoảng 400–1800 ms cho hiệu ứng nhân vật/camera và 1800–4500 ms cho hiệu ứng nền chậm. Không kéo dài quá mức nếu cảnh không cần.
-
-5. NGUYÊN TẮC DÀN DỰNG, TRÁNH ĐƠN ĐIỆU VÀ CHÓNG MẶT
-- Không bắt buộc mọi lượt thoại phải có hiệu ứng. Ưu tiên thoại tĩnh; chỉ thêm hiệu ứng khi nó làm rõ hành động, cảm xúc hoặc nhấn mạnh thông tin.
-- Không dùng zoom nhân vật ở hai lượt thoại liên tiếp, trừ khi có chủ đích kể chuyện rất rõ.
-- Không lặp cùng một hiệu ứng ở các lượt thoại liên tiếp. Thay đổi nhịp bằng cách xen kẽ thoại tĩnh, chuyển động nhẹ và điểm nhấn hiếm hoi.
-- Không lạm dụng shake, zoom, bounce hoặc pan; tránh nhiều nhóm hiệu ứng mạnh chạy cùng lúc.
-- Breath/sway phải rất nhẹ, không làm nhân vật phóng to toàn thân rõ rệt.
-- Shake chỉ là một nhịp ngắn, không rung kéo dài.
-- Zoom chỉ nhấn nhẹ rồi trả về gốc, không giữ nhân vật/nền ở trạng thái phóng to.
-- Dùng hiệu ứng mạnh nhất ở khoảnh khắc cao trào, và dành khoảng nghỉ thị giác sau đó.
-- Khi không chắc có nên thêm hiệu ứng hay không, hãy để "".
-
-6. VÍ DỤ ĐÚNG
-{
-  "hieu_ung_nhan_vat": "",
-  "hieu_ung_nen": {
-    "kieu": "pan",
-    "huong": "left",
-    "toc_do": 1,
-    "cuong_do": 0.7,
-    "lap": false,
-    "thoi_gian": 2800
-  },
-  "hieu_ung_camera": ""
+CẤU TRÚC MỖI LƯỢT THOẠI:
+Dùng object hieu_ung với ba slot. Không cần hiệu ứng thì ghi chuỗi rỗng:
+"hieu_ung": {
+  "nhan_vat": "",
+  "nen": "",
+  "camera": ""
 }
 
+Nếu có hiệu ứng, tham chiếu ID:
+"hieu_ung": {
+  "nhan_vat": { "id": "char.shake" },
+  "nen": "",
+  "camera": { "id": "camera.shake" }
+}
+
+Có thể ghi đè thông số được thư viện cho phép, ví dụ:
+"nhan_vat": {
+  "id": "char.bob",
+  "params": { "duration_ms": 900, "intensity": 0.8, "cycles": 3 }
+}
+Chỉ dùng các tham số được engine hỗ trợ cho ID đó. Không ghi đè target, engine_type hoặc ID.
+
+QUY TẮC CHUYỂN ĐỘNG:
+- Rung lắc: dùng char.shake ở khoảnh khắc choáng váng/run rẩy/xúc động; không dùng liên tục cho mọi câu.
+- Nhấp nhô: dùng char.bob khi nhân vật bước/chạy tại chỗ.
+- Di chuyển trái/phải: dùng char.walk_left hoặc char.walk_right. Hai hiệu ứng này kết hợp nhấp nhô và dịch chuyển ngang; điểm kết thúc giữ vị trí mới trong lượt hiện tại, lượt kế tiếp player reset transform trước khi áp dụng hiệu ứng mới.
+- Không để nhân vật trôi dần qua nhiều lượt thoại.
+- Mỗi hiệu ứng phải có thời lượng hữu hạn; không tạo vòng lặp vô hạn.
+- Ưu tiên thoại tĩnh. Chỉ dùng hiệu ứng khi nó thể hiện hành động/cảm xúc rõ ràng.
+- Tránh kết hợp nhiều hiệu ứng mạnh cùng lúc.
+- Nếu không chắc, để slot là "".
+
+QUY TẮC TƯƠNG THÍCH:
+- Kịch bản mới dùng schema_version: 2 và object hieu_ung.
+- Player duy trì khả năng đọc các trường hiệu ứng schema v1 trong giai đoạn chuyển đổi; không sửa các kịch bản cũ chỉ để đổi schema.
+- Trước khi lưu JSON, xác thực tất cả ID tồn tại trong thư viện và target khớp slot.
+- Nếu hiệu ứng phức tạp đang chờ duyệt, không đưa ID dự kiến vào kịch bản.
+
 ==================================================
-==================================================
-IX. CẤU TRÚC JSON BẮT BUỘC
+IX. CẤU TRÚC JSON BẮT BUỘC — SCHEMA V2
 ==================================================
 
-Kịch bản phải sử dụng cấu trúc tương thích với player hiện tại.
-
-Cấu trúc tổng thể tham khảo:
-
+Cấu trúc tổng thể:
 {
+  "schema_version": 2,
   "thoi_gian_giu_khung": 2,
   "thoi_gian_cho_giua": 0.5,
   "toc_do_go_chu": 40,
   "danh_sach": [
     {
       "nhan_vat": "TenNhanVat",
-      "bieu_cam": "Happy",
+      "bieu_cam": "TenFileBieuCam",
       "noi_dung": "Nội dung câu thoại.",
       "anh_nen": "",
       "anh_hieu_ung": "",
       "am_thanh_nen": "",
       "am_thanh_hieu_ung": "",
-      "hieu_ung_nhan_vat": "",
-      "hieu_ung_nen": "",
-      "hieu_ung_camera": ""
+      "hieu_ung": {
+        "nhan_vat": "",
+        "nen": "",
+        "camera": ""
+      }
     }
   ]
 }
 
-Đây là cấu trúc tham khảo. Phải giữ đúng tên trường và kiểu dữ liệu mà player đang sử dụng.
-
-QUY TẮC QUAN TRỌNG:
-- danh_sach chứa toàn bộ các lượt thoại theo thứ tự phát.
-- Mỗi phần tử tương ứng với một lượt thoại hoặc một đoạn nội dung được player xử lý.
-- nhan_vat phải khớp tên thư mục nhân vật.
-- bieu_cam phải khớp tên file biểu cảm thực tế.
-- noi_dung chứa câu thoại hoàn chỉnh.
-- Các trường tài nguyên phải là tên file hoặc đường dẫn đúng theo quy ước player.
-- Nếu tài nguyên được kế thừa từ cảnh trước, để rỗng theo quy tắc.
-- Các trường hiệu ứng là tùy chọn.
-- Không tự thêm các trường không được player hỗ trợ.
+QUY TẮC:
+- Giữ nguyên các trường tài nguyên, nhân vật, biểu cảm, thoại theo quy ước player.
+- Mỗi lượt thoại schema v2 phải có đủ ba slot hieu_ung.nhan_vat, hieu_ung.nen, hieu_ung.camera.
+- Mỗi slot là chuỗi rỗng hoặc object có id hợp lệ; không dùng null.
+- params là tùy chọn và chỉ chứa thuộc tính được engine hỗ trợ.
+- Không tiếp tục ghi hieu_ung_nhan_vat/hieu_ung_nen/hieu_ung_camera trong kịch bản mới.
+- Không tự thêm trường ngoài cấu trúc đã quy định.
+- Kịch bản schema v1 đã tồn tại vẫn được player hỗ trợ; không tự ý sửa file cũ.
 
 ==================================================
 X. QUY TẮC CHIA CÂU THOẠI
