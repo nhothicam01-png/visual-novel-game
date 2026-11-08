@@ -206,7 +206,50 @@ Tên biểu cảm phải khớp với file thực tế. Các tên như Happy, Sa
 Nhân vật không xuất hiện trong lượt thoại có thể để trống trường nhân vật theo cấu trúc mà player hỗ trợ.
 
 ==================================================
-V. QUY TẮC SỬ DỤNG HÌNH NỀN
+V. PHÂN BỔ THƯ MỤC NHÂN VẬT THÔNG MINH THEO CỐT TRUYỆN
+==================================================
+
+Mục tiêu: không mặc định nhân vật truyện phải lần lượt dùng thư mục 1, 2, 3, 4... Hãy khảo sát tên thư mục nhân vật và các dấu hiệu có thật trong thư mục để chọn đối tượng hình ảnh phù hợp nhất với vai trò trong cốt truyện.
+
+1. QUÉT VÀ PHÂN TÍCH THƯ MỤC NHÂN VẬT
+- Liệt kê tất cả thư mục con thực tế trong assets/NhanVat/.
+- Đọc chính xác tên từng thư mục, tên file bên trong và các thông tin mô tả có sẵn (nếu có).
+- Phân tích tên thư mục để tìm dấu hiệu ngữ nghĩa như tên riêng, giới tính được thể hiện rõ, độ tuổi, vai trò, loại nhân vật hoặc đặc điểm được đặt tên trong thư mục.
+- Kết hợp các dấu hiệu từ tên file biểu cảm và cấu trúc thư mục để hiểu thêm về nhân vật, nhưng không suy diễn những đặc điểm ngoại hình/tính cách mà dữ liệu không thể hiện.
+- Nếu thư mục chỉ mang mã số hoặc tên chung chung như 1, 2, 3, nhanvat_a, không thể xác định danh tính hay ngoại hình chỉ từ tên đó.
+- Không được coi số thứ tự thư mục là thứ tự vai diễn, mức độ quan trọng hoặc giới tính.
+
+2. ĐỐI CHIẾU VỚI NHÂN VẬT TRONG CỐT TRUYỆN
+- Trước hết, lập danh sách nhân vật truyện và mô tả ngắn vai trò, giới tính/độ tuổi (chỉ khi truyện có căn cứ), tính cách và mức độ xuất hiện.
+- So sánh thông tin đó với dấu hiệu thực tế của từng thư mục nhân vật.
+- Ưu tiên ghép thư mục có tên hoặc thông tin mô tả khớp rõ ràng với nhân vật truyện.
+- Nếu có nhiều thư mục phù hợp, chọn phương án hợp lý nhất dựa trên các dấu hiệu có thật; không gán một thư mục cho nhiều nhân vật khác nhau cùng xuất hiện trong truyện nếu player cần hiển thị hai người riêng biệt.
+- Nếu thư mục không cung cấp đủ thông tin để nhận diện, không được tự khẳng định nhân vật trong thư mục có ngoại hình, giới tính hay tính cách cụ thể.
+
+3. KHI KHÔNG NHẬN DIỆN ĐƯỢC: CHỌN NGẪU NHIÊN, KHÔNG THEO THỨ TỰ
+- Nếu tên thư mục và dữ liệu bên trong không đủ căn cứ để ghép nhân vật, hãy chọn ngẫu nhiên trong số các thư mục nhân vật hợp lệ còn chưa được phân bổ.
+- Không được mặc định chọn thư mục đầu tiên hoặc lần lượt 1, 2, 3, 4...
+- Có thể xáo trộn danh sách thư mục trước khi phân bổ để tránh mọi truyện đều có cùng một thứ tự gán nhân vật.
+- Mỗi nhân vật truyện cần một mã thư mục riêng khi họ là những nhân vật riêng biệt cùng xuất hiện.
+- Nếu số nhân vật truyện nhiều hơn số thư mục tài nguyên có sẵn, chỉ dùng lại thư mục khi player và cách kể cho phép; nếu không, phải báo rõ thiếu nhân vật hình ảnh, không tự tạo mã thư mục.
+- Việc chọn ngẫu nhiên chỉ áp dụng cho phân bổ thư mục không nhận diện được; không được chọn ngẫu nhiên biểu cảm, tên hiển thị hoặc thay đổi nhân vật giữa các cảnh.
+
+4. GIỮ PHÂN BỔ ỔN ĐỊNH TRONG TOÀN BỘ TRUYỆN
+- Sau khi ghép nhân vật truyện với thư mục tài nguyên, tạo bảng ánh xạ nội bộ: tên nhân vật truyện -> mã thư mục -> căn cứ chọn.
+- Giữ nguyên ánh xạ đó từ đầu đến cuối JSON. Ví dụ nhân vật Linh đã được gán thư mục 4 thì mọi lượt thoại của Linh đều phải dùng "nhan_vat": "4".
+- Không đổi mã thư mục chỉ vì nhân vật chuyển cảnh, thay đổi cảm xúc hoặc xuất hiện sau một nhân vật khác.
+- "ten_hien_thi" vẫn là tên trong truyện hoặc tên được sáng tạo theo mục IV; không lấy tên thư mục làm tên hiển thị trừ khi đó thực sự là tên nhân vật.
+- Trước khi lưu, kiểm tra mỗi nhân vật có một ánh xạ nhất quán và mọi mã thư mục đều tồn tại trong assets/NhanVat/.
+
+5. BÁO CÁO CÁCH PHÂN BỔ
+Trong báo cáo cuối, nêu:
+- Nhân vật truyện.
+- Mã thư mục nhân vật được gán.
+- Ghép theo tên/thông tin thư mục hay chọn ngẫu nhiên do không nhận diện được.
+- Nếu chọn ngẫu nhiên, ghi rõ đó là lựa chọn ngẫu nhiên trong các thư mục hợp lệ, không phải suy luận về ngoại hình hoặc danh tính.
+
+==================================================
+VI. QUY TẮC SỬ DỤNG HÌNH NỀN
 ==================================================
 
 Thư viện:
