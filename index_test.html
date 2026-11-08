@@ -426,9 +426,57 @@
     .subtitle-options .subtitle-check { flex-direction:row; align-items:center; min-height:32px; }
     #subtitle-preview { width:100%; min-height:120px; resize:vertical; padding:9px; color:#dbeafe; background:#020617; border:1px solid #334155; border-radius:7px; font: .75rem/1.5 ui-monospace,monospace; user-select:text; }
     #subtitle-status { font-size:.76rem; color:#94a3b8; }
+
+    /* Thanh điều hướng nhanh giữa các công cụ */
+    #site-navigation {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto 12px;
+      padding: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: rgba(15, 23, 42, .9);
+      border: 1px solid rgba(168, 85, 247, .3);
+      border-radius: 10px;
+    }
+    #site-navigation .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 8px 13px;
+      border-radius: 8px;
+      color: #fff;
+      background: #263449;
+      border: 1px solid rgba(148, 163, 184, .28);
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 650;
+      transition: background .2s, transform .2s;
+    }
+    #site-navigation .nav-link:hover { background: #475569; }
+    #site-navigation .nav-link:active { transform: scale(.97); }
+    #site-navigation .nav-link.current {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-color: transparent;
+    }
+    @media (max-width: 600px) {
+      #site-navigation { gap: 6px; padding: 8px; margin-bottom: 9px; }
+      #site-navigation .nav-link { flex: 1 1 calc(50% - 6px); padding: 8px 6px; font-size: .76rem; }
+    }
   </style>
 </head>
 <body>
+
+  <nav id="site-navigation" aria-label="Điều hướng nhanh">
+    <a class="nav-link" href="./index.html">🏠 Trang chủ</a>
+    <a class="nav-link" href="./rbg.html">🎬 Xóa phông video</a>
+    <a class="nav-link" href="./subtitle_voice_player.html">💬 Đọc phụ đề</a>
+    <a class="nav-link current" href="./index_test.html" aria-current="page">🧪 Trang test</a>
+  </nav>
 
   <div id="game-container">
     <!-- Khung hiển thị tiến độ tải Dữ liệu -->
