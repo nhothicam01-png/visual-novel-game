@@ -1965,7 +1965,8 @@
 
         // Áp dụng hiệu ứng riêng của lượt thoại; các ID được tra cứu trong effects.js.
         if (window.VNEffects) {
-          const cameraTargets = [this.layerBgImg, this.layerBgVideo, this.layerChar, this.layerCharBuffer, this.layerVfx].filter(Boolean);
+          // Camera chuyển động trên lớp bối cảnh đã overscan; nhân vật giữ điểm tiếp đất ổn định.
+          const cameraTargets = [this.layerBgImg, this.layerBgVideo].filter(Boolean);
           window.VNEffects.apply(khung.hieu_ung || {}, {
             nen: nenCanHienThi === 'video' ? this.layerBgVideo : this.layerBgImg,
             nhan_vat: nhanVat && bieuCam ? this.layerChar : null,
