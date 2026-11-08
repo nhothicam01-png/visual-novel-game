@@ -1,5 +1,5 @@
 /* Visual Novel Effect Engine
- * Catalog-driven effects. No arbitrary JavaScript is loaded from the library.
+ * Catalog-driven effects. CSS performs all animation; JS only applies classes and values.
  */
 (function (global) {
   'use strict';
@@ -73,6 +73,46 @@
       }};
     }
 
+    computedProperties(type, intensity, distance) {
+      const px = value => value + 'px';
+      const vw = value => value + 'vw';
+      const values = {
+        '--vn-effect-intensity': String(intensity),
+        '--vn-bob-y': px(-16 * intensity),
+        '--vn-shake-x': px(5 * intensity),
+        '--vn-shake-x-neg': px(-5 * intensity),
+        '--vn-shake-x-small-neg': px(-3 * intensity),
+        '--vn-shake-y': px(2 * intensity),
+        '--vn-shake-y-neg': px(-2 * intensity),
+        '--vn-shake-rotate': (1.1 * intensity) + 'deg',
+        '--vn-shake-rotate-neg': (-1.1 * intensity) + 'deg',
+        '--vn-shake-rotate-small-neg': (-0.6 * intensity) + 'deg',
+        '--vn-walk-bob': px(-7 * intensity),
+        '--vn-walk-left-22': vw(-distance * 0.22),
+        '--vn-walk-left-48': vw(-distance * 0.48),
+        '--vn-walk-left-74': vw(-distance * 0.74),
+        '--vn-walk-left-100': vw(-distance),
+        '--vn-walk-right-22': vw(distance * 0.22),
+        '--vn-walk-right-48': vw(distance * 0.48),
+        '--vn-walk-right-74': vw(distance * 0.74),
+        '--vn-walk-right-100': vw(distance),
+        '--vn-bg-zoom-scale': String(1 + 0.06 * intensity),
+        '--vn-bg-pan-x': (2.5 * intensity) + '%',
+        '--vn-bg-pan-x-neg': (-2.5 * intensity) + '%',
+        '--vn-bg-shake': px(3 * intensity),
+        '--vn-bg-shake-neg': px(-3 * intensity),
+        '--vn-camera-shake': px(4 * intensity),
+        '--vn-camera-shake-neg': px(-4 * intensity),
+        '--vn-camera-shake-y': px(2 * intensity),
+        '--vn-camera-shake-y-neg': px(-2 * intensity),
+        '--vn-camera-pan-distance': px(7 * intensity),
+        '--vn-camera-pan-distance-neg': px(-7 * intensity),
+        '--vn-camera-zoom-in-scale': String(1 + 0.045 * intensity),
+        '--vn-camera-zoom-out-scale': String(1 - 0.035 * intensity),
+        '--vn-flash-opacity': String(Math.min(0.6, 0.3 * intensity))
+      };
+      return values;
+    }
 
     applyDefinition(slot, expectedTarget, elements) {
       const ref = this.normalizeSlot(slot);
@@ -89,10 +129,8 @@
       const params = ref.params && typeof ref.params === 'object' ? ref.params : {};
       const intensity = Math.max(0.25, Math.min(2, Number(params.intensity ?? definition.intensity ?? 1)));
       const duration = Math.max(120, Math.min(12000, Number(params.duration_ms ?? definition.duration_ms ?? 900)));
-      const el = expectedTarget === 'character' ? elements.character
-        : expectedTarget === 'background' ? elements.background : elements.camera;
-      if (!el) return;
-      const type = definition.engine_type;
+      const distance = Math.max(5, Math.min(22, Number(params.distance_vw ?? definition.distance_vw ?? 14)));
+      const values = this.computedProperties(definition.engine_type, intensity, distance);
       const classMap = {
         'character-shake': [['character', 'effect-char-shake']],
         'character-bob': [['character', 'effect-char-bob']],
@@ -110,26 +148,21 @@
         ],
         'camera-flash': [['flash', 'effect-camera-flash']]
       };
-      const targets = classMap[type];
+      const targets = classMap[definition.engine_type];
       if (!targets) {
-        console.warn('[EffectEngine] Chưa có CSS cho engine_type:', type);
+        console.warn('[EffectEngine] Chưa có CSS cho engine_type:', definition.engine_type);
         return;
       }
-      const distance = Math.max(5, Math.min(22, Number(params.distance_vw ?? definition.distance_vw ?? 14)));
       targets.forEach(([key, className]) => {
         const target = key === 'character' ? elements.character
           : key === 'background' ? elements.background
           : key === 'flash' ? elements.flash : elements.camera;
         if (!target) return;
         target.style.setProperty('--vn-effect-duration', duration + 'ms');
-        target.style.setProperty('--vn-effect-intensity', String(intensity));
-        target.style.setProperty('--vn-effect-distance', distance + 'vw');
+        Object.entries(values).forEach(([name, value]) => target.style.setProperty(name, value));
         target.classList.add(className);
-        this.activeClasses.push({
-          element: target,
-          className,
-          properties: ['--vn-effect-duration', '--vn-effect-intensity', '--vn-effect-distance']
-        });
+        const propertyNames = ['--vn-effect-duration', ...Object.keys(values)];
+        this.activeClasses.push({ element: target, className, properties: propertyNames });
       });
     }
 
@@ -144,7 +177,6 @@
         this.applyDefinition(slots.camera, 'camera', elements);
         return;
       }
-      // Tương thích kịch bản schema v1 trong giai đoạn chuyển đổi.
       this.applyDefinition(this.legacySlot(frame.hieu_ung_nhan_vat || frame.character_effect || frame.characterEffect, 'character'), 'character', elements);
       this.applyDefinition(this.legacySlot(frame.hieu_ung_nen || frame.background_effect || frame.backgroundEffect, 'background'), 'background', elements);
       this.applyDefinition(this.legacySlot(frame.hieu_ung_camera || frame.camera_effect || frame.cameraEffect, 'camera'), 'camera', elements);
