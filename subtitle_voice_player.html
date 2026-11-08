@@ -76,7 +76,7 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 const $=id=>document.getElementById(id);
 let cues=[], voices=[], timers=[], playing=false, paused=false, startedAt=0, pausedAt=0, playhead=0, raf=0, activeIndex=-1, activeUtterance=null, generation=0, cueErrors=new Set();
 let displayStream=null, recorder=null, recordChunks=[], recording=false, recordingFinalizing=false, mp3Url=null;
-let ttsCharacterConfig={}, ttsConfigLoaded=false, speakerByCue=new Map();
+let ttsCharacterConfig={}, ttsConfigLoaded=false, speakerByCue=new Map(), speakerAliases={};
 const synth=window.speechSynthesis;
 const fmt=s=>{s=Math.max(0,s||0);const m=Math.floor(s/60),sec=Math.floor(s%60);return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')};
 function parseTime(s){
@@ -308,7 +308,9 @@ async function loadStoryList(){
  }catch(err){sel.innerHTML='<option value="">Không tải được danh sách truyện</option>';$('libraryStatus').textContent='Lỗi tải danh sách: '+err.message}
 }
 async function loadStoryTts(path){
- ttsCharacterConfig={};ttsConfigLoaded=false;
+ ttsCharacterConfig={};ttsConfigLoaded=false;speakerAliases={};
+ const storyName=path.split('/').filter(Boolean).pop();
+ try{const story=JSON.parse(await githubText(path+'/'+storyName+'.json'));for(const frame of (story.danh_sach||story.KichBanToanBo||[])){const id=String(frame.nhan_vat||'').trim(),display=String(frame.ten_hien_thi||'').trim();if(id&&display&&id!==display)speakerAliases[display]=id;}}catch(_){}
  const status=$('ttsConfigStatus');status.textContent='Đang tìm cấu hình giọng đọc…';
  const candidates=[path+'/kichban_tts.json',path+'/tts.json'];
  for(const candidate of candidates){
@@ -339,10 +341,10 @@ async function loadSubtitleList(storyPath){
  }catch(err){sel.innerHTML='<option value="">Chưa có thư mục PhuDe</option>';$('libraryStatus').textContent='Không đọc được thư mục PhuDe: '+err.message}
 }
 function applySpeakerDetection(){
- const known=Object.keys(ttsCharacterConfig||{});speakerByCue.clear();
+ const known=[...new Set([...Object.keys(ttsCharacterConfig||{}),...Object.keys(speakerAliases||{})])];speakerByCue.clear();
  cues=cues.map((cue,i)=>{
   const source=cue._speakerSourceText??cue.text,parsed=splitSpeakerLine(source,known);
-  if(parsed.speaker)speakerByCue.set(i,parsed.speaker);
+  if(parsed.speaker)speakerByCue.set(i,speakerAliases[parsed.speaker]||parsed.speaker);
   return {...cue,_speakerSourceText:source,_displayText:source,_speaker:parsed.speaker,text:parsed.speaker?(parsed.text||source):source};
  });
  render();
