@@ -24,6 +24,15 @@ input[type=range]{padding:0;accent-color:var(--accent)}
 <body><main>
 <header class="top"><h1>🔊 Subtitle Voice Player</h1><p>Import SRT/VTT → chọn ngôn ngữ và giọng đọc → phát lời thoại theo đúng mốc thời gian phụ đề.</p></header>
 <section class="panel">
+  <strong>📚 Chọn truyện và phụ đề từ GitHub</strong>
+  <div class="grid">
+    <label class="field">Truyện<select id="storySelect"><option value="">Đang tải danh sách truyện…</option></select></label>
+    <label class="field">Ngôn ngữ phụ đề<select id="subtitleSelect" disabled><option value="">Chọn truyện trước</option></select></label>
+  </div>
+  <div id="libraryStatus" class="status">Đang kết nối thư viện phụ đề…</div>
+  <div class="note">Phụ đề được lấy trong thư mục PhuDe của từng truyện. Cấu hình giọng đọc tự tìm tại cùng thư mục với kichban.json (kichban_tts.json).</div>
+</section>
+<section class="panel">
   <div class="upload" id="dropzone"><strong>Thả file phụ đề vào đây</strong><div class="note">Hỗ trợ .SRT và .VTT · Xử lý trực tiếp trên trình duyệt</div><div style="margin-top:13px"><button id="choose">📂 Chọn file phụ đề</button><input id="file" type="file" accept=".srt,.vtt,text/plain,application/x-subrip"></div><div id="filename" class="status">Chưa có file nào được tải lên.</div></div>
   <div class="grid">
     <label class="field">Ngôn ngữ đọc<select id="lang">
@@ -37,13 +46,9 @@ input[type=range]{padding:0;accent-color:var(--accent)}
     <label class="field">Tốc độ tối đa khi cần khớp <span id="maxVal" class="pill">2.0×</span><input id="maxRate" type="range" min="1" max="3.5" step=".1" value="2"></label>
     <label class="field">Âm lượng <span id="volVal" class="pill">100%</span><input id="volume" type="range" min="0" max="1" step=".05" value="1"></label>
     <label class="field">Xử lý câu quá dài<input value="Tăng tốc, sau đó ngắt ở mốc kế tiếp" readonly></label>
-    <label class="field">File cấu hình TTS (.json)
-      <input id="ttsConfigFile" type="file" accept=".json,application/json" style="display:block;min-height:auto;padding:7px">
-    </label>
     <div class="field" style="justify-content:end">
-      <span class="note">Nhận diện người nói từ tiền tố: Tên nhân vật: lời thoại</span>
-      <button id="applyTtsConfig" type="button" class="secondary">🎭 Áp dụng cấu hình TTS</button>
-      <span id="ttsConfigStatus" class="note">Chưa nạp cấu hình nhân vật.</span>
+      <span class="note">Cấu hình giọng đọc tự tải theo truyện đang chọn.</span>
+      <span id="ttsConfigStatus" class="note">Chưa chọn truyện.</span>
     </div>
   </div>
   <div class="note" style="margin-top:12px">Tốc độ sẽ tự tăng trong giới hạn đã chọn nếu câu dài. Nếu vẫn không kịp, mặc định trang sẽ dừng câu ở mốc kế tiếp để giữ đồng bộ. Chất lượng và danh sách giọng phụ thuộc trình duyệt/hệ điều hành.</div>
@@ -275,8 +280,91 @@ async function readSubtitleFile(file){
   setStatus('Import thất bại. Hãy kiểm tra tên file và thông báo lỗi ở trên.');
  }
 }
-$('ttsConfigFile').addEventListener('change',e=>loadTtsConfigFile(e.target.files&&e.target.files[0]));
-$('applyTtsConfig').addEventListener('click',applyTtsConfig);
+
+const GH_API='https://api.github.com/repos/nhothicam01-png/visual-novel-game/contents/';
+const GH_RAW='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
+let selectedStoryPath='';
+async function githubJson(path){
+ const res=await fetch(GH_API+path);
+ if(!res.ok)throw new Error('GitHub trả về '+res.status+' khi đọc '+path);
+ return res.json();
+}
+async function githubText(path){
+ const res=await fetch(GH_RAW+path.split('/').map(encodeURIComponent).join('/'));
+ if(!res.ok)throw new Error('Không tải được '+path+' ('+res.status+')');
+ return res.text();
+}
+function clearLoadedSubtitle(){
+ stop();cues=[];speakerByCue.clear();render();$('filename').textContent='Chưa có file nào được tải lên.';$('current').textContent='Chọn một phụ đề để bắt đầu.';setStatus('Sẵn sàng.');
+}
+async function loadStoryList(){
+ const sel=$('storySelect');try{
+  const entries=await githubJson('assets/KichBan');
+  const dirs=entries.filter(x=>x.type==='dir').sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+  sel.innerHTML='<option value="">— Chọn truyện —</option>';
+  dirs.forEach(d=>{const o=document.createElement('option');o.value=d.path;o.textContent=d.name;sel.append(o)});
+  $('libraryStatus').textContent='Đã tìm thấy '+dirs.length+' thư mục truyện.';
+  if(!dirs.length){sel.innerHTML='<option value="">Chưa có thư mục truyện</option>'}
+ }catch(err){sel.innerHTML='<option value="">Không tải được danh sách truyện</option>';$('libraryStatus').textContent='Lỗi tải danh sách: '+err.message}
+}
+async function loadStoryTts(path){
+ ttsCharacterConfig={};ttsConfigLoaded=false;
+ const status=$('ttsConfigStatus');status.textContent='Đang tìm cấu hình giọng đọc…';
+ const candidates=[path+'/kichban_tts.json',path+'/tts.json'];
+ for(const candidate of candidates){
+  try{
+   const raw=await githubText(candidate),json=JSON.parse(raw);
+   ttsCharacterConfig=json.nhan_vat||json.characters||json;
+   if(!ttsCharacterConfig||typeof ttsCharacterConfig!=='object'||Array.isArray(ttsCharacterConfig))ttsCharacterConfig={};
+   ttsConfigLoaded=true;status.textContent='✓ Đã tải cấu hình ('+Object.keys(ttsCharacterConfig).length+' nhân vật).';
+   if(cues.length)applySpeakerDetection();
+   return;
+  }catch(err){if(err instanceof SyntaxError){status.textContent='File cấu hình JSON không hợp lệ.';return}}
+ }
+ status.textContent='Chưa có file cấu hình TTS — dùng giọng mặc định.';
+ if(cues.length)applySpeakerDetection();
+}
+async function loadSubtitleList(storyPath){
+ selectedStoryPath=storyPath;
+ const sel=$('subtitleSelect');sel.disabled=true;sel.innerHTML='<option value="">Đang tìm phụ đề…</option>';
+ clearLoadedSubtitle();
+ await loadStoryTts(storyPath);
+ try{
+  const files=await githubJson(storyPath+'/PhuDe');
+  const subs=files.filter(x=>x.type==='file'&&/\.(srt|vtt)$/i.test(x.name)).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+  sel.innerHTML='<option value="">— Chọn ngôn ngữ phụ đề —</option>';
+  subs.forEach(file=>{const o=document.createElement('option');o.value=file.path;o.textContent=file.name.replace(/\.(srt|vtt)$/i,'');sel.append(o)});
+  sel.disabled=!subs.length;
+  $('libraryStatus').textContent=subs.length?'Có '+subs.length+' file phụ đề trong '+storyPath+'/PhuDe.':'Truyện này chưa có file SRT/VTT trong thư mục PhuDe.';
+ }catch(err){sel.innerHTML='<option value="">Chưa có thư mục PhuDe</option>';$('libraryStatus').textContent='Không đọc được thư mục PhuDe: '+err.message}
+}
+function applySpeakerDetection(){
+ const known=Object.keys(ttsCharacterConfig||{});speakerByCue.clear();
+ cues=cues.map((cue,i)=>{
+  const source=cue._speakerSourceText??cue.text,parsed=splitSpeakerLine(source,known);
+  if(parsed.speaker)speakerByCue.set(i,parsed.speaker);
+  return {...cue,_speakerSourceText:source,_displayText:source,_speaker:parsed.speaker,text:parsed.speaker?(parsed.text||source):source};
+ });
+ render();
+}
+async function loadSubtitleFromGithub(path){
+ $('libraryStatus').textContent='Đang tải '+path.split('/').pop()+'…';
+ try{
+  const raw=await githubText(path),parsed=parseSub(raw);
+  if(!parsed.length)throw new Error('File không chứa phụ đề SRT/VTT hợp lệ.');
+  stop();cues=parsed;cueErrors.clear();speakerByCue.clear();
+  const detectedLanguage=autoSetSubtitleLanguage(parsed);
+  applySpeakerDetection();
+  $('filename').textContent='✓ '+path.split('/').pop()+' · '+parsed.length+' câu';
+  $('current').textContent='Đã tải phụ đề. Nhấn Phát để nghe.';
+  $('libraryStatus').textContent='Đã tải '+parsed.length+' câu.'+(detectedLanguage?' Ngôn ngữ: '+detectedLanguage+'.':'');
+  setStatus('Đã tải phụ đề từ GitHub thành công.');
+ }catch(err){$('libraryStatus').textContent='Lỗi tải phụ đề: '+err.message;setStatus('Không thể tải phụ đề đã chọn.')}
+}
+$('storySelect').addEventListener('change',e=>{if(e.target.value)loadSubtitleList(e.target.value);else{selectedStoryPath='';$('subtitleSelect').disabled=true;$('subtitleSelect').innerHTML='<option value="">Chọn truyện trước</option>';clearLoadedSubtitle()}});
+$('subtitleSelect').addEventListener('change',e=>{if(e.target.value)loadSubtitleFromGithub(e.target.value)});
+loadStoryList();
+
 $('choose').addEventListener('click',()=>{$('file').value='';$('file').click()});
 $('file').addEventListener('change',e=>readSubtitleFile(e.target.files&&e.target.files[0]));
 const dz=$('dropzone');['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',e=>{const f=e.dataTransfer.files[0];if(f)readSubtitleFile(f)});
