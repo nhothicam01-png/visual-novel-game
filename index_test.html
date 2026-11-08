@@ -128,6 +128,37 @@
       to { opacity: 1; }
     }
 
+    /* Nền bối cảnh rung lắc từ từ ở mỗi thoại.
+       Phóng nền lên một chút (--bg-shake-scale) để khi lắc không lộ viền đen của khung.
+       Chỉnh nhanh/chậm bằng --bg-shake-duration, mạnh/nhẹ bằng --bg-shake-move và --bg-shake-rotate. */
+    #game-container {
+      --bg-shake-duration: 8s;
+      --bg-shake-scale: 1.06;
+      --bg-shake-move: 0.8%;
+      --bg-shake-rotate: 0.25deg;
+    }
+    .bg-shake {
+      transform-origin: center center;
+      will-change: transform;
+      animation: bgShake var(--bg-shake-duration) ease-in-out infinite;
+    }
+    /* Giữ nguyên hiệu ứng fade-in của cảnh và chạy song song với rung lắc. */
+    .bg-shake.scene-entering {
+      animation: sceneFadeIn 0.45s ease both, bgShake var(--bg-shake-duration) ease-in-out infinite;
+    }
+    @keyframes bgShake {
+      0%, 100% { transform: scale(var(--bg-shake-scale)) translate(0, 0) rotate(0deg); }
+      20% { transform: scale(var(--bg-shake-scale)) translate(calc(var(--bg-shake-move) * -1), calc(var(--bg-shake-move) * 0.6)) rotate(calc(var(--bg-shake-rotate) * -1)); }
+      40% { transform: scale(var(--bg-shake-scale)) translate(calc(var(--bg-shake-move) * 0.9), calc(var(--bg-shake-move) * -0.7)) rotate(calc(var(--bg-shake-rotate) * 0.8)); }
+      60% { transform: scale(var(--bg-shake-scale)) translate(calc(var(--bg-shake-move) * -0.6), calc(var(--bg-shake-move) * -0.9)) rotate(var(--bg-shake-rotate)); }
+      80% { transform: scale(var(--bg-shake-scale)) translate(var(--bg-shake-move), calc(var(--bg-shake-move) * 0.5)) rotate(calc(var(--bg-shake-rotate) * -0.8)); }
+    }
+    /* Người dùng bật giảm chuyển động trong hệ điều hành: tắt rung lắc. */
+    @media (prefers-reduced-motion: reduce) {
+      .bg-shake, .bg-shake.scene-entering { animation: none; }
+      .bg-shake.scene-entering { animation: sceneFadeIn 0.45s ease both; }
+    }
+
     #layer-character, #layer-character-buffer.character-exiting {
       pointer-events: none;
     }
@@ -429,8 +460,8 @@
       <div class="loading-status" id="loading-status">Đang khởi tạo...</div>
     </div>
 
-    <img id="layer-bg-img" class="game-layer" src="" alt="Background Image" />
-    <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
+    <img id="layer-bg-img" class="game-layer bg-shake" src="" alt="Background Image" />
+    <video id="layer-bg-video" class="game-layer bg-shake" autoplay muted loop playsinline></video>
     
     <!-- Sử dụng Video WebM trong suốt cho nhân vật -->
     <video id="layer-character" class="game-layer" autoplay muted loop playsinline></video>
