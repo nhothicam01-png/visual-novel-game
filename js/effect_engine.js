@@ -113,13 +113,17 @@
           { transform: center + ' translate(0,0) rotate(0deg)' }
         ];
       } else if (type === 'character-bob') {
+        // Animate the independent CSS translate property so the video's
+        // layout transform (horizontal centering / portrait bottom anchoring) stays intact.
+        // One duration is one complete rise-and-fall cycle; loop until the frame changes.
+        const lift = Math.max(10, Math.min(28, 16 * intensity));
         frames = [
-          { transform: center + ' translateY(0)' },
-          { transform: center + ' translateY(' + (-9*intensity) + 'px)' },
-          { transform: center + ' translateY(0)' }
+          { translate: '0px 0px', offset: 0 },
+          { translate: '0px ' + (-lift) + 'px', offset: 0.42 },
+          { translate: '0px 0px', offset: 1 }
         ];
-        iterations = Math.max(1, Math.min(8, Number(params.cycles ?? definition.iterations ?? 3)));
-        actualDuration = Math.max(180, duration / iterations);
+        iterations = definition.loop === true ? Infinity : Math.max(1, Math.min(8, Number(params.cycles ?? definition.iterations ?? 3)));
+        actualDuration = duration;
       } else if (type === 'character-walk-left' || type === 'character-walk-right') {
         const sign = type === 'character-walk-left' ? -1 : 1;
         const travel = Math.max(5, Math.min(22, Number(params.distance_vw ?? definition.distance_vw ?? 14))) * sign;
