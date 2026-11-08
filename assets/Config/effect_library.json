@@ -23,10 +23,10 @@
       "complexity": "simple",
       "description": "Nhân vật nhấp nhô lên xuống theo nhịp bước chân hoặc chạy tại chỗ.",
       "engine_type": "character-bob",
-      "duration_ms": 1050,
+      "duration_ms": 900,
       "iterations": 4,
-      "intensity": 1,
-      "loop": false,
+      "intensity": 1.2,
+      "loop": true,
       "restore": true
     },
     {
