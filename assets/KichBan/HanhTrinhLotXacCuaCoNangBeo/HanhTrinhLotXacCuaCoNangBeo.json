@@ -1,0 +1,592 @@
+{
+  "thoi_gian_giu_khung": 1,
+  "thoi_gian_cho_giua": 0.02,
+  "toc_do_go_chu": 0.03,
+  "danh_sach": [
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình tên là Linh, 22 tuổi. Từ nhỏ, mình đã quen với việc trở thành chủ đề bàn tán chỉ vì thân hình mũm mĩm của mình.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "bgm_gentle.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ngày mai trường tổ chức buổi gặp mặt cựu sinh viên. Mình đã định không đi, vì lần nào gặp người quen cũ mình cũng phải nghe những câu hỏi về cân nặng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Linh! Cậu vẫn chưa ngủ à? Tớ nhắn cả tối mà cậu không trả lời.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mai à... Tớ không muốn đi buổi gặp mặt ngày mai. Tớ sợ mọi người lại nhìn tớ rồi cười.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ hiểu cậu lo, nhưng cậu không cần trốn khỏi một nơi chỉ vì người khác không biết cư xử.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cậu nói thì dễ lắm. Cậu đâu phải nghe những câu như 'ăn ít thôi' mỗi khi vừa ngồi xuống bàn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ không thể cảm nhận thay cậu, nhưng tớ có thể đi cùng. Và cậu không cần thay đổi ngoại hình để xứng đáng được tôn trọng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ biết... nhưng tớ cũng muốn khỏe hơn, muốn chạy lên cầu thang mà không thở dốc, muốn mặc bộ đồ mình thích mà không phải né gương.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vậy hãy làm vì chính cậu nhé. Không phải để trả thù ai, cũng không phải để được họ công nhận.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ừ. Có lẽ lần này mình nên thử bắt đầu thật sự.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Sáng hôm sau, mình quyết định đi bộ một đoạn quanh công viên. Chỉ mười phút thôi, nhưng với mình đó đã là một khởi đầu.",
+      "anh_nen": "cong_vien_truong.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "afternoon_between_leaves.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mới đi được vài phút mà chân mình đã mỏi. Mồ hôi chảy xuống trán, còn nhịp thở thì rối tung.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đi chậm thôi Linh. Mình không thi với ai cả. Hôm nay chỉ cần hoàn thành mục tiêu nhỏ của hôm nay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ cứ nghĩ phải tập thật nặng thì mới có kết quả. Nhưng hóa ra điều khó nhất là không bỏ cuộc ngay từ ngày đầu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cơ thể mình cần thời gian thích nghi. Nghỉ khi cần cũng là một phần của việc tập luyện.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mười phút kết thúc. Nghe chẳng có gì to tát, nhưng hôm nay mình đã làm được điều mà tuần trước mình luôn trì hoãn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Những ngày tiếp theo, mình bắt đầu ghi lại giờ ngủ, bữa ăn và quãng đường đi bộ. Mình không đặt mục tiêu giảm cân cấp tốc nữa.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "bgm_gentle.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con gái, mẹ thấy con dạo này dậy sớm hơn. Con đang làm gì vậy?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con muốn chăm sóc sức khỏe tốt hơn mẹ ạ. Nhưng con không định nhịn ăn hay ép mình đến kiệt sức đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mẹ mừng vì con nghĩ như vậy. Hồi bằng tuổi con, mẹ cũng từng nghe nhiều lời chê bai. Mẹ không muốn con phải sống để làm vừa lòng người khác.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con chỉ mong một ngày soi gương mà không thấy ghét bản thân nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vậy hãy bắt đầu bằng việc nói với mình những lời tử tế. Cơ thể này đã đưa con đi qua biết bao năm tháng rồi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mẹ nói đúng. Mình đã đối xử với bản thân như kẻ thù quá lâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tuần đầu tiên trôi qua. Có hôm mình đi bộ đủ thời gian, có hôm trời mưa phải tập vài động tác nhẹ trong phòng. Mình vẫn tiếp tục.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nhưng rồi ngày gặp mặt cựu sinh viên cũng đến. Mình đã lấy hết can đảm để bước vào sân trường.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "afternoon_between_leaves.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ơ, Linh đấy à? Lâu quá không gặp! Cậu... thay đổi nhiều thật đấy. Nhưng hình như vẫn vậy nhỉ?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vy, lâu rồi không gặp. Mình đến để gặp mọi người, không phải để nghe nhận xét về cơ thể mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ôi, đùa chút thôi mà. Cậu nhạy cảm quá đấy!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đùa chỉ vui khi cả hai cùng thấy vui. Cậu nên dừng lại đi Vy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ chỉ nói sự thật thôi. Người như cậu ấy mà muốn thay đổi thì phải cố gấp đôi người khác chứ!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Có thể hành trình của mình sẽ dài hơn, nhưng điều đó không cho cậu quyền hạ thấp mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "6",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Linh, mình nghe được rồi. Cậu không cần phải giải thích hay chứng minh gì cả. Đi cùng bọn mình nhé.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Lần đầu tiên sau nhiều năm, mình không cúi mặt bỏ đi. Mình vẫn run, nhưng mình đã tự bảo vệ mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ tự hào về cậu. Không phải vì cậu đáp trả hay, mà vì cậu đã không để lời nói đó quyết định giá trị của mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tối hôm ấy, mình vui vì đã dám đối diện. Nhưng mình cũng biết con đường phía trước không hề dễ dàng.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "bgm_gentle.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đến tuần thứ ba, lịch học và công việc bán thời gian khiến mình kiệt sức. Mình bỏ tập liên tiếp mấy ngày.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình còn ăn uống thất thường vì nghĩ rằng bỏ bữa sẽ giúp nhanh đạt mục tiêu. Nhưng cơ thể lại mệt mỏi, chóng mặt.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Linh, cậu đang cố quá rồi. Cậu có ăn đủ bữa không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sợ nếu ăn bình thường thì mọi nỗ lực sẽ vô ích.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chăm sóc sức khỏe không phải là trừng phạt bản thân. Nếu cậu thấy mệt, hãy điều chỉnh và tìm lời khuyên chuyên môn. Đừng nghe mấy mẹo giảm cân cực đoan trên mạng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ cứ tưởng càng khắt khe thì càng nhanh thành công. Hóa ra mình đang làm tổn thương chính mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mẹ đã chuẩn bị bữa tối. Con ngồi ăn với mẹ nhé. Ngày mai mình có thể tìm người có chuyên môn để hỏi cách vận động và ăn uống phù hợp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vâng. Con không muốn tiếp tục cuộc hành trình này bằng cách ghét bỏ bản thân nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Sau đó, mình tìm đến một chuyên viên tư vấn sức khỏe. Mình học cách đặt mục tiêu thực tế, ăn đủ chất, vận động vừa sức và ngủ đúng giờ.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "6",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cậu không cần cân đo giá trị bản thân bằng con số trên cân. Hãy theo dõi sức bền, giấc ngủ, tâm trạng và những thay đổi tích cực khác nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình bắt đầu hiểu rằng tiến bộ không phải lúc nào cũng nhìn thấy được ngay. Có những ngày thành quả chỉ là mình không bỏ cuộc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Một tháng sau, mình có thể đi bộ lâu hơn trước. Cầu thang vẫn khiến mình thở nhanh, nhưng mình không còn phải dừng lại quá nhiều lần.",
+      "anh_nen": "cong_vien_truong.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "afternoon_between_leaves.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nhìn cậu kìa! Cậu vừa đi hết vòng công viên mà vẫn còn cười được đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ vui vì mình khỏe hơn, nhưng điều làm tớ vui nhất là không còn sợ mỗi lần nhìn vào gương.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cậu có nhận ra không? Dạo này cậu nói về bản thân dịu dàng hơn nhiều rồi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ừ. Mình vẫn có những ngày tự ti, vẫn có lúc muốn bỏ cuộc. Nhưng mình không còn xem những ngày đó là thất bại nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ba tháng trôi qua. Cơ thể mình có thay đổi, quần áo mặc thoải mái hơn, sức bền tốt hơn. Nhưng hành trình này không chỉ nằm ở vẻ ngoài.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "bgm_gentle.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Linh! Tớ nghe nói cậu dạo này tập luyện chăm chỉ. Cậu giảm được nhiều chưa?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình khỏe hơn và vui hơn. Còn cân nặng thì mình không muốn biến nó thành câu trả lời cho mọi chuyện.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ... trước đây tớ nói nhiều điều không hay. Chắc cậu đã buồn lắm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đúng, mình đã buồn. Nhưng mình không muốn dành cả hành trình để chờ cậu công nhận hay xin lỗi. Nếu cậu thật lòng hiểu ra thì lần sau hãy đối xử tử tế với mọi người.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ừ. Tớ xin lỗi, Linh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình không biết Vy có thật sự thay đổi hay không. Nhưng ít nhất, mình đã không còn để lời nói của cô ấy điều khiển cuộc sống mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vậy kế hoạch tiếp theo là gì, cô gái?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tiếp tục đi bộ, ăn uống cân bằng, học thêm điều mình thích và dành thời gian cho những người khiến mình cảm thấy được tôn trọng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mẹ thấy con cười nhiều hơn trước rồi đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con vẫn là con thôi mẹ. Chỉ là bây giờ con biết mình xứng đáng được yêu thương, kể cả khi hành trình thay đổi vẫn chưa kết thúc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ngày trước, mình nghĩ phải trở thành một người hoàn toàn khác thì mới được hạnh phúc. Bây giờ mình hiểu: mình có thể bắt đầu sống tốt hơn ngay từ hôm nay.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đây không phải câu chuyện một cô gái giảm cân thần tốc. Đây là câu chuyện về một người từng ghét bản thân, đã học cách đứng dậy, kiên trì và đối xử tử tế với chính mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình vẫn đang trên hành trình lột xác. Nhưng lần này, điều thay đổi lớn nhất không nằm ở ngoại hình... mà là cách mình nhìn nhận bản thân.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    }
+  ]
+}
