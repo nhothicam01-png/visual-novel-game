@@ -10,6 +10,7 @@
       this.library = { library_version: 1, effects: [] };
       this.effects = new Map();
       this.animations = [];
+      this.activeClasses = [];
       this.ready = this.loadLibrary();
     }
 
@@ -28,6 +29,13 @@
     }
 
     clear() {
+      this.activeClasses.forEach(item => {
+        try {
+          item.element.classList.remove(item.className);
+          item.properties.forEach(name => item.element.style.removeProperty(name));
+        } catch (_) {}
+      });
+      this.activeClasses = [];
       this.animations.forEach(animation => {
         try {
           const target = animation.effect && animation.effect.target;
@@ -101,6 +109,21 @@
         : expectedTarget === 'background' ? elements.background : elements.camera;
       if (!el) return;
       const type = definition.engine_type;
+
+      // Nhấp nhô bằng CSS riêng: không động vào transform định vị video.
+      if (type === 'character-bob') {
+        const lift = Math.max(10, Math.min(28, 16 * intensity));
+        el.style.setProperty('--vn-bob-duration', duration + 'ms');
+        el.style.setProperty('--vn-bob-height', lift + 'px');
+        el.classList.add('effect-char-bob');
+        this.activeClasses.push({
+          element: el,
+          className: 'effect-char-bob',
+          properties: ['--vn-bob-duration', '--vn-bob-height']
+        });
+        return;
+      }
+
       const center = 'translateX(-50%)';
       let frames = null, iterations = 1, actualDuration = duration;
 
@@ -112,18 +135,6 @@
           { transform: center + ' translate(' + (-3*intensity) + 'px,0) rotate(' + (-.6*intensity) + 'deg)' },
           { transform: center + ' translate(0,0) rotate(0deg)' }
         ];
-      } else if (type === 'character-bob') {
-        // Animate the independent CSS translate property so the video's
-        // layout transform (horizontal centering / portrait bottom anchoring) stays intact.
-        // One duration is one complete rise-and-fall cycle; loop until the frame changes.
-        const lift = Math.max(10, Math.min(28, 16 * intensity));
-        frames = [
-          { translate: '0px 0px', offset: 0 },
-          { translate: '0px ' + (-lift) + 'px', offset: 0.42 },
-          { translate: '0px 0px', offset: 1 }
-        ];
-        iterations = definition.loop === true ? Infinity : Math.max(1, Math.min(8, Number(params.cycles ?? definition.iterations ?? 3)));
-        actualDuration = duration;
       } else if (type === 'character-walk-left' || type === 'character-walk-right') {
         const sign = type === 'character-walk-left' ? -1 : 1;
         const travel = Math.max(5, Math.min(22, Number(params.distance_vw ?? definition.distance_vw ?? 14))) * sign;
