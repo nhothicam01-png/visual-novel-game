@@ -354,7 +354,7 @@ QUY TẮC CHUYỂN ĐỘNG:
 
 QUY TẮC TƯƠNG THÍCH:
 - Kịch bản mới dùng schema_version: 2 và object hieu_ung.
-- Player duy trì khả năng đọc các trường hiệu ứng schema v1 trong giai đoạn chuyển đổi; không sửa các kịch bản cũ chỉ để đổi schema.
+- Player duy trì khả năng đọc các trường hiệu ứng schema v1 trong giai đoạn chuyển đổi; một số kiểu cũ được ánh xạ sang hiệu ứng mới tương đương. Các kiểu nhân vật đã loại khỏi thư viện mặc định (ví dụ thở, lắc lư, gật đầu, zoom) không được dùng trong kịch bản mới; nếu gặp ID/kiểu legacy không còn hỗ trợ, player sẽ bỏ qua và ghi cảnh báo thay vì tự tạo hiệu ứng. Không sửa các kịch bản cũ chỉ để đổi schema.
 - Trước khi lưu JSON, xác thực tất cả ID tồn tại trong thư viện và target khớp slot.
 - Nếu hiệu ứng phức tạp đang chờ duyệt, không đưa ID dự kiến vào kịch bản.
 
