@@ -14093,7 +14093,654 @@
       "nhan_vat": "5",
       "ten_hien_thi": "Sở Vân Chi",
       "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Sau khi các điểm cộng hưởng tắt, đội kỹ thuật tìm thấy một ngăn bí mật phía sau bảng điều khiển G-06. Trong đó có một cuộn giấy được bọc vải chống ẩm.",
+      "noi_dung": "Điểm cộng hưởng cuối cùng vừa tắt, nhưng chúng tớ chưa rời G-06. Tớ yêu cầu mọi người đứng ngoài vạch an toàn cho đến khi đội kỹ thuật xác nhận không còn nguồn dự phòng.",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_sway"
+        ]
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Thiết bị đo đang trở về mức nền. Dao động còn lại chỉ đến từ đường ống kim loại rung khi nguồn điện ngắt.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ chia khu vực thành ba phần: bảng điều khiển, lối vào và hành lang thoát hiểm. Không ai được tự ý di chuyển vật chứng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã ghi thời điểm từng công tắc tắt. Bản ghi camera độc lập cũng được sao lưu, tránh phụ thuộc vào hệ thống của học viện.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ vẫn thấy khó tin rằng tiếng chuông có thể khiến cả một học viện quên tên một người. Nhưng ít nhất lần này chúng ta có dữ liệu để kiểm tra.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn nhìn lại bảng điều khiển một lần nữa. Không phải để chạm vào nó, chỉ để chắc chắn không còn ký hiệu nào đang sáng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Có một vùng nhiệt khác thường phía sau tấm ốp bên trái. Nó không phát linh lực, nhưng nhiệt độ cao hơn phần tường xung quanh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Có thể bên trong là nguồn điện dự phòng hoặc một khoang thiết bị. Chúng ta không tự tháo tấm ốp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta sẽ yêu cầu đội kỹ thuật chụp ảnh nhiệt và đo độ dày tường trước. Mọi thao tác phải được ghi lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị đã gọi người phụ trách cơ sở vật chất. Họ xác nhận bản thiết kế mới không có khoang này.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nếu bản thiết kế không có, có thể khoang được xây thêm sau khi tháp chuông đóng cửa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ở mép tấm ốp có một vết xước hình chiếc lá. Nó giống dấu trên hộp đồng, nhưng đã bị sơn phủ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đội kỹ thuật xác nhận tấm ốp được bắt bằng vít cũ, không phải kết cấu chịu lực. Họ sẽ tháo từng vít và đặt riêng theo thứ tự.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đo lại lần cuối. Không có tín hiệu từ bên trong, chỉ có một lớp kim loại mỏng phản nhiệt.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ đứng ngoài ghi hình. Nếu có giấy tờ hoặc thiết bị, chúng ta không đọc hay bật ngay tại chỗ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị đã chuẩn bị túi niêm phong và nhãn vật chứng. Mỗi món sẽ có người nhận, thời điểm và vị trí thu hồi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ ghi lại tình trạng bề mặt trước khi tháo. Vết xước có thể giúp xác định khoang này được mở lần cuối khi nào.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ nhìn thấy mép vải bên trong. Có thứ gì đó được bọc rất cẩn thận, không giống dây điện.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tấm ốp đã được tháo. Khoang bên trong không có nguồn điện, chỉ có một cuộn giấy và một hộp gỗ nhỏ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta sẽ không mở hộp gỗ khi chưa kiểm tra. Cuộn giấy được chụp ảnh tại chỗ trước khi di chuyển.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị xác nhận không có vật sắc hay chất lỏng rò rỉ. Có thể chuyển cuộn giấy sang bàn kiểm tra.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ nhận ra lớp vải bọc có cùng hoa văn với rèm cũ trong phòng lưu trữ. Nó có thể thuộc về kho hồ sơ lớp bảy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mép vải có thêu bảy đường chỉ. Sáu đường đã bạc màu, đường cuối còn nguyên.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ không nghĩ đây là một vật dùng trong nghi thức. Nó giống một món đồ được ai đó cất giữ để chờ người tìm thấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Hội đồng đã phản hồi yêu cầu mở khoang. Họ cho phép thu hồi cuộn giấy, nhưng hộp gỗ phải giữ nguyên cho đến khi có người phụ trách lưu trữ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ lập biên bản ngay tại đây. Không ai được tự ý nhận cuộn giấy làm tài sản cá nhân.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn đối chiếu hoa văn vải với ảnh trong hồ sơ cũ. Nếu trùng, chúng ta có thể xác định nguồn gốc mà không cần đoán.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đã chụp lại cấu trúc cuộn giấy. Có dấu hiệu giấy được cuộn nhiều lần, nhưng không bị ẩm mục.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Bên ngoài có một dòng ghi rất nhỏ: 'Danh sách lớp thực hành'. Chữ đã nhòe, nhưng vẫn đọc được.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nếu đây là danh sách gốc, nó có thể giải thích vì sao hồ sơ chỉ còn sáu cái tên.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đội kỹ thuật đặt cuộn giấy lên bàn kính. Tớ nhìn thấy bảy vạch đánh số ở mép ngoài, nhưng phần tên vẫn được che bằng một lớp giấy mỏng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Lớp giấy che không có phản ứng linh lực. Nó chỉ được dán bằng hồ, có thể bóc bằng hơi ẩm kiểm soát.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta sẽ chụp ảnh từng lớp trước khi tách. Nếu có chữ ở mặt dưới, chúng ta cần giữ cả lớp phủ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị đề nghị chỉ một người thao tác, những người còn lại quan sát. Hứa Chiêu sẽ ghi lại mọi thay đổi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ đọc to số thứ tự sau khi từng dòng được mở, để tránh bỏ sót hoặc tự diễn giải chữ viết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ có thể nhận ra nét chữ của Tống Nguyệt trong sổ cũ. Nhưng tớ sẽ chỉ so sánh sau khi có bản chụp rõ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Lớp phủ đầu tiên đã tách. Sáu dòng tên hiện rõ, còn dòng cuối bị gấp vào trong như thể người viết cố tình giấu nó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đừng mở ngay. Tớ muốn chụp cả mặt trước và nếp gấp trước khi lật.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã đánh dấu vị trí nếp gấp. Không có dấu hiệu bị cắt hay thay giấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Trên mặt giấy có bảy dấu chấm nhỏ. Sáu dấu đầu cùng màu mực, dấu cuối dùng mực xanh nhạt.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị nhận ra con dấu ở góc phải. Nó thuộc phòng lưu trữ cũ, không phải ban kỷ luật.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vậy cuộn giấy có thể đã được chuyển từ kho lưu trữ sang G-06 sau sự cố.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Khi mở nếp gấp, một hàng chữ hiện ra: 'Người ghi chép – Tống Nguyệt'. Không có chữ 'ở lại' hay 'thay thế' như những bản sao sau này.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Sau khi tìm thấy danh sách gốc, chúng tớ hẹn nhau ở phòng lưu trữ để chuẩn bị buổi làm việc với hội đồng. Tớ không muốn một bản giấy duy nhất quyết định số phận của cả hồ sơ.",
       "anh_nen": "thu_vien.png",
       "anh_hieu_ung": "",
       "am_thanh_nen": "",
@@ -14104,6 +14751,2138 @@
         "camera": [
           "camera_zoom_in"
         ]
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã in bản sao đối chiếu và đánh số từng trang. Bản gốc vẫn nằm trong túi niêm phong.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ yêu cầu hội đồng xác nhận nguồn tài liệu trước, rồi mới bàn đến trạng thái hồ sơ. Không được đi thẳng đến kết luận.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đã lập danh sách những điều chúng ta biết và những điều chưa biết. Tên Tống Nguyệt có thật; tình trạng sau sự cố thì chưa rõ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ kiểm tra mã thời gian trên bản ghi G-07. Nếu tệp cuối được tạo sau khi hệ thống đóng, nó có thể là bản sao chứ không phải lời nhắn trực tiếp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn nghe cô ấy nói, nhưng không muốn biến mong muốn đó thành lý do để tin mọi thứ trong tệp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Hội đồng đã cử hai người phụ trách hồ sơ tham dự. Chị sẽ yêu cầu họ ký xác nhận rằng buổi làm việc không được phép sửa dữ liệu gốc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã chuẩn bị biên bản với ba mục: nguồn gốc tài liệu, nội dung có thể xác minh và phần còn chưa xác định.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ trình bày theo thứ tự thời gian. Nếu có câu hỏi nào chưa có bằng chứng, tớ sẽ nói rõ là chưa biết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đừng để họ dùng từ 'đã chuyển đi' chỉ vì hệ thống từng ghi như vậy. Một trạng thái dữ liệu không chứng minh một người đã rời khỏi học viện.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ có thể chiếu ảnh so sánh hai bản ghi. Các sai khác đều được đánh dấu, không cần bật thiết bị gốc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ giữ cuộn giấy trong tầm nhìn của mọi người. Nó không phải bí mật của riêng nhóm mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Buổi làm việc bắt đầu. Đại diện hội đồng xác nhận con dấu trên cuộn giấy thuộc kho lưu trữ cũ và chữ ký ở phụ lục là chữ ký thật.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị yêu cầu họ ghi rõ xác nhận này vào biên bản, không chỉ nói miệng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ hỏi vì sao tên Tống Nguyệt bị xóa khỏi danh sách hiện hành. Họ chưa có câu trả lời, nhưng đồng ý mở lịch sử chỉnh sửa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Họ cũng xác nhận không có giấy chuyển trường hay đơn xin nghỉ học mang tên cô ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Điều đó có nghĩa hồ sơ 'đã bàn giao' không thể được hiểu là đã chuyển trường. Chúng ta cần giữ nguyên sự khác biệt ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ nghe đến đây mới thấy tức giận. Một dòng trạng thái sai đã thay thế cả cuộc đời của một người.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Hội đồng đồng ý khôi phục tên vào kho lịch sử, nhưng yêu cầu giữ trạng thái chưa xác định. Chúng tớ không phản đối, vì đó là điều bằng chứng cho phép.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã đọc lại từng câu trong biên bản. Không có từ nào khẳng định Tống Nguyệt còn sống hay đã mất.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ ký với tư cách người chứng kiến, không phải người có quyền kết luận sự cố.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn bổ sung rằng bản ghi gốc phải được giữ riêng, không tự động phát lại khi có người mở hồ sơ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ đề xuất khóa chức năng phát âm thanh. Chỉ có bản chép lời được xem trong hệ thống tra cứu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đồng ý. Lời nhắn cuối là điều cô ấy gửi cho nhóm cũ, không phải thứ để mọi người tò mò bật lên.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Trước khi nghe tệp cuối, tớ đã tạo một bản sao kiểm tra và so mã băm với bản lưu ngoại tuyến. Hai bản trùng khớp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chúng ta sẽ nghe bằng tai nghe cách ly, âm lượng thấp. Nếu thiết bị đo có phản ứng, dừng ngay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ đứng cạnh công tắc ngắt độc lập. Không ai phải tiếp tục nếu thấy không an toàn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta sẽ ghi hình màn hình thiết bị và đồng hồ thời gian, nhưng không quay mặt người nghe.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn nghe hết một lần. Nếu có điều gì không rõ, chúng ta sẽ đọc lại bản chép lời thay vì phát lặp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ ngồi cạnh cửa. Nếu có ai cần ra ngoài, tớ sẽ đi cùng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tệp bắt đầu bằng tiếng ghế kéo và tiếng phấn. Tớ nghe thấy một lớp học bình thường, có người cười vì viết sai một chữ trên bảng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Giọng của Tống Nguyệt không hề giống tiếng gọi từ gương. Cô ấy nói chậm, có lúc ngập ngừng như đang tìm từ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tần số vẫn ổn định. Không có tín hiệu kích hoạt, không có vòng lặp, chỉ là âm thanh được lưu trong tệp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã ghi thời điểm đoạn nói đầu tiên. Nó diễn ra trước sự cố, không phải sau khi cửa đóng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị nghe thấy sáu người khác tranh luận về việc dừng thí nghiệm. Họ không thống nhất, nhưng không ai muốn bỏ mặc bạn mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn nghe tiếp. Bây giờ tớ không còn nghĩ đây là một giọng nói đang cố kéo ai đó xuống G-07.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tống Nguyệt nói cô ấy đã ghi lại những phản ứng bất thường của Mộc dẫn linh. Cô ấy muốn dừng thí nghiệm trước khi ký ức của mọi người bị trộn lẫn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ ghi được một chi tiết kỹ thuật: cô ấy đề nghị tách bản ghi thành nhiều phần và lưu ngoại tuyến. Đó chính là phương án chúng ta đang dùng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Có thể cô ấy đã nhìn thấy nguy cơ từ trước. Nhưng bản ghi không nói cô ấy biết hệ thống sẽ đóng vòng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta sẽ đánh dấu đây là đề xuất an toàn, không phải bằng chứng về việc cô ấy tự nguyện ở lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị muốn nghe đoạn sáu người trả lời. Chúng ta cần biết vì sao họ không tắt thiết bị ngay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Một người nói nếu dừng đột ngột, toàn bộ dữ liệu sẽ tràn vào những người đang đứng trong vòng. Họ đang sợ làm mọi thứ tệ hơn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đến cuối đoạn, giọng Tống Nguyệt nhỏ đi. Cô ấy nói: 'Nếu mọi người nghe được, hãy nhớ tớ đã muốn tắt nó. Đừng dùng tên tớ để giữ vòng chạy'.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Một ngày trước khi ngắt nguồn, chúng tớ tập trung ở phòng hướng dẫn để diễn tập quy trình. Không ai được xuống G-07 nếu chưa qua đủ các bước kiểm tra.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_zoom_in"
+        ]
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đã chuẩn bị ba thiết bị đo độc lập, dùng pin riêng. Nếu một thiết bị hỏng, hai thiết bị còn lại vẫn ghi được dao động.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã chia nhiệm vụ thành ba nhóm. Mỗi nhóm có người thao tác, người quan sát và người ghi biên bản.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ chịu trách nhiệm dừng toàn bộ hoạt động nếu có người bị thương hoặc dữ liệu vượt ngưỡng an toàn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đã in sơ đồ đường dẫn và đánh dấu từng van ngắt. Không ai phải nhớ thứ tự bằng trí nhớ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ giữ bản sao danh sách và lời nhắn của Tống Nguyệt ở khu vực an toàn. Không mang chúng vào vòng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chúng ta sẽ ngắt nguồn phụ ở phòng chế phù trước. Sau đó mới khóa bộ điều khiển G-06, cuối cùng tháo vật dẫn G-07.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn nghe lý do của thứ tự này một lần nữa, để chắc chắn mọi người hiểu chứ không chỉ làm theo.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nguồn phụ nuôi các nhánh ngoài. Nếu ngắt vật dẫn trước, năng lượng còn lại có thể dội ngược qua các nhánh đang mở.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta sẽ đọc từng bước thành tiếng và đánh dấu khi người quan sát xác nhận. Không ai được bỏ qua bước vì nghĩ rằng đã hiểu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nếu có tín hiệu gọi tên hoặc âm thanh bất thường, chúng ta không trả lời. Chỉ tiếp tục khi thiết bị đo xác nhận an toàn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ đứng ở điểm liên lạc giữa các nhóm. Nếu mất liên lạc, tất cả dừng tại chỗ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn hỏi một điều: nếu công tắc người giữ sáng trở lại, chúng ta có cần một người đứng vào vị trí đó không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Không. Tài liệu gốc nói đó là điểm xác nhận dữ liệu, không phải vị trí dành cho một người. Chúng ta sẽ không thay thế ai.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vậy nếu hệ thống cố nhận diện Mộc Dao, chúng ta sẽ không đưa cậu ấy đến gần. Dữ liệu đã có tên thật và bản sao độc lập.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ ghi rõ trong quy trình: không yêu cầu học sinh đứng vào vòng, không đọc tên để kích hoạt và không dùng người làm vật dẫn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã thêm mục kiểm tra chéo. Chỉ khi cả ba thiết bị đo đều ổn định mới được chuyển sang bước kế tiếp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ yên tâm hơn. Tớ không muốn một lần nữa bị biến thành câu trả lời cho lỗi của hệ thống.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tối trước ngày ngắt nguồn, tớ không ngủ được. Tớ cứ nghĩ nếu chúng ta làm sai thứ tự, mọi thứ có thể quay lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ cũng lo, nhưng chúng ta đã chuẩn bị nhiều hơn bất kỳ lần nào trước đây. Không ai phải tự quyết định một mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đã kiểm tra thiết bị lần cuối. Pin đầy, đồng hồ đồng bộ, bộ nhớ đủ chỗ và không có kết nối mạng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã in bản sao quy trình dự phòng. Nếu máy tính tắt, chúng ta vẫn có thể làm việc bằng giấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ đến sớm hơn một giờ để kiểm tra lối thoát và liên lạc với đội y tế.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ mang sổ ghi chép. Nó nhắc tớ rằng chúng ta đang làm việc để chấm dứt vòng, không phải để chứng minh ai can đảm hơn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Buổi sáng, trời nhiều mây. Chúng tớ gặp nhau ở cổng tháp, kiểm tra danh tính và ký vào danh sách có mặt.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị đã khóa lối phụ và đặt biển cảnh báo. Những học sinh không tham gia được yêu cầu tránh khu vực.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã kiểm tra từng túi thiết bị. Không ai mang vật dẫn cá nhân hay đồ vật chưa được khai báo vào bên trong.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ba thiết bị đo đều ở mức nền. Tớ đã ghi số liệu ban đầu để so sánh sau khi ngắt.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ nhận được xác nhận từ nhóm phòng chế phù. Họ đã sẵn sàng và đang chờ lệnh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đứng ngoài vạch an toàn cùng bản sao hồ sơ. Lần này, tớ không phải người được gọi xuống dưới.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Trước khi mở cửa, Linh Sương yêu cầu mỗi người nhắc lại vai trò của mình. Không ai nói về lời nguyền hay số phận, chỉ nói việc mình phải làm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị phụ trách an toàn và có quyền dừng. Vân Chi ghi diễn biến. Thanh Hòa theo dõi thiết bị đo.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta ghi biên bản và xác nhận từng bước. Tư Ninh giữ liên lạc. Mộc Dao bảo quản tài liệu ở ngoài vùng tác động.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ không tự ý đi sang khu vực khác. Nếu mất liên lạc, tớ chờ tín hiệu thay vì chạy tìm mọi người.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ không chạm vào công tắc khi chưa có xác nhận từ ba thiết bị. Nếu số liệu bất thường, tớ báo dừng ngay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ giữ nguyên vị trí. Tớ không phải chìa khóa, cũng không phải người thay thế.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đội kỹ thuật báo điểm ngắt thứ nhất đã mở. Ta đã nhận được ảnh xác nhận và số liệu từ hai thiết bị tại chỗ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Dao động giảm đúng dự kiến. Thiết bị thứ ba cũng ghi nhận mức giảm, không có phản hồi ngược.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đánh dấu thời điểm và nhìn sang Linh Sương. Cậu ấy gật đầu, nhưng vẫn yêu cầu chờ thêm một chu kỳ đo.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ không cho chuyển bước chỉ vì số liệu vừa giảm. Chúng ta cần ba lần đo liên tiếp ổn định.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đọc lại số liệu từ nhóm phụ. Cả ba lần đều nằm trong ngưỡng cho phép.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ thấy đèn trên bảng hành lang tắt bớt. Không có tiếng gọi, chỉ có tiếng quạt thông gió.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Điểm ngắt thứ hai đã sẵn sàng. Công tắc G-06 vẫn có điện dư, nhưng chốt an toàn đã chuyển sang chế độ mở.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã đối chiếu vị trí chốt với sơ đồ. Không có dấu hiệu bị thay đổi so với bản thiết kế.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị yêu cầu người thao tác lùi lại sau khi gạt chốt. Không ai được đứng ngay trước bảng điều khiển.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ nghe tiếng kim loại trượt trong tường. Một dải đèn tắt dần từ trái sang phải.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tần số giảm thêm, nhưng điểm hình lá vẫn sáng mờ. Chúng ta chưa đến bước cuối.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ nhìn bảng đo từ ngoài cửa. Không có con số nào tăng lên. Tớ tự nhắc mình không được hoảng vì ánh sáng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Khi G-06 đã khóa, chúng tớ nghỉ mười phút để kiểm tra thiết bị và sức khỏe. Không ai được tự ý xuống G-07 trong thời gian đó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Thiết bị của tớ vẫn ổn định. Nhưng tần số ở vật dẫn gốc còn một nhịp rất nhỏ, lặp lại sau mỗi bốn mươi giây.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã ghi chu kỳ và so với bản ghi cũ. Nó trùng với khoảng thời gian hệ thống từng phát lời nhắn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Có thể đó là bộ nhớ đệm đang xả dần. Chúng ta không cần trả lời hay chờ nó nói hết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ chỉ cho phép tiếp tục nếu đội kỹ thuật xác nhận lối xuống an toàn. Mọi người có thể dừng bất cứ lúc nào.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn nói với mọi người rằng tớ không còn sợ bị gọi tên. Nhưng tớ vẫn sợ chúng ta sẽ bỏ sót một chi tiết quan trọng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đội kỹ thuật xác nhận G-07 không còn nguồn phụ. Cánh cửa được mở từ bên ngoài, còn bên trong chỉ có hộp đồng và bản sao lưu đã niêm phong.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đo quanh hộp. Dao động còn lại rất yếu, không lan ra khỏi lớp vỏ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã đọc quy trình tháo vật dẫn. Hai người thao tác, một người giám sát, không ai đứng trước mặt hộp.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ giữ lối thoát mở. Nếu hộp phát nhiệt hoặc rung mạnh, tất cả rời khỏi phòng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ đứng ngoài cửa, giữ liên lạc với nhóm. Không ai cần gọi tên Tống Nguyệt để xác nhận.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ nhìn hộp đồng qua camera. Nó vẫn là một vật thể, không phải một người đang chờ được thay thế.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chốt cuối đã được mở. Năng lượng trong hộp giảm dần, không có phản hồi từ sáu điểm cộng hưởng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ nhìn đồng hồ. Khi kim giây đi qua mốc bốn mươi, không có tiếng gõ nào xuất hiện.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã ghi thời điểm hệ thống ngừng hoàn toàn. Ba thiết bị độc lập đều xác nhận cùng một kết quả.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị yêu cầu mọi người giữ nguyên vị trí thêm năm phút. Chúng ta không rời đi cho đến khi kiểm tra xong.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Không có âm thanh nào nữa. Chỉ còn tiếng thở của chúng tớ và tiếng quạt thông gió.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ không nghe thấy ai gọi mình. Lần đầu tiên, sự im lặng không giống một cái bẫy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Đó không phải lời mời gọi. Đó là lời yêu cầu dừng hệ thống và đừng biến cô ấy thành lý do để tiếp tục.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tần số không đổi khi câu nói kết thúc. Thiết bị không phản ứng với tên hay giọng nói.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã dừng tệp đúng điểm cuối. Không phát lại, không tạo bản âm thanh công khai.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ ghi lời nhắn vào biên bản với chú thích đây là bản ghi lưu trữ, không thể xác minh tình trạng hiện tại của người nói.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn giữ nguyên câu chữ. Đừng rút nó thành một câu chuyện rằng cô ấy đã chọn hy sinh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chúng tớ ngồi im một lúc sau khi tắt thiết bị. Tớ nhận ra điều đáng sợ nhất là lời cô ấy bị diễn giải ngược suốt nhiều năm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ từng nghĩ cô ấy muốn được giữ lại mãi mãi. Nhưng cô ấy đã nói rõ muốn tắt vòng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ sẽ đối chiếu thời gian tệp với nhật ký kỹ thuật. Nếu khớp, chúng ta có thể xác định nó được ghi trước lần khóa cuối.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta sẽ gửi bản chép lời cho hội đồng, kèm giới hạn xác minh. Không gửi file âm thanh qua mạng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị muốn sáu người trong nhóm cùng ký xác nhận rằng chúng ta nghe đúng một lần và không chỉnh sửa nội dung.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ ký. Không phải để thay cô ấy nói, mà để bảo đảm lời cô ấy không bị biến thành điều ngược lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Trước khi rời phòng, tớ mở sổ và ghi nguyên văn câu cuối. Tớ không thêm một chữ nào, cũng không viết thay phần cô ấy chưa nói.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ ghi bên cạnh: 'Không dùng tên một người để duy trì điều người ấy muốn dừng'.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ ghi mã tệp và mã kiểm tra, để sau này không ai nhầm bản chép lời với một bản ghi khác.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã lưu biên bản nghe tệp trong kho ngoại tuyến. Quyền truy cập cần hai người xác nhận.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ trình hội đồng kế hoạch ngắt nguồn cuối cùng. Bây giờ chúng ta đã biết điều cần làm, nhưng vẫn phải làm đúng thứ tự.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ không còn muốn hệ thống trả lời mình. Tớ chỉ muốn nó ngừng gọi người khác bằng cái tên của cô ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vậy vai trò ban đầu của cô ấy chỉ là ghi chép. Hệ thống đã biến một chức năng lưu trữ thành một vị trí trong nghi thức.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ so nét mực với bản sao G-07. Hai bản dùng cùng loại mực, nhưng bản G-07 có thêm lớp ký hiệu được viết sau.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta sẽ lập bảng so sánh từng khác biệt. Không xóa hay sửa bản gốc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị muốn tìm trang tiếp theo. Một danh sách có thể cho biết ai tham gia, nhưng chưa giải thích vì sao hồ sơ bị thay đổi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ thấy một mép giấy khác ở đáy cuộn. Có thể đây là phụ lục bị cuộn vào trong.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Phụ lục ghi ngày thực hành và tên người hướng dẫn. Tất cả trùng với lịch học cũ, không có dấu hiệu tài liệu giả.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Có một dòng ghi chú: 'Bản ghi phải được giữ nguyên cho đến khi nhóm đủ bảy người xác nhận'.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nhưng sáu người đã trở về sau sự cố. Có thể họ không đủ điều kiện xác nhận vì người ghi chép không còn ở đó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta không thể khẳng định điều đó. Chúng ta chỉ biết quy trình yêu cầu bảy xác nhận, còn bản lưu hiện có sáu chữ ký.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ xin mở hồ sơ bàn giao sau sự cố để tìm xem ai đã nhận phụ lục này.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nếu không ai nhận, nó có thể đã bị bỏ quên trong khoang suốt nhiều năm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Sở Vân Chi",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cuộn giấy đã được sao lưu và niêm phong. Tớ nhìn bảy dòng tên trên bản chụp, lần đầu thấy Tống Nguyệt đứng đúng vị trí của mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Hứa Chiêu",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ta đã xác nhận số trang, mã vật chứng và người chịu trách nhiệm lưu trữ. Bản gốc sẽ không được đưa vào hệ thống mạng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "6",
+      "ten_hien_thi": "Cố Thanh Hòa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ kiểm tra lần cuối: không có dao động linh lực trên giấy. Nó chỉ là một tài liệu bình thường bị cất giấu quá lâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Tạ Linh Sương",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chị sẽ gửi bản sao đã che thông tin cá nhân không liên quan cho hội đồng. Chúng ta cần xác nhận chính thức trước khi công bố.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Bạch Tư Ninh",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ muốn đọc lại từng dòng, không phải để gọi ai, mà để nhớ rằng lớp ấy từng có bảy học sinh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mộc Dao",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Và người ghi chép cũng là một thành viên của lớp, không phải một chiếc ghế trống.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": []
       }
     },
     {
