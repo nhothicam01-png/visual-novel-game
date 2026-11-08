@@ -9,7 +9,6 @@
       this.libraryUrl = libraryUrl || './assets/Config/effect_library.json';
       this.library = { library_version: 1, effects: [] };
       this.effects = new Map();
-      this.animations = [];
       this.activeClasses = [];
       this.ready = this.loadLibrary();
     }
@@ -37,22 +36,12 @@
         } catch (_) {}
       });
       this.activeClasses = [];
-      this.animations.forEach(animation => {
-        try {
-          const target = animation.effect && animation.effect.target;
-          animation.cancel();
-          if (target && target.style) target.style.willChange = '';
-        } catch (_) {}
-      });
-      this.animations = [];
     }
     pause() {
       this.activeClasses.forEach(item => { try { item.element.style.animationPlayState = 'paused'; } catch (_) {} });
-      this.animations.forEach(animation => { try { animation.pause(); } catch (_) {} });
     }
     resume() {
       this.activeClasses.forEach(item => { try { item.element.style.animationPlayState = 'running'; } catch (_) {} });
-      this.animations.forEach(animation => { try { animation.play(); } catch (_) {} });
     }
 
     normalizeSlot(slot) {
@@ -84,18 +73,6 @@
       }};
     }
 
-    play(element, frames, options) {
-      if (!element || typeof element.animate !== 'function' || !frames) return;
-      const animation = element.animate(frames, {
-        duration: Math.max(120, Math.min(12000, Number(options.duration_ms) || 900)),
-        iterations: Math.max(1, Math.min(8, Number(options.iterations) || 1)),
-        direction: 'normal',
-        easing: options.easing || 'ease-in-out',
-        fill: 'both'
-      });
-      this.animations.push(animation);
-      element.style.willChange = 'transform, opacity, filter';
-    }
 
     applyDefinition(slot, expectedTarget, elements) {
       const ref = this.normalizeSlot(slot);
