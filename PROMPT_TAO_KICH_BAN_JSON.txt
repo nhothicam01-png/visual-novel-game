@@ -444,15 +444,14 @@ Chỉ sử dụng file thực tế tồn tại.
 Không lạm dụng hiệu ứng âm thanh khiến hội thoại khó nghe.
 
 ==================================================
-VIII. CẤU TRÚC JSON BẮT BUỘC — CẤU TRÚC CŨ
+VIII. CẤU TRÚC JSON BẮT BUỘC
 ==================================================
 
-Tạm thời không sử dụng hệ thống hiệu ứng chuyển động cho nhân vật, nền hoặc camera.
+Không thêm schema_version. Giữ nguyên các trường tài nguyên cũ:
+- anh_hieu_ung: file hiệu ứng hình ảnh trong assets/HieuUng/
+- am_thanh_hieu_ung: file hiệu ứng âm thanh trong assets/AmThanh/HieuUng/
 
-Không thêm các trường schema_version, hieu_ung, hieu_ung_nhan_vat, hieu_ung_nen hoặc hieu_ung_camera.
-Không tạo ID hiệu ứng chuyển động, không đọc thư viện hiệu ứng chuyển động khi tạo kịch bản và không yêu cầu cập nhật mã player để bổ sung hiệu ứng.
-
-Lưu ý: vẫn giữ các trường tài nguyên cũ anh_hieu_ung và am_thanh_hieu_ung. Đây là file hiệu ứng hình ảnh/âm thanh trong thư viện tài nguyên, không phải hệ thống hiệu ứng chuyển động.
+Bổ sung trường hieu_ung cho từng lượt thoại. Trường này điều khiển thư viện chuyển động độc lập trong effects.js, không thay thế anh_hieu_ung hoặc am_thanh_hieu_ung.
 
 CẤU TRÚC JSON MẪU BẮT BUỘC:
 
@@ -460,98 +459,73 @@ CẤU TRÚC JSON MẪU BẮT BUỘC:
   "thoi_gian_giu_khung": 1.0,
   "thoi_gian_cho_giua": 0.02,
   "toc_do_go_chu": 0.03,
-  ==================================================
-HỆ THỐNG HIỆU ỨNG CHUYỂN ĐỘNG THEO TỪNG LƯỢT THOẠI
-==================================================
-
-Thư viện hiệu ứng nằm riêng trong file:
-- effects.js
-
-Quy tắc bắt buộc:
-- Chỉ sử dụng đúng ID có trong effects.js; không tự sáng tạo ID, tên hiệu ứng hoặc mã CSS.
-- Khi tạo kịch bản, hãy đọc danh sách ID và mô tả trong effects.js trước.
-- Mỗi lượt thoại có thể khai báo nhiều hiệu ứng trong cùng một nhóm; các hiệu ứng sẽ cộng hưởng.
-- Nếu không cần hiệu ứng, dùng mảng rỗng [] hoặc bỏ trường hieu_ung.
-- Không dùng hiệu ứng không đúng đối tượng (ví dụ hiệu ứng nhân vật không đặt vào nền).
-- Hiệu ứng camera tác động đồng thời lên nền, nhân vật và lớp hiệu ứng hình ảnh; không tác động lên hộp thoại.
-- Chọn hiệu ứng có chủ đích theo hành động, cảm xúc và nhịp cảnh; tránh lạm dụng rung/zoom/xoay.
-- Chỉ dùng các ID sau (đối chiếu effects.js nếu thư viện được cập nhật):
-
-Nhân vật:
-- char_walk_bob: nhấp nhô như đang đi
-- char_sway: nghiêng trái phải
-- char_fear_shake: run rẩy vì sợ
-- char_move_left: nhấp nhô và di chuyển sang trái
-- char_move_right: nhấp nhô và di chuyển sang phải
-- char_fade_out: mờ dần biến mất
-- char_ghost: trong suốt như linh hồn
-- char_giant: phóng to như người khổng lồ
-
-Nền:
-- bg_zoom_in, bg_zoom_out
-- bg_sway
-- bg_earthquake
-- bg_pan_left, bg_pan_right, bg_pan_up, bg_pan_down
-- bg_misty
-- bg_dizzy_spin
-
-Camera (áp dụng chung cho nền và nhân vật):
-- camera_zoom_in, camera_zoom_out
-- camera_sway, camera_shake
-- camera_pan_left, camera_pan_right, camera_pan_up, camera_pan_down
-- camera_misty, camera_spin, camera_tilt_left, camera_tilt_right
-
-Cấu trúc trường hieu_ung cho MỖI lượt thoại:
-"hieu_ung": {
-  "nhan_vat": ["char_walk_bob", "char_sway"],
-  "nen": ["bg_zoom_in", "bg_sway"],
-  "camera": ["camera_zoom_in"]
-}
-
-Lưu ý:
-- Các mảng chỉ chứa ID dạng chuỗi, không chứa mô tả tự do.
-- Có thể dùng đồng thời nhiều ID ở cả ba nhóm.
-- Chỉ khai báo hiệu ứng có ý nghĩa trong lượt thoại đó; khi sang lượt mới, hiệu ứng của lượt trước được thay bằng cấu hình mới.
-- Tránh kết hợp hai hiệu ứng đối nghịch cùng nhóm, ví dụ bg_zoom_in và bg_zoom_out.
-- Hiệu ứng char_fade_out và char_giant là hiệu ứng một lần; các hiệu ứng chuyển động khác lặp trong lúc lượt thoại đang hiển thị.
-- Tôn trọng chuyển động giảm (prefers-reduced-motion) của thiết bị.
-
-"danh_sach": [
+  "danh_sach": [
     {
       "nhan_vat": "1",
       "ten_hien_thi": "Linh",
-      "bieu_cam": "Happy",
-      "noi_dung": "Chào, hôm nay cậu đến lớp sớm thế nhỉ?",
-      "anh_nen": "class.mp4",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "afternoon_between_leaves.mp3",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "Nhanvat2",
-      "bieu_cam": "Sad",
-      "noi_dung": "Yep, nay có kiểm tra mà tui quên học rồi",
-      "anh_nen": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ví dụ một câu thoại.",
+      "anh_nen": "phong_ngu_dem.png",
       "anh_hieu_ung": "",
       "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": ["char_walk_bob", "char_sway"],
+        "nen": ["bg_sway"],
+        "camera": ["camera_zoom_in"]
+      }
     }
   ]
 }
 
 QUY TẮC:
-- Không thêm schema_version.
-- Mỗi lượt thoại sử dụng các trường trong object mẫu, bao gồm "ten_hien_thi".
-- "nhan_vat" là mã thư mục tài nguyên có thật; "ten_hien_thi" là tên nhân vật trong câu chuyện.
-- Với lượt thoại không có nhân vật, để "nhan_vat" và "ten_hien_thi" là chuỗi rỗng nếu player hỗ trợ cách biểu diễn này.
-- Không thêm object hieu_ung hoặc bất kỳ trường hiệu ứng chuyển động nào.
-- Các trường tài nguyên được phép để chuỗi rỗng để kế thừa trạng thái trước đó hoặc không phát tài nguyên mới.
-- Khi bối cảnh không đổi, để anh_nen là chuỗi rỗng.
-- Khi nhạc nền không đổi, để am_thanh_nen là chuỗi rỗng.
-- Nếu không cần hiệu ứng hình ảnh hoặc âm thanh, để anh_hieu_ung và am_thanh_hieu_ung là chuỗi rỗng.
-- Không tự thêm trường ngoài cấu trúc đã quy định.
+- Mỗi lượt thoại phải có object hieu_ung; nếu không cần hiệu ứng, dùng các mảng rỗng.
+- Chỉ sử dụng ID có thật trong effects.js; không tự tạo ID hoặc viết mô tả tự do thay cho ID.
+- Khi tạo kịch bản, phải đọc effects.js để kiểm tra danh sách ID mới nhất.
+- Chỉ dùng hiệu ứng đúng nhóm: nhan_vat, nen, camera.
+- Có thể kết hợp nhiều hiệu ứng trong cùng một nhóm và nhiều nhóm cùng lúc.
+- Camera tác động đồng bộ lên nền, nhân vật và lớp hiệu ứng hình ảnh, không tác động lên hộp thoại.
+- Khi chuyển sang lượt thoại mới, hiệu ứng của lượt trước được thay bằng cấu hình lượt mới.
+- Chọn hiệu ứng theo hành động, cảm xúc và nhịp cảnh; không lạm dụng rung, zoom hoặc xoay.
+- Không thêm các trường hieu_ung_nhan_vat, hieu_ung_nen hoặc hieu_ung_camera ở cấp ngoài object hieu_ung.
+- Không thay đổi tên ID dưới đây nếu effects.js chưa được cập nhật.
 
-==================================================
+DANH SÁCH ID HIỆU ỨNG HIỆN CÓ:
+
+Nhân vật:
+- char_walk_bob: nhấp nhô lên xuống như đang đi.
+- char_sway: nghiêng trái phải như đang lung lay.
+- char_fear_shake: lắc lư liên tục như đang sợ hãi.
+- char_move_left: vừa nhấp nhô vừa di chuyển sang trái.
+- char_move_right: vừa nhấp nhô vừa di chuyển sang phải.
+- char_fade_out: mờ dần như đang biến mất.
+- char_ghost: trong suốt như linh hồn.
+- char_giant: phóng to như người khổng lồ.
+
+Nền:
+- bg_zoom_in, bg_zoom_out: zoom gần/xa.
+- bg_sway: lắc lư trái phải nhẹ.
+- bg_earthquake: rung lắc như động đất.
+- bg_pan_left, bg_pan_right, bg_pan_up, bg_pan_down: trượt theo bốn hướng.
+- bg_misty: tạo cảm giác mờ ảo.
+- bg_dizzy_spin: xoay lắc vòng tạo cảm giác chóng mặt.
+
+Camera (cùng tác động lên nền và nhân vật):
+- camera_zoom_in, camera_zoom_out: zoom gần/xa.
+- camera_sway: lắc lư nhẹ.
+- camera_shake: rung lắc.
+- camera_pan_left, camera_pan_right, camera_pan_up, camera_pan_down: trượt theo bốn hướng.
+- camera_misty: tạo cảm giác mờ ảo.
+- camera_spin: xoay vòng.
+- camera_tilt_left, camera_tilt_right: nghiêng trái/phải.
+
+LƯU Ý VỀ TÍNH CỘNG HƯỞNG:
+- Có thể phối hợp hiệu ứng nhân vật, nền và camera trong cùng một lượt thoại.
+- Các hiệu ứng biến đổi hình học được cộng dồn để không ghi đè lẫn nhau.
+- Tránh chọn hai hiệu ứng cùng nhóm có hướng ngược nhau, ví dụ bg_zoom_in và bg_zoom_out.
+- char_fade_out và char_giant là hiệu ứng một lần; các hiệu ứng chuyển động còn lại lặp trong thời gian lượt thoại.
+- Nếu thiết bị bật chế độ giảm chuyển động, player sẽ hạn chế/tắt chuyển động theo thiết lập hệ thống.
+
 IX. QUY TẮC CHIA CÂU THOẠI
 ==================================================
 
