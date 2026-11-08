@@ -217,6 +217,15 @@ Ví dụ:
 
 Không được tự bịa tên file.
 
+QUY TẮC BẮT BUỘC KIỂM TRA TÊN FILE VÀ PHẦN MỞ RỘNG:
+- Khi ghi tên tài nguyên vào JSON, phải dùng CHÍNH XÁC tên file đầy đủ như GitHub, bao gồm phần mở rộng (.png, .jpg, .webp, .mp4, .mp3, .webm...).
+- Ví dụ: nếu file thực tế là san_truong_ban_ngay.png thì JSON bắt buộc ghi "san_truong_ban_ngay.png", tuyệt đối không ghi "san_truong_ban_ngay".
+- Không được tự ý bỏ phần mở rộng, tự đoán phần mở rộng hoặc chỉ ghi tên gốc.
+- Trước khi lưu, đối chiếu từng giá trị anh_nen, anh_hieu_ung, am_thanh_nen, am_thanh_hieu_ung và mọi tài nguyên khác với danh sách file thực tế trong đúng thư mục GitHub tương ứng; kiểm tra cả chữ hoa/chữ thường và phần mở rộng.
+- Kiểm tra đường dẫn cuối cùng mà player ghép. Ví dụ nền ảnh được tải từ assets/Nen/<giá_trị_anh_nen>, vì vậy giá trị phải khớp tên file thực tế trong assets/Nen/.
+- Nếu không tìm thấy file khớp chính xác, không được tự tạo tên thay thế; hãy chọn tài nguyên khác đang tồn tại hoặc báo rõ tài nguyên không có.
+- Sau khi tạo JSON, chạy bước kiểm tra tự động: liệt kê tất cả tên tài nguyên được tham chiếu, xác nhận từng file tồn tại trong repository, và chỉ lưu khi không còn tham chiếu sai.
+
 QUY TẮC KẾ THỪA NỀN:
 Nếu cảnh tiếp theo vẫn sử dụng cùng hình nền, để trường anh_nen rỗng để player tiếp tục sử dụng nền hiện tại.
 
