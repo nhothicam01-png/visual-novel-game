@@ -405,6 +405,16 @@
     .dialogue-setting .setting-value { color:#c4b5fd; }
     .dialogue-toggle { display:flex; align-items:center; gap:8px; font-size:.8rem; }
     .dialogue-toggle input { accent-color:#a855f7; }
+
+    /* Công cụ tạo phụ đề YouTube */
+    #subtitle-tools { width:100%; max-width:1000px; margin-top:8px; padding:12px 14px; background:rgba(15,23,42,.9); border:1px solid rgba(34,211,238,.28); border-radius:10px; color:#e2e8f0; display:flex; flex-direction:column; gap:9px; }
+    #subtitle-tools h4 { color:#67e8f9; font-size:.9rem; }
+    .subtitle-options { display:flex; gap:12px; flex-wrap:wrap; align-items:end; }
+    .subtitle-options label { display:flex; flex-direction:column; gap:4px; font-size:.76rem; color:#cbd5e1; }
+    .subtitle-options input { width:100px; min-height:32px; padding:5px 7px; color:#fff; background:#1e293b; border:1px solid #475569; border-radius:6px; }
+    .subtitle-options .subtitle-check { flex-direction:row; align-items:center; min-height:32px; }
+    #subtitle-preview { width:100%; min-height:120px; resize:vertical; padding:9px; color:#dbeafe; background:#020617; border:1px solid #334155; border-radius:7px; font: .75rem/1.5 ui-monospace,monospace; user-select:text; }
+    #subtitle-status { font-size:.76rem; color:#94a3b8; }
   </style>
 </head>
 <body>
@@ -467,6 +477,31 @@
     <button class="btn" id="btn-clear-progress" type="button" onclick="trinhPhat.xoaTienDoPhat()">↺ Xóa tiến độ đã lưu</button>
   </div>
 
+
+  <section id="subtitle-tools" aria-label="Tạo phụ đề YouTube">
+    <h4>📝 Tạo phụ đề CC cho YouTube (.SRT)</h4>
+    <div style="font-size:.76rem;color:#94a3b8;">Tạo một file SRT gốc theo ngôn ngữ lời thoại trong kịch bản JSON. Sau khi tải file này, bạn dùng phần mềm dịch phụ đề bên ngoài (ví dụ Google Dịch) để chuyển sang các ngôn ngữ khác. Mốc bắt đầu/kết thúc lời thoại được ghi nhận trực tiếp trong lúc player phát (không ước tính theo số từ). Tên nhân vật được xuất theo dạng “Tên nhân vật: lời thoại” để subtitle_voice_player.html nhận diện và áp dụng đúng giọng trong file _tts.json. Hãy chạy hết kịch bản từ đầu đến cuối rồi tải SRT; không tua giữa chừng để tránh lệch timeline.</div>
+    <div class="subtitle-options">
+      <label>Độ trễ đầu video (giây)<input id="subtitle-offset" type="number" min="0" max="3600" step="0.1" value="0"></label>
+      <label class="subtitle-check"><input id="subtitle-speaker" type="checkbox" style="width:auto;" checked> Thêm tên nhân vật (khuyến nghị cho TTS theo nhân vật)</label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn" type="button" onclick="trinhPhat.taoBanXemTruocPhuDe()">⚙ Tạo phụ đề</button>
+      <button class="btn" type="button" id="btn-download-srt" onclick="trinhPhat.taiPhuDeSRT()" disabled>⬇ Tải file .SRT</button>
+      <button class="btn" type="button" onclick="trinhPhat.saoChepPhuDe()">📋 Sao chép SRT</button>
+    </div>
+    <div style="border-top:1px solid rgba(148,163,184,.2);padding-top:10px;display:flex;flex-direction:column;gap:7px;">
+      <strong style="font-size:.82rem;color:#67e8f9;">🌐 Ngôn ngữ đích dùng trong phần mềm dịch bên ngoài</strong>
+      <div style="font-size:.74rem;color:#94a3b8;">Trang này chỉ xuất phụ đề gốc, không tự dịch. Khi nhập file SRT vào phần mềm dịch, bạn có thể chọn các ngôn ngữ đích sau:</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;font-size:.76rem;color:#e2e8f0;">
+        <span>English</span><span>日本語</span><span>한국어</span><span>ไทย</span><span>中文</span><span>Bahasa Indonesia</span><span>Français</span><span>العربية</span><span>Deutsch</span><span>Español</span><span>Português</span><span>हिन्दी</span><span>Tiếng Việt</span>
+      </div>
+      <div style="font-size:.72rem;color:#94a3b8;">Nếu phụ đề gốc đã là tiếng Việt, bỏ qua Tiếng Việt trong danh sách ngôn ngữ đích để tránh dịch trùng.</div>
+    </div>
+    <div id="subtitle-status" role="status">Hãy tải/import kịch bản JSON trước, sau đó bấm “Tạo phụ đề”.</div>
+    <textarea id="subtitle-preview" spellcheck="false" placeholder="Nội dung SRT sẽ xuất hiện ở đây sau khi tạo..." aria-label="Xem trước nội dung SRT"></textarea>
+  </section>
+
   <section id="dialogue-settings" aria-label="Cài đặt chữ thoại">
     <h4>💬 Tùy chỉnh chữ thoại</h4>
     <label class="dialogue-toggle"><input id="dialogue-visible" type="checkbox" checked onchange="trinhPhat.capNhatCaiDatThoai('visible', this.checked)"> Hiển thị khung thoại</label>
@@ -509,6 +544,10 @@
 
   <div id="character-voice-panel">
     <h4>🎙️ Cấu hình giọng đọc riêng theo nhân vật</h4>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <button class="btn" type="button" onclick="trinhPhat.xuatCauHinhTTS()">⬇ Xuất file cấu hình TTS JSON</button>
+      <span id="tts-config-status" style="font-size:.72rem;color:#94a3b8;">Cấu hình được lưu riêng trên thiết bị cho từng kịch bản.</span>
+    </div>
     <div id="character-voice-list">
       <span style="color: #64748b; font-style: italic;">Chưa có kịch bản hoặc nhân vật nào được tải. Hãy Import JSON trước!</span>
     </div>
@@ -550,6 +589,7 @@
         this.boDemHieuUng = new Map();
 
         this.duLieu = null;
+        this.tenFileKichBan = 'ailahungthu';
         this.dangChay = false;
         this.dangTamDung = false;
         this.hienChuInterval = null;
@@ -565,16 +605,21 @@
         this.currentTtsResolve = null;
         this.ttsRemainingText = "";
         this.currentSpeaker = "";
+        this.subtitlePlaybackRecords = new Map();
+        this.subtitlePlaybackStartedAt = null;
+        this.subtitlePlaybackPausedAt = null;
+        this.subtitlePlaybackPausedTotal = 0;
+        this.subtitlePlaybackInvalidated = false;
+        this.currentPlaybackFrameIndex = null;
 
         this.audioTts = document.getElementById('audio-tts');
         this.ttsServerUrl = '';
 
         this.cauHinhGiongNhanVat = {};
-        this.khoaLuuGiongNhanVat = 'vn-character-tts-settings';
-        try {
-          this.cauHinhGiongNhanVatDaLuu = JSON.parse(localStorage.getItem(this.khoaLuuGiongNhanVat) || '{}');
-          if (!this.cauHinhGiongNhanVatDaLuu || typeof this.cauHinhGiongNhanVatDaLuu !== 'object' || Array.isArray(this.cauHinhGiongNhanVatDaLuu)) this.cauHinhGiongNhanVatDaLuu = {};
-        } catch (_) { this.cauHinhGiongNhanVatDaLuu = {}; }
+        this.cauHinhGiongNhanVatDaLuu = {};
+        this.duongDanTTSKichBan = '';
+        this.khoaLuuTTSTheoKichBan = '';
+        this.ttsConfigLoadToken = 0;
         this.ttsSynth = window.speechSynthesis || null;
         this.danhSachVoices = [];
         this.ngonNguMacDinh = this.layNgonNguMacDinh();
@@ -735,6 +780,9 @@
           const data = await response.json();
           if (!data || !Array.isArray(data.danh_sach) || data.danh_sach.length === 0) throw new Error('ailahungthu.json không đúng cấu trúc hoặc không có lời thoại');
           this.duLieu = data;
+          this.tenFileKichBan = 'ailahungthu';
+          this.duongDanTTSKichBan = 'ailahungthu_tts.json';
+          await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
           this.progressScriptId = this.taoMaKichBan(data);
           this.napTienDoPhat();
           this.quetVaKhoiTaoNhanVat();
@@ -968,6 +1016,9 @@
           this.dung();
           this.hienLoading(true);
           this.duLieu = data;
+          this.tenFileKichBan = path.split('/').pop().replace(/\\.json$/i, '') || 'kichban';
+          this.duongDanTTSKichBan = path.replace(/\\.json$/i, '_tts.json');
+          await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
           this.progressScriptId = this.taoMaKichBan(data);
           this.napTienDoPhat();
           this.quetVaKhoiTaoNhanVat();
@@ -1073,6 +1124,9 @@
         reader.onload = async (e) => {
           try {
             this.duLieu = JSON.parse(e.target.result);
+            this.tenFileKichBan = (file.name || 'kichban.json').replace(/\\.json$/i, '') || 'kichban';
+            this.duongDanTTSKichBan = (file.name || 'kichban.json').replace(/\\.json$/i, '_tts.json');
+            await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
             this.progressScriptId = this.taoMaKichBan(this.duLieu);
             this.napTienDoPhat();
             this.hienLoading(true);
@@ -1090,6 +1144,32 @@
         reader.readAsText(file);
       }
 
+      async taiCauHinhTTSKichBan(path, boQuaTaiMang = false) {
+        const token = ++this.ttsConfigLoadToken;
+        this.khoaLuuTTSTheoKichBan = 'vn-character-tts:' + path;
+        let cauHinh = {};
+        try {
+          const local = JSON.parse(localStorage.getItem(this.khoaLuuTTSTheoKichBan) || '{}');
+          if (local && typeof local === 'object' && !Array.isArray(local)) cauHinh = local;
+        } catch (_) {}
+        if (!boQuaTaiMang && path) {
+          try {
+            const encoded = path.split('/').map(part => encodeURIComponent(part)).join('/');
+            const response = await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/' + encoded, { cache: 'no-store' });
+            if (response.ok) {
+              const remote = await response.json();
+              const remoteVoices = remote.nhan_vat || remote.characters || remote;
+              if (remoteVoices && typeof remoteVoices === 'object' && !Array.isArray(remoteVoices)) {
+                cauHinh = { ...remoteVoices, ...cauHinh };
+              }
+            }
+          } catch (error) { console.info('Chưa có file TTS riêng trên GitHub, dùng cấu hình trên thiết bị:', error); }
+        }
+        if (token !== this.ttsConfigLoadToken) return;
+        this.cauHinhGiongNhanVatDaLuu = cauHinh;
+        this.cauHinhGiongNhanVat = {};
+      }
+
       quetVaKhoiTaoNhanVat() {
         if (!this.duLieu) return;
         const ds = this.duLieu.danh_sach || this.duLieu.KichBanToanBo || [];
@@ -1102,7 +1182,8 @@
         });
 
         setNhanVat.forEach(ten => {
-          if (!this.cauHinhGiongNhanVat[ten]) {
+          {
+            // Mỗi lần nạp kịch bản, tạo cấu hình mới từ file TTS của chính kịch bản đó.
             // Lần khởi tạo đầu tiên: lấy ngôn ngữ từ noi_dung của chính nhân vật.
             // Người dùng vẫn có thể đổi ngôn ngữ/giọng đọc sau trong bảng cấu hình.
             const ngonNguNoiDung = this.phatHienNgonNguTuNoiDung(ds, ten);
@@ -1113,10 +1194,22 @@
               lang: ngonNguNoiDung
             };
             // Khôi phục thiết lập TTS đã lưu riêng cho nhân vật này.
-            this.cauHinhGiongNhanVat[ten] = {
-              ...macDinh,
-              ...(this.cauHinhGiongNhanVatDaLuu[ten] || {})
-            };
+            const saved = this.cauHinhGiongNhanVatDaLuu[ten] || {};
+            const cfg = { ...macDinh, ...saved };
+            cfg.voiceIndex = -1;
+            if (saved.voiceURI && this.danhSachVoices.length) {
+              cfg.voiceIndex = this.danhSachVoices.findIndex(v => v.voiceURI === saved.voiceURI);
+            }
+            if (cfg.voiceIndex < 0 && saved.voiceName && this.danhSachVoices.length) {
+              cfg.voiceIndex = this.danhSachVoices.findIndex(v => v.name === saved.voiceName && (!saved.lang || v.lang === saved.lang));
+            }
+            if (cfg.voiceIndex < 0) cfg.voiceIndex = this.timGiongTheoNgonNgu(cfg.lang);
+            if (cfg.voiceIndex >= 0 && this.danhSachVoices[cfg.voiceIndex]) {
+              cfg.voiceURI = this.danhSachVoices[cfg.voiceIndex].voiceURI;
+              cfg.voiceName = this.danhSachVoices[cfg.voiceIndex].name;
+              cfg.lang = this.danhSachVoices[cfg.voiceIndex].lang || cfg.lang;
+            }
+            this.cauHinhGiongNhanVat[ten] = cfg;
           }
         });
 
@@ -1207,11 +1300,48 @@
         this.luuCauHinhGiongNhanVat();
       }
 
+      xuatCauHinhTTS() {
+        if (!this.duongDanTTSKichBan || !Object.keys(this.cauHinhGiongNhanVat).length) {
+          alert('Hãy tải một kịch bản có nhân vật trước.');
+          return;
+        }
+        const nhanVat = {};
+        Object.entries(this.cauHinhGiongNhanVat).forEach(([ten, cfg]) => {
+          nhanVat[ten] = {
+            voiceURI: cfg.voiceURI || '',
+            voiceName: cfg.voiceName || '',
+            lang: cfg.lang || 'vi-VN',
+            rate: Number(cfg.rate ?? 1.1),
+            pitch: Number(cfg.pitch ?? 1)
+          };
+        });
+        const blob = new Blob([JSON.stringify({ nhan_vat: nhanVat }, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = this.duongDanTTSKichBan.split('/').pop();
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        const status = document.getElementById('tts-config-status');
+        if (status) status.textContent = 'Đã xuất ' + link.download + '. Hãy tải file này lên đúng thư mục cùng kịch bản trên GitHub để đồng bộ.';
+      }
+
       luuCauHinhGiongNhanVat() {
+        if (!this.khoaLuuTTSTheoKichBan) return;
         try {
-          localStorage.setItem(this.khoaLuuGiongNhanVat, JSON.stringify(this.cauHinhGiongNhanVat));
+          const data = {};
+          Object.entries(this.cauHinhGiongNhanVat).forEach(([ten, cfg]) => {
+            data[ten] = {
+              voiceURI: cfg.voiceURI || '',
+              voiceName: cfg.voiceName || '',
+              lang: cfg.lang || 'vi-VN',
+              rate: Number(cfg.rate ?? 1.1),
+              pitch: Number(cfg.pitch ?? 1)
+            };
+          });
+          localStorage.setItem(this.khoaLuuTTSTheoKichBan, JSON.stringify(data));
         } catch (err) {
-          console.warn('Không thể lưu cấu hình TTS theo nhân vật:', err);
+          console.warn('Không thể lưu cấu hình TTS riêng cho kịch bản:', err);
         }
       }
 
@@ -1474,6 +1604,10 @@
         this.kichHoatAmThanhMobile();
 
         if (this.dangTamDung) {
+          if (this.subtitlePlaybackPausedAt !== null) {
+            this.subtitlePlaybackPausedTotal += performance.now() - this.subtitlePlaybackPausedAt;
+            this.subtitlePlaybackPausedAt = null;
+          }
           this.dangTamDung = false;
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
           if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
@@ -1506,7 +1640,19 @@
         }
 
         document.getElementById('btn-pause').style.display = 'inline-block';
-        if (!this.playbackStarted) this.currentIndex = 0;
+        if (!this.playbackStarted) {
+          this.currentIndex = 0;
+          this.subtitlePlaybackRecords = new Map();
+          this.subtitlePlaybackStartedAt = performance.now();
+          this.subtitlePlaybackPausedAt = null;
+          this.subtitlePlaybackPausedTotal = 0;
+          this.subtitlePlaybackInvalidated = false;
+        } else if (this.subtitlePlaybackStartedAt === null) {
+          // Nếu tiếp tục từ tiến độ đã lưu sau khi tải lại trang, chỉ ghi nhận phần đã phát trong phiên này.
+          this.subtitlePlaybackStartedAt = performance.now();
+          this.subtitlePlaybackPausedAt = null;
+          this.subtitlePlaybackPausedTotal = 0;
+        }
         this.playbackStarted = true;
         this.capNhatThanhTua();
         this.chayToanBo();
@@ -1517,6 +1663,7 @@
 
         if (!this.dangTamDung) {
           this.dangTamDung = true;
+          if (this.subtitlePlaybackStartedAt !== null && this.subtitlePlaybackPausedAt === null) this.subtitlePlaybackPausedAt = performance.now();
           this.luuTienDoPhat();
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
           if (this.ttsSynth) this.ttsSynth.cancel();
@@ -1527,6 +1674,10 @@
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.pause();
           if (this.layerChar.style.display === 'block') this.layerChar.pause();
         } else {
+          if (this.subtitlePlaybackPausedAt !== null) {
+            this.subtitlePlaybackPausedTotal += performance.now() - this.subtitlePlaybackPausedAt;
+            this.subtitlePlaybackPausedAt = null;
+          }
           this.dangTamDung = false;
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
           if (this.audioBgm.play) this.audioBgm.play().catch(()=>{});
@@ -1568,6 +1719,7 @@
         const target = Math.max(0, Math.min(ds.length - 1, Math.round(Number(value) || 0)));
         const wasPlaying = this.dangChay && !this.dangTamDung;
         const wasPaused = this.dangChay && this.dangTamDung;
+        if (wasPlaying || wasPaused) this.subtitlePlaybackInvalidated = true;
 
         // Hủy lượt thoại/TTS đang chờ để không làm phát chồng lên nhau.
         this.playbackGeneration++;
@@ -1622,7 +1774,9 @@
           }
           if (!this.dangChay || generation !== this.playbackGeneration) break;
 
-          const khung = this.layKhungKeThua(this.currentIndex);
+          const frameIndex = this.currentIndex;
+          const khung = this.layKhungKeThua(frameIndex);
+          this.currentPlaybackFrameIndex = frameIndex;
           await this.xuLyKhung(khung, false, generation);
           if (generation !== this.playbackGeneration) break;
 
@@ -1638,10 +1792,29 @@
           const status = document.getElementById('progress-status'), resume = document.getElementById('btn-resume-progress');
           if (status) status.textContent = 'Đã phát hết kịch bản.'; if (resume) resume.style.display = 'none';
         }
+        const daPhatHetKichBan = this.currentIndex >= ds.length;
         this.dangChay = false;
+        this.dangTamDung = false;
         document.getElementById('btn-pause').style.display = 'none';
+        document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
         this.capNhatThanhTua();
         this.xoaChu();
+
+        // Khi hoàn tất toàn bộ kịch bản: dừng các media còn chạy và tự tạo SRT.
+        if (daPhatHetKichBan) {
+          if (this.ttsSynth) this.ttsSynth.cancel();
+          this.audioTts.pause();
+          this.audioBgm.pause();
+          this.audioSfx.pause();
+          this.layerBgVideo.pause();
+          this.layerChar.pause();
+          this.layerCharBuffer.pause();
+          this.taoBanXemTruocPhuDe();
+          const subtitleStatus = document.getElementById('subtitle-status');
+          if (subtitleStatus && this.subtitleSrt) {
+            subtitleStatus.textContent += ' Player đã tự dừng và phụ đề đã được tạo tự động. Bạn có thể tải file .SRT.';
+          }
+        }
       }
 
       async choHieuUngNhanVat(className, duration) {
@@ -1810,7 +1983,11 @@
           this.audioSfx.play().catch(() => {});
         }
 
+        const subtitleFrameStart = !preview ? this.layThoiGianPhatPhuDe() : null;
+        let subtitleDialogueStart = null;
+        let subtitleDialogueEnd = null;
         if (noiDung && !preview) {
+          subtitleDialogueStart = this.layThoiGianPhatPhuDe();
           this.hienLoiThoai(nhanVat, noiDung);
           this.currentSpeaker = nhanVat;
           this.ttsRemainingText = noiDung;
@@ -1819,6 +1996,7 @@
             this.currentTtsResolve = resolve;
             this.docVanBanBangTTS(nhanVat, noiDung, resolve);
           });
+          subtitleDialogueEnd = this.layThoiGianPhatPhuDe();
         } else if (!preview) {
           await this.sleep(1000);
         }
@@ -1826,6 +2004,17 @@
         if (!preview) {
           const thoiGianCho = (this.duLieu && this.duLieu.thoi_gian_cho_giua !== undefined) ? this.duLieu.thoi_gian_cho_giua : 0.02;
           await this.sleep(thoiGianCho * 1000);
+          if (this.currentPlaybackFrameIndex !== null && subtitleFrameStart !== null) {
+            this.subtitlePlaybackRecords.set(this.currentPlaybackFrameIndex, {
+              frameIndex: this.currentPlaybackFrameIndex,
+              start: subtitleFrameStart,
+              end: this.layThoiGianPhatPhuDe(),
+              dialogueStart: subtitleDialogueStart,
+              dialogueEnd: subtitleDialogueEnd,
+              text: typeof noiDung === 'string' ? noiDung.trim() : '',
+              speaker: nhanVat || ''
+            });
+          }
         }
       }
 
@@ -1851,6 +2040,9 @@
           }
         };
         utterance.onend = utterance.onerror = () => {
+          // speechSynthesis.cancel() khi tạm dừng không được kết thúc lượt thoại;
+          // khi tiếp tục, phần văn bản còn lại sẽ được đọc tiếp và timestamp vẫn chính xác.
+          if (this.dangTamDung) return;
           this.ttsRemainingText = '';
           if (this.caiDatThoai.effect === 'tts') this.dialogueText.querySelectorAll('.tts-word.active').forEach(el => el.classList.remove('active'));
           this.currentTtsResolve = null;
@@ -1927,6 +2119,108 @@
         this.layerChar.style.opacity = '1';
         this.layerCharBuffer.style.opacity = '1';
         this.layerVfx.style.display = 'none';
+      }
+
+
+      // Đồng hồ phát phụ đề: loại trừ thời gian tạm dừng để khớp timeline nội dung.
+      layThoiGianPhatPhuDe() {
+        if (this.subtitlePlaybackStartedAt === null) return 0;
+        const now = this.subtitlePlaybackPausedAt !== null ? this.subtitlePlaybackPausedAt : performance.now();
+        return Math.max(0, (now - this.subtitlePlaybackStartedAt - this.subtitlePlaybackPausedTotal) / 1000);
+      }
+
+      // Tạo phụ đề theo timestamp thực tế được ghi nhận trong lúc player phát.
+      taoDuLieuPhuDe() {
+        const ds = this.duLieu?.danh_sach || this.duLieu?.KichBanToanBo || [];
+        if (!ds.length) throw new Error('Chưa có kịch bản. Hãy import JSON trước.');
+        if (this.subtitlePlaybackInvalidated) throw new Error('Bạn đã tua trong lúc phát nên timeline không còn liên tục. Hãy dừng, chạy lại từ đầu đến cuối rồi tạo SRT.');
+        const records = [...(this.subtitlePlaybackRecords || new Map()).values()].sort((a, b) => a.frameIndex - b.frameIndex);
+        if (records.length !== ds.length) {
+          const missing = Math.max(0, ds.length - records.length);
+          throw new Error('Chưa có timestamp đầy đủ: đã ghi ' + records.length + '/' + ds.length + ' lượt. Hãy chạy kịch bản từ đầu đến cuối, sau đó tạo SRT.');
+        }
+        const includeSpeaker = !!document.getElementById('subtitle-speaker')?.checked;
+        const cues = [];
+        const splitCaption = value => {
+          const words = String(value).trim().split(/\\s+/).filter(Boolean);
+          const chunks = []; let line = '';
+          for (const word of words) {
+            const candidate = line ? line + ' ' + word : word;
+            if (candidate.length > 76 && line) { chunks.push(line); line = word; }
+            else line = candidate;
+          }
+          if (line) chunks.push(line);
+          return chunks;
+        };
+        for (const record of records) {
+          if (!record.text) continue;
+          const chunks = splitCaption(record.text);
+          const totalWords = Math.max(1, record.text.split(/\\s+/).filter(Boolean).length);
+          const start = Number(record.dialogueStart);
+          const end = Number(record.dialogueEnd);
+          const duration = Math.max(0.5, end - start);
+          let cursor = start;
+          for (const chunk of chunks) {
+            const chunkWords = Math.max(1, chunk.split(/\\s+/).length);
+            const chunkDuration = duration * chunkWords / totalWords;
+            const text = includeSpeaker && record.speaker ? String(record.speaker).trim() + ': ' + chunk : chunk;
+            cues.push({ start: cursor, end: cursor + chunkDuration, text });
+            cursor += chunkDuration;
+          }
+        }
+        if (!cues.length) throw new Error('Kịch bản không có trường noi_dung chứa lời thoại.');
+        const offsetInput = Number(document.getElementById('subtitle-offset')?.value || 0);
+        const offset = Math.max(0, Number.isFinite(offsetInput) ? offsetInput : 0);
+        return cues.map(cue => ({ ...cue, start: cue.start + offset, end: cue.end + offset }));
+      }
+
+      dinhDangThoiGianSRT(seconds) {
+        const ms = Math.max(0, Math.round(seconds * 1000));
+        const h = Math.floor(ms / 3600000);
+        const m = Math.floor((ms % 3600000) / 60000);
+        const sec = Math.floor((ms % 60000) / 1000);
+        const milli = ms % 1000;
+        return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0') + ',' + String(milli).padStart(3,'0');
+      }
+
+      taoBanXemTruocPhuDe() {
+        const status = document.getElementById('subtitle-status');
+        const preview = document.getElementById('subtitle-preview');
+        const download = document.getElementById('btn-download-srt');
+        try {
+          const cues = this.taoDuLieuPhuDe();
+          if (!cues.length) throw new Error('Kịch bản không có trường noi_dung chứa lời thoại.');
+          this.subtitleSrt = cues.map((cue, index) => (index + 1) + '\n' + this.dinhDangThoiGianSRT(cue.start) + ' --> ' + this.dinhDangThoiGianSRT(Math.max(cue.start + 0.5, cue.end)) + '\n' + cue.text).join('\n\n') + '\n';
+          preview.value = this.subtitleSrt;
+          download.disabled = false;
+          status.textContent = 'Đã tạo ' + cues.length + ' đoạn phụ đề từ timestamp phát thực tế · thời lượng ' + this.dinhDangThoiGianSRT(cues[cues.length - 1].end) + '.';
+        } catch (error) {
+          this.subtitleSrt = '';
+          download.disabled = true;
+          status.textContent = error.message;
+        }
+      }
+
+      taiPhuDeSRT() {
+        const content = document.getElementById('subtitle-preview')?.value || this.subtitleSrt || '';
+        if (!content.trim()) { alert('Hãy tạo phụ đề trước.'); return; }
+        const blob = new Blob(['\uFEFF', content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        const rawBaseName = (this.tenFileKichBan || this.duLieu?.ten_kich_ban || this.duLieu?.title || 'youtube-captions').toString();
+        const baseName = rawBaseName.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'youtube-captions';
+        link.href = url; link.download = baseName + '.srt';
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+
+      async saoChepPhuDe() {
+        const content = document.getElementById('subtitle-preview')?.value || '';
+        if (!content.trim()) { this.taoBanXemTruocPhuDe(); }
+        const text = document.getElementById('subtitle-preview')?.value || '';
+        if (!text) return;
+        try { await navigator.clipboard.writeText(text); document.getElementById('subtitle-status').textContent = 'Đã sao chép nội dung SRT.'; }
+        catch (_) { document.getElementById('subtitle-preview').select(); document.getElementById('subtitle-status').textContent = 'Không thể tự sao chép; hãy nhấn Ctrl+C trong ô xem trước.'; }
       }
 
       sleep(ms) {
