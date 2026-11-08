@@ -33,6 +33,7 @@
         try {
           item.element.classList.remove(item.className);
           item.properties.forEach(name => item.element.style.removeProperty(name));
+          item.element.style.removeProperty('animation-play-state');
         } catch (_) {}
       });
       this.activeClasses = [];
@@ -45,8 +46,14 @@
       });
       this.animations = [];
     }
-    pause() { this.animations.forEach(animation => { try { animation.pause(); } catch (_) {} }); }
-    resume() { this.animations.forEach(animation => { try { animation.play(); } catch (_) {} }); }
+    pause() {
+      this.activeClasses.forEach(item => { try { item.element.style.animationPlayState = 'paused'; } catch (_) {} });
+      this.animations.forEach(animation => { try { animation.pause(); } catch (_) {} });
+    }
+    resume() {
+      this.activeClasses.forEach(item => { try { item.element.style.animationPlayState = 'running'; } catch (_) {} });
+      this.animations.forEach(animation => { try { animation.play(); } catch (_) {} });
+    }
 
     normalizeSlot(slot) {
       if (!slot) return null;
@@ -109,66 +116,44 @@
         : expectedTarget === 'background' ? elements.background : elements.camera;
       if (!el) return;
       const type = definition.engine_type;
-
-      // Nhấp nhô bằng CSS riêng: không động vào transform định vị video.
-      if (type === 'character-bob') {
-        const lift = Math.max(10, Math.min(28, 16 * intensity));
-        el.style.setProperty('--vn-bob-duration', duration + 'ms');
-        el.style.setProperty('--vn-bob-height', lift + 'px');
-        el.classList.add('effect-char-bob');
+      const classMap = {
+        'character-shake': [['character', 'effect-char-shake']],
+        'character-bob': [['character', 'effect-char-bob']],
+        'character-walk-left': [['character', 'effect-char-walk-left']],
+        'character-walk-right': [['character', 'effect-char-walk-right']],
+        'background-zoom': [['background', 'effect-bg-zoom']],
+        'background-pan-left': [['background', 'effect-bg-pan-left']],
+        'background-pan-right': [['background', 'effect-bg-pan-right']],
+        'background-shake': [['background', 'effect-bg-shake']],
+        'camera-shake': [['camera', 'effect-camera-shake']],
+        'camera-pan': [['camera', definition.direction === 'right' ? 'effect-camera-pan-right' : 'effect-camera-pan-left']],
+        'camera-zoom': [
+          ['background', definition.direction === 'out' ? 'effect-camera-zoom-out' : 'effect-camera-zoom-in'],
+          ['character', definition.direction === 'out' ? 'effect-camera-zoom-out' : 'effect-camera-zoom-in']
+        ],
+        'camera-flash': [['flash', 'effect-camera-flash']]
+      };
+      const targets = classMap[type];
+      if (!targets) {
+        console.warn('[EffectEngine] Chưa có CSS cho engine_type:', type);
+        return;
+      }
+      const distance = Math.max(5, Math.min(22, Number(params.distance_vw ?? definition.distance_vw ?? 14)));
+      targets.forEach(([key, className]) => {
+        const target = key === 'character' ? elements.character
+          : key === 'background' ? elements.background
+          : key === 'flash' ? elements.flash : elements.camera;
+        if (!target) return;
+        target.style.setProperty('--vn-effect-duration', duration + 'ms');
+        target.style.setProperty('--vn-effect-intensity', String(intensity));
+        target.style.setProperty('--vn-effect-distance', distance + 'vw');
+        target.classList.add(className);
         this.activeClasses.push({
-          element: el,
-          className: 'effect-char-bob',
-          properties: ['--vn-bob-duration', '--vn-bob-height']
+          element: target,
+          className,
+          properties: ['--vn-effect-duration', '--vn-effect-intensity', '--vn-effect-distance']
         });
-        return;
-      }
-
-      const center = 'translateX(-50%)';
-      let frames = null, iterations = 1, actualDuration = duration;
-
-      if (type === 'character-shake') {
-        frames = [
-          { transform: center + ' translate(0,0) rotate(0deg)' },
-          { transform: center + ' translate(' + (-5*intensity) + 'px,' + (2*intensity) + 'px) rotate(' + (-1.1*intensity) + 'deg)' },
-          { transform: center + ' translate(' + (5*intensity) + 'px,' + (-2*intensity) + 'px) rotate(' + (1.1*intensity) + 'deg)' },
-          { transform: center + ' translate(' + (-3*intensity) + 'px,0) rotate(' + (-.6*intensity) + 'deg)' },
-          { transform: center + ' translate(0,0) rotate(0deg)' }
-        ];
-      } else if (type === 'character-walk-left' || type === 'character-walk-right') {
-        const sign = type === 'character-walk-left' ? -1 : 1;
-        const travel = Math.max(5, Math.min(22, Number(params.distance_vw ?? definition.distance_vw ?? 14))) * sign;
-        frames = [
-          { transform: center + ' translate(0,0)' },
-          { transform: center + ' translate(' + (travel*.22) + 'vw,' + (-7*intensity) + 'px)' },
-          { transform: center + ' translate(' + (travel*.48) + 'vw,0)' },
-          { transform: center + ' translate(' + (travel*.74) + 'vw,' + (-7*intensity) + 'px)' },
-          { transform: center + ' translate(' + travel + 'vw,0)' }
-        ];
-      } else if (type === 'background-zoom') {
-        frames = [{ transform: 'scale(1)' }, { transform: 'scale(' + (1+.06*intensity) + ')' }, { transform: 'scale(1)' }];
-      } else if (type === 'background-pan-left' || type === 'background-pan-right') {
-        const sign = type === 'background-pan-left' ? 1 : -1;
-        frames = [{ transform: 'scale(1.035) translate(0,0)' }, { transform: 'scale(1.035) translate(' + (sign*2.5*intensity) + '%,0)' }, { transform: 'scale(1.035) translate(0,0)' }];
-      } else if (type === 'background-shake') {
-        frames = [{ transform:'translateX(0)' }, { transform:'translateX(' + (-3*intensity) + 'px)' }, { transform:'translateX(' + (3*intensity) + 'px)' }, { transform:'translateX(0)' }];
-      } else if (type === 'camera-shake') {
-        frames = [{ transform:'translate(0,0)' }, { transform:'translate(' + (-4*intensity) + 'px,2px)' }, { transform:'translate(' + (4*intensity) + 'px,-2px)' }, { transform:'translate(0,0)' }];
-      } else if (type === 'camera-zoom') {
-        const target = definition.direction === 'out' ? 1-.035*intensity : 1+.045*intensity;
-        const cameraFrames = [{ scale:'1' }, { scale:String(target) }, { scale:'1' }];
-        this.play(elements.background, cameraFrames, { duration_ms: duration });
-        this.play(elements.character, cameraFrames, { duration_ms: duration });
-        return;
-      } else if (type === 'camera-pan') {
-        const sign = definition.direction === 'right' ? -1 : 1;
-        frames = [{ transform:'translateX(0)' }, { transform:'translateX(' + (sign*7*intensity) + 'px)' }, { transform:'translateX(0)' }];
-      } else if (type === 'camera-flash') {
-        this.play(elements.flash, [{opacity:0},{opacity:Math.min(.55,.3*intensity)},{opacity:0}], {duration_ms:duration, easing:'ease-out'});
-        return;
-      }
-
-      if (frames) this.play(el, frames, { duration_ms: actualDuration, iterations, easing: definition.easing });
+      });
     }
 
     applyFrame(frame, elements) {
