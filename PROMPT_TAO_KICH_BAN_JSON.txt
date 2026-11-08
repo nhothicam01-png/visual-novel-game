@@ -52,6 +52,9 @@ B. TRUYỆN CHƯA CÓ TRÊN GITHUB
 - Đọc toàn bộ nội dung được cung cấp; nếu file đính kèm không đọc được hoặc nội dung bị thiếu, hãy thông báo và yêu cầu gửi lại, không tự đoán phần bị thiếu.
 - Người dùng cần chỉ định tên thư mục truyện muốn tạo trong assets/KichBan/. Nếu chưa có tên thư mục, hãy hỏi lại trước khi lưu.
 - Kiểm tra thư mục đích đã tồn tại hay chưa. Nếu chưa tồn tại, tạo đường dẫn thư mục bằng cách tạo file JSON bên trong thư mục đó.
+- Khi tạo một thư mục truyện mới, đồng thời tạo sẵn thư mục phụ `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/` để người dùng tải các file phụ đề lên sau này.
+- GitHub không lưu được thư mục rỗng, vì vậy phải tạo file giữ chỗ `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/.gitkeep` (nội dung có thể để trống) để thư mục `PhuDe` xuất hiện trong repository. Không dùng `.gitkeep` làm file phụ đề và không tạo phụ đề giả.
+- Nếu thư mục truyện đã tồn tại nhưng chưa có `PhuDe/`, cũng tạo `PhuDe/.gitkeep`; nếu `PhuDe/` đã có file phụ đề thì giữ nguyên toàn bộ, không ghi đè hoặc xóa.
 - Không tự lưu nội dung truyện gốc thành file .txt lên GitHub, trừ khi người dùng yêu cầu riêng.
 - Sau khi hoàn thành, lưu JSON theo quy tắc tại mục XII: một bản trong thư mục truyện mới và một bản ailahungthu.json ở thư mục gốc.
 - Nếu tên thư mục đã tồn tại, kiểm tra các file hiện có trước khi ghi; tuyệt đối không ghi đè truyện gốc hoặc file không liên quan.
@@ -489,6 +492,8 @@ Trước khi lưu JSON, phải thực hiện các bước kiểm tra:
 12. Các cảnh chuyển tiếp phải mạch lạc.
 13. Những trường kế thừa phải được để rỗng đúng quy định.
 14. Không được tạo ra tài nguyên giả.
+15. Thư mục `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/` phải tồn tại; nếu chưa có thì phải tạo `.gitkeep` để giữ thư mục trên GitHub.
+16. Không được xóa hoặc ghi đè bất kỳ file phụ đề nào đã có trong `PhuDe/`.
 
 Sau khi kiểm tra, phải đảm bảo người xem có thể hiểu câu chuyện mà không cần đọc nội dung truyện gốc.
 
@@ -502,6 +507,16 @@ Giả sử tên thư mục truyện là <TEN_THU_MUC_TRUYEN>.
 
 File thứ nhất:
 assets/KichBan/<TEN_THU_MUC_TRUYEN>/<TEN_THU_MUC_TRUYEN>.json
+
+Thư mục phụ đề phải được chuẩn bị cùng lúc:
+assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/.gitkeep
+
+Quy tắc thư mục PhuDe:
+- Luôn bảo đảm `PhuDe/` tồn tại trong thư mục truyện sau khi hoàn thành.
+- Nếu chưa có, tạo `.gitkeep` để GitHub lưu được thư mục.
+- Nếu đã có phụ đề, giữ nguyên các file hiện có.
+- Không tự tạo file SRT/VTT giả, không dịch hoặc tạo phụ đề trừ khi người dùng yêu cầu riêng.
+- Khi báo cáo, nêu rõ đường dẫn thư mục PhuDe đã tạo hoặc đã có sẵn.
 
 File thứ hai:
 ailahungthu.json
