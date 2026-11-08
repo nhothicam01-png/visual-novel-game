@@ -589,6 +589,7 @@
         this.boDemHieuUng = new Map();
 
         this.duLieu = null;
+        this.tenFileKichBan = 'ailahungthu';
         this.dangChay = false;
         this.dangTamDung = false;
         this.hienChuInterval = null;
@@ -779,6 +780,7 @@
           const data = await response.json();
           if (!data || !Array.isArray(data.danh_sach) || data.danh_sach.length === 0) throw new Error('ailahungthu.json không đúng cấu trúc hoặc không có lời thoại');
           this.duLieu = data;
+          this.tenFileKichBan = 'ailahungthu';
           this.duongDanTTSKichBan = 'ailahungthu_tts.json';
           await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
           this.progressScriptId = this.taoMaKichBan(data);
@@ -1014,6 +1016,7 @@
           this.dung();
           this.hienLoading(true);
           this.duLieu = data;
+          this.tenFileKichBan = path.split('/').pop().replace(/\\.json$/i, '') || 'kichban';
           this.duongDanTTSKichBan = path.replace(/\\.json$/i, '_tts.json');
           await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
           this.progressScriptId = this.taoMaKichBan(data);
@@ -1121,6 +1124,7 @@
         reader.onload = async (e) => {
           try {
             this.duLieu = JSON.parse(e.target.result);
+            this.tenFileKichBan = (file.name || 'kichban.json').replace(/\\.json$/i, '') || 'kichban';
             this.duongDanTTSKichBan = (file.name || 'kichban.json').replace(/\\.json$/i, '_tts.json');
             await this.taiCauHinhTTSKichBan(this.duongDanTTSKichBan);
             this.progressScriptId = this.taoMaKichBan(this.duLieu);
@@ -2203,7 +2207,8 @@
         const blob = new Blob(['\uFEFF', content], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        const baseName = (this.duLieu?.ten_kich_ban || this.duLieu?.title || 'youtube-captions').toString().replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'youtube-captions';
+        const rawBaseName = (this.tenFileKichBan || this.duLieu?.ten_kich_ban || this.duLieu?.title || 'youtube-captions').toString();
+        const baseName = rawBaseName.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'youtube-captions';
         link.href = url; link.download = baseName + '.srt';
         document.body.appendChild(link); link.click(); link.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
