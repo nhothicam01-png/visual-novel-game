@@ -78,7 +78,11 @@
       for (const id of ids) {
         const def = registry[category]?.[id];
         if (!def) { console.warn('[VNEffects] Bỏ qua ID hiệu ứng không tồn tại:', category, id); continue; }
-        nodes.forEach(node => addAnimation(node, def));
+        // camera_misty là hiệu ứng nhòe toàn cảnh; các chuyển động camera khác chỉ tác động nền.
+        const effectNodes = category === 'camera' && id === 'camera_misty' && Array.isArray(targets?.scene)
+          ? targets.scene
+          : nodes;
+        effectNodes.forEach(node => addAnimation(node, def));
       }
     }
   }
