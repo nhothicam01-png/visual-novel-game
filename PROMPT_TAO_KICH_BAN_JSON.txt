@@ -169,7 +169,21 @@ assets/NhanVat/
 
 Mỗi thư mục con tương ứng với một nhân vật.
 
-Tên thư mục chính là tên nhân vật được sử dụng trong JSON.
+Tên thư mục là MÃ TÀI NGUYÊN của nhân vật, không bắt buộc phải là tên hiển thị trong câu chuyện.
+
+QUY TẮC ĐẶT TÊN NHÂN VẬT:
+- AI được phép và được khuyến khích tự sáng tạo tên riêng phù hợp với nội dung truyện.
+- Tên phải tự nhiên, dễ nhớ, phù hợp giới tính, độ tuổi, bối cảnh văn hóa và tính cách nhân vật.
+- Các nhân vật trong cùng một truyện phải có tên riêng phân biệt, tránh trùng hoặc quá giống nhau.
+- Nếu truyện gốc đã có tên nhân vật, phải giữ nguyên tên đó; không tự ý đổi tên.
+- Nếu truyện gốc không đặt tên, hãy tự sáng tạo tên phù hợp. Với nhân vật phụ rất nhỏ hoặc chỉ xuất hiện thoáng qua, có thể dùng cách gọi theo vai trò nếu hợp lý.
+- Không dùng các mã thư mục như "1", "2", "3"... làm tên hiển thị, trừ khi đó thực sự là tên nhân vật trong truyện.
+
+CÁCH LƯU TRONG JSON:
+- Trường "nhan_vat": luôn ghi chính xác tên thư mục tài nguyên đang tồn tại trong assets/NhanVat/. Trường này dùng để player tìm đúng hình ảnh/biểu cảm, tuyệt đối không thay bằng tên tự sáng tạo.
+- Trường "ten_hien_thi": ghi tên riêng của nhân vật để hiển thị trong câu chuyện/giao diện. Đây là tên do truyện gốc cung cấp hoặc AI sáng tạo theo quy tắc trên.
+- Ví dụ: nhân vật dùng thư mục "1" nhưng có tên trong truyện là "Linh" thì ghi "nhan_vat": "1" và "ten_hien_thi": "Linh".
+- Mỗi nhân vật phải giữ tên hiển thị nhất quán trong toàn bộ JSON.
 
 Các file .webm bên trong thư mục nhân vật là những biểu cảm hoặc trạng thái có thể sử dụng.
 
@@ -177,11 +191,12 @@ Quy trình:
 1. Liệt kê toàn bộ thư mục nhân vật.
 2. Đọc danh sách file .webm của từng nhân vật.
 3. Xác định nhân vật nào phù hợp với truyện.
-4. Chọn biểu cảm phù hợp với từng câu thoại.
+4. Gán tên hiển thị riêng cho từng nhân vật theo quy tắc trên.
+5. Chọn biểu cảm phù hợp với từng câu thoại.
 
-Không được tự bịa tên nhân vật hoặc tên biểu cảm.
+Không được tự bịa tên thư mục tài nguyên hoặc tên biểu cảm. Chỉ được sáng tạo tên hiển thị trong trường "ten_hien_thi".
 
-Chỉ sử dụng tên file thực sự tồn tại.
+Chỉ sử dụng tên file và thư mục thực sự tồn tại.
 
 Tên biểu cảm phải khớp với file thực tế. Các tên như Happy, Sad, Angry, Shock, Cry, Normal hoặc Idle chỉ là ví dụ minh họa, không được mặc định rằng chúng tồn tại.
 
@@ -308,7 +323,8 @@ CẤU TRÚC JSON MẪU BẮT BUỘC:
   "toc_do_go_chu": 0.03,
   "danh_sach": [
     {
-      "nhan_vat": "Nhanvat1",
+      "nhan_vat": "1",
+      "ten_hien_thi": "Linh",
       "bieu_cam": "Happy",
       "noi_dung": "Chào, hôm nay cậu đến lớp sớm thế nhỉ?",
       "anh_nen": "class.mp4",
@@ -330,7 +346,9 @@ CẤU TRÚC JSON MẪU BẮT BUỘC:
 
 QUY TẮC:
 - Không thêm schema_version.
-- Mỗi lượt thoại chỉ sử dụng đúng các trường trong object mẫu.
+- Mỗi lượt thoại sử dụng các trường trong object mẫu, bao gồm "ten_hien_thi".
+- "nhan_vat" là mã thư mục tài nguyên có thật; "ten_hien_thi" là tên nhân vật trong câu chuyện.
+- Với lượt thoại không có nhân vật, để "nhan_vat" và "ten_hien_thi" là chuỗi rỗng nếu player hỗ trợ cách biểu diễn này.
 - Không thêm object hieu_ung hoặc bất kỳ trường hiệu ứng chuyển động nào.
 - Các trường tài nguyên được phép để chuỗi rỗng để kế thừa trạng thái trước đó hoặc không phát tài nguyên mới.
 - Khi bối cảnh không đổi, để anh_nen là chuỗi rỗng.
@@ -366,16 +384,16 @@ XI. QUY TẮC KIỂM TRA TRƯỚC KHI LƯU
 Trước khi lưu JSON, phải thực hiện các bước kiểm tra:
 1. JSON phải hợp lệ, không có lỗi cú pháp.
 2. Đúng cấu trúc mà player hỗ trợ.
-3. Không có tên nhân vật không tồn tại.
-4. Không có biểu cảm không tồn tại.
-5. Không có file nền không tồn tại.
-6. Không có file hiệu ứng không tồn tại.
-7. Không có file âm thanh không tồn tại.
-8. Thứ tự hội thoại phải chính xác.
-9. Không bị thiếu các tình tiết quan trọng.
-10. Không có câu thoại vô nghĩa hoặc khó hiểu.
-11. Các cảnh chuyển tiếp phải mạch lạc.
-12. Hiệu ứng phải sử dụng đúng kiểu đã được hỗ trợ.
+3. Mọi giá trị "nhan_vat" đều khớp chính xác với thư mục nhân vật có thật.
+4. Mỗi nhân vật có "ten_hien_thi" tự nhiên, nhất quán và không bị nhầm lẫn; không dùng mã thư mục số làm tên hiển thị nếu đó không phải tên trong truyện.
+5. Không có biểu cảm không tồn tại.
+6. Không có file nền không tồn tại.
+7. Không có file hiệu ứng không tồn tại.
+8. Không có file âm thanh không tồn tại.
+9. Thứ tự hội thoại phải chính xác.
+10. Không bị thiếu các tình tiết quan trọng.
+11. Không có câu thoại vô nghĩa hoặc khó hiểu.
+12. Các cảnh chuyển tiếp phải mạch lạc.
 13. Những trường kế thừa phải được để rỗng đúng quy định.
 14. Không được tạo ra tài nguyên giả.
 
