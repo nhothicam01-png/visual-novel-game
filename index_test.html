@@ -938,7 +938,7 @@
         this.taiDanhSachKichBanCoSan();
       }
 
-      // Quét các file JSON ở thư mục gốc và assets/KichBan trên GitHub.
+      // Chỉ quét JSON nằm bên trong thư mục riêng của từng truyện trong assets/KichBan. File mẫu ở thư mục gốc không xuất hiện trong danh sách.
       async taiDanhSachKichBanCoSan() {
         const select = document.getElementById('script-library-select');
         const status = document.getElementById('script-library-status');
@@ -956,7 +956,7 @@
 
           const files = (treeData.tree || [])
             .filter(item => item.type === 'blob' && item.path.toLowerCase().endsWith('.json') &&
-              (!item.path.includes('/') || item.path.startsWith('assets/KichBan/')))
+              (/^assets\/KichBan\/[^/]+\/[^/]+\.json$/i.test(item.path) && item.path.split('/').at(-1).replace(/\.json$/i, '') === item.path.split('/')[2]))
             .sort((a, b) => a.path.localeCompare(b.path, 'vi'));
 
           select.innerHTML = '';
@@ -973,9 +973,8 @@
             select.appendChild(option);
           });
 
-          if (files.some(file => file.path === 'ailahungthu.json')) select.value = 'ailahungthu.json';
           loadButton.disabled = files.length === 0;
-          status.textContent = 'Tìm thấy ' + files.length + ' kịch bản. Chọn một kịch bản rồi bấm “Tải kịch bản”.';
+          status.textContent = 'Tìm thấy ' + files.length + ' truyện trong thư mục assets/KichBan. File mẫu ailahungthu.json chỉ dùng khi khởi tạo, không nằm trong danh sách chọn.';
         } catch (error) {
           select.innerHTML = '<option value="">Không tải được danh sách</option>';
           loadButton.disabled = true;
