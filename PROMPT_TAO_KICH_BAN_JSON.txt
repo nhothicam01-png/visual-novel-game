@@ -56,7 +56,7 @@ B. TRUYỆN CHƯA CÓ TRÊN GITHUB
 - GitHub không lưu được thư mục rỗng, vì vậy phải tạo file giữ chỗ `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/.gitkeep` (nội dung có thể để trống) để thư mục `PhuDe` xuất hiện trong repository. Không dùng `.gitkeep` làm file phụ đề và không tạo phụ đề giả.
 - Nếu thư mục truyện đã tồn tại nhưng chưa có `PhuDe/`, cũng tạo `PhuDe/.gitkeep`; nếu `PhuDe/` đã có file phụ đề thì giữ nguyên toàn bộ, không ghi đè hoặc xóa.
 - Không tự lưu nội dung truyện gốc thành file .txt lên GitHub, trừ khi người dùng yêu cầu riêng.
-- Sau khi hoàn thành, lưu JSON theo quy tắc tại mục XII: một bản trong thư mục truyện mới và một bản ailahungthu.json ở thư mục gốc.
+- Sau khi hoàn thành, lưu JSON theo quy tắc tại mục XII: một bản trong thư mục truyện mới
 - Nếu tên thư mục đã tồn tại, kiểm tra các file hiện có trước khi ghi; tuyệt đối không ghi đè truyện gốc hoặc file không liên quan.
 
 ƯU TIÊN NGUỒN:
