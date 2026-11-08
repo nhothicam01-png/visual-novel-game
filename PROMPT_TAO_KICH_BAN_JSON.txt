@@ -925,6 +925,24 @@ Nếu phát hiện chương bị tóm tắt quá mức, quay lại bổ sung c�
 
 Không được vì giới hạn độ dài mà tự ý rút gọn một truyện dài thành bản tóm tắt vài chục lượt thoại.
 
+
+==================================================
+XIII-A. QUY ƯỚC CHƯƠNG = TẬP PHIM HOÀN CHỈNH (BẮT BUỘC)
+==================================================
+QUY ƯỚC MẶC ĐỊNH CHO MỌI CỐT TRUYỆN:
+
+1. Một "chương" trong kịch bản hoạt hình được hiểu là MỘT TẬP PHIM HOÀN CHỈNH, không phải một cảnh ngắn hay một nhóm vài lượt thoại.
+2. Phân biệt rõ: ARC/HỒI là chặng truyện lớn gồm nhiều tập; TẬP/CHƯƠNG là đơn vị xem có mở đầu, diễn biến, điểm nhấn/cao trào, kết quả và kết tập; CẢNH là một đoạn hành động liên tục; LƯỢT THOẠI là một câu nói/lời kể của nhân vật.
+3. Nếu người dùng không chỉ định thời lượng, mặc định nhắm đến cảm giác một tập hoạt hình kể chuyện khoảng 15–25 phút. Mốc lập kế hoạch tham khảo: 8–15 cảnh có chức năng rõ ràng và thường khoảng 100–180 lượt thoại/lời kể mỗi tập. Đây là mốc kiểm tra độ triển khai, không phải quota; điều chỉnh theo độ dài thoại, tốc độ TTS, hành động, khoảng nghỉ và chuyển cảnh thực tế.
+4. Mỗi tập cần có hook/mở tập, định vị nhân vật và mục tiêu, nhiều cảnh phát triển, ít nhất một biến chuyển có ý nghĩa, điểm nhấn/cao trào phù hợp, kết quả và kết tập. Không chỉ ghi tiêu đề rồi dùng vài câu thoại tóm tắt toàn bộ sự kiện.
+5. Một tập phải diễn ra các hành động quan trọng trên màn hình bằng chuỗi cảnh/lượt thoại: ý định, chuẩn bị, hành động, phản ứng/trở ngại, quyết định và hệ quả. Không dùng một câu như "sau đó họ điều tra và tìm ra sự thật" để thay thế cả quá trình.
+6. Trước khi viết JSON, lập bảng phân bổ ARC → TẬP → CẢNH. Với từng tập ghi mục tiêu, xung đột, các sự kiện/cảnh, điểm chuyển, cao trào, kết quả và câu hỏi nối tiếp. Một tập cần có câu chuyện nhỏ hoặc bước tiến đáng kể đồng thời phục vụ tuyến truyện dài.
+7. Không ép số tập theo số chương gốc. Có thể chia một chương nguồn dài thành nhiều tập hoặc gộp các chương nguồn rất ngắn nếu hợp lý; phải giữ đầy đủ sự kiện và quan hệ nhân quả. Chỉ quyết định số tập sau khi đọc và phân tích toàn bộ nguồn.
+8. Kiểm tra riêng từng tập: nếu người xem chỉ xem tập đó, họ có hiểu mục tiêu và vấn đề trước mắt không? Có đủ cảnh để chứng kiến diễn biến không? Có thay đổi thực sự về thông tin/hành động/quan hệ/nguy cơ/cảm xúc không? Thời lượng có tương xứng không? Có dùng vài câu thoại thay cho cả buổi điều tra, trận chiến hoặc hành trình không? Nếu có, phải viết lại/mở rộng.
+9. Không kéo dài bằng thoại lặp hoặc cảnh vô nghĩa để đạt 100–180 lượt. Tập ít sự kiện có thể ngắn hơn, nhưng vẫn phải hoàn chỉnh. Tập phức tạp có thể dài hơn. Chất lượng và thời lượng thực tế quan trọng hơn đếm lượt.
+10. Quy ước chương = tập phim áp dụng mặc định cho mọi thể loại, mọi cốt truyện và mọi lần tái sử dụng prompt sau này, trừ khi người dùng yêu cầu rõ video ngắn/cảnh đơn/tập đặc biệt ngắn.
+
+==================================================
 ==================================================
 XIV. BÁO CÁO SAU KHI HOÀN THÀNH
 ==================================================
