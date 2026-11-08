@@ -835,19 +835,95 @@ Không ghi đè file truyện gốc .txt.
 Nếu cần cập nhật file đã tồn tại, phải kiểm tra nội dung hiện tại trước khi ghi đè.
 
 ==================================================
-XIII. QUY TẮC XỬ LÝ KỊCH BẢN DÀI
+XIII. QUY TẮC XỬ LÝ TRUYỆN DÀI, NHIỀU CHƯƠNG VÀ TÁI SỬ DỤNG CHO MỌI CỐT TRUYỆN
 ==================================================
 
-Nếu truyện dài:
-- Chia quá trình biên soạn thành nhiều phần.
-- Phải đọc và nắm toàn bộ diễn biến trước khi chia.
-- Không được bỏ qua các phần cuối.
-- Không được lặp lại nội dung giữa các phần.
-- Giữ liên tục mạch truyện, nhân vật, bối cảnh và cảm xúc.
-- Sau khi hoàn thành các phần, ghép thành một JSON duy nhất.
-- Không lưu những phần JSON rời rạc nếu người dùng không yêu cầu.
+MỤC TIÊU:
+Tạo ra một bản chuyển thể có quy mô tương xứng với truyện nguồn và yêu cầu của người dùng. Áp dụng quy tắc này cho MỌI cốt truyện trong những lần sử dụng prompt sau, không chỉ riêng một truyện, thể loại hay nhân vật cụ thể.
 
-Không được vì giới hạn độ dài mà tự ý rút gọn toàn bộ câu chuyện thành một bản tóm tắt.
+1. XÁC ĐỊNH QUY MÔ TRƯỚC KHI VIẾT
+- Đọc và nắm toàn bộ nguồn truyện trước khi quyết định độ dài bản chuyển thể.
+- Ước lượng quy mô dựa trên số chương, độ dài, số tuyến nhân vật, số sự kiện, độ phức tạp của xung đột và mức độ phát triển tâm lý.
+- Nếu nguồn có nhiều chục chương thì phải xem đó là truyện dài nhiều chương; không được tự ý nén thành một truyện ngắn vài chục lượt thoại.
+- Nếu nguồn là truyện ngắn hoặc người dùng chỉ đưa một ý tưởng ngắn, không tự kéo thành hàng chục chương chỉ để tăng số lượng. Hãy phát triển đúng quy mô mà chất liệu có thể hỗ trợ.
+- Nếu người dùng chỉ định rõ số chương, thời lượng hoặc quy mô, ưu tiên yêu cầu đó; nếu không, tự chọn quy mô hợp lý và nhất quán với nguồn.
+- Không dùng một giới hạn cứng về số lượt thoại cho mọi truyện. Quy mô phải được quyết định theo lượng sự kiện thực tế, không theo thói quen tạo JSON ngắn.
+
+2. LẬP BẢN ĐỒ TOÀN BỘ CÁC CHƯƠNG TRƯỚC KHI TẠO JSON
+Trước khi viết bất kỳ lượt thoại nào:
+- Xác định tổng số chương của nguồn; nếu nguồn không chia chương, tự chia thành các chương chuyển thể theo cụm sự kiện và nhịp truyện tự nhiên.
+- Lập danh sách chương theo thứ tự, kèm tiêu đề làm việc, mục tiêu của chương, sự kiện mở đầu, diễn biến chính, xung đột, manh mối/thông tin mới, bước ngoặt và điểm kết chương.
+- Ghi rõ nhân vật xuất hiện, thay đổi quan hệ, địa điểm và mốc thời gian quan trọng ở từng chương.
+- Theo dõi các tuyến truyện chính và phụ, bảo đảm tuyến phụ có mở đầu, phát triển và kết nối hợp lý với tuyến chính.
+- Đánh dấu các sự kiện bắt buộc phải giữ, các bí mật cần trì hoãn tiết lộ, các câu hỏi được gieo ra và thời điểm dự kiến giải đáp.
+- Lập bảng kiểm tiến độ từng chương để không bỏ sót chương, đoạn giữa hoặc phần kết.
+- Chỉ bắt đầu viết JSON khi đã có cấu trúc tổng thể từ mở đầu đến kết thúc.
+
+3. GIỮ ĐỦ DIỄN BIẾN CỦA TỪNG CHƯƠNG
+- Không biến một chương dài thành một hoặc hai câu thoại tóm tắt.
+- Với mỗi chương, phải chuyển các sự kiện quan trọng thành cảnh có diễn biến: định vị bối cảnh, mục tiêu nhân vật, hành động, tương tác, trở ngại, phản ứng, thông tin mới và hệ quả.
+- Những cảnh điều tra, tranh luận, đối đầu, khám phá, lựa chọn khó khăn, biến cố hoặc thay đổi quan hệ phải được diễn ra đủ để người xem hiểu quá trình; không chỉ kể rằng chúng đã xảy ra.
+- Giữ các chi tiết có giá trị xây dựng thế giới, tính cách, động cơ, quan hệ và không khí truyện. Không cắt bỏ chỉ vì chúng không trực tiếp đẩy cốt truyện chính, nếu chúng có vai trò quan trọng về cảm xúc hoặc chủ đề.
+- Có thể gộp những đoạn lặp hoặc chi tiết không đóng góp gì, nhưng không được gộp đến mức mất nguyên nhân, quá trình, cảm xúc hay hệ quả.
+- Không thêm lời thoại chỉ để tăng số lượt. Mỗi lượt phải có chức năng kể chuyện rõ ràng.
+- Độ dài từng chương có thể khác nhau tùy mật độ sự kiện. Chương cao trào hoặc có nhiều diễn biến cần nhiều lượt hơn chương chuyển tiếp; không ép tất cả các chương bằng nhau.
+
+4. NHỊP ĐỘ VÀ QUY MÔ LƯỢT THOẠI
+- Ước lượng số lượt thoại từ số cảnh và lượng diễn biến thực tế của từng chương, sau đó kiểm tra xem mức độ triển khai đã đủ chưa.
+- Với một chương có nhiều cảnh, nhiều nhân vật hoặc nhiều bước ngoặt, phải có đủ lượt để thể hiện các bước quan trọng; không được dừng ở vài lượt chỉ vì đã nêu được kết quả cuối.
+- Một chương chuyển tiếp ngắn có thể ít lượt hơn nếu thực sự ít sự kiện. Không áp dụng chỉ tiêu máy móc hoặc lặp lại nội dung để đạt số lượng.
+- Khi nguồn có hàng chục chương, tổng số lượt JSON thường phải phản ánh quy mô dài hơi đó. Nếu kết quả chỉ có vài chục lượt cho toàn bộ một tiểu thuyết nhiều chục chương, phải tự kiểm tra lại nguy cơ đã tóm tắt quá mức và viết bổ sung trước khi lưu.
+- Ưu tiên đủ cảnh và đủ diễn biến hơn việc đạt một con số lượt thoại cố định.
+- Không được tự kết thúc sớm khi mới xử lý xong phần mở đầu hoặc một tuyến truyện; phải chuyển thể đến tận kết thúc của nguồn.
+
+5. TẠO CẤU TRÚC CHƯƠNG CÓ MỞ VÀ KẾT
+Mỗi chương nên có chức năng riêng trong toàn bộ hành trình:
+- Mở chương: tạo điểm nối tự nhiên từ chương trước, định vị hoàn cảnh và vấn đề trước mắt.
+- Phát triển: nhân vật hành động, tương tác, khám phá, thất bại hoặc thay đổi nhận thức.
+- Điểm nhấn: có một phát hiện, lựa chọn, xung đột, cảm xúc hoặc thay đổi đáng kể.
+- Kết chương: tạo cảm giác chương đã có tiến triển, đồng thời mở ra câu hỏi, mục tiêu hoặc tình thế cho chương sau khi nội dung cho phép.
+- Không bắt buộc chương nào cũng phải có cliffhanger. Không tạo cú sốc giả hoặc câu hỏi câu view khi nội dung không hỗ trợ.
+- Các chương phải nối tiếp nhau về nhân quả; không được biến thành những mẩu truyện rời rạc.
+
+6. QUẢN LÝ TÍNH LIÊN TỤC TRONG TRUYỆN DÀI
+Duy trì một bảng trạng thái nội bộ xuyên suốt quá trình viết:
+- Nhân vật: vị trí hiện tại, tình trạng, mục tiêu, điều đã biết, điều đang hiểu lầm, quan hệ và cảm xúc.
+- Manh mối/thông tin: ai phát hiện, phát hiện khi nào, nguồn gốc, ai đã biết và đã được xác minh hay chưa.
+- Thời gian/địa điểm: thứ tự sự kiện, thời gian trôi qua, di chuyển và các cảnh diễn ra song song.
+- Vật chứng/đồ vật: ai đang giữ, đã xuất hiện ở đâu, có bị mất hoặc thay đổi trạng thái không.
+- Lời hứa và câu hỏi: chi tiết nào đã gieo, chi tiết nào đã giải đáp, chi tiết nào còn phải theo dõi.
+- Các thay đổi trong chương trước phải được phản ánh đúng ở chương sau; không để nhân vật quên thông tin, quay lại trạng thái cũ hoặc biết trước điều chưa được tiết lộ.
+
+7. QUY TRÌNH VIẾT THEO NHIỀU ĐỢT NHƯNG CHỈ XUẤT MỘT JSON HOÀN CHỈNH
+- Với truyện dài, có thể chia việc soạn thảo nội bộ thành nhiều đợt/chương để tránh bỏ sót và giữ chất lượng.
+- Trước mỗi đợt, đối chiếu với bản đồ chương và trạng thái liên tục đã lập.
+- Sau mỗi đợt, kiểm tra chương đã hoàn tất, sự kiện nào đã xử lý, sự kiện nào còn thiếu và trạng thái nhân vật/manh mối.
+- Sau khi hoàn thành tất cả chương, ghép các lượt theo đúng thứ tự thời gian thành một mảng danh_sach duy nhất.
+- Kiểm tra trùng lặp, thiếu đoạn nối, sai thứ tự, nhân vật thay đổi bất thường và các chi tiết bị quên giữa các đợt.
+- Không lưu JSON từng phần rời rạc, trừ khi người dùng yêu cầu rõ. File cuối cùng phải là một JSON hoàn chỉnh mà player có thể đọc.
+- Nếu giới hạn kỹ thuật khiến không thể hoàn tất trong một lần thao tác, phải tiếp tục từ vị trí đã dừng dựa trên bản đồ và trạng thái; không được âm thầm bỏ phần còn lại hoặc báo đã hoàn thành khi chưa xong.
+
+8. KIỂM TOÁN ĐỘ BAO PHỦ TRƯỚC KHI LƯU
+Đối chiếu bản JSON với bản đồ chương và nguồn truyện:
+- Tất cả chương đã được chuyển thể chưa?
+- Các sự kiện cốt lõi trong từng chương đã xuất hiện chưa?
+- Có tuyến nhân vật hoặc tuyến phụ nào bị biến mất giữa chừng không?
+- Các nguyên nhân, hành động, phản ứng và kết quả đã được thể hiện đủ chưa?
+- Các bí mật, manh mối và bước ngoặt có đúng thứ tự tiết lộ không?
+- Các đoạn chuyển thời gian/địa điểm có rõ ràng không?
+- Cao trào và kết thúc có được diễn ra đầy đủ thay vì chỉ được thông báo không?
+- Có chương nào bị rút gọn bất thường so với độ phức tạp của nó không?
+- Có đoạn nào lặp ý hoặc kéo dài vô ích không?
+Nếu phát hiện chương bị tóm tắt quá mức, quay lại bổ sung cảnh và lượt thoại trước khi lưu.
+
+9. ÁP DỤNG TÁI SỬ DỤNG CHO NHỮNG CỐT TRUYỆN SAU
+- Đây là quy tắc mặc định dùng lại cho mọi yêu cầu tạo/chuyển thể kịch bản trong tương lai khi người dùng gọi prompt này.
+- Không gắn quy tắc với tên truyện, nhân vật, giới tính, thể loại hoặc số chương cụ thể của một dự án trước.
+- Mỗi lần chạy, phân tích lại nguồn mới từ đầu và tạo bản đồ chương riêng; không sao chép dàn ý, số chương, nhân vật, tên riêng hoặc tình tiết của truyện trước.
+- Giữ nguyên các quy tắc JSON, tài nguyên, hiệu ứng, lưu file và kiểm tra của những mục khác trong prompt.
+- Nếu người dùng yêu cầu thay đổi quy mô hoặc phong cách cho một truyện cụ thể, áp dụng yêu cầu riêng đó cho truyện hiện tại mà không làm mất nguyên tắc mặc định ở những lần sau.
+
+Không được vì giới hạn độ dài mà tự ý rút gọn một truyện dài thành bản tóm tắt vài chục lượt thoại.
 
 ==================================================
 XIV. BÁO CÁO SAU KHI HOÀN THÀNH
