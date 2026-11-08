@@ -559,6 +559,7 @@
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
   <audio id="audio-tts" crossorigin="anonymous"></audio>
 
+  <script src="./js/effect_engine.js"></script>
   <script>
     class TrinhPhatKichBanWeb {
       constructor() {
@@ -571,6 +572,7 @@
         this.layerVfx = document.getElementById('layer-vfx');
         this.layerFxFlash = document.getElementById('layer-fx-flash');
         this.effectAnimations = [];
+        this.effectEngine = new VisualNovelEffectEngine('./assets/Config/effect_library.json');
         this.dialogueCanvas = document.getElementById('dialogue-canvas');
         this.speakerText = document.getElementById('speaker-name');
         this.dialogueText = document.getElementById('dialogue-text');
@@ -1847,148 +1849,20 @@
         });
       }
 
-      // Hiệu ứng theo từng khung JSON, đồng bộ pause/resume với trình phát.
-      dungHieuUngKhung() {
-        (this.effectAnimations || []).forEach(a => { try { a.cancel(); } catch (_) {} });
-        this.effectAnimations = [];
-        [this.container,this.layerChar,this.layerBgImg,this.layerBgVideo].forEach(el => { if(el) el.style.willChange=''; });
-        if(this.layerFxFlash) this.layerFxFlash.style.opacity='0';
-      }
-      tamDungHieuUng() { (this.effectAnimations || []).forEach(a => { try { a.pause(); } catch (_) {} }); }
-      tiepTucHieuUng() { (this.effectAnimations || []).forEach(a => { try { a.play(); } catch (_) {} }); }
-      taoAnimationHieuUng(el,frames,opts={}) {
-        if(!el || typeof el.animate!=='function') return null;
-        const a=el.animate(frames,{duration:Math.max(120,Number(opts.duration)||1000),iterations:opts.iterations===undefined?1:opts.iterations,direction:opts.direction||'normal',easing:opts.easing||'ease-in-out',fill:'both'});
-        this.effectAnimations.push(a); el.style.willChange='transform, opacity, filter, scale'; return a;
-      }
-      apDungHieuUngKhung(khung) {
-        // Mỗi lượt thoại bắt đầu từ trạng thái gốc: hủy animation trước đó.
-        this.dungHieuUngKhung();
-        if(!khung || typeof khung!=='object') return;
-        const cf=khung.hieu_ung_nhan_vat||khung.character_effect||khung.characterEffect||{};
-        const bf=khung.hieu_ung_nen||khung.background_effect||khung.backgroundEffect||{};
-        const xf=khung.hieu_ung_camera||khung.camera_effect||khung.cameraEffect||{};
-        const read=(o,keys,d)=>{for(const k of keys)if(o&&o[k]!==undefined&&o[k]!==null&&o[k]!=='')return o[k];return d;};
-        const num=(v,d,min,max)=>{const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):d;};
-        const kind=o=>String(read(o,['kieu','type','effect','loai'],'none')).toLowerCase().replace(/[ _]/g,'-');
-        const speed=o=>num(read(o,['toc_do','speed'],1),1,.1,5);
-        const power=o=>num(read(o,['cuong_do','intensity','strength'],1),1,0,3);
-        // Không lặp mặc định. Chỉ lặp khi JSON chủ động đặt lap:true.
-        const loop=o=>{const v=read(o,['lap','loop','repeat'],false);return v===true||v===1||v==='true';};
-        const dur=(o,base)=>{const v=read(o,['thoi_gian','duration','duration_ms'],null);return v===null?base:(Number(v)>30?num(v,base,120,120000):num(v,base/1000,.12,120)*1000);};
-        const center='translateX(-50%)';
-        const repeat=o=>loop(o)?Infinity:1;
-
-        // Hiệu ứng nhân vật: chỉ áp dụng cho lượt thoại hiện tại và luôn trở về vị trí/kích thước gốc.
-        if(this.layerChar&&this.layerChar.style.display!=='none'){
-          const k=kind(cf),i=power(cf),d=dur(cf,900/speed(cf));let frames=null;
-          if(['idle','breath','breathing','tho','sway','swing'].includes(k)) frames=[
-            {transform:center+' translateY(0) rotate(0deg)'},
-            {transform:center+' translateY('+(-2*i)+'px) rotate('+(-.25*i)+'deg)'},
-            {transform:center+' translateY(0) rotate(0deg)'},
-            {transform:center+' translateY('+(1*i)+'px) rotate('+( .2*i)+'deg)'},
-            {transform:center+' translateY(0) rotate(0deg)'}
-          ];
-          else if(['walk','walking','di-bo'].includes(k)) frames=[
-            {transform:center+' translate(0,0) rotate(0deg)'},
-            {transform:center+' translate('+(-6*i)+'px,'+(-3*i)+'px) rotate('+( .8*i)+'deg)'},
-            {transform:center+' translate('+(6*i)+'px,0) rotate('+(-.8*i)+'deg)'},
-            {transform:center+' translate(0,0) rotate(0deg)'}
-          ];
-          else if(['bounce','jump','nhay'].includes(k)) frames=[
-            {transform:center+' translateY(0)'},
-            {transform:center+' translateY('+(-12*i)+'px)'},
-            {transform:center+' translateY(0)'}
-          ];
-          else if(['shake','tremble','rung'].includes(k)) frames=[
-            {transform:center+' translateX(0) rotate(0deg)'},
-            {transform:center+' translateX('+(-3*i)+'px) rotate('+(-.7*i)+'deg)'},
-            {transform:center+' translateX('+(3*i)+'px) rotate('+( .7*i)+'deg)'},
-            {transform:center+' translateX(0) rotate(0deg)'}
-          ];
-          else if(['zoom','focus','phong-to'].includes(k)) frames=[
-            {transform:center+' scale(1)'},
-            {transform:center+' scale('+(1+.045*i)+')'},
-            {transform:center+' scale(1)'}
-          ];
-          else if(['enter-left','slide-left'].includes(k)) frames=[
-            {transform:center+' translateX(-35vw)',opacity:0},
-            {transform:center+' translateX(0)',opacity:1}
-          ];
-          else if(['enter-right','slide-right'].includes(k)) frames=[
-            {transform:center+' translateX(35vw)',opacity:0},
-            {transform:center+' translateX(0)',opacity:1}
-          ];
-          else if(['nod','nod-head','gat-dau'].includes(k)) frames=[
-            {transform:center+' rotate(0)'},
-            {transform:center+' rotate('+(3*i)+'deg)'},
-            {transform:center+' rotate(0)'}
-          ];
-          if(frames)this.taoAnimationHieuUng(this.layerChar,frames,{duration:d,iterations:repeat(cf)});
-        }
-
-        // Hiệu ứng nền: kết thúc ở trạng thái ban đầu, không giữ mức zoom/độ lệch sang thoại sau.
-        const bg=this.layerBgVideo.style.display==='block'?this.layerBgVideo:this.layerBgImg;
-        if(bg&&bg.style.display!=='none'){
-          const k=kind(bf),i=power(bf),d=dur(bf,3200/speed(bf));let frames=null;
-          const dir=String(read(bf,['huong','direction'],'left')).toLowerCase();
-          const sign=/right|phai|down|xuong/.test(dir)?-1:1;
-          if(['pan','move','slide','parallax','di-chuyen','lia'].includes(k)){
-            const x=/up|down|len|xuong/.test(dir)?0:sign*2.5*i;
-            const y=/up|len/.test(dir)?1.8*i:(/down|xuong/.test(dir)?-1.8*i:0);
-            const scale=1.035;
-            frames=[
-              {transform:'scale('+scale+') translate(0,0)'},
-              {transform:'scale('+scale+') translate('+x+'%,'+y+'%)'},
-              {transform:'scale('+scale+') translate(0,0)'}
-            ];
-          } else if(['zoom','zoom-in','approach','tien-gan'].includes(k)) frames=[
-            {transform:'scale(1)'},
-            {transform:'scale('+(1+.075*i)+')'},
-            {transform:'scale(1)'}
-          ];
-          else if(['zoom-out','retreat','lui-xa'].includes(k)) frames=[
-            {transform:'scale(1)'},
-            {transform:'scale('+(1-.045*i)+')'},
-            {transform:'scale(1)'}
-          ];
-          else if(['shake','rung'].includes(k)) frames=[
-            {transform:'translateX(0)'},
-            {transform:'translateX('+(-3*i)+'px)'},
-            {transform:'translateX('+(3*i)+'px)'},
-            {transform:'translateX(0)'}
-          ];
-          if(frames)this.taoAnimationHieuUng(bg,frames,{duration:d,iterations:repeat(bf)});
-        }
-
-        // Camera zoom đồng bộ cả nền và nhân vật; dùng thuộc tính scale riêng để không ghi đè
-        // transform của hiệu ứng nhân vật. Cả hai cùng phóng/thu rồi trở về kích thước gốc.
-        const k=kind(xf),i=power(xf),sp=speed(xf),cameraDuration=dur(xf,900/sp);
-        if(['shake','rung','screen-shake','rung-man-hinh'].includes(k)){
-          const p=3.5*i,g=.3*i;
-          this.taoAnimationHieuUng(this.container,[
-            {transform:'translate(0,0) rotate(0)'},
-            {transform:'translate('+(-p)+'px,'+(p*.4)+'px) rotate('+(-g)+'deg)'},
-            {transform:'translate('+p+'px,'+(-p*.4)+'px) rotate('+g+'deg)'},
-            {transform:'translate(0,0) rotate(0)'}
-          ],{duration:dur(xf,420/sp),iterations:repeat(xf)});
-        } else if(['zoom','zoom-in','zoom-out'].includes(k)){
-          const from=1,to=k==='zoom-out'?1-.035*i:1+.045*i;
-          const frames=[{scale:String(from)},{scale:String(to)},{scale:'1'}];
-          if(bg)this.taoAnimationHieuUng(bg,frames,{duration:cameraDuration,iterations:repeat(xf)});
-          if(this.layerChar&&this.layerChar.style.display!=='none'){
-            this.taoAnimationHieuUng(this.layerChar,frames,{duration:cameraDuration,iterations:repeat(xf)});
-          }
-        } else if(['pan','move','lia'].includes(k)){
-          const dir=String(read(xf,['huong','direction'],'left')).toLowerCase(),dx=/right|phai/.test(dir)?-7*i:7*i;
-          this.taoAnimationHieuUng(this.container,[
-            {transform:'translateX(0)'},
-            {transform:'translateX('+dx+'px)'},
-            {transform:'translateX(0)'}
-          ],{duration:dur(xf,1200/sp),iterations:repeat(xf)});
-        } else if(['flash','chop-sang'].includes(k)&&this.layerFxFlash){
-          this.taoAnimationHieuUng(this.layerFxFlash,[{opacity:0},{opacity:Math.min(.55,.3*i)},{opacity:0}],{duration:dur(xf,360),iterations:1,easing:'ease-out'});
-        }
+      // Điều khiển hiệu ứng được tách sang js/effect_engine.js.
+      dungHieuUngKhung() { if (this.effectEngine) this.effectEngine.clear(); }
+      tamDungHieuUng() { if (this.effectEngine) this.effectEngine.pause(); }
+      tiepTucHieuUng() { if (this.effectEngine) this.effectEngine.resume(); }
+      async apDungHieuUngKhung(khung) {
+        if (!this.effectEngine) return;
+        await this.effectEngine.ready;
+        const bg = this.layerBgVideo.style.display === 'block' ? this.layerBgVideo : this.layerBgImg;
+        this.effectEngine.applyFrame(khung, {
+          character: this.layerChar && this.layerChar.style.display !== 'none' ? this.layerChar : null,
+          background: bg && bg.style.display !== 'none' ? bg : null,
+          camera: this.container,
+          flash: this.layerFxFlash
+        });
       }
       async xuLyKhung(khung, preview = false, generation = this.playbackGeneration) {
         if (generation !== this.playbackGeneration) return;
@@ -2103,7 +1977,7 @@
           this.layerChar.classList.add('scene-entering');
         }
 
-        this.apDungHieuUngKhung(khung);
+        await this.apDungHieuUngKhung(khung);
 
         if (anhHieuUng && anhHieuUng.trim() !== "") {
           const vfxImg = this.boDemHieuUng.get(anhHieuUng);
