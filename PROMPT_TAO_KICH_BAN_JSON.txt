@@ -293,83 +293,81 @@ Không lạm dụng hiệu ứng âm thanh khiến hội thoại khó nghe.
 VIII. QUY TẮC TẠO HIỆU ỨNG CHUYỂN ĐỘNG
 ==================================================
 
-Player hiện hỗ trợ các hiệu ứng chuyển động được điều khiển bằng JSON.
+Player hỗ trợ ba nhóm hiệu ứng được điều khiển bằng JSON:
+- hieu_ung_nhan_vat: chỉ tác động lên nhân vật.
+- hieu_ung_nen: chỉ tác động lên hình nền.
+- hieu_ung_camera: tác động đồng bộ lên nền và nhân vật; camera shake/pan có thể tác động toàn khung hình.
 
-Mỗi hiệu ứng là một object độc lập.
+QUY TẮC BẮT BUỘC CHO TỪNG LƯỢT THOẠI:
+- Mỗi object trong danh_sach PHẢI có đủ cả ba trường hieu_ung_nhan_vat, hieu_ung_nen và hieu_ung_camera.
+- Nếu lượt thoại không cần một nhóm hiệu ứng, ghi chính xác giá trị chuỗi rỗng "" cho trường đó. Không bỏ trường, không dùng null, không dùng {}.
+- Chỉ nhóm nào có hiệu ứng mới khai báo object. Ví dụ: "hieu_ung_nhan_vat": "".
+- Hiệu ứng được xét riêng ở từng lượt thoại. Muốn một hiệu ứng tiếp tục ở lượt thoại kế tiếp, phải khai báo lại ở lượt đó; không dựa vào kế thừa ngầm.
+- Khi lượt thoại mới bắt đầu, hiệu ứng lượt trước phải kết thúc và các lớp hình ảnh phải trở về trạng thái gốc trước khi áp dụng hiệu ứng mới.
+- Không được để transform/scale/vị trí từ lượt trước tích lũy sang lượt sau.
+- Mỗi hiệu ứng mặc định chỉ chạy một lần, không lặp vô hạn. Chỉ đặt "lap": true khi có lý do rõ ràng và chuyển động thực sự cần lặp.
+- Luôn khai báo thoi_gian bằng mili giây. Player tự kết thúc hiệu ứng sau thời lượng đó; animation phải có khung hình cuối trở về trạng thái gốc.
+- Không dùng hiệu ứng chuyển động liên tục kéo dài suốt nhiều lượt thoại nếu không có chủ đích đặc biệt.
 
-1. HIỆU ỨNG NHÂN VẬT
+1. HIỆU ỨNG NHÂN VẬT — hieu_ung_nhan_vat
+Các kiểu hỗ trợ:
+- idle, breath, breathing, sway: chuyển động nhẹ như thở/đung đưa.
+- walk: chuyển động bước.
+- bounce: nhún hoặc nảy nhẹ.
+- shake: rung ngắn.
+- zoom: nhấn nhẹ bằng phóng to rồi trở về kích thước gốc.
+- enter-left, enter-right: đi vào từ hai bên.
+- nod: gật đầu một lần.
 
-Trường:
-hieu_ung_nhan_vat
+2. HIỆU ỨNG NỀN — hieu_ung_nen
+Các kiểu hỗ trợ:
+- pan, move, slide, parallax: lia nền nhẹ rồi trở về vị trí gốc.
+- zoom, zoom-in: tiến gần nhẹ rồi trở về kích thước gốc.
+- zoom-out: thu nhẹ rồi trở về kích thước gốc.
+- shake: rung nền ngắn rồi trở về vị trí gốc.
 
-Các kiểu hiện được hỗ trợ:
-- idle: chuyển động nhẹ khi đứng yên.
-- breath: nhấp nhô như đang thở.
-- breathing: tương tự breath.
-- sway: lắc lư nhẹ.
-- walk: chuyển động đi bộ.
-- bounce: nhảy hoặc nảy.
-- shake: rung.
-- zoom: phóng to.
-- enter-left: đi vào từ bên trái.
-- enter-right: đi vào từ bên phải.
-- nod: gật đầu.
+3. HIỆU ỨNG CAMERA — hieu_ung_camera
+Các kiểu hỗ trợ:
+- shake: rung toàn khung hình ngắn, có điểm dừng.
+- zoom, zoom-in: phóng đồng bộ nền và nhân vật rồi trở về kích thước gốc.
+- zoom-out: thu nhẹ đồng bộ nền và nhân vật rồi trở về kích thước gốc.
+- pan: lia toàn khung hình nhẹ rồi trở về vị trí gốc.
+- flash: chớp sáng ngắn.
 
-2. HIỆU ỨNG NỀN
-
-Trường:
-hieu_ung_nen
-
-Các kiểu hiện được hỗ trợ:
-- pan: lia nền.
-- move: di chuyển nền.
-- slide: trượt nền.
-- parallax: tạo cảm giác chiều sâu.
-- zoom: phóng to.
-- zoom-in: tiến gần.
-- zoom-out: lùi xa.
-- shake: rung nền.
-
-3. HIỆU ỨNG CAMERA
-
-Trường:
-hieu_ung_camera
-
-Các kiểu hiện được hỗ trợ:
-- shake: rung camera.
-- zoom: phóng to.
-- zoom-in: phóng to.
-- zoom-out: thu nhỏ.
-- pan: lia camera.
-- flash: chớp sáng.
-
-4. CÁC THUỘC TÍNH HIỆU ỨNG
-
-Có thể sử dụng:
+4. THUỘC TÍNH
 - kieu: loại hiệu ứng.
-- huong: hướng chuyển động.
-- toc_do: tốc độ.
-- cuong_do: cường độ.
-- lap: có lặp lại hay không.
-- thoi_gian: thời gian hiệu ứng.
+- huong: hướng chuyển động (khi kiểu hiệu ứng cần hướng).
+- toc_do: tốc độ, thường dùng 0.8–1.2.
+- cuong_do: cường độ; ưu tiên mức nhẹ 0.5–1.
+- lap: mặc định false; chỉ true nếu thật sự cần lặp.
+- thoi_gian: thời lượng tính bằng mili giây; nên chọn khoảng 400–1800 ms cho hiệu ứng nhân vật/camera và 1800–4500 ms cho hiệu ứng nền chậm. Không kéo dài quá mức nếu cảnh không cần.
 
-Ví dụ:
-"hieu_ung_nhan_vat": {
-  "kieu": "walk",
-  "huong": "right",
-  "toc_do": 1.2,
-  "cuong_do": 1,
-  "lap": true
+5. NGUYÊN TẮC DÀN DỰNG, TRÁNH ĐƠN ĐIỆU VÀ CHÓNG MẶT
+- Không bắt buộc mọi lượt thoại phải có hiệu ứng. Ưu tiên thoại tĩnh; chỉ thêm hiệu ứng khi nó làm rõ hành động, cảm xúc hoặc nhấn mạnh thông tin.
+- Không dùng zoom nhân vật ở hai lượt thoại liên tiếp, trừ khi có chủ đích kể chuyện rất rõ.
+- Không lặp cùng một hiệu ứng ở các lượt thoại liên tiếp. Thay đổi nhịp bằng cách xen kẽ thoại tĩnh, chuyển động nhẹ và điểm nhấn hiếm hoi.
+- Không lạm dụng shake, zoom, bounce hoặc pan; tránh nhiều nhóm hiệu ứng mạnh chạy cùng lúc.
+- Breath/sway phải rất nhẹ, không làm nhân vật phóng to toàn thân rõ rệt.
+- Shake chỉ là một nhịp ngắn, không rung kéo dài.
+- Zoom chỉ nhấn nhẹ rồi trả về gốc, không giữ nhân vật/nền ở trạng thái phóng to.
+- Dùng hiệu ứng mạnh nhất ở khoảnh khắc cao trào, và dành khoảng nghỉ thị giác sau đó.
+- Khi không chắc có nên thêm hiệu ứng hay không, hãy để "".
+
+6. VÍ DỤ ĐÚNG
+{
+  "hieu_ung_nhan_vat": "",
+  "hieu_ung_nen": {
+    "kieu": "pan",
+    "huong": "left",
+    "toc_do": 1,
+    "cuong_do": 0.7,
+    "lap": false,
+    "thoi_gian": 2800
+  },
+  "hieu_ung_camera": ""
 }
 
-Lưu ý:
-- Chỉ dùng các kiểu hiệu ứng đã được player hỗ trợ.
-- Không tự tạo các hiệu ứng chưa được triển khai như chớp mắt riêng, tóc bay, mưa, tuyết hoặc hệ thống hạt.
-- Không sử dụng hiệu ứng quá dày đặc.
-- Hiệu ứng phải phục vụ nội dung và cảm xúc của cảnh.
-- Chỉ thêm hiệu ứng khi phù hợp. Không bắt buộc mọi cảnh đều phải có hiệu ứng.
-- Khi một cảnh không cần hiệu ứng, bỏ trường đó hoặc sử dụng object rỗng theo quy ước của player.
-
+==================================================
 ==================================================
 IX. CẤU TRÚC JSON BẮT BUỘC
 ==================================================
@@ -391,14 +389,9 @@ Cấu trúc tổng thể tham khảo:
       "anh_hieu_ung": "",
       "am_thanh_nen": "",
       "am_thanh_hieu_ung": "",
-      "hieu_ung_nhan_vat": {
-        "kieu": "idle",
-        "toc_do": 1,
-        "cuong_do": 1,
-        "lap": true
-      },
-      "hieu_ung_nen": {},
-      "hieu_ung_camera": {}
+      "hieu_ung_nhan_vat": "",
+      "hieu_ung_nen": "",
+      "hieu_ung_camera": ""
     }
   ]
 }
