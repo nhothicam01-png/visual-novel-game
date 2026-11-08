@@ -81,24 +81,16 @@
       margin: auto !important;
     }
 
-    #layer-bg-motion {
+    .game-layer {
       position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      z-index: 1;
-      display: none;
-      transform-origin: center center;
-    }
-    #layer-bg-motion .game-layer {
-      position: absolute;
-      inset: 0;
+      top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    #layer-bg-img, #layer-bg-video { display: none; }
+
+    #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
     
     /* Mặc định - Màn hình Ngang (1920x1080): Bám sát mép ĐỈNH (top: 0) */
     #layer-character, #layer-character-buffer {
@@ -127,7 +119,6 @@
     }
 
     #layer-vfx { z-index: 3; pointer-events: none; display: none; }
-    #layer-fx-flash { position:absolute; inset:0; z-index:8; pointer-events:none; background:#fff; opacity:0; }
 
     /* Nền và nhân vật cùng xuất hiện bằng một nhịp fade-in. */
     #layer-character, #layer-character-buffer { opacity: 1; }
@@ -425,7 +416,6 @@
     #subtitle-preview { width:100%; min-height:120px; resize:vertical; padding:9px; color:#dbeafe; background:#020617; border:1px solid #334155; border-radius:7px; font: .75rem/1.5 ui-monospace,monospace; user-select:text; }
     #subtitle-status { font-size:.76rem; color:#94a3b8; }
   </style>
-  <link rel="stylesheet" href="./css/effects.css?v=4" />
 </head>
 <body>
 
@@ -439,17 +429,14 @@
       <div class="loading-status" id="loading-status">Đang khởi tạo...</div>
     </div>
 
-    <div id="layer-bg-motion" aria-hidden="true">
-      <img id="layer-bg-img" class="game-layer" src="" alt="Background Image" />
-      <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
-    </div>
+    <img id="layer-bg-img" class="game-layer" src="" alt="Background Image" />
+    <video id="layer-bg-video" class="game-layer" autoplay muted loop playsinline></video>
     
     <!-- Sử dụng Video WebM trong suốt cho nhân vật -->
     <video id="layer-character" class="game-layer" autoplay muted loop playsinline></video>
     <video id="layer-character-buffer" class="game-layer" autoplay muted loop playsinline></video>
     
     <img id="layer-vfx" class="game-layer" src="" alt="VFX Overlay" />
-    <div id="layer-fx-flash" aria-hidden="true"></div>
 
     <div id="dialogue-canvas" style="display: none;">
       <div id="speaker-name"></div>
@@ -570,21 +557,16 @@
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
   <audio id="audio-tts" crossorigin="anonymous"></audio>
 
-  <script src="./js/effect_engine.js?v=4"></script>
   <script>
     class TrinhPhatKichBanWeb {
       constructor() {
         this.container = document.getElementById('game-container');
-        this.layerBgMotion = document.getElementById('layer-bg-motion');
         this.layerBgImg = document.getElementById('layer-bg-img');
         this.layerBgVideo = document.getElementById('layer-bg-video');
         this.layerChar = document.getElementById('layer-character');
         this.layerCharBuffer = document.getElementById('layer-character-buffer');
         this.layerCharBuffer.style.display = 'none';
         this.layerVfx = document.getElementById('layer-vfx');
-        this.layerFxFlash = document.getElementById('layer-fx-flash');
-        this.effectAnimations = [];
-        this.effectEngine = new VisualNovelEffectEngine('./assets/Config/effect_library.json');
         this.dialogueCanvas = document.getElementById('dialogue-canvas');
         this.speakerText = document.getElementById('speaker-name');
         this.dialogueText = document.getElementById('dialogue-text');
@@ -1627,7 +1609,6 @@
             this.subtitlePlaybackPausedAt = null;
           }
           this.dangTamDung = false;
-          this.tiepTucHieuUng();
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
           if (this.audioBgm.paused) this.audioBgm.play().catch(()=>{});
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
@@ -1682,7 +1663,6 @@
 
         if (!this.dangTamDung) {
           this.dangTamDung = true;
-          this.tamDungHieuUng();
           if (this.subtitlePlaybackStartedAt !== null && this.subtitlePlaybackPausedAt === null) this.subtitlePlaybackPausedAt = performance.now();
           this.luuTienDoPhat();
           document.getElementById('btn-pause').innerText = "▶ Tiếp tục";
@@ -1699,7 +1679,6 @@
             this.subtitlePlaybackPausedAt = null;
           }
           this.dangTamDung = false;
-          this.tiepTucHieuUng();
           document.getElementById('btn-pause').innerText = "⏸ Tạm dừng";
           if (this.audioBgm.play) this.audioBgm.play().catch(()=>{});
           if (this.layerBgVideo.style.display === 'block') this.layerBgVideo.play().catch(()=>{});
@@ -1823,7 +1802,6 @@
 
         // Khi hoàn tất toàn bộ kịch bản: dừng các media còn chạy và tự tạo SRT.
         if (daPhatHetKichBan) {
-          this.dungHieuUngKhung();
           if (this.ttsSynth) this.ttsSynth.cancel();
           this.audioTts.pause();
           this.audioBgm.pause();
@@ -1861,21 +1839,6 @@
         });
       }
 
-      // Điều khiển hiệu ứng được tách sang js/effect_engine.js.
-      dungHieuUngKhung() { if (this.effectEngine) this.effectEngine.clear(); }
-      tamDungHieuUng() { if (this.effectEngine) this.effectEngine.pause(); }
-      tiepTucHieuUng() { if (this.effectEngine) this.effectEngine.resume(); }
-      async apDungHieuUngKhung(khung) {
-        if (!this.effectEngine) return;
-        await this.effectEngine.ready;
-        const bg = this.layerBgVideo.style.display === 'block' ? this.layerBgVideo : this.layerBgImg;
-        this.effectEngine.applyFrame(khung, {
-          character: this.layerChar && this.layerChar.style.display !== 'none' ? this.layerChar : null,
-          background: this.layerBgMotion && this.layerBgMotion.style.display !== 'none' ? this.layerBgMotion : null,
-          camera: this.container,
-          flash: this.layerFxFlash
-        });
-      }
       async xuLyKhung(khung, preview = false, generation = this.playbackGeneration) {
         if (generation !== this.playbackGeneration) return;
         this.xoaChuKhongAnCanvas();
@@ -1970,11 +1933,9 @@
         // Chỉ đưa nền và nhân vật lên màn hình sau khi cả hai đã sẵn sàng.
         // Nhờ vậy cảnh mới luôn xuất hiện đồng bộ, kể cả khi nền giữ nguyên.
         if (nenCanHienThi === 'video') {
-          this.layerBgMotion.style.display = 'block';
           this.layerBgImg.style.display = 'none';
           this.layerBgVideo.style.display = 'block';
         } else if (nenCanHienThi === 'image') {
-          this.layerBgMotion.style.display = 'block';
           this.layerBgVideo.style.display = 'none';
           this.layerBgImg.style.display = 'block';
         }
@@ -1990,8 +1951,6 @@
           void this.layerChar.offsetWidth;
           this.layerChar.classList.add('scene-entering');
         }
-
-        await this.apDungHieuUngKhung(khung);
 
         if (anhHieuUng && anhHieuUng.trim() !== "") {
           const vfxImg = this.boDemHieuUng.get(anhHieuUng);
@@ -2144,7 +2103,6 @@
         this.audioTts.pause();
         this.audioBgm.pause();
         this.audioSfx.pause();
-        this.dungHieuUngKhung();
         this.layerBgVideo.pause();
         this.layerChar.pause();
         this.xoaChu();
@@ -2152,7 +2110,6 @@
         this.capNhatThanhTua();
         this.layerBgImg.style.display = 'none';
         this.layerBgVideo.style.display = 'none';
-        this.layerBgMotion.style.display = 'none';
         this.layerChar.style.display = 'none';
         this.layerChar.pause();
         this.layerCharBuffer.style.display = 'none';
