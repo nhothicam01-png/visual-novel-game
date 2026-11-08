@@ -572,8 +572,8 @@
   <section id="video-export-tools" aria-label="Xuất video WebM">
 <h4>🎬 Xuất video kịch bản (WebM)</h4>
 <p style="font-size:.76rem;color:#cbd5e1;line-height:1.5;">Chỉ dựng riêng khung truyện bằng cách chụp DOM theo từng frame: giữ kiểu chữ, khung thoại, tên nhân vật, trạng thái CSS/WAAPI, video nền và nhân vật. Âm thanh TTS Piper, nhạc nền và hiệu ứng được ghép vào video.</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap">
-<span style="font-size:.78rem;color:#cbd5e1">Khung hình theo màn hình đang chia sẻ</span>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+<label style="font-size:.78rem">Tỷ lệ khung hình <select id="video-export-ratio" class="btn"><option value="landscape">Ngang · 16:9</option><option value="portrait">Dọc · 9:16</option></select></label>
 <label style="font-size:.78rem">Chất lượng <select id="video-export-quality" class="btn"><option value="standard">Tiêu chuẩn · 4 Mbps</option><option value="high">Cao · 8 Mbps</option><option value="compact">Nhẹ · 2 Mbps</option></select></label>
 </div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="btn-video-export" type="button">🎥 Bắt đầu xuất WebM</button><button class="btn" id="btn-video-cancel" type="button" disabled>⏹ Hủy xuất</button></div>
