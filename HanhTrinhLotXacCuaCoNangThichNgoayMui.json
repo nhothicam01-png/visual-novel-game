@@ -1,0 +1,567 @@
+{
+  "thoi_gian_giu_khung": 1,
+  "thoi_gian_cho_giua": 0.02,
+  "toc_do_go_chu": 0.03,
+  "danh_sach": [
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình là Mai, 21 tuổi. Có một thói quen kỳ quặc mà mình luôn nghĩ chẳng đáng bận tâm: cứ rảnh tay là mình lại đưa tay lên ngoáy mũi.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "bgm_gentle.mp3",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ở nhà, lúc xem phim, khi học bài, thậm chí lúc đứng chờ xe buýt... mình làm điều đó gần như không nhận ra.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mẹ nhắc không biết bao nhiêu lần. Mình toàn cười trừ: 'Có gì đâu mẹ, con làm nhanh thôi mà.'",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mẹ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mai! Con lại đưa tay lên mặt nữa rồi. Trong túi có khăn giấy, sao con không dùng?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ôi, con chỉ ngứa mũi một chút thôi. Mẹ cứ làm như chuyện gì ghê gớm lắm ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mẹ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mẹ không muốn làm con khó chịu. Nhưng tay mình chạm vào đủ thứ, rồi lại đưa lên mũi, rất dễ mang bụi bẩn và vi khuẩn vào.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con biết rồi, biết rồi. Từ mai con sẽ bỏ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nhưng lời hứa ấy chỉ kéo dài được đúng... một buổi sáng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Hôm sau ở lớp, mình đang chăm chú nghe giảng thì lại vô thức đưa tay lên mũi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "An",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mai, này... cậu có khăn giấy không? Nếu ngứa mũi thì dùng khăn nhé.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Hả? À... tớ không sao. Tớ chỉ đang suy nghĩ thôi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "An",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ không chê cậu đâu. Nhưng cậu làm vậy trước mặt mọi người, có thể khiến người khác thấy không thoải mái.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cậu nói vậy làm tớ quê thật đấy. Tớ đâu có cố ý.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "An",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ biết. Có khi cậu làm theo phản xạ nên chẳng nhận ra. Hay thử để ý xem lúc nào cậu hay làm nhất?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chắc là lúc căng thẳng, buồn chán hoặc ngồi một mình. Tay tớ cứ tự động tìm đến đó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Giờ ra chơi, mình xuống sân trường mua nước. Mình tưởng chẳng ai để ý chuyện đó nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Khoa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ê Mai, cậu có biết cậu vừa làm gì không? Nãy giờ cậu cứ đưa tay lên mũi đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Khoa! Cậu có thể nói nhỏ thôi được không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Khoa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ chỉ nhắc thôi. Nhưng nói thật, nhìn hơi mất vệ sinh đấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ biết rồi! Cậu không cần biến chuyện đó thành trò cười trước cả nhóm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "An",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Khoa, nhắc nhở thì được, nhưng đừng làm người khác xấu hổ. Mai, mình đi chỗ khác nhé.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình giận Khoa, nhưng điều khiến mình khó chịu hơn là cậu ấy nói đúng một phần. Mình đã để thói quen này kéo dài quá lâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tối hôm đó, mình soi gương và nhận ra vùng da quanh mũi hơi đỏ vì mình đã chạm và cọ xát quá nhiều.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mẹ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con bị đau à? Để mẹ xem nào. Nếu có đau, chảy máu hoặc kích ứng kéo dài thì mình nên hỏi nhân viên y tế nhé.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con không muốn bị như vậy nữa. Nhưng cứ mỗi lần thấy ngứa hoặc có cảm giác vướng là tay con lại đưa lên.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mẹ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Vậy mình đừng chỉ dựa vào ý chí. Con thử chuẩn bị khăn giấy, rửa tay thường xuyên và tìm cách xử lý khi mũi khó chịu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mẹ giúp con tìm hiểu cách vệ sinh mũi an toàn được không? Con không muốn tự làm bừa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ngày hôm sau, mẹ đưa mình đến phòng khám để hỏi về tình trạng ngứa mũi và thói quen khó bỏ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Bác sĩ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Chào Mai. Cháu thường thấy ngứa mũi vào lúc nào? Có hắt hơi, nghẹt mũi hay chảy nước mũi không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Dạ, đôi khi cháu hắt hơi và ngứa, nhất là khi phòng nhiều bụi. Cháu còn hay ngoáy mũi theo thói quen dù không thật sự cần.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Bác sĩ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Có thể mũi cháu đang bị kích ứng bởi bụi hoặc nguyên nhân khác. Bác sĩ sẽ kiểm tra, rồi hướng dẫn cách chăm sóc phù hợp. Cháu đừng đưa vật lạ vào mũi hay ngoáy mạnh nhé.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Bác sĩ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Khi thấy ngứa, cháu có thể rửa tay, dùng khăn giấy sạch lau nhẹ bên ngoài. Nếu cần làm sạch bên trong, hãy hỏi người có chuyên môn về dung dịch và cách rửa mũi an toàn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "5",
+      "ten_hien_thi": "Bác sĩ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nếu có chảy máu nhiều, đau, khó thở hoặc triệu chứng kéo dài, cháu cần quay lại khám. Còn thói quen vô thức thì mình sẽ tập thay thế từng bước.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cháu hiểu rồi ạ. Vậy cháu sẽ không cố ngoáy cho hết cảm giác khó chịu nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình lập một kế hoạch nhỏ: để khăn giấy trong cặp, cắt móng tay gọn, rửa tay thường xuyên và ghi lại những lúc mình muốn đưa tay lên mũi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "An",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ có thể nhắc cậu bằng một ký hiệu riêng. Nếu thấy cậu sắp đưa tay lên mặt, tớ sẽ gõ nhẹ lên bàn thay vì gọi to.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cảm ơn cậu. Nhưng đừng nhắc liên tục nhé, tớ muốn tự nhận ra và tự điều chỉnh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ba ngày đầu khá ổn. Mỗi lần có thôi thúc, mình dừng lại, hạ tay xuống rồi lấy khăn giấy nếu thật sự cần.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Nhưng đến ngày thứ tư, lúc làm bài kiểm tra căng thẳng, mình lại tái phạm. Khi nhận ra, mình xấu hổ đến mức chỉ muốn bỏ cuộc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "An",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Một lần lỡ tay không có nghĩa là mọi cố gắng biến mất. Cậu nhận ra được rồi thì bắt đầu lại ngay từ lần tiếp theo.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ cứ nghĩ phải bỏ được ngay lập tức. Hóa ra thay đổi một phản xạ lâu năm khó hơn tớ tưởng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mẹ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con có thể đánh dấu những ngày tiến bộ, nhưng đừng tự trách nặng nề khi có hôm chưa làm được. Quan trọng là con hiểu nguyên nhân.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình phát hiện lúc học quá lâu, tay thường tìm việc gì đó để làm. Từ đó, mình đặt một hộp khăn giấy trên bàn và cầm bút hoặc quả bóng bóp tay khi căng thẳng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Khoa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mai, dạo này tớ thấy cậu ít đưa tay lên mũi hơn rồi. Cậu đang cố sửa thói quen đó à?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Ừ. Tớ nhận ra nó không chỉ là chuyện phép lịch sự. Tớ còn cần chăm sóc mũi đúng cách và giữ tay sạch.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "3",
+      "ten_hien_thi": "Khoa",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Hôm trước tớ nói hơi quá. Tớ xin lỗi vì đã khiến cậu xấu hổ trước mọi người.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Tớ chấp nhận lời xin lỗi. Nhưng lần sau nếu muốn góp ý, cậu nói riêng và tử tế hơn nhé.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Hai tuần trôi qua. Mình vẫn có lúc quên, nhưng tần suất đã giảm. Mũi cũng đỡ khó chịu hơn sau khi được hướng dẫn chăm sóc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "An",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Cậu có nhận ra không? Hôm nay cả buổi học cậu không hề đưa tay lên mũi lần nào.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Thật á? Tớ vui ghê. Nhưng tớ biết mình vẫn phải tiếp tục chú ý, chứ không thể chủ quan.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Một tháng sau, thói quen cũ không còn điều khiển mình như trước. Khi mũi ngứa, mình biết dừng lại và chọn cách xử lý sạch sẽ, nhẹ nhàng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "4",
+      "ten_hien_thi": "Mẹ",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mẹ thấy con kiên trì hơn nhiều. Không phải vì con chưa từng tái phạm, mà vì con không bỏ cuộc sau những lần đó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Con từng nghĩ ngoáy mũi chỉ là một tật xấu nhỏ, chẳng đáng để tâm. Nhưng khi nó trở thành phản xạ, mình cần nghiêm túc thay đổi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "An",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Và cậu đã làm được bằng cách tìm nguyên nhân, nhờ giúp đỡ, rồi thay thế thói quen từng chút một.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Mình vẫn đang luyện tập mỗi ngày. Nếu bạn cũng có một thói quen khó bỏ, đừng chỉ xấu hổ hay giấu nó đi. Hãy tìm hiểu nguyên nhân và chọn cách thay đổi an toàn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": ""
+    },
+    {
+      "nhan_vat": "1",
+      "ten_hien_thi": "Mai",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Hành trình của mình không kết thúc sau một đêm. Nhưng ít nhất, giờ đây mình đã biết cách chăm sóc bản thân tốt hơn và không còn để bàn tay tự quyết định thay mình.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "afternoon_between_leaves.mp3",
+      "am_thanh_hieu_ung": ""
+    }
+  ]
+}
