@@ -582,6 +582,17 @@
 <progress id="video-export-progress" max="100" value="0" style="width:100%;height:10px;accent-color:#38bdf8"></progress>
 <p style="font-size:.7rem;color:#94a3b8">Video chỉ lấy vùng game-container, không ghi thanh trình duyệt hay phần điều khiển. Các hiệu ứng DOM được dựng lại theo frame; do giới hạn chụp DOM, tốc độ khung hình thực tế có thể thấp hơn 30 fps ở thiết bị yếu.</p>
 </section>
+  <section id="timeline-export-tools" aria-label="Xuất video theo timeline">
+    <h4>🎞️ Xuất MP4 theo timeline (thử nghiệm)</h4>
+    <p style="font-size:.76rem;color:#cbd5e1;line-height:1.5;">Bản dựng độc lập: tạo trước TTS, ghép âm thanh theo mốc thời gian rồi dựng từng khung hình cố định. Không điều khiển hoặc làm thay đổi tiến trình phát truyện hiện tại.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+      <button class="btn" id="btn-timeline-export" type="button">🎬 Xuất MP4 timeline</button>
+      <button class="btn" id="btn-timeline-cancel" type="button" disabled>⏹ Hủy</button>
+    </div>
+    <div id="timeline-export-status" role="status" style="font-size:.76rem;color:#94a3b8;margin-top:8px">Tải hoặc import JSON trước khi xuất.</div>
+    <progress id="timeline-export-progress" max="100" value="0" style="width:100%;height:10px;accent-color:#a78bfa"></progress>
+    <p style="font-size:.7rem;color:#fbbf24">Lưu ý: đây là bản thử nghiệm đầu tiên. Video nền/nhân vật và hiệu ứng phức tạp có thể chưa khớp hoàn toàn với trình phát trực tiếp; cần kiểm tra bằng một kịch bản ngắn trước.</p>
+  </section>
   <section id="dialogue-settings" aria-label="Cài đặt chữ thoại">
     <h4>💬 Tùy chỉnh chữ thoại</h4>
     <label class="dialogue-toggle"><input id="dialogue-visible" type="checkbox" checked onchange="trinhPhat.capNhatCaiDatThoai('visible', this.checked)"> Hiển thị khung thoại</label>
@@ -2370,5 +2381,6 @@ $('btn-video-export').addEventListener('click',start);
 $('btn-video-cancel').addEventListener('click',()=>{if(!busy)return;cancelled=true;status('Đang dừng...');try{srcNow?.stop()}catch(_){}try{trinhPhat.dung()}catch(_){}finish(false)});
 })();
 </script>
+<script src="timeline_export.js"></script>
 </body>
 </html>
