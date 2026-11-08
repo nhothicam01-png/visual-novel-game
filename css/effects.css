@@ -1,30 +1,156 @@
-/* Hiệu ứng nhân vật - tách khỏi index_test.html
-   Bob dùng top/bottom để không ghi đè transform định vị video. */
+/* =========================================================
+   VISUAL NOVEL - TOÀN BỘ HIỆU ỨNG CSS
+   JS chỉ gắn/gỡ class và truyền thông số qua CSS variables.
+   ========================================================= */
+
+:root {
+  --vn-effect-duration: 900ms;
+  --vn-effect-intensity: 1;
+  --vn-effect-distance: 14vw;
+}
+
+/* ---------- NHÂN VẬT ---------- */
 #layer-character.effect-char-bob,
 #layer-character-buffer.effect-char-bob {
-  animation: vn-character-bob-landscape var(--vn-bob-duration, 900ms) ease-in-out infinite !important;
-  will-change: top;
+  animation: vn-char-bob var(--vn-effect-duration) ease-in-out infinite;
+  will-change: translate;
+}
+@keyframes vn-char-bob {
+  0%, 100% { translate: 0 0; }
+  45% { translate: 0 calc(-16px * var(--vn-effect-intensity)); }
 }
 
-@keyframes vn-character-bob-landscape {
-  0%, 100% { top: 0; }
-  45% { top: calc(0px - var(--vn-bob-height, 16px)); }
+#layer-character.effect-char-shake,
+#layer-character-buffer.effect-char-shake {
+  animation: vn-char-shake var(--vn-effect-duration) ease-in-out both;
+  will-change: translate, rotate;
+}
+@keyframes vn-char-shake {
+  0%, 100% { translate: 0 0; rotate: 0deg; }
+  25% { translate: calc(-5px * var(--vn-effect-intensity)) calc(2px * var(--vn-effect-intensity)); rotate: calc(-1.1deg * var(--vn-effect-intensity)); }
+  50% { translate: calc(5px * var(--vn-effect-intensity)) calc(-2px * var(--vn-effect-intensity)); rotate: calc(1.1deg * var(--vn-effect-intensity)); }
+  75% { translate: calc(-3px * var(--vn-effect-intensity)) 0; rotate: calc(-.6deg * var(--vn-effect-intensity)); }
 }
 
-#game-container.portrait #layer-character.effect-char-bob,
-#game-container.portrait #layer-character-buffer.effect-char-bob {
-  animation: vn-character-bob-portrait var(--vn-bob-duration, 900ms) ease-in-out infinite !important;
-  will-change: bottom;
+#layer-character.effect-char-walk-left,
+#layer-character-buffer.effect-char-walk-left {
+  animation: vn-char-walk-left var(--vn-effect-duration) ease-in-out both;
+  will-change: translate;
+}
+#layer-character.effect-char-walk-right,
+#layer-character-buffer.effect-char-walk-right {
+  animation: vn-char-walk-right var(--vn-effect-duration) ease-in-out both;
+  will-change: translate;
+}
+@keyframes vn-char-walk-left {
+  0% { translate: 0 0; }
+  22% { translate: calc(var(--vn-effect-distance) * -.22) calc(-7px * var(--vn-effect-intensity)); }
+  48% { translate: calc(var(--vn-effect-distance) * -.48) 0; }
+  74% { translate: calc(var(--vn-effect-distance) * -.74) calc(-7px * var(--vn-effect-intensity)); }
+  100% { translate: calc(var(--vn-effect-distance) * -1) 0; }
+}
+@keyframes vn-char-walk-right {
+  0% { translate: 0 0; }
+  22% { translate: calc(var(--vn-effect-distance) * .22) calc(-7px * var(--vn-effect-intensity)); }
+  48% { translate: calc(var(--vn-effect-distance) * .48) 0; }
+  74% { translate: calc(var(--vn-effect-distance) * .74) calc(-7px * var(--vn-effect-intensity)); }
+  100% { translate: var(--vn-effect-distance) 0; }
 }
 
-@keyframes vn-character-bob-portrait {
-  0%, 100% { bottom: 0; }
-  45% { bottom: calc(0px - var(--vn-bob-height, 16px)); }
+/* ---------- NỀN ---------- */
+#layer-bg-img.effect-bg-zoom,
+#layer-bg-video.effect-bg-zoom {
+  animation: vn-bg-zoom var(--vn-effect-duration) ease-in-out both;
+  will-change: transform;
+}
+@keyframes vn-bg-zoom { 0%,100% { transform:scale(1); } 50% { transform:scale(calc(1 + .06 * var(--vn-effect-intensity))); } }
+
+#layer-bg-img.effect-bg-pan-left,
+#layer-bg-video.effect-bg-pan-left,
+#layer-bg-img.effect-bg-pan-right,
+#layer-bg-video.effect-bg-pan-right {
+  animation: vn-bg-pan var(--vn-effect-duration) ease-in-out both;
+  will-change: transform;
+}
+#layer-bg-img.effect-bg-pan-left,
+#layer-bg-video.effect-bg-pan-left { --vn-pan-sign: 1; }
+#layer-bg-img.effect-bg-pan-right,
+#layer-bg-video.effect-bg-pan-right { --vn-pan-sign: -1; }
+@keyframes vn-bg-pan {
+  0%,100% { transform:scale(1.035) translateX(0); }
+  50% { transform:scale(1.035) translateX(calc(var(--vn-pan-sign) * 2.5% * var(--vn-effect-intensity))); }
 }
 
+#layer-bg-img.effect-bg-shake,
+#layer-bg-video.effect-bg-shake {
+  animation: vn-bg-shake var(--vn-effect-duration) ease-in-out both;
+  will-change: transform;
+}
+@keyframes vn-bg-shake {
+  0%,100% { transform:translateX(0); }
+  30% { transform:translateX(calc(-3px * var(--vn-effect-intensity))); }
+  65% { transform:translateX(calc(3px * var(--vn-effect-intensity))); }
+}
+
+/* ---------- CAMERA ---------- */
+#game-container.effect-camera-shake {
+  animation: vn-camera-shake var(--vn-effect-duration) ease-in-out both;
+  will-change: translate;
+}
+@keyframes vn-camera-shake {
+  0%,100% { translate:0 0; }
+  30% { translate:calc(-4px * var(--vn-effect-intensity)) 2px; }
+  65% { translate:calc(4px * var(--vn-effect-intensity)) -2px; }
+}
+#game-container.effect-camera-pan-left,
+#game-container.effect-camera-pan-right {
+  animation: vn-camera-pan var(--vn-effect-duration) ease-in-out both;
+  will-change: translate;
+}
+#game-container.effect-camera-pan-left { --vn-camera-pan-sign: 1; }
+#game-container.effect-camera-pan-right { --vn-camera-pan-sign: -1; }
+@keyframes vn-camera-pan {
+  0%,100% { translate:0 0; }
+  50% { translate:calc(var(--vn-camera-pan-sign) * 7px * var(--vn-effect-intensity)) 0; }
+}
+
+/* Zoom camera áp dụng đồng bộ lên nền và nhân vật, không zoom khung thoại. */
+#layer-bg-img.effect-camera-zoom-in,
+#layer-bg-video.effect-camera-zoom-in,
+#layer-character.effect-camera-zoom-in,
+#layer-character-buffer.effect-camera-zoom-in,
+#layer-bg-img.effect-camera-zoom-out,
+#layer-bg-video.effect-camera-zoom-out,
+#layer-character.effect-camera-zoom-out,
+#layer-character-buffer.effect-camera-zoom-out {
+  animation: vn-camera-zoom var(--vn-effect-duration) ease-in-out both;
+  will-change: scale;
+}
+#layer-bg-img.effect-camera-zoom-in,
+#layer-bg-video.effect-camera-zoom-in,
+#layer-character.effect-camera-zoom-in,
+#layer-character-buffer.effect-camera-zoom-in { --vn-camera-scale: calc(1 + .045 * var(--vn-effect-intensity)); }
+#layer-bg-img.effect-camera-zoom-out,
+#layer-bg-video.effect-camera-zoom-out,
+#layer-character.effect-camera-zoom-out,
+#layer-character-buffer.effect-camera-zoom-out { --vn-camera-scale: calc(1 - .035 * var(--vn-effect-intensity)); }
+@keyframes vn-camera-zoom {
+  0%,100% { scale:1; }
+  50% { scale:var(--vn-camera-scale); }
+}
+
+#layer-fx-flash.effect-camera-flash {
+  animation: vn-camera-flash var(--vn-effect-duration) ease-out both;
+}
+@keyframes vn-camera-flash {
+  0%,100% { opacity:0; }
+  35% { opacity:calc(.3 * var(--vn-effect-intensity)); }
+}
+
+/* Tôn trọng thiết lập giảm chuyển động của thiết bị nhưng vẫn giữ hiệu ứng nhẹ. */
 @media (prefers-reduced-motion: reduce) {
   #layer-character.effect-char-bob,
   #layer-character-buffer.effect-char-bob {
-    animation-duration: 1800ms !important;
+    animation-duration:1800ms;
   }
 }
