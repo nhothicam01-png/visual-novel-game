@@ -17,13 +17,13 @@ async function decodeCharacterFrames(v){
  if(v._vnFrames)return v._vnFrames;
  const duration=Number.isFinite(v.duration)&&v.duration>0?v.duration:1,frames=[];
  if(typeof v.requestVideoFrameCallback!=='function'){v._vnFrames=[{time:0,bitmap:await createImageBitmap(v)}];return v._vnFrames}
- v.pause();v.loop=false;v.currentTime=0;await new Promise(resolve=>{if(v.readyState>=2)resolve();else v.addEventListener('seeked',resolve,{once:true})});
+ v.pause();v.loop=false;v.playbackRate=4;v.currentTime=0;await new Promise(resolve=>{if(v.readyState>=2)resolve();else v.addEventListener('seeked',resolve,{once:true})});
  let chain=Promise.resolve(),endedResolve;
  const ended=new Promise(resolve=>endedResolve=resolve);
  const onEnded=()=>endedResolve();v.addEventListener('ended',onEnded,{once:true});
  const capture=(_,meta)=>{chain=chain.then(async()=>{const bitmap=await createImageBitmap(v);frames.push({time:meta.mediaTime,bitmap})});if(!v.ended)v.requestVideoFrameCallback(capture);else endedResolve()};
  v.requestVideoFrameCallback(capture);
- try{await v.play();await ended;await chain}finally{v.pause();v.removeEventListener('ended',onEnded)}
+ try{await v.play();await ended;await chain}finally{v.pause();v.playbackRate=1;v.removeEventListener('ended',onEnded)}
  if(!frames.length)frames.push({time:0,bitmap:await createImageBitmap(v)});
  frames.sort((a,b)=>a.time-b.time);v._vnFrames=frames;v._vnDuration=duration;return frames
 }
