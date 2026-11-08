@@ -151,13 +151,13 @@ function applySpeakerDetection(){
  cues=cues.map((cue,i)=>{
   const source=cue._speakerSourceText??cue.text,parsed=splitSpeakerLine(source,names);
   if(parsed.speaker){speakerByCue.set(i,parsed.speaker);matched++}
-  return {...cue,_speakerSourceText:source,_speaker:parsed.speaker,text:parsed.text||source};
+  return {...cue,_speakerSourceText:source,_displayText:source,_speaker:parsed.speaker,text:parsed.text||source};
  });
  render();return {matched,total:cues.length};
 }
 function setStatus(s){$('status').textContent=s}
-function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length;$('recordPlay').disabled=!cues.length}
-function setActive(i){if(i===activeIndex)return;activeIndex=i;document.querySelectorAll('.cue').forEach((el)=>el.classList.toggle('active',+el.dataset.i===i));if(i>=0){const c=cues[i];$('current').innerHTML='';const small=document.createElement('small');small.textContent='CÂU '+(i+1)+' · '+fmt(c.start)+' → '+fmt(c.end);const body=document.createElement('div');body.textContent=c.text;$('current').append(small,body);const el=document.querySelector('.cue[data-i="'+i+'"]');if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'})}}
+function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c._displayText||c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length;$('recordPlay').disabled=!cues.length}
+function setActive(i){if(i===activeIndex)return;activeIndex=i;document.querySelectorAll('.cue').forEach((el)=>el.classList.toggle('active',+el.dataset.i===i));if(i>=0){const c=cues[i];$('current').innerHTML='';const small=document.createElement('small');small.textContent='CÂU '+(i+1)+' · '+fmt(c.start)+' → '+fmt(c.end);const body=document.createElement('div');body.textContent=c._displayText||c.text;$('current').append(small,body);const el=document.querySelector('.cue[data-i="'+i+'"]');if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'})}}
 function clearTimers(){timers.forEach(clearTimeout);timers=[];cancelAnimationFrame(raf)}
 function clock(){if(!playing||paused)return;playhead=(performance.now()-startedAt)/1000;$('timeline').value=playhead;$('now').textContent=fmt(playhead);const i=cues.findIndex(c=>playhead>=c.start&&playhead<c.end);setActive(i);if(playhead>=Math.max(...cues.map(c=>c.end))+.1){stop();setStatus('Đã phát hết phụ đề.');if(recording||recordingFinalizing)$('recordStatus').textContent='Đã phát hết — đang hoàn tất MP3…'}else raf=requestAnimationFrame(clock)}
 function speakCue(i,token){
@@ -264,7 +264,7 @@ async function readSubtitleFile(file){
   const detectedLanguage=autoSetSubtitleLanguage(parsed);
   cues=cues.map(cue=>{
    const source=cue._speakerSourceText??cue.text,sp=splitSpeakerLine(source,Object.keys(ttsCharacterConfig));
-   return {...cue,_speakerSourceText:source,_speaker:sp.speaker,text:sp.speaker?(sp.text||source):source};
+   return {...cue,_speakerSourceText:source,_displayText:source,_speaker:sp.speaker,text:sp.speaker?(sp.text||source):source};
   });
   cues.forEach((cue,i)=>{if(cue._speaker)speakerByCue.set(i,cue._speaker)});
   $('filename').textContent='✓ '+file.name+' · '+parsed.length+' câu';
