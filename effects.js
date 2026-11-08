@@ -7,14 +7,14 @@
   const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const registry = {
     nhan_vat: {
-      char_walk_bob: { label:'Nhân vật nhấp nhô như đang đi', transform:[{transform:'translateY(0px)'},{transform:'translateY(-12px)'},{transform:'translateY(0px)'}], duration:520 },
-      char_sway: { label:'Nhân vật nghiêng trái phải', transform:[{transform:'rotate(-5deg)'},{transform:'rotate(5deg)'},{transform:'rotate(-5deg)'}], duration:1500 },
-      char_fear_shake: { label:'Nhân vật run rẩy vì sợ', transform:[{transform:'translateX(-3px) rotate(-2deg)'},{transform:'translateX(3px) rotate(2deg)'},{transform:'translateX(-2px) rotate(-1deg)'}], duration:105 },
-      char_move_left: { label:'Nhân vật vừa nhấp nhô vừa di chuyển sang trái', transform:[{transform:'translate(0,0)'},{transform:'translate(-17px,-10px)'},{transform:'translate(-34px,0)'}], duration:900, once:true },
-      char_move_right: { label:'Nhân vật vừa nhấp nhô vừa di chuyển sang phải', transform:[{transform:'translate(0,0)'},{transform:'translate(17px,-10px)'},{transform:'translate(34px,0)'}], duration:900, once:true },
+      char_walk_bob: { label:'Nhân vật nhún nhẹ khi bước nhưng giữ chân chạm đất', transform:[{transform:'scaleY(1)'},{transform:'scaleY(1.018)'},{transform:'scaleY(1)'}], duration:520 },
+      char_sway: { label:'Nhân vật nghiêng nhẹ quanh điểm tiếp đất', transform:[{transform:'rotate(-2.5deg)'},{transform:'rotate(2.5deg)'},{transform:'rotate(-2.5deg)'}], duration:1500 },
+      char_fear_shake: { label:'Nhân vật run rẩy tại chỗ, neo chân ở đáy', transform:[{transform:'translateX(-3px) rotate(-1deg)'},{transform:'translateX(3px) rotate(1deg)'},{transform:'translateX(-2px) rotate(-0.5deg)'}], duration:105 },
+      char_move_left: { label:'Nhân vật di chuyển sang trái, không nhấc khỏi mặt đất', transform:[{transform:'translateX(0)'},{transform:'translateX(-17px)'},{transform:'translateX(-34px)'}], duration:900, once:true },
+      char_move_right: { label:'Nhân vật di chuyển sang phải, không nhấc khỏi mặt đất', transform:[{transform:'translateX(0)'},{transform:'translateX(17px)'},{transform:'translateX(34px)'}], duration:900, once:true },
       char_fade_out: { label:'Nhân vật mờ dần biến mất', opacity:[{opacity:1},{opacity:0}], duration:1100, once:true },
       char_ghost: { label:'Nhân vật trong suốt như linh hồn', filter:'opacity(0.48) saturate(0.65) brightness(1.12)' },
-      char_giant: { label:'Nhân vật phóng to như người khổng lồ', transform:[{transform:'scale(1)'},{transform:'scale(1.65)'}], duration:900, once:true }
+      char_giant: { label:'Nhân vật phóng to từ điểm tiếp đất', transform:[{transform:'scale(1)'},{transform:'scale(1.65)'}], duration:900, once:true }
     },
     nen: {
       bg_zoom_in: { label:'Nền zoom gần', transform:[{transform:'scale(1)'},{transform:'scale(1.18)'}], duration:6500, once:true },
