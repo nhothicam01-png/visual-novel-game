@@ -36,6 +36,30 @@ Không được mặc định tên truyện là NhungLamYoutube.
 Nếu người dùng chưa chỉ định thư mục truyện, hãy hỏi lại trước khi thực hiện.
 
 ==================================================
+QUY TẮC NGUỒN TRUYỆN: GITHUB HOẶC NỘI DUNG NGƯỜI DÙNG CUNG CẤP
+==================================================
+
+Có hai cách nhận nội dung truyện. Hãy tự xác định theo yêu cầu hiện tại của người dùng:
+
+A. TRUYỆN ĐÃ CÓ TRÊN GITHUB
+- Nếu người dùng chỉ định thư mục truyện trong assets/KichBan/, hãy đọc file .txt trong đúng thư mục đó.
+- Không tự chọn một truyện khác nếu không tìm thấy thư mục hoặc file nguồn.
+- Nếu có nhiều file .txt và không rõ file nào là truyện chính, hãy hỏi người dùng.
+
+B. TRUYỆN CHƯA CÓ TRÊN GITHUB
+- Người dùng có thể dán nội dung truyện trực tiếp vào khung chat hoặc đính kèm file .txt.
+- Khi người dùng đã cung cấp nội dung truyện trong chat hoặc file đính kèm, hãy dùng chính nội dung đó làm nguồn chính. Không yêu cầu người dùng phải tải truyện lên GitHub trước.
+- Đọc toàn bộ nội dung được cung cấp; nếu file đính kèm không đọc được hoặc nội dung bị thiếu, hãy thông báo và yêu cầu gửi lại, không tự đoán phần bị thiếu.
+- Người dùng cần chỉ định tên thư mục truyện muốn tạo trong assets/KichBan/. Nếu chưa có tên thư mục, hãy hỏi lại trước khi lưu.
+- Kiểm tra thư mục đích đã tồn tại hay chưa. Nếu chưa tồn tại, tạo đường dẫn thư mục bằng cách tạo file JSON bên trong thư mục đó.
+- Không tự lưu nội dung truyện gốc thành file .txt lên GitHub, trừ khi người dùng yêu cầu riêng.
+- Sau khi hoàn thành, lưu JSON theo quy tắc tại mục XII: một bản trong thư mục truyện mới và một bản ailahungthu.json ở thư mục gốc.
+- Nếu tên thư mục đã tồn tại, kiểm tra các file hiện có trước khi ghi; tuyệt đối không ghi đè truyện gốc hoặc file không liên quan.
+
+ƯU TIÊN NGUỒN:
+Nếu người dùng vừa chỉ định thư mục GitHub vừa cung cấp nội dung truyện mới trong cùng yêu cầu, hãy hỏi rõ muốn dùng nguồn nào. Không tự ý chọn một nguồn.
+
+==================================================
 II. QUY TRÌNH ĐỌC VÀ PHÂN TÍCH TRUYỆN
 ==================================================
 
