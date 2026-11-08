@@ -90,32 +90,41 @@
       object-fit: cover;
     }
 
-    #layer-bg-img, #layer-bg-video { z-index: 1; display: none; }
+    /* Nền overscan: luôn lớn hơn sân khấu để không lộ mép khi lia/nghiêng/rung camera. */
+    #layer-bg-img, #layer-bg-video {
+      z-index: 1;
+      display: none;
+      width: 136%;
+      height: 136%;
+      left: -18%;
+      top: -18%;
+      object-fit: cover;
+      transform-origin: center center;
+      will-change: transform;
+    }
     
-    /* Mặc định - Màn hình Ngang (1920x1080): Bám sát mép ĐỈNH (top: 0) */
+    /* Nhân vật luôn neo tại đáy sân khấu ở cả khung ngang và dọc. */
     #layer-character, #layer-character-buffer {
       position: absolute;
-      top: 0;
+      top: auto;
+      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
       z-index: 2;
       width: 100%;
-      height: auto;
-      object-fit: contain;
-      object-position: top center;
-      display: none;
-      transform-origin: top center;
-    }
-
-    /* Màn hình Dọc (.portrait - 1080x1920): Bám sát mép ĐÁY (bottom: 0) */
-    #game-container.portrait #layer-character, #game-container.portrait #layer-character-buffer {
-      top: auto;
-      bottom: 0;
-      width: auto;
       height: 100%;
       object-fit: contain;
       object-position: bottom center;
+      display: none;
       transform-origin: bottom center;
+      will-change: transform;
+    }
+
+    /* Khung dọc vẫn giữ nhân vật vừa khít theo chiều cao. */
+    #game-container.portrait #layer-character, #game-container.portrait #layer-character-buffer {
+      width: auto;
+      height: 100%;
+      max-width: 100%;
     }
 
     #layer-vfx { z-index: 3; pointer-events: none; display: none; }
