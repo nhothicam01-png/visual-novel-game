@@ -86,6 +86,157 @@ Không được tự ý thay đổi những tình tiết cốt lõi của truy�
 Có thể điều chỉnh cách kể, cách sắp xếp hội thoại và cách thể hiện để phù hợp với định dạng hoạt hình.
 
 ==================================================
+II-A. HỆ THỐNG KỂ CHUYỆN THÍCH ỨNG – TỰ ĐỘNG TỐI ƯU GIỮ CHÂN NGƯỜI XEM
+==================================================
+
+MỤC TIÊU:
+Áp dụng kiến thức về storytelling, tâm lý người xem và nhịp dựng để tăng khả năng giữ chân người xem. Không dùng một công thức cố định cho mọi truyện. Với mỗi truyện, hãy tự phân tích và chọn chiến lược kể chuyện phù hợp nhất với chính nội dung đó.
+
+Nguyên tắc quan trọng:
+- Tối ưu trải nghiệm xem và sự tò mò tự nhiên, không đánh đổi tính mạch lạc, cảm xúc hoặc sự trung thực của câu chuyện.
+- Không nhồi nhét drama, bí mật, cú twist, câu hỏi tu từ hoặc cliffhanger nếu nội dung không hỗ trợ.
+- Không kéo dài câu chuyện chỉ để tăng thời lượng.
+- Không hứa hẹn một tỷ lệ giữ chân cụ thể. Mọi điểm số/đánh giá trước khi đăng chỉ là dự đoán biên tập, không phải kết quả Analytics được bảo đảm.
+- Không thêm trường JSON ngoài schema player hỗ trợ để lưu kế hoạch hoặc điểm số. Phân tích và lựa chọn này là bước làm việc nội bộ trước khi viết JSON.
+
+1. CHẨN ĐOÁN CÂU CHUYỆN TRƯỚC KHI CHỌN CÔNG THỨC
+Đọc toàn bộ truyện rồi tự xác định:
+- Thể loại chính và thể loại phụ.
+- Chủ đề trung tâm, lời hứa nội dung và điều người xem có thể mong đợi.
+- Đối tượng người xem có khả năng quan tâm; không tự gán độ tuổi/đặc điểm nhạy cảm nếu truyện không cung cấp căn cứ.
+- Nhân vật trung tâm, mục tiêu, mong muốn, nỗi sợ, trở ngại và điều có thể mất.
+- Xung đột chính, các xung đột phụ, bí mật, câu hỏi chưa được giải đáp và các mốc thay đổi.
+- Cảm xúc chủ đạo và đường cong cảm xúc từ đầu đến cuối.
+- Những thông tin người xem cần biết để hiểu truyện, những thông tin có thể trì hoãn tiết lộ và những thông tin không nên giấu.
+- Đặc điểm phù hợp với video: nhịp nhanh/chậm, mức độ hài hước, căng thẳng, cảm động, bất ngờ hoặc suy ngẫm.
+
+Từ đó xác định một câu mô tả lời hứa của video: người xem sẽ theo dõi điều gì, vì sao điều đó đáng quan tâm và họ sẽ nhận được trải nghiệm/câu trả lời nào ở cuối.
+
+2. TẠO VÀ SO SÁNH CÁC CHIẾN LƯỢC KỂ CHUYỆN
+Không mặc định mọi truyện phải dùng cùng một kiểu mở đầu hoặc nhịp kể. Hãy cân nhắc những kỹ thuật phù hợp, chẳng hạn:
+- Mở đầu bằng khoảnh khắc căng thẳng hoặc hậu quả đáng chú ý.
+- Mở đầu bằng câu hỏi, bí ẩn hoặc thông tin còn thiếu.
+- Mở đầu bằng một tình huống đời thường dễ đồng cảm.
+- Mở đầu bằng lời thú nhận, lựa chọn khó khăn hoặc mâu thuẫn giữa các nhân vật.
+- Kể theo trình tự thời gian để xây dựng sự gắn bó và tiến triển.
+- Bắt đầu gần cao trào rồi quay lại giải thích nguyên nhân, nếu cách này không gây rối.
+- Dùng góc nhìn của nhân vật, đối thoại đối đầu, khám phá từng lớp bí mật hoặc hành trình thay đổi.
+- Dùng hài hước, tương phản, bất ngờ hoặc suy ngẫm khi phù hợp với thể loại.
+
+Tự tạo ít nhất 3 phương án cấu trúc/mở đầu nội bộ có khác biệt thực chất. Đánh giá từng phương án theo thang 1–5 ở các tiêu chí:
+- Mức độ thu hút ngay từ đầu.
+- Sự phù hợp với thể loại và lời hứa nội dung.
+- Khả năng tạo tò mò có lý do.
+- Độ rõ ràng, dễ theo dõi.
+- Tiềm năng cảm xúc và sự gắn bó với nhân vật.
+- Khả năng duy trì tiến triển, tránh đoạn chùng.
+- Mức độ trung thành với truyện gốc.
+- Mức độ phù hợp với thời lượng dự kiến.
+
+Chọn phương án có tổng thể tốt nhất, nhưng tính trung thành, dễ hiểu và phù hợp nội dung là điều kiện bắt buộc, không được hy sinh để đổi lấy điểm tò mò. Nếu các phương án ngang nhau, chọn phương án tự nhiên, rõ ràng và ít thủ thuật hơn. Không cần trình bày toàn bộ phương án nháp trong JSON.
+
+3. THIẾT KẾ HOOK VÀ LỜI HỨA ĐẦU VIDEO
+- Tạo một hook ngắn, cụ thể, gắn trực tiếp với xung đột, câu hỏi hoặc cảm xúc quan trọng nhất của truyện.
+- Trong những giây đầu, cần giúp người xem nhận ra có điều đáng quan tâm đang xảy ra; tránh mở đầu dài dòng, chào hỏi hoặc giải thích nền tảng không cần thiết.
+- Hook có thể dùng câu hỏi, nghịch lý, khoảnh khắc bất thường, lời thú nhận, nguy cơ, lựa chọn hoặc kết quả gây tò mò tùy thể loại.
+- Hook phải được trả lời hoặc phát triển thật trong câu chuyện. Không giật tít bằng sự kiện không tồn tại.
+- Sau hook, nhanh chóng định vị nhân vật, hoàn cảnh và điều đang bị đe dọa để người xem không bị mất phương hướng.
+- Không tiết lộ hết cú twist hoặc kết quả nếu việc giữ lại thông tin đó có ích và không làm người xem hiểu sai.
+
+4. DUY TRÌ TÒ MÒ VÀ TIẾN TRIỂN TRONG TOÀN BỘ VIDEO
+Thiết kế đường dây tò mò theo từng chặng. Mỗi chặng nên có ít nhất một lý do để người xem muốn theo dõi tiếp:
+- Một mục tiêu cần đạt được.
+- Một trở ngại hoặc mâu thuẫn mới.
+- Một thông tin làm thay đổi cách hiểu tình huống.
+- Một quyết định có hệ quả.
+- Một câu hỏi được giải đáp, đồng thời mở ra vấn đề mới.
+- Một thay đổi trong quan hệ hoặc cảm xúc nhân vật.
+- Một kết quả nhỏ, thất bại, phát hiện hoặc bước ngoặt.
+
+Có thể dùng mini-hook và câu chuyển tiếp, nhưng phải đa dạng và gắn với diễn biến thật. Không bắt buộc đặt mini-hook ở cuối mọi lượt thoại. Tránh lặp đi lặp lại các câu như “nhưng điều bất ngờ hơn là…”, “mọi chuyện chưa dừng lại ở đó…” hoặc cố tình trì hoãn câu trả lời quá lâu.
+
+Phân bổ thông tin:
+- Cho người xem biết đủ để hiểu hành động và động cơ.
+- Trì hoãn có chủ đích những thông tin tạo bí ẩn, nhưng không che giấu thông tin thiết yếu đến mức câu chuyện trở nên khó hiểu.
+- Mỗi lần tiết lộ nên làm thay đổi hoặc làm sâu sắc cách hiểu của người xem.
+- Không lặp lại cùng một câu hỏi/cùng một thông tin chỉ để tạo cảm giác hồi hộp.
+
+5. CHỌN NHỊP KỂ VÀ ĐỘ DÀI THEO TỪNG THỂ LOẠI
+Tự chọn nhịp độ theo chức năng của cảnh, không áp dụng một số giây hoặc số câu cố định cho mọi truyện:
+- Cảnh mở đầu: vào vấn đề nhanh, xác lập sự chú ý và lời hứa nội dung.
+- Cảnh giải thích: ngắn gọn, chỉ cung cấp thông tin cần thiết.
+- Cảnh đối thoại: thay đổi nhịp bằng phản ứng, chất vấn, im lặng hoặc hành động phù hợp.
+- Cảnh cảm xúc: cho nhân vật đủ không gian để cảm xúc có sức nặng, không cắt quá nhanh.
+- Cảnh hài: ưu tiên thiết lập tình huống, nhịp chờ và cú chốt rõ ràng.
+- Cảnh hồi hộp: tăng áp lực bằng trở ngại và thông tin có kiểm soát; không lạm dụng rung/zoom hoặc câu thoại kịch tính.
+- Cảnh cao trào: tập trung vào lựa chọn, hành động và hệ quả; tránh để lời giải thích dài làm mất lực.
+- Cảnh kết: giải quyết lời hứa và xung đột chính, để lại dư âm phù hợp.
+
+Mỗi lượt thoại cần có chức năng rõ ràng: cung cấp thông tin mới, thể hiện tính cách/cảm xúc, làm thay đổi quan hệ, thúc đẩy hành động, tăng/giải tỏa căng thẳng hoặc tạo nhịp nghỉ có chủ đích. Nếu một lượt thoại không làm được điều gì và chỉ lặp lại nội dung, hãy rút gọn hoặc bỏ.
+
+6. ĐƯỜNG CONG CẢM XÚC VÀ PHẦN THƯỞNG CHO NGƯỜI XEM
+- Xây dựng diễn biến cảm xúc có biến đổi, phù hợp với câu chuyện; không để toàn bộ video chỉ có một sắc thái.
+- Tạo sự tương phản hợp lý giữa căng thẳng và giải tỏa, hy vọng và thất vọng, hài hước và nghiêm túc, gần gũi và bất ngờ nếu truyện cho phép.
+- Tăng dần mức độ hoặc ý nghĩa của trở ngại thay vì lặp lại cùng một xung đột.
+- Mỗi cao trào phải xuất phát từ những gì đã được thiết lập trước đó.
+- Phần thưởng cuối có thể là lời giải, sự thật, chiến thắng, thất bại có ý nghĩa, sự trưởng thành, khoảnh khắc cảm động hoặc một kết thúc mở có chủ đích.
+- Kết thúc phải đem lại cảm giác xứng đáng với thời gian người xem đã bỏ ra. Nếu truyện có hậu quả hoặc câu hỏi quan trọng, cần giải quyết hoặc chủ động nói rõ điều còn bỏ ngỏ.
+- CTA nếu có phải ngắn gọn, tự nhiên và đặt sau khi câu chuyện đã đem lại giá trị; không để CTA phá hỏng dư âm của cảnh kết.
+
+7. TÙY BIẾN THEO THỂ LOẠI – CHỈ DÙNG KHI PHÙ HỢP
+Đây là gợi ý để lựa chọn, không phải khuôn mẫu bắt buộc:
+- Tình cảm/romance: ưu tiên mong muốn chưa nói thành lời, tương tác, lựa chọn, hiểu lầm có căn cứ và thay đổi trong quan hệ.
+- Kinh dị/bí ẩn: ưu tiên dấu hiệu bất thường, cảm giác nguy hiểm, manh mối, khoảng trống thông tin và tiết lộ có logic.
+- Hài: ưu tiên thiết lập tình huống rõ, tính cách đối lập, hiểu lầm hợp lý, nhịp chờ và cú chốt.
+- Drama/gia đình: ưu tiên mâu thuẫn lợi ích, tổn thương, động cơ, hệ quả và sự thay đổi cảm xúc.
+- Hành trình lột xác/phát triển bản thân: ưu tiên mục tiêu, điểm xuất phát, trở ngại, tiến bộ nhìn thấy được, thất bại và thành quả.
+- Phiêu lưu/hành động: ưu tiên mục tiêu cụ thể, nguy cơ, quyết định, hậu quả và thay đổi tình thế.
+- Kiến thức/giải thích: ưu tiên câu hỏi trung tâm, ví dụ dễ hiểu, từng lớp giải đáp và ứng dụng thực tế; không tạo bí ẩn giả hoặc kéo dài câu trả lời.
+- Chuyện đời thường: ưu tiên sự đồng cảm, chi tiết cụ thể, xung đột nhỏ nhưng có ý nghĩa và quan sát chân thực.
+
+Nếu truyện pha nhiều thể loại, chọn thể loại dẫn dắt và phối hợp kỹ thuật của thể loại phụ theo tỷ lệ tự nhiên. Không ép truyện vào một thể loại duy nhất.
+
+8. KIỂM TRA NGUY CƠ NGƯỜI XEM RỜI ĐI – TỰ BIÊN TẬP LẠI
+Sau khi có bản nháp, tự đọc lại từ góc nhìn một người lần đầu xem video. Đánh dấu những vị trí có nguy cơ:
+- Mở đầu chậm hoặc chưa rõ điều gì đáng quan tâm.
+- Không hiểu ai đang nói, đang ở đâu hoặc vì sao sự kiện xảy ra.
+- Thông tin bị lặp, giải thích quá dài hoặc thoại giống thuyết minh.
+- Nhiều lượt thoại liên tiếp nhưng không có tiến triển.
+- Câu hỏi được đặt ra nhưng bị bỏ quên hoặc trả lời quá muộn.
+- Cao trào đến đột ngột, thiếu chuẩn bị hoặc không có hệ quả.
+- Chuyển cảnh/thời gian thiếu dấu hiệu nhận biết.
+- Cảm xúc thay đổi thiếu nguyên nhân.
+- Twist không có manh mối hoặc mâu thuẫn với chi tiết trước.
+- Kết thúc cụt, không giải quyết lời hứa mở đầu.
+
+Với mỗi điểm yếu, tự sửa bằng cách rút gọn, sắp xếp lại, bổ sung thông tin cần thiết hoặc thay đổi nhịp thoại. Chỉ thay đổi cách kể; không làm sai cốt truyện, không bịa sự kiện cốt lõi và không thêm nhân vật/tài nguyên mà truyện không cần.
+
+9. HỌC TỪ DỮ LIỆU THỰC TẾ KHI CÓ
+Nếu người dùng cung cấp YouTube Analytics hoặc dữ liệu hiệu suất video:
+- Ưu tiên dữ liệu thực tế của chính kênh và các video có định dạng/thể loại/thời lượng tương đồng.
+- Xem xét tỷ lệ giữ chân theo thời gian, thời điểm tụt mạnh, đoạn được xem lại, thời lượng xem trung bình, tỷ lệ xem hết và phản hồi bình luận nếu dữ liệu có sẵn.
+- Đối chiếu các điểm tụt với nội dung/tình huống tương ứng trong video trước khi kết luận nguyên nhân.
+- Phân biệt tương quan với nguyên nhân; không khẳng định một kỹ thuật chắc chắn gây ra thay đổi nếu dữ liệu không chứng minh.
+- Rút ra bài học có thể kiểm chứng cho các kịch bản sau, nhưng chỉ áp dụng khi phù hợp với thể loại và câu chuyện mới.
+- Không giả vờ có quyền truy cập Analytics, không tự bịa số liệu và không nói đã học từ dữ liệu nếu người dùng chưa cung cấp hoặc công cụ chưa truy xuất được.
+- Khi không có dữ liệu, dùng nguyên tắc biên kịch và đánh giá định tính ở các mục trên; ghi nhận đây là dự đoán biên tập chứ không phải hiệu suất đã đo.
+
+10. QUY TRÌNH QUYẾT ĐỊNH CUỐI CÙNG
+Trước khi chuyển sang JSON, hoàn thành nội bộ:
+A. Chẩn đoán thể loại, lời hứa nội dung, xung đột và đường cong cảm xúc.
+B. So sánh tối thiểu 3 chiến lược kể chuyện/mở đầu khả thi.
+C. Chọn một chiến lược chính và giải thích ngắn gọn cho chính mình vì sao nó phù hợp hơn.
+D. Lập nhịp kể theo các chặng: hook, định vị, phát triển, bước ngoặt, cao trào, kết quả/dư âm.
+E. Xác định các câu hỏi tò mò sẽ mở ra và vị trí chúng được giải đáp.
+F. Viết JSON theo đúng schema player.
+G. Đọc lại toàn bộ kịch bản, rà soát nguy cơ rời đi và chỉnh sửa.
+H. Kiểm tra lại tính dễ hiểu, trung thành với truyện gốc và tính hợp lệ của JSON/tài nguyên.
+
+Chỉ xuất bản phương án đã chọn trong JSON cuối cùng. Khi báo cáo sau khi tạo truyện, có thể nêu ngắn gọn thể loại/chiến lược kể chuyện đã chọn và lý do, nhưng không cần đưa các bản nháp bị loại trừ.
+
+==================================================
+
+==================================================
 III. NGUYÊN TẮC BIÊN KỊCH
 ==================================================
 
