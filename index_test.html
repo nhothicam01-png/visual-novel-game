@@ -1859,9 +1859,10 @@
       taoAnimationHieuUng(el,frames,opts={}) {
         if(!el || typeof el.animate!=='function') return null;
         const a=el.animate(frames,{duration:Math.max(120,Number(opts.duration)||1000),iterations:opts.iterations===undefined?1:opts.iterations,direction:opts.direction||'normal',easing:opts.easing||'ease-in-out',fill:'both'});
-        this.effectAnimations.push(a); el.style.willChange='transform, opacity, filter'; return a;
+        this.effectAnimations.push(a); el.style.willChange='transform, opacity, filter, scale'; return a;
       }
       apDungHieuUngKhung(khung) {
+        // Mỗi lượt thoại bắt đầu từ trạng thái gốc: hủy animation trước đó.
         this.dungHieuUngKhung();
         if(!khung || typeof khung!=='object') return;
         const cf=khung.hieu_ung_nhan_vat||khung.character_effect||khung.characterEffect||{};
@@ -1872,50 +1873,123 @@
         const kind=o=>String(read(o,['kieu','type','effect','loai'],'none')).toLowerCase().replace(/[ _]/g,'-');
         const speed=o=>num(read(o,['toc_do','speed'],1),1,.1,5);
         const power=o=>num(read(o,['cuong_do','intensity','strength'],1),1,0,3);
-        const loop=(o,d=true)=>{const v=read(o,['lap','loop','repeat'],d);return v===true||v===1||v==='true';};
+        // Không lặp mặc định. Chỉ lặp khi JSON chủ động đặt lap:true.
+        const loop=o=>{const v=read(o,['lap','loop','repeat'],false);return v===true||v===1||v==='true';};
         const dur=(o,base)=>{const v=read(o,['thoi_gian','duration','duration_ms'],null);return v===null?base:(Number(v)>30?num(v,base,120,120000):num(v,base/1000,.12,120)*1000);};
         const center='translateX(-50%)';
+        const repeat=o=>loop(o)?Infinity:1;
+
+        // Hiệu ứng nhân vật: chỉ áp dụng cho lượt thoại hiện tại và luôn trở về vị trí/kích thước gốc.
         if(this.layerChar&&this.layerChar.style.display!=='none'){
           const k=kind(cf),i=power(cf),d=dur(cf,900/speed(cf));let frames=null;
-          if(['idle','breath','breathing','tho','sway','swing'].includes(k)) frames=[{transform:center+' translateY(0) rotate(0deg)'},{transform:center+' translateY('+(-3*i)+'px) rotate('+(-.4*i)+'deg)'},{transform:center+' translateY(0)'},{transform:center+' translateY('+(2*i)+'px) rotate('+( .4*i)+'deg)'},{transform:center+' translateY(0)'}];
-          else if(['walk','walking','di-bo'].includes(k)) frames=[{transform:center+' translate(0,0)'},{transform:center+' translate('+(-8*i)+'px,'+(-5*i)+'px) rotate('+(1.2*i)+'deg)'},{transform:center+' translate('+(8*i)+'px,0) rotate('+(-1.2*i)+'deg)'},{transform:center+' translate(0,0)'}];
-          else if(['bounce','jump','nhay'].includes(k)) frames=[{transform:center+' translateY(0)'},{transform:center+' translateY('+(-18*i)+'px)'},{transform:center+' translateY(0)'}];
-          else if(['shake','tremble','rung'].includes(k)) frames=[{transform:center+' translateX(0)'},{transform:center+' translateX('+(-4*i)+'px) rotate('+(-1.2*i)+'deg)'},{transform:center+' translateX('+(4*i)+'px) rotate('+(1.2*i)+'deg)'},{transform:center+' translateX(0)'}];
-          else if(['zoom','focus','phong-to'].includes(k)) frames=[{transform:center+' scale(1)'},{transform:center+' scale('+(1+.06*i)+')'}];
-          else if(['enter-left','slide-left'].includes(k)) frames=[{transform:center+' translateX(-35vw)',opacity:0},{transform:center+' translateX(0)',opacity:1}];
-          else if(['enter-right','slide-right'].includes(k)) frames=[{transform:center+' translateX(35vw)',opacity:0},{transform:center+' translateX(0)',opacity:1}];
-          else if(['nod','nod-head','gat-dau'].includes(k)) frames=[{transform:center+' rotate(0)'},{transform:center+' rotate('+(5*i)+'deg)'},{transform:center+' rotate(0)'}];
-          if(frames)this.taoAnimationHieuUng(this.layerChar,frames,{duration:d,iterations:loop(cf,true)?Infinity:1});
+          if(['idle','breath','breathing','tho','sway','swing'].includes(k)) frames=[
+            {transform:center+' translateY(0) rotate(0deg)'},
+            {transform:center+' translateY('+(-2*i)+'px) rotate('+(-.25*i)+'deg)'},
+            {transform:center+' translateY(0) rotate(0deg)'},
+            {transform:center+' translateY('+(1*i)+'px) rotate('+( .2*i)+'deg)'},
+            {transform:center+' translateY(0) rotate(0deg)'}
+          ];
+          else if(['walk','walking','di-bo'].includes(k)) frames=[
+            {transform:center+' translate(0,0) rotate(0deg)'},
+            {transform:center+' translate('+(-6*i)+'px,'+(-3*i)+'px) rotate('+( .8*i)+'deg)'},
+            {transform:center+' translate('+(6*i)+'px,0) rotate('+(-.8*i)+'deg)'},
+            {transform:center+' translate(0,0) rotate(0deg)'}
+          ];
+          else if(['bounce','jump','nhay'].includes(k)) frames=[
+            {transform:center+' translateY(0)'},
+            {transform:center+' translateY('+(-12*i)+'px)'},
+            {transform:center+' translateY(0)'}
+          ];
+          else if(['shake','tremble','rung'].includes(k)) frames=[
+            {transform:center+' translateX(0) rotate(0deg)'},
+            {transform:center+' translateX('+(-3*i)+'px) rotate('+(-.7*i)+'deg)'},
+            {transform:center+' translateX('+(3*i)+'px) rotate('+( .7*i)+'deg)'},
+            {transform:center+' translateX(0) rotate(0deg)'}
+          ];
+          else if(['zoom','focus','phong-to'].includes(k)) frames=[
+            {transform:center+' scale(1)'},
+            {transform:center+' scale('+(1+.045*i)+')'},
+            {transform:center+' scale(1)'}
+          ];
+          else if(['enter-left','slide-left'].includes(k)) frames=[
+            {transform:center+' translateX(-35vw)',opacity:0},
+            {transform:center+' translateX(0)',opacity:1}
+          ];
+          else if(['enter-right','slide-right'].includes(k)) frames=[
+            {transform:center+' translateX(35vw)',opacity:0},
+            {transform:center+' translateX(0)',opacity:1}
+          ];
+          else if(['nod','nod-head','gat-dau'].includes(k)) frames=[
+            {transform:center+' rotate(0)'},
+            {transform:center+' rotate('+(3*i)+'deg)'},
+            {transform:center+' rotate(0)'}
+          ];
+          if(frames)this.taoAnimationHieuUng(this.layerChar,frames,{duration:d,iterations:repeat(cf)});
         }
+
+        // Hiệu ứng nền: kết thúc ở trạng thái ban đầu, không giữ mức zoom/độ lệch sang thoại sau.
         const bg=this.layerBgVideo.style.display==='block'?this.layerBgVideo:this.layerBgImg;
         if(bg&&bg.style.display!=='none'){
-          const k=kind(bf),i=power(bf),d=dur(bf,6000/speed(bf));let frames=null;
+          const k=kind(bf),i=power(bf),d=dur(bf,3200/speed(bf));let frames=null;
           const dir=String(read(bf,['huong','direction'],'left')).toLowerCase();
           const sign=/right|phai|down|xuong/.test(dir)?-1:1;
           if(['pan','move','slide','parallax','di-chuyen','lia'].includes(k)){
-            const x=/up|down|len|xuong/.test(dir)?0:sign*3.5*i;
-            const y=/up|len/.test(dir)?2.5*i:(/down|xuong/.test(dir)?-2.5*i:0);
-            frames=[{transform:'scale('+(1.06+.015*i)+') translate(0,0)'},{transform:'scale('+(1.06+.015*i)+') translate('+x+'%,'+y+'%)'}];
-          } else if(['zoom','zoom-in','approach','tien-gan'].includes(k)) frames=[{transform:'scale(1)'},{transform:'scale('+(1+.12*i)+')'}];
-          else if(['zoom-out','retreat','lui-xa'].includes(k)) frames=[{transform:'scale('+(1+.14*i)+')'},{transform:'scale(1)'}];
-          else if(['shake','rung'].includes(k)) frames=[{transform:'translateX(0)'},{transform:'translateX('+(-5*i)+'px)'},{transform:'translateX('+(5*i)+'px)'},{transform:'translateX(0)'}];
-          if(frames)this.taoAnimationHieuUng(bg,frames,{duration:d,iterations:loop(bf,true)?Infinity:1});
+            const x=/up|down|len|xuong/.test(dir)?0:sign*2.5*i;
+            const y=/up|len/.test(dir)?1.8*i:(/down|xuong/.test(dir)?-1.8*i:0);
+            const scale=1.035;
+            frames=[
+              {transform:'scale('+scale+') translate(0,0)'},
+              {transform:'scale('+scale+') translate('+x+'%,'+y+'%)'},
+              {transform:'scale('+scale+') translate(0,0)'}
+            ];
+          } else if(['zoom','zoom-in','approach','tien-gan'].includes(k)) frames=[
+            {transform:'scale(1)'},
+            {transform:'scale('+(1+.075*i)+')'},
+            {transform:'scale(1)'}
+          ];
+          else if(['zoom-out','retreat','lui-xa'].includes(k)) frames=[
+            {transform:'scale(1)'},
+            {transform:'scale('+(1-.045*i)+')'},
+            {transform:'scale(1)'}
+          ];
+          else if(['shake','rung'].includes(k)) frames=[
+            {transform:'translateX(0)'},
+            {transform:'translateX('+(-3*i)+'px)'},
+            {transform:'translateX('+(3*i)+'px)'},
+            {transform:'translateX(0)'}
+          ];
+          if(frames)this.taoAnimationHieuUng(bg,frames,{duration:d,iterations:repeat(bf)});
         }
-        const k=kind(xf),i=power(xf),sp=speed(xf);
+
+        // Camera zoom đồng bộ cả nền và nhân vật; dùng thuộc tính scale riêng để không ghi đè
+        // transform của hiệu ứng nhân vật. Cả hai cùng phóng/thu rồi trở về kích thước gốc.
+        const k=kind(xf),i=power(xf),sp=speed(xf),cameraDuration=dur(xf,900/sp);
         if(['shake','rung','screen-shake','rung-man-hinh'].includes(k)){
-          const p=5*i,g=.45*i;
-          this.taoAnimationHieuUng(this.container,[{transform:'translate(0,0) rotate(0)'},{transform:'translate('+(-p)+'px,'+(p*.45)+'px) rotate('+(-g)+'deg)'},{transform:'translate('+p+'px,'+(-p*.45)+'px) rotate('+g+'deg)'},{transform:'translate(0,0) rotate(0)'}],{duration:dur(xf,420/sp),iterations:loop(xf,false)?Infinity:1});
+          const p=3.5*i,g=.3*i;
+          this.taoAnimationHieuUng(this.container,[
+            {transform:'translate(0,0) rotate(0)'},
+            {transform:'translate('+(-p)+'px,'+(p*.4)+'px) rotate('+(-g)+'deg)'},
+            {transform:'translate('+p+'px,'+(-p*.4)+'px) rotate('+g+'deg)'},
+            {transform:'translate(0,0) rotate(0)'}
+          ],{duration:dur(xf,420/sp),iterations:repeat(xf)});
         } else if(['zoom','zoom-in','zoom-out'].includes(k)){
-          const from=k==='zoom-out'?1+.07*i:1,to=k==='zoom-out'?1:1+.07*i;
-          this.taoAnimationHieuUng(this.container,[{transform:'scale('+from+')'},{transform:'scale('+to+')'}],{duration:dur(xf,700/sp),iterations:loop(xf,false)?Infinity:1});
+          const from=1,to=k==='zoom-out'?1-.035*i:1+.045*i;
+          const frames=[{scale:String(from)},{scale:String(to)},{scale:'1'}];
+          if(bg)this.taoAnimationHieuUng(bg,frames,{duration:cameraDuration,iterations:repeat(xf)});
+          if(this.layerChar&&this.layerChar.style.display!=='none'){
+            this.taoAnimationHieuUng(this.layerChar,frames,{duration:cameraDuration,iterations:repeat(xf)});
+          }
         } else if(['pan','move','lia'].includes(k)){
-          const dir=String(read(xf,['huong','direction'],'left')).toLowerCase(),dx=/right|phai/.test(dir)?-10*i:10*i;
-          this.taoAnimationHieuUng(this.container,[{transform:'translateX(0)'},{transform:'translateX('+dx+'px)'}],{duration:dur(xf,1200/sp),iterations:loop(xf,false)?Infinity:1});
+          const dir=String(read(xf,['huong','direction'],'left')).toLowerCase(),dx=/right|phai/.test(dir)?-7*i:7*i;
+          this.taoAnimationHieuUng(this.container,[
+            {transform:'translateX(0)'},
+            {transform:'translateX('+dx+'px)'},
+            {transform:'translateX(0)'}
+          ],{duration:dur(xf,1200/sp),iterations:repeat(xf)});
         } else if(['flash','chop-sang'].includes(k)&&this.layerFxFlash){
-          this.taoAnimationHieuUng(this.layerFxFlash,[{opacity:0},{opacity:Math.min(.9,.45*i)},{opacity:0}],{duration:dur(xf,360),iterations:1,easing:'ease-out'});
+          this.taoAnimationHieuUng(this.layerFxFlash,[{opacity:0},{opacity:Math.min(.55,.3*i)},{opacity:0}],{duration:dur(xf,360),iterations:1,easing:'ease-out'});
         }
       }
-
       async xuLyKhung(khung, preview = false, generation = this.playbackGeneration) {
         if (generation !== this.playbackGeneration) return;
         this.xoaChuKhongAnCanvas();
