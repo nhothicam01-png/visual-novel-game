@@ -50,8 +50,7 @@
 }
 
 /* BACKGROUND */
-#layer-bg-img.effect-bg-zoom,
-#layer-bg-video.effect-bg-zoom {
+#layer-bg-motion.effect-bg-zoom {
   animation: vn-bg-zoom var(--vn-effect-duration) ease-in-out both;
   will-change: transform;
 }
@@ -59,13 +58,11 @@
   0%, 100% { transform: scale(1); }
   50% { transform: scale(var(--vn-bg-zoom-scale)); }
 }
-#layer-bg-img.effect-bg-pan-left,
-#layer-bg-video.effect-bg-pan-left {
+#layer-bg-motion.effect-bg-pan-left {
   animation: vn-bg-pan-left var(--vn-effect-duration) ease-in-out both;
   will-change: transform;
 }
-#layer-bg-img.effect-bg-pan-right,
-#layer-bg-video.effect-bg-pan-right {
+#layer-bg-motion.effect-bg-pan-right {
   animation: vn-bg-pan-right var(--vn-effect-duration) ease-in-out both;
   will-change: transform;
 }
@@ -77,8 +74,7 @@
   0%, 100% { transform: scale(1.035) translateX(0); }
   50% { transform: scale(1.035) translateX(var(--vn-bg-pan-x-neg)); }
 }
-#layer-bg-img.effect-bg-shake,
-#layer-bg-video.effect-bg-shake {
+#layer-bg-motion.effect-bg-shake {
   animation: vn-bg-shake var(--vn-effect-duration) ease-in-out both;
   will-change: transform;
 }
@@ -111,15 +107,13 @@
 }
 
 /* Camera zoom applies to background and character, not dialogue. */
-#layer-bg-img.effect-camera-zoom-in,
-#layer-bg-video.effect-camera-zoom-in,
+#layer-bg-motion.effect-camera-zoom-in,
 #layer-character.effect-camera-zoom-in,
 #layer-character-buffer.effect-camera-zoom-in {
   animation: vn-camera-zoom-in var(--vn-effect-duration) ease-in-out both;
   will-change: scale;
 }
-#layer-bg-img.effect-camera-zoom-out,
-#layer-bg-video.effect-camera-zoom-out,
+#layer-bg-motion.effect-camera-zoom-out,
 #layer-character.effect-camera-zoom-out,
 #layer-character-buffer.effect-camera-zoom-out {
   animation: vn-camera-zoom-out var(--vn-effect-duration) ease-in-out both;
@@ -146,10 +140,6 @@
 .scene-entering.effect-char-shake { animation: sceneFadeIn .45s ease both, vn-char-shake var(--vn-effect-duration) ease-in-out both; }
 .scene-entering.effect-char-walk-left { animation: sceneFadeIn .45s ease both, vn-char-walk-left var(--vn-effect-duration) ease-in-out both; }
 .scene-entering.effect-char-walk-right { animation: sceneFadeIn .45s ease both, vn-char-walk-right var(--vn-effect-duration) ease-in-out both; }
-.scene-entering.effect-bg-zoom { animation: sceneFadeIn .45s ease both, vn-bg-zoom var(--vn-effect-duration) ease-in-out both; }
-.scene-entering.effect-bg-pan-left { animation: sceneFadeIn .45s ease both, vn-bg-pan-left var(--vn-effect-duration) ease-in-out both; }
-.scene-entering.effect-bg-pan-right { animation: sceneFadeIn .45s ease both, vn-bg-pan-right var(--vn-effect-duration) ease-in-out both; }
-.scene-entering.effect-bg-shake { animation: sceneFadeIn .45s ease both, vn-bg-shake var(--vn-effect-duration) ease-in-out both; }
 .scene-entering.effect-camera-zoom-in { animation: sceneFadeIn .45s ease both, vn-camera-zoom-in var(--vn-effect-duration) ease-in-out both; }
 .scene-entering.effect-camera-zoom-out { animation: sceneFadeIn .45s ease both, vn-camera-zoom-out var(--vn-effect-duration) ease-in-out both; }
 
