@@ -571,15 +571,15 @@
 </section>
   <section id="video-export-tools" aria-label="Xuất video WebM">
 <h4>🎬 Xuất video kịch bản (WebM)</h4>
-<p style="font-size:.76rem;color:#cbd5e1;line-height:1.5;">Dựng video từ nền, nhân vật, lớp hiệu ứng, hộp thoại, Piper TTS, nhạc nền và âm thanh hiệu ứng. Giữ trang mở trong khi xuất.</p>
+<p style="font-size:.76rem;color:#cbd5e1;line-height:1.5;">Ghi trực tiếp màn hình trình phát để giữ nguyên khung thoại, tên nhân vật, hiệu ứng CSS và chuyển động. Âm thanh TTS Piper, nhạc nền và hiệu ứng được ghép vào video.</p>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
-<label style="font-size:.78rem">Tỷ lệ <select id="video-export-ratio" class="btn"><option value="landscape">Ngang 1920×1080</option><option value="portrait">Dọc 1080×1920</option></select></label>
+<span style="font-size:.78rem;color:#cbd5e1">Khung hình theo màn hình đang chia sẻ</span>
 <label style="font-size:.78rem">Chất lượng <select id="video-export-quality" class="btn"><option value="standard">Tiêu chuẩn · 4 Mbps</option><option value="high">Cao · 8 Mbps</option><option value="compact">Nhẹ · 2 Mbps</option></select></label>
 </div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="btn-video-export" type="button">🎥 Bắt đầu xuất WebM</button><button class="btn" id="btn-video-cancel" type="button" disabled>⏹ Hủy xuất</button></div>
 <div id="video-export-status" role="status" style="font-size:.76rem;color:#94a3b8;margin-top:8px">Tải hoặc import JSON trước khi xuất.</div>
 <progress id="video-export-progress" max="100" value="0" style="width:100%;height:10px;accent-color:#38bdf8"></progress>
-<p style="font-size:.7rem;color:#94a3b8">Nên thử kịch bản ngắn trước. Xuất video dài tiêu tốn pin, RAM và dung lượng. Hiệu ứng CSS phức tạp có thể khác đôi chút so với player.</p>
+<p style="font-size:.7rem;color:#94a3b8">Khi được hỏi, hãy chọn chia sẻ màn hình/trình duyệt đang phát truyện. Trên Android có thể ghi cả thanh trạng thái hoặc thanh trình duyệt. Nên bật toàn màn hình trước khi xuất.</p>
 </section>
   <section id="dialogue-settings" aria-label="Cài đặt chữ thoại">
     <h4>💬 Tùy chỉnh chữ thoại</h4>
@@ -2343,21 +2343,45 @@ function wavEncode(b){const n=b.numberOfChannels,rate=b.sampleRate,len=b.length,
 </script>
 <script>
 (()=> {
-const $=id=>document.getElementById(id);let busy=false,cancelled=false,rec=null,chunks=[],raf=0,ctx=null,piper=null,srcNow=null,oldTts=null;
+const $=id=>document.getElementById(id);let busy=false,cancelled=false,rec=null,chunks=[],ctx=null,piper=null,srcNow=null,oldTts=null,displayStream=null;
 const status=t=>$('video-export-status').textContent=t,progress=n=>$('video-export-progress').value=n;
 const name=()=>String(trinhPhat.duLieu?.ten_kich_ban||trinhPhat.duLieu?.title||trinhPhat.tenFileKichBan||'visual-novel').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'')||'visual-novel';
-function fit(c,e,w,h,contain=false){if(!e||e.style.display==='none'||!e.src)return;let iw=e.videoWidth||e.naturalWidth,ih=e.videoHeight||e.naturalHeight;if(!iw||!ih)return;let z=contain?Math.min(w/iw,h/ih):Math.max(w/iw,h/ih),dw=iw*z,dh=ih*z;c.drawImage(e,(w-dw)/2,(h-dh)/2,dw,dh)}
-function paint(cv){const c=cv.getContext('2d'),w=cv.width,h=cv.height;c.fillStyle='#000';c.fillRect(0,0,w,h);fit(c,trinhPhat.layerBgVideo.style.display==='block'?trinhPhat.layerBgVideo:trinhPhat.layerBgImg,w,h);fit(c,trinhPhat.layerChar,w,h,true);fit(c,trinhPhat.layerVfx,w,h,true);
-const box=trinhPhat.dialogueCanvas;if(box.style.display!=='none'&&trinhPhat.caiDatThoai.visible){let cfg=trinhPhat.caiDatThoai,bw=w*.92,bh=h*.17,x=(w-bw)/2,y=h-bh-18;c.globalAlpha=(Number(cfg.bgOpacity)||62)/100;c.fillStyle=cfg.bgColor||'#050811';c.beginPath();c.roundRect(x,y,bw,bh,14);c.fill();c.globalAlpha=1;c.textAlign='center';c.textBaseline='top';let nm=trinhPhat.speakerText.textContent.trim(),tx=trinhPhat.dialogueText.textContent.trim(),pad=34;if(nm){c.font='bold '+Math.max(22,w/65)+'px sans-serif';c.fillStyle=cfg.highlightColor||'#ffe66d';c.fillText(nm,w/2,y+12,bw-pad)}c.font='bold '+Math.max(24,(Number(cfg.fontSize)||28)*w/trinhPhat.container.clientWidth)+'px sans-serif';c.fillStyle=cfg.color||'#fff';c.strokeStyle=cfg.strokeColor||'#000';c.lineWidth=3;c.shadowColor='#000';c.shadowBlur=4;let words=tx.split(/\s+/),lines=[],line='';for(let word of words){let t=line?line+' '+word:word;if(c.measureText(t).width>bw-pad&&line){lines.push(line);line=word}else line=t}if(line)lines.push(line);lines.slice(0,4).forEach((v,i)=>{let yy=y+(nm?52:18)+i*38;c.strokeText(v,w/2,yy,bw-pad);c.fillText(v,w/2,yy,bw-pad)})} }
-function loop(cv){paint(cv);raf=requestAnimationFrame(()=>loop(cv))}
 async function audioSetup(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();let dest=ctx.createMediaStreamDestination();for(let el of [trinhPhat.audioBgm,trinhPhat.audioSfx]){let n=el.__vnExportSource;if(!n){n=ctx.createMediaElementSource(el);el.__vnExportSource=n}n.connect(ctx.destination);n.connect(dest)}await ctx.resume();return dest}
 async function speak(s,t,done){try{let blob=await piper.predict(String(t).trim());if(cancelled){done();return}let b=await ctx.decodeAudioData(await blob.arrayBuffer()),src=ctx.createBufferSource();src.buffer=b;src.connect(ctx.destination);src.connect(window.__vnWebmDest);srcNow=src;src.onended=()=>{srcNow=null;done()};src.start()}catch(e){status('Lỗi Piper TTS: '+e.message);done()}}
-function clean(){busy=false;$('btn-video-export').disabled=false;$('btn-video-cancel').disabled=true;if(oldTts)trinhPhat.docVanBanBangTTS=oldTts;delete window.__vnWebmDest;/* Giữ AudioContext để tái sử dụng MediaElementAudioSourceNode ở lần xuất sau. */}
-function finish(save){if(raf)cancelAnimationFrame(raf);raf=0;if(rec&&rec.state!=='inactive'){rec.onstop=()=>{if(save&&chunks.length){let blob=new Blob(chunks,{type:rec.mimeType||'video/webm'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name()+'.webm';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);progress(100);status('Hoàn tất · '+(blob.size/1048576).toFixed(1)+' MB · WebM')}else status('Đã hủy xuất video.');clean()};rec.stop()}else clean()}
-async function start(){if(busy)return;let ds=trinhPhat.duLieu?.danh_sach||trinhPhat.duLieu?.KichBanToanBo||[];if(!ds.length){status('Hãy tải/import JSON có danh_sach trước.');return}if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){status('Trình duyệt chưa hỗ trợ ghi WebM từ canvas. Hãy thử Chrome mới nhất.');return}busy=true;cancelled=false;chunks=[];progress(0);$('btn-video-export').disabled=true;$('btn-video-cancel').disabled=false;
-try{status('Đang tải Piper TTS...');let lib=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');piper=new lib.TtsSession({voiceId:'vi_VN-vais1000-medium',allowLocalModels:true,fallbackStrategy:'cdn'});let dest=await audioSetup();window.__vnWebmDest=dest;let portrait=$('video-export-ratio').value==='portrait',cv=document.createElement('canvas');cv.width=portrait?1080:1920;cv.height=portrait?1920:1080;let stream=cv.captureStream(30);dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));let q=$('video-export-quality').value,rate=q==='high'?8000000:q==='compact'?2000000:4000000,mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));if(!mime)throw Error('Không tìm thấy bộ mã hóa WebM.');rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:rate});rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};rec.start(1000);loop(cv);oldTts=trinhPhat.docVanBanBangTTS.bind(trinhPhat);trinhPhat.docVanBanBangTTS=(speaker,text,done)=>speak(speaker,text,done);trinhPhat.dung();trinhPhat.currentIndex=0;trinhPhat.playbackStarted=false;trinhPhat.subtitlePlaybackRecords=new Map();status('Đang bắt đầu phát và ghi video...');await trinhPhat.batDau();while(!cancelled&&(trinhPhat.dangChay||trinhPhat.currentIndex<ds.length)){let n=Math.min(trinhPhat.currentIndex,ds.length);progress(Math.min(99,Math.round(n/ds.length*100)));status('Đang xuất WebM: '+n+' / '+ds.length+' lượt thoại');if(!trinhPhat.dangChay&&trinhPhat.currentIndex>=ds.length)break;await new Promise(r=>setTimeout(r,300))}if(cancelled){finish(false);return}await new Promise(r=>setTimeout(r,500));finish(true)
+function clean(){busy=false;$('btn-video-export').disabled=false;$('btn-video-cancel').disabled=true;if(oldTts)trinhPhat.docVanBanBangTTS=oldTts;delete window.__vnWebmDest;if(displayStream){displayStream.getTracks().forEach(t=>t.stop());displayStream=null}}
+function finish(save){if(rec&&rec.state!=='inactive'){rec.onstop=()=>{if(save&&chunks.length){let blob=new Blob(chunks,{type:rec.mimeType||'video/webm'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name()+'.webm';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);progress(100);status('Hoàn tất · '+(blob.size/1048576).toFixed(1)+' MB · WebM')}else status('Đã hủy xuất video.');clean()};rec.stop()}else clean()}
+async function start(){if(busy)return;let ds=trinhPhat.duLieu?.danh_sach||trinhPhat.duLieu?.KichBanToanBo||[];if(!ds.length){status('Hãy tải/import JSON trước khi xuất.');return}if(!window.MediaRecorder||!navigator.mediaDevices?.getDisplayMedia){status('Trình duyệt này chưa hỗ trợ ghi màn hình. Hãy thử Chrome mới nhất hoặc quay màn hình Android.');return}busy=true;cancelled=false;chunks=[];progress(0);$('btn-video-export').disabled=true;$('btn-video-cancel').disabled=false;
+try{
+status('Hãy chọn chia sẻ màn hình/trình duyệt trong hộp thoại quyền ghi hình...');
+/* Phải yêu cầu chia sẻ ngay từ thao tác bấm nút để trình duyệt cho phép hiển thị hộp thoại. */
+const screenPromise=navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:false});
+displayStream=await screenPromise;
+const screenTrack=displayStream.getVideoTracks()[0];if(!screenTrack)throw Error('Không nhận được hình ảnh màn hình.');
+screenTrack.addEventListener('ended',()=>{if(busy&&!cancelled){cancelled=true;try{trinhPhat.dung()}catch(_){}finish(false)}});
+status('Đang tải Piper TTS...');
+let lib=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');
+piper=new lib.TtsSession({voiceId:'vi_VN-vais1000-medium',allowLocalModels:true,fallbackStrategy:'cdn'});
+let dest=await audioSetup();window.__vnWebmDest=dest;
+let stream=new MediaStream([screenTrack,...dest.stream.getAudioTracks()]);
+let q=$('video-export-quality').value,rate=q==='high'?8000000:q==='compact'?2000000:4000000,mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));
+if(!mime)throw Error('Không tìm thấy bộ mã hóa WebM.');
+rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:rate});
+rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};
+rec.start(1000);
+oldTts=trinhPhat.docVanBanBangTTS.bind(trinhPhat);trinhPhat.docVanBanBangTTS=(speaker,text,done)=>speak(speaker,text,done);
+trinhPhat.dung();trinhPhat.currentIndex=0;trinhPhat.playbackStarted=false;trinhPhat.subtitlePlaybackRecords=new Map();
+status('Đang phát và ghi trực tiếp màn hình trình phát...');
+await trinhPhat.batDau();
+while(!cancelled&&(trinhPhat.dangChay||trinhPhat.currentIndex<ds.length)){
+let n=Math.min(trinhPhat.currentIndex,ds.length);progress(Math.min(99,Math.round(n/ds.length*100)));status('Đang xuất WebM: '+n+' / '+ds.length+' lượt thoại');
+if(!trinhPhat.dangChay&&trinhPhat.currentIndex>=ds.length)break;
+await new Promise(r=>setTimeout(r,300))
+}
+if(cancelled){finish(false);return}
+await new Promise(r=>setTimeout(r,500));finish(true)
 }catch(e){console.error(e);status('Không xuất được: '+(e.message||e));if(rec&&rec.state!=='inactive')finish(false);else clean()}}
-$('btn-video-export').addEventListener('click',start);$('btn-video-cancel').addEventListener('click',()=>{if(!busy)return;cancelled=true;status('Đang dừng...');try{srcNow?.stop()}catch(_){}try{trinhPhat.dung()}catch(_){}finish(false)});
+$('btn-video-export').addEventListener('click',start);
+$('btn-video-cancel').addEventListener('click',()=>{if(!busy)return;cancelled=true;status('Đang dừng...');try{srcNow?.stop()}catch(_){}try{trinhPhat.dung()}catch(_){}finish(false)});
 })();
 </script>
 </body>
