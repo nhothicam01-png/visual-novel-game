@@ -14,6 +14,7 @@
       char_move_right: { label:'Nhân vật di chuyển sang phải, không nhấc khỏi mặt đất', transform:[{transform:'translateX(0)'},{transform:'translateX(17px)'},{transform:'translateX(34px)'}], duration:900, once:true },
       char_fade_out: { label:'Nhân vật mờ dần biến mất', opacity:[{opacity:1},{opacity:0}], duration:1100, once:true },
       char_ghost: { label:'Nhân vật trong suốt như linh hồn', filter:'opacity(0.48) saturate(0.65) brightness(1.12)' },
+      char_blur: { label:'Nhân vật từ từ mất nét rồi nhòe rõ rệt', filter:[{filter:'blur(0px)'},{filter:'blur(4px)'}], duration:1500, once:true },
       char_giant: { label:'Nhân vật phóng to từ điểm tiếp đất', transform:[{transform:'scale(1)'},{transform:'scale(1.65)'}], duration:900, once:true }
     },
     nen: {
@@ -37,7 +38,7 @@
       camera_pan_right: { label:'Camera trượt phải', transform:[{transform:'translateX(0)'},{transform:'translateX(5%)'}], duration:2800, once:true },
       camera_pan_up: { label:'Camera trượt lên', transform:[{transform:'translateY(0)'},{transform:'translateY(-5%)'}], duration:2800, once:true },
       camera_pan_down: { label:'Camera trượt xuống', transform:[{transform:'translateY(0)'},{transform:'translateY(5%)'}], duration:2800, once:true },
-      camera_misty: { label:'Camera mờ ảo', filter:'blur(1px) brightness(1.08)' },
+      camera_misty: { label:'Toàn cảnh từ từ mất nét: nền, nhân vật và lớp hiệu ứng', filter:[{filter:'blur(0px) brightness(1)'},{filter:'blur(3.5px) brightness(1.08)'}], duration:1600, once:true },
       camera_spin: { label:'Camera xoay vòng', transform:[{transform:'rotate(-2deg) scale(1.1)'},{transform:'rotate(2deg) scale(1.1)'},{transform:'rotate(-2deg) scale(1.1)'}], duration:2200 },
       camera_tilt_left: { label:'Camera nghiêng trái', transform:[{transform:'rotate(0deg)'},{transform:'rotate(-7deg)'}], duration:900, once:true },
       camera_tilt_right: { label:'Camera nghiêng phải', transform:[{transform:'rotate(0deg)'},{transform:'rotate(7deg)'}], duration:900, once:true }
@@ -62,7 +63,13 @@
       const a = node.animate(def.opacity, {duration:def.duration || 1000, iterations:def.once ? 1 : Infinity, easing:'ease-in-out', fill:def.once ? 'forwards' : 'none'});
       list.push(a);
     }
-    if (def.filter) node.style.filter = [node.style.filter, def.filter].filter(Boolean).join(' ');
+    if (Array.isArray(def.filter)) {
+      // Filter keyframes tạo blur chuyển dần thay vì bật mờ tức thì.
+      const a = node.animate(def.filter, {duration:def.duration || 1000, iterations:def.once ? 1 : Infinity, easing:def.easing || 'ease-in-out', fill:def.once ? 'forwards' : 'none'});
+      list.push(a);
+    } else if (def.filter) {
+      node.style.filter = [node.style.filter, def.filter].filter(Boolean).join(' ');
+    }
     active.set(node, list); allNodes.add(node);
   }
   function apply(config, targets) {
