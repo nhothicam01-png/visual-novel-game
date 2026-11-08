@@ -1,0 +1,30 @@
+/* Hiệu ứng nhân vật - tách khỏi index_test.html
+   Bob dùng top/bottom để không ghi đè transform định vị video. */
+#layer-character.effect-char-bob,
+#layer-character-buffer.effect-char-bob {
+  animation: vn-character-bob-landscape var(--vn-bob-duration, 900ms) ease-in-out infinite !important;
+  will-change: top;
+}
+
+@keyframes vn-character-bob-landscape {
+  0%, 100% { top: 0; }
+  45% { top: calc(0px - var(--vn-bob-height, 16px)); }
+}
+
+#game-container.portrait #layer-character.effect-char-bob,
+#game-container.portrait #layer-character-buffer.effect-char-bob {
+  animation: vn-character-bob-portrait var(--vn-bob-duration, 900ms) ease-in-out infinite !important;
+  will-change: bottom;
+}
+
+@keyframes vn-character-bob-portrait {
+  0%, 100% { bottom: 0; }
+  45% { bottom: calc(0px - var(--vn-bob-height, 16px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #layer-character.effect-char-bob,
+  #layer-character-buffer.effect-char-bob {
+    animation-duration: 1800ms !important;
+  }
+}
