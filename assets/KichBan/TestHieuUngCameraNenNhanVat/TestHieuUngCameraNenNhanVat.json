@@ -481,6 +481,23 @@
       "nhan_vat": "2",
       "ten_hien_thi": "Lan",
       "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "noi_dung": "Kiểm tra riêng hiệu ứng char_blur: chỉ nhân vật từ từ mất nét, nền vẫn giữ nguyên độ rõ.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "am_thanh_nen": "",
+      "am_thanh_hieu_ung": "",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char_blur"
+        ],
+        "nen": [],
+        "camera": []
+      }
+    },
+    {
+      "nhan_vat": "2",
+      "ten_hien_thi": "Lan",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "noi_dung": "Ôi, cả góc nhìn đang xoay vòng!",
       "anh_nen": "con_duong_dem.png",
       "anh_hieu_ung": "",
