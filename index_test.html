@@ -128,36 +128,7 @@
       to { opacity: 1; }
     }
 
-    /* Nền bối cảnh rung lắc từ từ ở mỗi thoại.
-       Phóng nền lên một chút (--bg-shake-scale) để khi lắc không lộ viền đen của khung.
-       Chỉnh nhanh/chậm bằng --bg-shake-duration, mạnh/nhẹ bằng --bg-shake-move và --bg-shake-rotate. */
-    #game-container {
-      --bg-shake-duration: 8s;
-      --bg-shake-scale: 1.06;
-      --bg-shake-move: 0.8%;
-      --bg-shake-rotate: 0.25deg;
-    }
-    .bg-shake {
-      transform-origin: center center;
-      will-change: transform;
-      animation: bgShake var(--bg-shake-duration) ease-in-out infinite;
-    }
-    /* Giữ nguyên hiệu ứng fade-in của cảnh và chạy song song với rung lắc. */
-    .bg-shake.scene-entering {
-      animation: sceneFadeIn 0.45s ease both, bgShake var(--bg-shake-duration) ease-in-out infinite;
-    }
-    @keyframes bgShake {
-      0%, 100% { transform: scale(var(--bg-shake-scale)) translate(0, 0) rotate(0deg); }
-      20% { transform: scale(var(--bg-shake-scale)) translate(calc(var(--bg-shake-move) * -1), calc(var(--bg-shake-move) * 0.6)) rotate(calc(var(--bg-shake-rotate) * -1)); }
-      40% { transform: scale(var(--bg-shake-scale)) translate(calc(var(--bg-shake-move) * 0.9), calc(var(--bg-shake-move) * -0.7)) rotate(calc(var(--bg-shake-rotate) * 0.8)); }
-      60% { transform: scale(var(--bg-shake-scale)) translate(calc(var(--bg-shake-move) * -0.6), calc(var(--bg-shake-move) * -0.9)) rotate(var(--bg-shake-rotate)); }
-      80% { transform: scale(var(--bg-shake-scale)) translate(var(--bg-shake-move), calc(var(--bg-shake-move) * 0.5)) rotate(calc(var(--bg-shake-rotate) * -0.8)); }
-    }
-    /* Người dùng bật giảm chuyển động trong hệ điều hành: tắt rung lắc. */
-    @media (prefers-reduced-motion: reduce) {
-      .bg-shake, .bg-shake.scene-entering { animation: none; }
-      .bg-shake.scene-entering { animation: sceneFadeIn 0.45s ease both; }
-    }
+    /* Hiệu ứng chuyển động được quản lý bởi effects.js để có thể cộng hưởng. */
 
     #layer-character, #layer-character-buffer.character-exiting {
       pointer-events: none;
@@ -588,6 +559,7 @@
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
   <audio id="audio-tts" crossorigin="anonymous"></audio>
 
+  <script src="./effects.js"></script>
   <script>
     class TrinhPhatKichBanWeb {
       constructor() {
@@ -1982,6 +1954,16 @@
           this.layerChar.classList.add('scene-entering');
         }
 
+        // Áp dụng hiệu ứng riêng của lượt thoại; các ID được tra cứu trong effects.js.
+        if (window.VNEffects) {
+          const cameraTargets = [this.layerBgImg, this.layerBgVideo, this.layerChar, this.layerCharBuffer, this.layerVfx].filter(Boolean);
+          window.VNEffects.apply(khung.hieu_ung || {}, {
+            nen: nenCanHienThi === 'video' ? this.layerBgVideo : this.layerBgImg,
+            nhan_vat: nhanVat && bieuCam ? this.layerChar : null,
+            camera: cameraTargets
+          });
+        }
+
         if (anhHieuUng && anhHieuUng.trim() !== "") {
           const vfxImg = this.boDemHieuUng.get(anhHieuUng);
           this.layerVfx.src = vfxImg ? vfxImg.src : `assets/HieuUng/${anhHieuUng}`;
@@ -2120,6 +2102,7 @@
       }
 
       dung() {
+        if (window.VNEffects) window.VNEffects.clear();
         this.luuTienDoPhat();
         this.playbackGeneration++;
         this.playbackStarted = false;
