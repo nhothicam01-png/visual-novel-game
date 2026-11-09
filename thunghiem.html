@@ -563,7 +563,8 @@ async function playLineAudio(line){
 let browserSpeechState=null;
 function buildBrowserUtterance(state){
  const synth=window.speechSynthesis;if(!synth||!state)return;
- const remaining=state.text.slice(state.offset);
+ const baseOffset=state.offset;
+ const remaining=state.text.slice(baseOffset);
  if(!remaining){finishBrowserSpeech(state);return}
  const utterance=new SpeechSynthesisUtterance(remaining);
  utterance.lang=state.lang;if(state.voice)utterance.voice=state.voice;
@@ -571,7 +572,7 @@ function buildBrowserUtterance(state){
  state.utterance=utterance;previewSpeech=utterance;
  utterance.onboundary=e=>{
   if(browserSpeechState!==state||state.paused)return;
-  if(Number.isFinite(e.charIndex))state.offset=Math.min(state.text.length,state.offset+e.charIndex);
+  if(Number.isFinite(e.charIndex))state.offset=Math.min(state.text.length,baseOffset+e.charIndex);
  };
  utterance.onend=()=>{
   if(browserSpeechState!==state||state.paused)return;
