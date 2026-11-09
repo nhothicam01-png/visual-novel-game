@@ -395,444 +395,309 @@ Không cố nhồi nhét drama hoặc tình tiết không có trong truyện g�
 - Có thể rút gọn các đoạn lặp lại, nhưng không làm mất ý nghĩa.
 - Không biến câu chuyện thành bản tóm tắt sơ sài.
 
-==================================================
-IV. QUY TẮC SỬ DỤNG NHÂN VẬT
-==================================================
-
-Tất cả nhân vật nằm trong thư viện:
-assets/NhanVat/
-
-Mỗi thư mục con tương ứng với một nhân vật.
-
-Tên thư mục là MÃ TÀI NGUYÊN của nhân vật, không bắt buộc phải là tên hiển thị trong câu chuyện.
-
-QUY TẮC ĐẶT TÊN NHÂN VẬT:
-- AI được phép và được khuyến khích tự sáng tạo tên riêng phù hợp với nội dung truyện.
-- Tên phải tự nhiên, dễ nhớ, phù hợp giới tính, độ tuổi, bối cảnh văn hóa và tính cách nhân vật.
-- Các nhân vật trong cùng một truyện phải có tên riêng phân biệt, tránh trùng hoặc quá giống nhau.
-- Nếu truyện gốc đã có tên nhân vật, phải giữ nguyên tên đó; không tự ý đổi tên.
-- Nếu truyện gốc không đặt tên, hãy tự sáng tạo tên phù hợp. Với nhân vật phụ rất nhỏ hoặc chỉ xuất hiện thoáng qua, có thể dùng cách gọi theo vai trò nếu hợp lý.
-- Không dùng các mã thư mục như "1", "2", "3"... làm tên hiển thị, trừ khi đó thực sự là tên nhân vật trong truyện.
-
-CÁCH LƯU TRONG JSON:
-- Trường "nhan_vat": luôn ghi chính xác tên thư mục tài nguyên đang tồn tại trong assets/NhanVat/. Trường này dùng để player tìm đúng hình ảnh/biểu cảm, tuyệt đối không thay bằng tên tự sáng tạo.
-- Trường "ten_hien_thi": ghi tên riêng của nhân vật để hiển thị trong câu chuyện/giao diện. Đây là tên do truyện gốc cung cấp hoặc AI sáng tạo theo quy tắc trên.
-- Ví dụ: nhân vật dùng thư mục "1" nhưng có tên trong truyện là "Linh" thì ghi "nhan_vat": "1" và "ten_hien_thi": "Linh".
-- Mỗi nhân vật phải giữ tên hiển thị nhất quán trong toàn bộ JSON.
-
-Các file .webm bên trong thư mục nhân vật là những biểu cảm hoặc trạng thái có thể sử dụng.
-
-Quy trình:
-1. Liệt kê toàn bộ thư mục nhân vật.
-2. Đọc danh sách file .webm của từng nhân vật.
-3. Xác định nhân vật nào phù hợp với truyện.
-4. Gán tên hiển thị riêng cho từng nhân vật theo quy tắc trên.
-5. Chọn biểu cảm phù hợp với từng câu thoại.
-
-Không được tự bịa tên thư mục tài nguyên hoặc tên biểu cảm. Chỉ được sáng tạo tên hiển thị trong trường "ten_hien_thi".
-
-Chỉ sử dụng tên file và thư mục thực sự tồn tại.
-
-Tên biểu cảm phải khớp với file thực tế. Các tên như Happy, Sad, Angry, Shock, Cry, Normal hoặc Idle chỉ là ví dụ minh họa, không được mặc định rằng chúng tồn tại.
-
-Nhân vật không xuất hiện trong lượt thoại có thể để trống trường nhân vật theo cấu trúc mà player hỗ trợ.
 
 ==================================================
-V. PHÂN BỔ THƯ MỤC NHÂN VẬT THÔNG MINH THEO CỐT TRUYỆN
+IV. NGUYÊN TẮC TÀI NGUYÊN VÀ NHÂN VẬT
 ==================================================
 
-Mục tiêu: không mặc định nhân vật truyện phải lần lượt dùng thư mục 1, 2, 3, 4... Hãy khảo sát tên thư mục nhân vật và các dấu hiệu có thật trong thư mục để chọn đối tượng hình ảnh phù hợp nhất với vai trò trong cốt truyện.
+Repository: nhothicam01-png/visual-novel-game
 
-1. QUÉT VÀ PHÂN TÍCH THƯ MỤC NHÂN VẬT
-- Liệt kê tất cả thư mục con thực tế trong assets/NhanVat/.
-- Đọc chính xác tên từng thư mục, tên file bên trong và các thông tin mô tả có sẵn (nếu có).
-- Phân tích tên thư mục để tìm dấu hiệu ngữ nghĩa như tên riêng, giới tính được thể hiện rõ, độ tuổi, vai trò, loại nhân vật hoặc đặc điểm được đặt tên trong thư mục.
-- Kết hợp các dấu hiệu từ tên file biểu cảm và cấu trúc thư mục để hiểu thêm về nhân vật, nhưng không suy diễn những đặc điểm ngoại hình/tính cách mà dữ liệu không thể hiện.
-- Nếu thư mục chỉ mang mã số hoặc tên chung chung như 1, 2, 3, nhanvat_a, không thể xác định danh tính hay ngoại hình chỉ từ tên đó.
-- Không được coi số thứ tự thư mục là thứ tự vai diễn, mức độ quan trọng hoặc giới tính.
+Thư viện:
+- Nhân vật: assets/NhanVat/
+- Hình nền: assets/Nen/
+- Hiệu ứng hình ảnh dạng tệp (nếu có): assets/HieuUng/
+- Nhạc nền: assets/AmThanh/Nen/
+- Hiệu ứng âm thanh: assets/AmThanh/HieuUng/
+- Kịch bản: assets/KichBan/<TEN_THU_MUC_TRUYEN>/
 
-2. ĐỐI CHIẾU VỚI NHÂN VẬT TRONG CỐT TRUYỆN
-- Trước hết, lập danh sách nhân vật truyện và mô tả ngắn vai trò, giới tính/độ tuổi (chỉ khi truyện có căn cứ), tính cách và mức độ xuất hiện.
-- So sánh thông tin đó với dấu hiệu thực tế của từng thư mục nhân vật.
-- Ưu tiên ghép thư mục có tên hoặc thông tin mô tả khớp rõ ràng với nhân vật truyện.
-- Nếu có nhiều thư mục phù hợp, chọn phương án hợp lý nhất dựa trên các dấu hiệu có thật; không gán một thư mục cho nhiều nhân vật khác nhau cùng xuất hiện trong truyện nếu player cần hiển thị hai người riêng biệt.
-- Nếu thư mục không cung cấp đủ thông tin để nhận diện, không được tự khẳng định nhân vật trong thư mục có ngoại hình, giới tính hay tính cách cụ thể.
+Trước khi tạo JSON:
+1. Kiểm tra repository và đúng thư mục truyện người dùng chỉ định.
+2. Liệt kê tài nguyên thực tế trong các thư mục liên quan; không dựa vào danh sách đã nhớ từ lần trước.
+3. Kiểm tra chính xác tên file, phần mở rộng, chữ hoa/chữ thường và đường dẫn.
+4. Không tự tạo tên thư mục, tên file, ID nhân vật, biểu cảm, giọng nói hoặc tài nguyên.
+5. Nếu không đọc/kiểm tra được thư mục, phải nói rõ; không giả vờ đã xác minh.
 
-3. KHI KHÔNG NHẬN DIỆN ĐƯỢC: CHỌN NGẪU NHIÊN, KHÔNG THEO THỨ TỰ
-- Nếu tên thư mục và dữ liệu bên trong không đủ căn cứ để ghép nhân vật, hãy chọn ngẫu nhiên trong số các thư mục nhân vật hợp lệ còn chưa được phân bổ.
-- Không được mặc định chọn thư mục đầu tiên hoặc lần lượt 1, 2, 3, 4...
-- Có thể xáo trộn danh sách thư mục trước khi phân bổ để tránh mọi truyện đều có cùng một thứ tự gán nhân vật.
-- Mỗi nhân vật truyện cần một mã thư mục riêng khi họ là những nhân vật riêng biệt cùng xuất hiện.
-- Nếu số nhân vật truyện nhiều hơn số thư mục tài nguyên có sẵn, chỉ dùng lại thư mục khi player và cách kể cho phép; nếu không, phải báo rõ thiếu nhân vật hình ảnh, không tự tạo mã thư mục.
-- Việc chọn ngẫu nhiên chỉ áp dụng cho phân bổ thư mục không nhận diện được; không được chọn ngẫu nhiên biểu cảm, tên hiển thị hoặc thay đổi nhân vật giữa các cảnh.
+NHÂN VẬT:
+- Mỗi nhân vật được khai báo một lần trong object cấp cao nhất `nhan_vat`.
+- Khóa object là ID/mã thư mục nhân vật có thật trong assets/NhanVat/.
+- `ten_hien_thi` là tên nhân vật trong truyện; nếu nguồn không có tên, chỉ sáng tạo tên khi cần thiết và phải giữ nhất quán.
+- Nếu thư mục nhân vật có mã số hoặc tên không mô tả ngoại hình, không suy đoán ngoại hình từ mã đó.
+- Ghép nhân vật truyện với thư mục tài nguyên có căn cứ. Nếu không thể nhận diện từ tên/thông tin, có thể phân bổ ngẫu nhiên trong các thư mục hợp lệ còn trống, nhưng phải giữ ánh xạ cố định xuyên suốt kịch bản.
+- Không dùng chung một thư mục cho hai nhân vật riêng biệt cùng xuất hiện nếu hệ thống cần hiển thị họ độc lập.
+- Giọng nói khai báo một lần trong `nhan_vat[ID].giong_noi`, không lặp trong từng lượt thoại.
+- Không tự tạo `profile_id` hoặc `voice_id`. Nếu chưa có dữ liệu giọng hợp lệ, để trống để website dùng giọng được gán trong Setup cảnh; nếu nhân vật cũng chưa được gán giọng riêng, website dùng giọng mặc định.
+- Không thêm thông tin giọng nói vào từng phần tử `danh_sach`.
 
-4. GIỮ PHÂN BỔ ỔN ĐỊNH TRONG TOÀN BỘ TRUYỆN
-- Sau khi ghép nhân vật truyện với thư mục tài nguyên, tạo bảng ánh xạ nội bộ: tên nhân vật truyện -> mã thư mục -> căn cứ chọn.
-- Giữ nguyên ánh xạ đó từ đầu đến cuối JSON. Ví dụ nhân vật Linh đã được gán thư mục 4 thì mọi lượt thoại của Linh đều phải dùng "nhan_vat": "4".
-- Không đổi mã thư mục chỉ vì nhân vật chuyển cảnh, thay đổi cảm xúc hoặc xuất hiện sau một nhân vật khác.
-- "ten_hien_thi" vẫn là tên trong truyện hoặc tên được sáng tạo theo mục IV; không lấy tên thư mục làm tên hiển thị trừ khi đó thực sự là tên nhân vật.
-- Trước khi lưu, kiểm tra mỗi nhân vật có một ánh xạ nhất quán và mọi mã thư mục đều tồn tại trong assets/NhanVat/.
+BIỂU CẢM:
+- Kiểm tra riêng danh sách file .webm của từng nhân vật.
+- `bieu_cam` phải khớp tên biểu cảm/tệp thực tế mà player hỗ trợ.
+- Không mặc định mọi nhân vật có cùng bộ biểu cảm.
+- Chọn biểu cảm theo cảm xúc và hành động trong câu thoại; nếu không có biểu cảm phù hợp, dùng trạng thái trung tính thực sự tồn tại hoặc giá trị rỗng theo khả năng player.
 
-5. BÁO CÁO CÁCH PHÂN BỔ
-Trong báo cáo cuối, nêu:
-- Nhân vật truyện.
-- Mã thư mục nhân vật được gán.
-- Ghép theo tên/thông tin thư mục hay chọn ngẫu nhiên do không nhận diện được.
-- Nếu chọn ngẫu nhiên, ghi rõ đó là lựa chọn ngẫu nhiên trong các thư mục hợp lệ, không phải suy luận về ngoại hình hoặc danh tính.
+HÌNH NỀN:
+- Kiểm tra tài nguyên thực tế trong assets/Nen/.
+- `anh_nen` phải là tên tệp đầy đủ, gồm phần mở rộng.
+- Nếu nền không đổi, để `anh_nen` là chuỗi rỗng hoặc không khai báo để kế thừa nền ở mục thoại trước.
+- Nếu `anh_nen` rỗng, thiếu hoặc null, không chuyển sang nền trống.
+- Chỉ khai báo tệp mới khi cần đổi bối cảnh; không tự tạo tên file.
 
 ==================================================
-VI. QUY TẮC SỬ DỤNG HÌNH NỀN
+V. HỆ THỐNG HIỆU ỨNG
+==================================================
+
+Có hai thư viện hiệu ứng được website nạp trực tiếp:
+
+1. Hiệu ứng chính: effects.js
+   - Dùng chung cho ba nhóm: `nhan_vat`, `nen`, `camera`.
+   - Trước khi viết JSON, phải đọc effects.js trên nhánh hiện tại để lấy danh mục ID mới nhất.
+   - Không dùng danh sách ID cũ được ghi nhớ từ prompt hoặc các kịch bản trước.
+   - Chỉ sử dụng ID đúng nguyên văn có trong danh mục hiện tại.
+
+2. Hiệu ứng môi trường: environment-effects.js
+   - Dùng riêng cho nhóm `moi_truong`.
+   - Trước khi viết JSON, phải đọc environment-effects.js trên nhánh hiện tại.
+   - Chỉ sử dụng ID có thật trong danh mục này.
+
+Cấu trúc hiệu ứng cho mỗi mục thoại:
+
+```json
+"hieu_ung": {
+  "nhan_vat": [],
+  "nen": [],
+  "camera": [],
+  "moi_truong": []
+}
+```
+
+Quy tắc:
+- Mỗi mục thoại phải có object `hieu_ung` gồm đủ bốn mảng.
+- `nhan_vat`, `nen`, `camera` lấy ID từ effects.js; `moi_truong` lấy ID từ environment-effects.js.
+- Có thể kết hợp nhiều hiệu ứng trong một hoặc nhiều nhóm nếu phù hợp.
+- Mảng rỗng nghĩa là không áp dụng hiệu ứng cho nhóm đó.
+- Không tự sáng tạo ID, không dùng tên mô tả thay cho ID và không chuyển ID giữa các nhóm nếu danh mục không cho phép.
+- Chọn hiệu ứng theo hành động, cảm xúc và nhịp cảnh; tránh lạm dụng rung, zoom, xoay hoặc nhiều hiệu ứng xung đột.
+- Không dùng trường hiệu ứng cũ hoặc các ID cũ chỉ vì chúng từng xuất hiện trong prompt trước.
+- `anh_hieu_ung` là trường tài nguyên hình ảnh riêng nếu player vẫn hỗ trợ; không dùng nó thay thế object `hieu_ung`.
+
+==================================================
+VI. QUY TẮC ÂM THANH – CẤU TRÚC MỚI
 ==================================================
 
 Thư viện:
-assets/Nen/
+- Nhạc nền: assets/AmThanh/Nen/
+- Hiệu ứng âm thanh: assets/AmThanh/HieuUng/
 
-Kiểm tra các file ảnh và video thực tế, bao gồm những định dạng được hệ thống hỗ trợ như:
-- .png
-- .jpg
-- .jpeg
-- .webp
-- .mp4
-- Các định dạng khác nếu player hỗ trợ.
+Không sử dụng trường `che_do` cho bất kỳ loại âm thanh nào.
 
-Chọn hình nền phù hợp với bối cảnh của từng cảnh.
+A. NHẠC NỀN
+
+Nhạc nền mặc định của truyện khai báo tại:
+`am_thanh_mac_dinh.nhac_nen`
+
+Nhạc nền riêng của từng mục thoại khai báo tại:
+`danh_sach[].am_thanh.nhac_nen.tep`
+
+Quy tắc:
+1. Nếu `tep` có tên tệp, dừng nhạc nền hiện tại rồi phát nhạc nền mới được chỉ định.
+2. Nếu `tep` rỗng, thiếu hoặc null, tiếp tục kế thừa nhạc nền gần nhất đã được khai báo trước đó.
+3. Nhạc nền mặc định phát lặp liên tục.
+4. Nhạc nền tiếp tục phát qua các mục thoại cho đến khi có tệp mới thay thế.
+5. Nếu chưa có nhạc nền mặc định hoặc nhạc nền nào được khai báo trước đó thì không phát.
+6. Nếu tệp không tồn tại, tải lỗi hoặc giải mã lỗi thì bỏ qua; không tự chọn tệp khác.
+7. Không dùng giá trị rỗng để yêu cầu tắt nhạc nền. Giá trị rỗng có nghĩa là kế thừa.
+8. Chỉ khai báo tên tệp có thật, đúng phần mở rộng và đúng thư mục.
+
+B. HIỆU ỨNG ÂM THANH
+
+Hiệu ứng âm thanh từng mục thoại khai báo tại:
+`danh_sach[].am_thanh.hieu_ung_am_thanh.tep`
+
+Quy tắc:
+1. Có tên tệp hợp lệ trong `tep` thì phát hiệu ứng âm thanh tại mục thoại đó.
+2. `tep` rỗng, thiếu hoặc null thì không phát hiệu ứng âm thanh.
+3. Hiệu ứng âm thanh không kế thừa sang câu thoại tiếp theo.
+4. Nếu tệp không tồn tại, tải lỗi hoặc giải mã lỗi thì bỏ qua; không tự thay bằng tệp khác.
+5. Chỉ dùng hiệu ứng âm thanh khi phù hợp hành động/cảm xúc và không lấn át lời thoại.
+6. Không tự tạo tên tệp.
 
 Ví dụ:
-- Phòng khách.
-- Phòng ngủ.
-- Trường học.
-- Lớp học.
-- Đường phố.
-- Công viên.
-- Nhà hàng.
-- Bệnh viện.
-- Các bối cảnh khác có trong thư viện.
 
-Không được tự bịa tên file.
+```json
+"am_thanh": {
+  "nhac_nen": {
+    "tep": "battle_theme.mp3"
+  },
+  "hieu_ung_am_thanh": {
+    "tep": "sword_hit.mp3"
+  }
+}
+```
 
-QUY TẮC BẮT BUỘC KIỂM TRA TÊN FILE VÀ PHẦN MỞ RỘNG:
-- Khi ghi tên tài nguyên vào JSON, phải dùng CHÍNH XÁC tên file đầy đủ như GitHub, bao gồm phần mở rộng (.png, .jpg, .webp, .mp4, .mp3, .webm...).
-- Ví dụ: nếu file thực tế là san_truong_ban_ngay.png thì JSON bắt buộc ghi "san_truong_ban_ngay.png", tuyệt đối không ghi "san_truong_ban_ngay".
-- Không được tự ý bỏ phần mở rộng, tự đoán phần mở rộng hoặc chỉ ghi tên gốc.
-- Trước khi lưu, đối chiếu từng giá trị anh_nen, anh_hieu_ung, am_thanh_nen, am_thanh_hieu_ung và mọi tài nguyên khác với danh sách file thực tế trong đúng thư mục GitHub tương ứng; kiểm tra cả chữ hoa/chữ thường và phần mở rộng.
-- Kiểm tra đường dẫn cuối cùng mà player ghép. Ví dụ nền ảnh được tải từ assets/Nen/<giá_trị_anh_nen>, vì vậy giá trị phải khớp tên file thực tế trong assets/Nen/.
-- Nếu không tìm thấy file khớp chính xác, không được tự tạo tên thay thế; hãy chọn tài nguyên khác đang tồn tại hoặc báo rõ tài nguyên không có.
-- Sau khi tạo JSON, chạy bước kiểm tra tự động: liệt kê tất cả tên tài nguyên được tham chiếu, xác nhận từng file tồn tại trong repository, và chỉ lưu khi không còn tham chiếu sai.
-
-QUY TẮC KẾ THỪA NỀN:
-Nếu cảnh tiếp theo vẫn sử dụng cùng hình nền, để trường anh_nen rỗng để player tiếp tục sử dụng nền hiện tại.
-
-Chỉ chỉ định file nền mới khi thực sự cần chuyển bối cảnh.
+C. KẾ THỪA NHẠC NỀN VÀ SFX
+- Nhạc nền: có tệp mới thì thay bản đang phát; để trống thì kế thừa bản gần nhất.
+- Hiệu ứng âm thanh: có tệp thì phát ở mục hiện tại; để trống thì không phát.
+- Không thêm `che_do`, `lap_lai`, `ke_thua`, `ghi_de` hoặc `tat` vào từng object âm thanh. Cách hoạt động đã được quy định cố định ở trên.
 
 ==================================================
-VI. TỰ NHẬN DIỆN TÀI NGUYÊN THÔNG MINH TỪ TÊN FILE
+VII. CẤU TRÚC JSON PHIÊN BẢN 2
 ==================================================
 
-ĐÂY LÀ QUY TRÌNH BẮT BUỘC TRƯỚC KHI VIẾT JSON.
+Dùng đúng cấu trúc sau, không tự ý đưa các trường cũ vào:
 
-Mục tiêu: tự đọc tên thư mục, tên file và cấu trúc thư mục trên GitHub để suy luận tài nguyên đó có thể đại diện cho nhân vật, biểu cảm, bối cảnh, nhạc hoặc hiệu ứng gì; sau đó chọn tài nguyên phù hợp với từng đoạn truyện. Không yêu cầu người dùng phải mô tả thủ công từng file.
-
-1. KHẢO SÁT THƯ VIỆN THỰC TẾ
-- Đọc cây thư mục repository hoặc liệt kê trực tiếp từng thư mục tài nguyên:
-  - assets/NhanVat/
-  - assets/Nen/
-  - assets/HieuUng/
-  - assets/AmThanh/Nen/
-  - assets/AmThanh/HieuUng/
-- Với từng thư mục nhân vật, liệt kê các file biểu cảm thực tế bên trong.
-- Ghi nhận chính xác đường dẫn, tên file, phần mở rộng và thư mục cha.
-- Không chỉ dựa vào danh sách tài nguyên đã nhớ từ lần tạo truyện trước. Mỗi lần tạo truyện phải kiểm tra trạng thái repository hiện tại.
-- Nếu không thể đọc được một thư mục hoặc GitHub trả lỗi, phải nêu rõ giới hạn; không được giả vờ đã kiểm tra.
-
-2. SUY LUẬN Ý NGHĨA TỪ TÊN FILE
-Phân tích tên file theo nhiều tín hiệu:
-- Tách các từ được nối bằng dấu gạch dưới, dấu gạch ngang, khoảng trắng hoặc viết liền.
-- Nhận diện từ khóa tiếng Việt không dấu, tiếng Việt có dấu, tiếng Anh, từ viết tắt và các cụm từ thường dùng.
-- Kết hợp tên file với thư mục chứa nó và phần mở rộng.
-- Xét các từ chỉ địa điểm, thời gian, thời tiết, ánh sáng, cảm xúc, hành động, không khí và thể loại âm thanh.
-- Ví dụ:
-  - phong_ngu_dem.png: phòng ngủ, thời điểm ban đêm.
-  - san_truong_ban_ngay.png: sân trường, ban ngày.
-  - hanh_lang_toi.png: hành lang tối, có thể phù hợp cảnh bí ẩn hoặc căng thẳng.
-  - lop_hoc_chieu.png: lớp học vào buổi chiều.
-  - sparkle.png: hiệu ứng lấp lánh.
-  - bgm_gentle.mp3: nhạc nền nhẹ nhàng.
-  - sfx_pop.mp3: hiệu ứng âm thanh bật/nảy hoặc xuất hiện.
-- Đây chỉ là suy luận ngữ nghĩa, không phải khẳng định nội dung hình ảnh/âm thanh đã được xem hoặc nghe.
-- Không suy luận quá mức từ tên mơ hồ. Ví dụ file tên render.mp4 không đủ căn cứ để kết luận đó là cảnh nào; cần xem metadata/thumbnail nếu công cụ hỗ trợ, hoặc đánh dấu ý nghĩa chưa rõ.
-- Nếu có thể xem ảnh hoặc thumbnail video, dùng hình ảnh thực tế để xác nhận hoặc điều chỉnh suy luận từ tên file. Nếu không thể xem, chỉ ghi nhận suy luận từ tên.
-- Không phát âm thanh để đoán nội dung nếu không có công cụ nghe/phân tích thực tế.
-
-3. TẠO BẢNG DANH MỤC TÀI NGUYÊN NỘI BỘ
-Trước khi viết kịch bản, lập bảng làm việc nội bộ với các thông tin:
-- Tên file chính xác.
-- Đường dẫn/thư mục chứa file.
-- Loại tài nguyên: nhân vật, biểu cảm, nền, hiệu ứng hình ảnh, nhạc nền hoặc hiệu ứng âm thanh.
-- Ý nghĩa dự đoán.
-- Từ khóa/cảnh phù hợp.
-- Mức độ tin cậy: cao, trung bình hoặc thấp.
-- Ghi chú nếu tên file mơ hồ hoặc cần kiểm tra trực quan.
-
-Bảng này dùng để lựa chọn nhất quán trong toàn bộ truyện. Không bắt buộc ghi bảng vào JSON và không tạo thêm trường JSON ngoài schema player hỗ trợ.
-
-4. CHỌN NHÂN VẬT VÀ BIỂU CẢM
-- Dùng thư mục nhân vật có thật làm mã tài nguyên theo mục IV.
-- Nếu tên thư mục là số hoặc mã khó hiểu, không tự suy diễn danh tính nhân vật từ mã đó. Hãy phân bổ nhân vật theo các thư mục hiện có, đảm bảo nhất quán xuyên suốt truyện.
-- Đọc tên các file biểu cảm trong từng thư mục. Suy luận cảm xúc/hành động từ tên file, ví dụ vui, buồn, tức giận, ngạc nhiên, khóc, bình thường, chào hỏi... chỉ khi tên file thực tế có căn cứ.
-- Chọn biểu cảm phù hợp với cảm xúc ở đúng lượt thoại; không chọn chỉ vì biểu cảm đó tồn tại.
-- Không mặc định mọi nhân vật đều có cùng bộ biểu cảm. Phải kiểm tra riêng từng thư mục nhân vật.
-- Nếu nhân vật không có biểu cảm phù hợp, chọn biểu cảm trung tính thực sự tồn tại hoặc cách xử lý mặc định mà player hỗ trợ. Không bịa tên biểu cảm.
-- Tên hiển thị nhân vật vẫn tuân thủ mục IV; không dùng tên file biểu cảm làm tên nhân vật.
-
-5. CHỌN HÌNH NỀN THEO NGỮ CẢNH
-- Đọc bối cảnh từng đoạn truyện rồi so khớp với bảng danh mục nền.
-- Ưu tiên khớp địa điểm trước, sau đó đến thời gian, ánh sáng, thời tiết và không khí.
-- Ví dụ: cảnh nói chuyện trong phòng ngủ ban đêm ưu tiên nền có ý nghĩa phòng ngủ/ban đêm; cảnh ở sân trường buổi sáng ưu tiên nền sân trường/ban ngày nếu không có lựa chọn chính xác hơn.
-- Không chọn nền chỉ vì tên có một từ khóa chung. Phải xét toàn bộ ngữ cảnh của cảnh.
-- Nếu có nhiều nền gần nghĩa, chọn nền phù hợp nhất và sử dụng nhất quán trong cùng một cảnh.
-- Nếu không có nền khớp hoàn toàn, chọn nền gần nhất nhưng không làm sai bối cảnh cốt lõi. Nếu mọi lựa chọn đều gây hiểu nhầm, để trống theo khả năng player hỗ trợ và báo thiếu nền.
-- Khi bối cảnh không đổi, tiếp tục dùng quy tắc kế thừa nền bằng chuỗi rỗng.
-
-6. CHỌN NHẠC VÀ HIỆU ỨNG
-- Suy luận nhạc nền dựa trên tên file và đối chiếu với sắc thái cảnh: nhẹ nhàng, vui, buồn, căng thẳng, hồi hộp, bí ẩn...
-- Suy luận hiệu ứng âm thanh dựa trên tên file và hành động đang diễn ra. Chỉ dùng khi hiệu ứng thực sự giúp cảnh rõ hơn.
-- Hiệu ứng hình ảnh chỉ dùng khi hợp nội dung và player hỗ trợ.
-- Không gán file chỉ vì tên nghe có vẻ phù hợp nếu chưa chắc đó là đúng loại tài nguyên hoặc player không hỗ trợ.
-- Không lạm dụng một hiệu ứng hoặc nhạc nền cho mọi cảnh.
-- Tài nguyên không cần thiết thì để chuỗi rỗng; không bắt buộc mỗi lượt thoại phải có hiệu ứng.
-
-7. QUY TẮC ĐỘ TIN CẬY VÀ XỬ LÝ MƠ HỒ
-- Tin cậy cao: tên file rõ nghĩa và khớp trực tiếp với nội dung, ví dụ phong_ngu_dem.png.
-- Tin cậy trung bình: tên file chỉ gợi ý một phần hoặc có nhiều cách hiểu; cần xét thư mục, định dạng và ngữ cảnh.
-- Tin cậy thấp: tên chung chung, mã số hoặc tên không mô tả nội dung, ví dụ image1.png, render.mp4, 001.mp3.
-- Với độ tin cậy thấp, không được trình bày suy luận như sự thật. Nếu có thể, kiểm tra hình ảnh/thumbnail hoặc thông tin bổ sung. Nếu vẫn không rõ, không dùng cho cảnh mà ý nghĩa chính xác là quan trọng.
-- Không tự tạo tên file, không tự đổi phần mở rộng, không tự tạo thư mục hoặc biểu cảm.
-- Nếu người dùng yêu cầu tự động hoàn toàn, hãy chọn phương án an toàn nhất trong các tài nguyên đã xác minh; chỉ hỏi người dùng khi thiếu tài nguyên thiết yếu hoặc có nhiều lựa chọn gây thay đổi đáng kể ý nghĩa truyện.
-
-8. ĐỐI CHIẾU TRƯỚC KHI GHI JSON
-- Mọi tài nguyên đã chọn phải được đối chiếu với file thực tế trong đúng thư mục.
-- Phân biệt tên file với ý nghĩa suy luận: ý nghĩa có thể diễn giải, nhưng giá trị JSON phải là tên file chính xác.
-- Kiểm tra riêng mã thư mục nhân vật, file biểu cảm, nền, hiệu ứng hình ảnh, nhạc nền và hiệu ứng âm thanh.
-- Không dùng kết quả suy luận làm bằng chứng rằng file tồn tại; phải kiểm tra đường dẫn GitHub.
-- Nếu file đã bị đổi tên hoặc xóa kể từ lần khảo sát trước, cập nhật lựa chọn theo repository hiện tại.
-- Chỉ lưu JSON khi tất cả tham chiếu tài nguyên đều hợp lệ hoặc đã để trống theo đúng quy tắc.
-
-==================================================
-VII. QUY TẮC SỬ DỤNG HIỆU ỨNG HÌNH ẢNH
-==================================================
-
-Thư viện:
-assets/HieuUng/
-
-Kiểm tra các file thực tế trước khi sử dụng.
-
-Chỉ sử dụng hiệu ứng tồn tại và tương thích với player.
-
-Trường JSON:
-anh_hieu_ung
-
-Dùng để chỉ định file hiệu ứng hình ảnh nếu hệ thống hỗ trợ.
-
-Không tự bịa đường dẫn hoặc tên file.
-
-==================================================
-VII. QUY TẮC SỬ DỤNG ÂM THANH
-==================================================
-
-1. NHẠC NỀN
-
-Thư viện:
-assets/AmThanh/Nen/
-
-Chọn nhạc phù hợp với cảm xúc của cảnh:
-- Nhẹ nhàng.
-- Vui vẻ.
-- Buồn.
-- Căng thẳng.
-- Hồi hộp.
-- Bí ẩn.
-- Kịch tính.
-
-Không sử dụng nhạc không phù hợp với tình huống.
-
-Nếu cảnh tiếp theo vẫn dùng cùng nhạc nền, để trường am_thanh_nen rỗng để kế thừa.
-
-2. HIỆU ỨNG ÂM THANH
-
-Thư viện:
-assets/AmThanh/HieuUng/
-
-Có thể sử dụng âm thanh phù hợp như:
-- Tiếng bước chân.
-- Tiếng cửa mở.
-- Tiếng va chạm.
-- Tiếng đập bàn.
-- Tiếng thông báo.
-- Tiếng cười.
-- Các hiệu ứng âm thanh khác có thật trong thư viện.
-
-Chỉ sử dụng file thực tế tồn tại.
-
-Không lạm dụng hiệu ứng âm thanh khiến hội thoại khó nghe.
-
-==================================================
-VIII. CẤU TRÚC JSON BẮT BUỘC
-==================================================
-
-Không thêm schema_version. Giữ nguyên các trường tài nguyên cũ:
-- anh_hieu_ung: file hiệu ứng hình ảnh trong assets/HieuUng/
-- am_thanh_hieu_ung: file hiệu ứng âm thanh trong assets/AmThanh/HieuUng/
-
-Bổ sung trường hieu_ung cho từng lượt thoại. Trường này điều khiển thư viện chuyển động độc lập trong effects.js, không thay thế anh_hieu_ung hoặc am_thanh_hieu_ung.
-
-CẤU TRÚC JSON MẪU BẮT BUỘC:
-
+```json
 {
-  "thoi_gian_giu_khung": 1.0,
-  "thoi_gian_cho_giua": 0.02,
-  "toc_do_go_chu": 0.03,
+  "phien_ban": 2,
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.5,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "nhan_vat_1": {
+      "ten_hien_thi": "Nhân vật 1",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
   "danh_sach": [
     {
-      "nhan_vat": "1",
-      "ten_hien_thi": "Linh",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ví dụ một câu thoại.",
-      "anh_nen": "phong_ngu_dem.png",
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Xin chào!",
+      "anh_nen": "canh_1.png",
       "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": "",
+      "bieu_cam": "",
       "hieu_ung": {
-        "nhan_vat": ["char_walk_bob", "char_sway"],
-        "nen": ["bg_sway"],
-        "camera": ["camera_zoom_in"]
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
       }
     }
   ]
 }
+```
 
-QUY TẮC:
-- Mỗi lượt thoại phải có object hieu_ung; nếu không cần hiệu ứng, dùng các mảng rỗng.
-- Chỉ sử dụng ID có thật trong effects.js; không tự tạo ID hoặc viết mô tả tự do thay cho ID.
-- Khi tạo kịch bản, phải đọc effects.js để kiểm tra danh sách ID mới nhất.
-- Chỉ dùng hiệu ứng đúng nhóm: nhan_vat, nen, camera.
-- Có thể kết hợp nhiều hiệu ứng trong cùng một nhóm và nhiều nhóm cùng lúc.
-- Camera tác động đồng bộ lên nền, nhân vật và lớp hiệu ứng hình ảnh, không tác động lên hộp thoại.
-- Khi chuyển sang lượt thoại mới, hiệu ứng của lượt trước được thay bằng cấu hình lượt mới.
-- Chọn hiệu ứng theo hành động, cảm xúc và nhịp cảnh; không lạm dụng rung, zoom hoặc xoay.
-- Không thêm các trường hieu_ung_nhan_vat, hieu_ung_nen hoặc hieu_ung_camera ở cấp ngoài object hieu_ung.
-- Không thay đổi tên ID dưới đây nếu effects.js chưa được cập nhật.
-
-DANH SÁCH ID HIỆU ỨNG HIỆN CÓ:
-
-Nhân vật:
-- char_walk_bob: nhấp nhô lên xuống như đang đi.
-- char_sway: nghiêng trái phải như đang lung lay.
-- char_fear_shake: lắc lư liên tục như đang sợ hãi.
-- char_move_left: vừa nhấp nhô vừa di chuyển sang trái.
-- char_move_right: vừa nhấp nhô vừa di chuyển sang phải.
-- char_fade_out: mờ dần như đang biến mất.
-- char_ghost: trong suốt như linh hồn.
-- char_giant: phóng to như người khổng lồ.
-
-Nền:
-- bg_zoom_in, bg_zoom_out: zoom gần/xa.
-- bg_sway: lắc lư trái phải nhẹ.
-- bg_earthquake: rung lắc như động đất.
-- bg_pan_left, bg_pan_right, bg_pan_up, bg_pan_down: trượt theo bốn hướng.
-- bg_misty: tạo cảm giác mờ ảo.
-- bg_dizzy_spin: xoay lắc vòng tạo cảm giác chóng mặt.
-
-Camera (cùng tác động lên nền và nhân vật):
-- camera_zoom_in, camera_zoom_out: zoom gần/xa.
-- camera_sway: lắc lư nhẹ.
-- camera_shake: rung lắc.
-- camera_pan_left, camera_pan_right, camera_pan_up, camera_pan_down: trượt theo bốn hướng.
-- camera_misty: tạo cảm giác mờ ảo.
-- camera_spin: xoay vòng.
-- camera_tilt_left, camera_tilt_right: nghiêng trái/phải.
-
-LƯU Ý VỀ TÍNH CỘNG HƯỞNG:
-- Có thể phối hợp hiệu ứng nhân vật, nền và camera trong cùng một lượt thoại.
-- Các hiệu ứng biến đổi hình học được cộng dồn để không ghi đè lẫn nhau.
-- Tránh chọn hai hiệu ứng cùng nhóm có hướng ngược nhau, ví dụ bg_zoom_in và bg_zoom_out.
-- char_fade_out và char_giant là hiệu ứng một lần; các hiệu ứng chuyển động còn lại lặp trong thời gian lượt thoại.
-- Nếu thiết bị bật chế độ giảm chuyển động, player sẽ hạn chế/tắt chuyển động theo thiết lập hệ thống.
-
-IX. QUY TẮC CHIA CÂU THOẠI
-==================================================
+Quy tắc cấu trúc:
+- `phien_ban` luôn là số 2.
+- `thiet_lap_chung` chứa thiết lập thời gian và tốc độ gõ chữ.
+- `nhan_vat` khai báo nhân vật và giọng nói ở cấp cao nhất.
+- `am_thanh_mac_dinh.nhac_nen` là tên tệp nhạc nền mặc định; nếu không có thì để chuỗi rỗng.
+- `danh_sach` chứa các mục thoại theo đúng thứ tự diễn biến.
+- `nhan_vat` trong từng mục thoại là ID đã khai báo ở object nhân vật.
+- `anh_nen` rỗng nghĩa là kế thừa nền trước.
+- `hieu_ung` luôn có bốn nhóm như mẫu.
+- Cấu hình âm thanh chỉ dùng `tep`; tuyệt đối không có `che_do`.
+- Không sử dụng các trường âm thanh cũ dạng `am_thanh_nen` hoặc `am_thanh_hieu_ung` ở cấp mục thoại.
+- Không lặp `ten_hien_thi` hoặc `giong_noi` trong từng mục thoại.
+- Không thêm schema hoặc trường ngoài cấu trúc player hỗ trợ.
 
 ==================================================
-X. QUY TẮC CHIA CÂU THOẠI
+VIII. QUY TẮC CHIA CÂU THOẠI
 ==================================================
 
-1. Chia nội dung thành các lượt thoại hợp lý.
+1. Chia nội dung thành các lượt thoại hợp lý, dễ nghe và dễ hiểu.
 2. Không gộp quá nhiều ý vào một lượt thoại.
 3. Không cắt câu khiến ý nghĩa bị dang dở.
-4. Mỗi lượt thoại nên có nội dung đủ rõ ràng.
-5. Phân bổ lời thoại cho đúng nhân vật.
-6. Các câu đối đáp cần có tính liên kết.
-7. Những đoạn mô tả quan trọng phải được chuyển thành hội thoại hoặc hành động phù hợp để người xem hiểu.
-8. Không để người xem phải suy đoán thông tin cốt lõi.
-
-Đặc biệt, nếu truyện có đoạn miêu tả hành động mà không có lời thoại, hãy tìm cách thể hiện bằng hội thoại tự nhiên hoặc những tình huống mà player hiện tại có thể biểu diễn.
-
-Không tạo ra những hành động mà player không thể thể hiện.
+4. Mỗi lượt phải có chức năng kể chuyện rõ ràng.
+5. Phân bổ đúng nhân vật nói; lời kể/độc thoại phải gán theo cấu trúc player hỗ trợ.
+6. Các câu đối đáp phải liên kết tự nhiên.
+7. Chuyển mô tả quan trọng thành lời thoại, nội tâm hoặc lời kể mà player hiện tại có thể biểu diễn.
+8. Không tạo hành động/đối tượng mà player không thể thể hiện.
+9. Không để người xem phải suy đoán thông tin cốt lõi.
+10. Giữ nhịp thoại tự nhiên, tránh lặp thông tin và thuyết minh máy móc.
 
 ==================================================
-XI. QUY TẮC KIỂM TRA TRƯỚC KHI LƯU
+IX. QUY TRÌNH KIỂM TRA TRƯỚC KHI LƯU
 ==================================================
 
-Trước khi lưu JSON, phải thực hiện các bước kiểm tra:
-1. JSON phải hợp lệ, không có lỗi cú pháp.
-2. Đúng cấu trúc mà player hỗ trợ.
-3. Mọi giá trị "nhan_vat" đều khớp chính xác với thư mục nhân vật có thật.
-4. Mỗi nhân vật có "ten_hien_thi" tự nhiên, nhất quán và không bị nhầm lẫn; không dùng mã thư mục số làm tên hiển thị nếu đó không phải tên trong truyện.
-5. Không có biểu cảm không tồn tại.
-6. Không có file nền không tồn tại.
-7. Không có file hiệu ứng không tồn tại.
-8. Không có file âm thanh không tồn tại.
-9. Thứ tự hội thoại phải chính xác.
-10. Không bị thiếu các tình tiết quan trọng.
-11. Không có câu thoại vô nghĩa hoặc khó hiểu.
-12. Các cảnh chuyển tiếp phải mạch lạc.
-13. Những trường kế thừa phải được để rỗng đúng quy định.
-14. Không được tạo ra tài nguyên giả.
-15. Thư mục `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/` phải tồn tại; nếu chưa có thì phải tạo `.gitkeep` để giữ thư mục trên GitHub.
-16. Không được xóa hoặc ghi đè bất kỳ file phụ đề nào đã có trong `PhuDe/`.
-
-Sau khi kiểm tra, phải đảm bảo người xem có thể hiểu câu chuyện mà không cần đọc nội dung truyện gốc.
+Trước khi lưu:
+1. Kiểm tra JSON hợp lệ bằng parser.
+2. Đảm bảo đúng cấu trúc phiên bản 2.
+3. Mọi ID nhân vật trong danh_sach đều tồn tại trong object nhan_vat.
+4. Giọng nói chỉ khai báo ở cấp nhân vật; không có profile_id/voice_id tự tạo.
+5. Mọi biểu cảm, hình nền, file hình ảnh và file âm thanh đều tồn tại đúng đường dẫn và đúng phần mở rộng.
+6. Đọc danh mục effects.js và environment-effects.js mới nhất; xác minh từng ID hiệu ứng thuộc đúng thư viện/nhóm.
+7. Mọi mục thoại có đủ bốn mảng hiệu ứng.
+8. Không có trường che_do trong cấu hình âm thanh.
+9. Nhạc nền trống kế thừa; nhạc nền có tệp mới thay thế bản cũ; nhạc nền mặc định lặp liên tục.
+10. SFX chỉ phát khi mục thoại hiện tại có tệp; tệp trống không phát.
+11. Không có tham chiếu tài nguyên giả hoặc không xác minh được.
+12. Không thiếu sự kiện quan trọng, không sai thứ tự và không có bước nhảy diễn biến khó hiểu.
+13. Các trường kế thừa phải để trống đúng quy định.
+14. Không ghi đè file truyện gốc hoặc file không liên quan.
+15. Thư mục PhuDe được giữ nguyên; không xóa hoặc ghi đè phụ đề hiện có.
 
 ==================================================
-XII. QUY TẮC LƯU FILE
+X. QUY TẮC LƯU FILE
 ==================================================
 
-Sau khi hoàn thành, tạo hai file JSON có nội dung giống hệt nhau.
+Tên thư mục truyện do người dùng chỉ định trong yêu cầu hiện tại.
 
-Giả sử tên thư mục truyện là <TEN_THU_MUC_TRUYEN>.
+File JSON chính:
+`assets/KichBan/<TEN_THU_MUC_TRUYEN>/<TEN_THU_MUC_TRUYEN>.json`
 
-File thứ nhất:
-assets/KichBan/<TEN_THU_MUC_TRUYEN>/<TEN_THU_MUC_TRUYEN>.json
+Thư mục phụ đề:
+`assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/`
 
-Thư mục phụ đề phải được chuẩn bị cùng lúc:
-assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/.gitkeep
+Quy tắc:
+- Nếu thư mục PhuDe chưa tồn tại, tạo `.gitkeep` để GitHub lưu được thư mục.
+- Nếu đã có phụ đề, giữ nguyên toàn bộ file; không xóa, ghi đè hoặc tạo phụ đề giả.
+- Chỉ tạo một file JSON chính trong thư mục truyện, trừ khi người dùng yêu cầu thêm bản sao ở vị trí khác.
+- Không mặc định tạo hoặc cập nhật file gốc `ailahungthu.json`; đây không phải bản sao bắt buộc cho mọi truyện.
+- Không lưu nội dung truyện gốc thành file .txt nếu người dùng không yêu cầu.
+- Nếu file JSON đích đã tồn tại, đọc/kiểm tra trước khi ghi đè.
+- Không sửa hoặc xóa file khác trong repository nếu không được yêu cầu.
+- Chỉ báo đã lưu hoặc commit khi thao tác GitHub thực sự thành công.
 
-Quy tắc thư mục PhuDe:
-- Luôn bảo đảm `PhuDe/` tồn tại trong thư mục truyện sau khi hoàn thành.
-- Nếu chưa có, tạo `.gitkeep` để GitHub lưu được thư mục.
-- Nếu đã có phụ đề, giữ nguyên các file hiện có.
-- Không tự tạo file SRT/VTT giả, không dịch hoặc tạo phụ đề trừ khi người dùng yêu cầu riêng.
-- Khi báo cáo, nêu rõ đường dẫn thư mục PhuDe đã tạo hoặc đã có sẵn.
+==================================================
+XI. BÁO CÁO SAU KHI HOÀN THÀNH
+==================================================
 
-File thứ hai:
-ailahungthu.json
+Báo cáo ngắn gọn:
+1. Tên thư mục truyện đã xử lý và file nguồn đã đọc.
+2. Số tập/chương (nếu có) và số lượt thoại.
+3. Danh sách nhân vật và mã thư mục được gán.
+4. Các loại hình nền, biểu cảm, hiệu ứng và âm thanh đã sử dụng.
+5. Kết quả kiểm tra JSON và tài nguyên.
+6. Đường dẫn file JSON đã lưu.
+7. Trạng thái thư mục PhuDe.
+8. Commit GitHub nếu đã cập nhật thành công.
 
-Hai file phải giống nhau hoàn toàn.
+Không được báo đã đọc, kiểm tra, lưu hoặc commit nếu thao tác thực tế chưa hoàn thành.
 
-Không sửa hoặc xóa các file khác trong repository.
+==================================================
+XII. CẤU HÌNH CHO LẦN THỰC HIỆN HIỆN TẠI
+==================================================
 
-Không ghi đè file truyện gốc .txt.
+Tên thư mục truyện:
+<TEN_THU_MUC_TRUYEN>
 
-Nếu cần cập nhật file đã tồn tại, phải kiểm tra nội dung hiện tại trước khi ghi đè.
+Nguồn truyện:
+- Thư mục GitHub trong assets/KichBan/, hoặc
+- Nội dung/file người dùng cung cấp trong yêu cầu hiện tại.
+
+Yêu cầu bổ sung:
+<YEU_CAU_RIENG_NEU_CO>
+
+Nếu chưa có tên thư mục truyện hoặc chưa rõ nguồn truyện, hỏi người dùng trước khi lưu.
+
+BẮT ĐẦU:
+Đọc đúng nguồn truyện, đọc toàn bộ nội dung, kiểm tra tài nguyên hiện có, đọc danh mục hiệu ứng mới nhất, lập kế hoạch chuyển thể, tạo JSON phiên bản 2, kiểm tra toàn bộ dữ liệu và chỉ sau đó mới lưu vào đúng đường dẫn.
+
 
 ==================================================
 XIII. QUY TẮC XỬ LÝ TRUYỆN DÀI, NHIỀU CHƯƠNG VÀ TÁI SỬ DỤNG CHO MỌI CỐT TRUYỆN
@@ -943,38 +808,3 @@ QUY ƯỚC MẶC ĐỊNH CHO MỌI CỐT TRUYỆN:
 10. Quy ước chương = tập phim áp dụng mặc định cho mọi thể loại, mọi cốt truyện và mọi lần tái sử dụng prompt sau này, trừ khi người dùng yêu cầu rõ video ngắn/cảnh đơn/tập đặc biệt ngắn.
 
 ==================================================
-==================================================
-XIV. BÁO CÁO SAU KHI HOÀN THÀNH
-==================================================
-
-Sau khi tạo xong, báo cáo:
-1. Tên thư mục truyện đã xử lý.
-2. File truyện gốc đã đọc.
-3. Danh sách nhân vật đã sử dụng.
-4. Số lượt thoại đã tạo.
-5. Các loại nền, hiệu ứng và âm thanh đã sử dụng.
-6. Các hiệu ứng chuyển động đã sử dụng.
-7. Kết quả kiểm tra JSON.
-8. Kết quả kiểm tra tài nguyên.
-9. Đường dẫn hai file JSON đã lưu.
-10. Commit GitHub nếu đã cập nhật thành công.
-
-Không được báo đã lưu file hoặc commit nếu thao tác thực tế chưa thành công.
-
-==================================================
-XV. CẤU HÌNH CHO LẦN THỰC HIỆN HIỆN TẠI
-==================================================
-
-Tên thư mục truyện:
-<ĐIỀN TÊN THƯ MỤC TRUYỆN>
-
-Yêu cầu bổ sung:
-<ĐIỀN YÊU CẦU RIÊNG NẾU CÓ>
-
-Nếu không có yêu cầu bổ sung, hãy tuân thủ toàn bộ quy tắc phía trên.
-
-BẮT ĐẦU THỰC HIỆN:
-
-Kiểm tra repository, đọc truyện gốc, kiểm tra toàn bộ tài nguyên liên quan, phân tích nội dung và xây dựng kịch bản JSON hoàn chỉnh.
-
-Ưu tiên cao nhất là tính chính xác của nội dung, sự mạch lạc của câu chuyện và khả năng giúp người xem hiểu rõ mọi diễn biến thông qua video.
