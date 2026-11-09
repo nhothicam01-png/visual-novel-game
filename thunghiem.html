@@ -893,7 +893,7 @@ async function exportVideo(){
     const lineFrames=Math.max(0,lineEndFrame-frameIndex);
     for(let f=0;f<lineFrames;f++){
      const local=f/fps;
-     if(sceneElapsed+local>entry.duration+entry.pause)break;
+     if(local>entry.duration+entry.pause)break;
      if(bgVideo)await seekVideoFrame(bgVideo,sceneElapsed+local);
      if(charVideo)await seekVideoFrame(charVideo,sceneElapsed+local);
      drawFrame(sceneElapsed+local);await videoSource.add(frameIndex/fps,1/fps);
