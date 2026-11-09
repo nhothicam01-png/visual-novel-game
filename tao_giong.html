@@ -45,7 +45,7 @@ button.secondary{background:#334155}button.danger{background:#9f1239}button:disa
 <label>Hơi thở <span class="value" id="breath-v">10%</span><input id="breath" type="range" min="0" max="100" value="10"></label>
 </div>
 <div class="actions"><button id="test">🔊 Tạo câu thử & nghe</button><button class="secondary" id="stop">Dừng</button></div>
-<p class="note">Piper tạo giọng nền. Trang dựng video hiện áp dụng tốc độ, cao độ (bằng thay đổi tốc độ phát nên hai yếu tố còn liên quan nhau), độ sáng âm sắc và độ khàn ở bước hậu xử lý. Tuổi, giới tính và hơi thở hiện được lưu làm thông tin hồ sơ; chúng không tự biến model thành giọng khác. Muốn đổi nam/nữ tự nhiên cần chọn model tương ứng hoặc bổ sung AI Voice Conversion.</p>
+<p class="note">Piper tạo giọng nền. Bản nghe thử bên dưới áp dụng tốc độ, cao độ (hai yếu tố cùng ảnh hưởng thời lượng), độ sáng âm sắc và độ khàn. Tuổi, giới tính và hơi thở hiện chỉ là thông tin hồ sơ, không tự biến model thành giọng khác. Muốn đổi nam/nữ tự nhiên cần model tương ứng hoặc AI Voice Conversion.</p>
 <div class="status" id="status">Đang chuẩn bị danh sách model Piper…</div>
 </section>
 <section class="panel">
@@ -71,7 +71,37 @@ $('reset').onclick=()=>{editing=null;$('profile-name').value='';$('age').value=2
 async function loadVoices(){const sel=$('voice');sel.innerHTML='<option value="">Đang tải…</option>';try{const res=await fetch('https://huggingface.co/rhasspy/piper-voices/resolve/main/voices.json');if(!res.ok)throw Error('catalog');const cat=await res.json();voices=Object.entries(cat).map(([key,v])=>({key,code:(v.language?.code||key.split('-')[0]).toLowerCase(),quality:v.quality||'unknown'}))}catch(e){voices=['vi_VN-vais1000-medium','en_US-lessac-medium','en_GB-alan-medium','ja_JP-kokoro-medium','ko_KR-kss-x_low','zh_CN-huayan-medium'].map(key=>({key,code:key.split('-')[0].toLowerCase(),quality:'medium'}))}
 const lang=$('lang').value;let list=voices.filter(v=>v.code.startsWith(lang+'_'));if(lang==='vi')list=list.filter(v=>!/(25hours_single|vivos)/i.test(v.key));list.sort((a,b)=>({medium:0,high:1,low:2,x_low:3}[a.quality]??9)-({medium:0,high:1,low:2,x_low:3}[b.quality]??9));sel.innerHTML=list.map(v=>'<option value="'+v.key+'">'+v.key+'</option>').join('')||'<option value="">Không có model tương thích trong ngôn ngữ này</option>';if(lang==='vi'&&list.some(v=>v.key==='vi_VN-vais1000-medium'))sel.value='vi_VN-vais1000-medium';return list}
 $('lang').onchange=()=>loadVoices();
-$('test').onclick=async()=>{const text='Xin chào! Đây là giọng thử nghiệm của nhân vật.';const voiceId=$('voice').value;if(!voiceId)return;const btn=$('test');btn.disabled=true;$('status').textContent='Đang tải Piper và tạo câu thử…';try{if(!piperModule)piperModule=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');if(!session||sessionVoice!==voiceId){session=new piperModule.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});sessionVoice=voiceId}const wav=await session.predict(text);if(testUrl)URL.revokeObjectURL(testUrl);testUrl=URL.createObjectURL(wav);const audio=new Audio(testUrl);audio.play();$('status').textContent='Đang phát mẫu Piper gốc. Hãy lưu hồ sơ sau khi chọn model và thông số.'}catch(e){$('status').textContent='Lỗi Piper: '+e.message}finally{btn.disabled=false}};
+async function processPreviewWav(blob){
+ const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+ const AC=window.AudioContext||window.webkitAudioContext;
+ if(!Offline||!AC)return blob;
+ const ac=new AC();
+ try{
+  const input=await ac.decodeAudioData(await blob.arrayBuffer());
+  const speed=Math.max(.65,Math.min(1.5,Number($('speed').value)||1));
+  const pitch=Math.pow(2,(Number($('pitch').value)||0)/12);
+  const rate=speed*pitch;
+  const frames=Math.max(1,Math.ceil(input.length/rate));
+  const off=new Offline(input.numberOfChannels,frames,input.sampleRate);
+  const src=off.createBufferSource();src.buffer=input;src.playbackRate.value=rate;
+  const high=off.createBiquadFilter();high.type='highshelf';high.frequency.value=2600;high.gain.value=(Number($('tone').value)-50)*0.12;
+  const low=off.createBiquadFilter();low.type='lowshelf';low.frequency.value=240;low.gain.value=(50-Number($('tone').value))*0.08;
+  src.connect(high);high.connect(low);
+  const rough=Number($('rough').value);
+  if(rough>1){
+   const sh=off.createWaveShaper(),amount=rough*1.8,curve=new Float32Array(44100);
+   for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=((3+amount)*x*20*Math.PI/180)/(Math.PI+amount*Math.abs(x))}
+   sh.curve=curve;low.connect(sh);sh.connect(off.destination);
+  }else low.connect(off.destination);
+  const rendered=await off.startRendering();
+  const channels=rendered.numberOfChannels,bytes=44+rendered.length*channels*2,buffer=new ArrayBuffer(bytes),view=new DataView(buffer);
+  const write=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i))};
+  write(0,'RIFF');view.setUint32(4,bytes-8,true);write(8,'WAVE');write(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,rendered.sampleRate,true);view.setUint32(28,rendered.sampleRate*channels*2,true);view.setUint16(32,channels*2,true);view.setUint16(34,16,true);write(36,'data');view.setUint32(40,bytes-44,true);
+  let offset=44;for(let i=0;i<rendered.length;i++)for(let ch=0;ch<channels;ch++){const s=Math.max(-1,Math.min(1,rendered.getChannelData(ch)[i]));view.setInt16(offset,s<0?s*32768:s*32767,true);offset+=2}
+  return new Blob([buffer],{type:'audio/wav'});
+ }finally{await ac.close().catch(()=>{})}
+}
+$('test').onclick=async()=>{const text='Xin chào! Đây là giọng thử nghiệm của nhân vật.';const voiceId=$('voice').value;if(!voiceId)return;const btn=$('test');btn.disabled=true;$('status').textContent='Đang tải Piper và tạo câu thử…';try{if(!piperModule)piperModule=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');if(!session||sessionVoice!==voiceId){session=new piperModule.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});sessionVoice=voiceId}const wav=await session.predict(text);$('status').textContent='Đang áp dụng thông số giọng đã chọn…';const processed=await processPreviewWav(wav);if(testUrl)URL.revokeObjectURL(testUrl);testUrl=URL.createObjectURL(processed);document.querySelectorAll('audio').forEach(a=>{a.pause();a.currentTime=0});const audio=new Audio(testUrl);audio.onended=()=>{};await audio.play();$('status').textContent='Đang nghe bản đã xử lý · tốc độ '+$('speed').value+'x · cao độ '+$('pitch').value+' semitone · âm sắc '+$('tone').value+'% · khàn '+$('rough').value+'%.'}catch(e){$('status').textContent='Lỗi Piper: '+e.message}finally{btn.disabled=false}};
 $('stop').onclick=()=>{document.querySelectorAll('audio').forEach(a=>a.pause());if(testUrl)URL.revokeObjectURL(testUrl);testUrl='';$('status').textContent='Đã dừng.'};
 render();updateValues();loadVoices();
 })();
