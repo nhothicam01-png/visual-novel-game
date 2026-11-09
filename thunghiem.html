@@ -506,7 +506,7 @@ function pausePreview(){
  if(!previewing||previewPaused)return;
  previewPaused=true;previewPauseStartedAt=performance.now();
  Object.values(previewAudio).forEach(a=>{if(a&&!a.paused)a.pause()});
- if(window.speechSynthesis)window.speechSynthesis.pause();
+ pauseBrowserSpeech();
  if(charVideo)charVideo.pause();if(bgVideo)bgVideo.pause();
  updatePlaybackButtons();setTtsStatus('Đã tạm dừng. Nhấn Tiếp tục để chạy tiếp.');
 }
@@ -519,10 +519,7 @@ function resumePreview(){
  Object.values(previewAudio).forEach(a=>{
   if(a&&a.paused&&!a.ended)a.play().catch(err=>console.warn('Khong the tiep tuc am thanh preview:',err));
  });
- if(window.speechSynthesis){
-  window.speechSynthesis.resume();
-  if(window.speechSynthesis.paused)window.speechSynthesis.resume();
- }
+ resumeBrowserSpeech();
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  updatePlaybackButtons();setTtsStatus('Đang tiếp tục chạy…');
 }
@@ -563,25 +560,58 @@ async function playLineAudio(line){
   previewAudio.sfx=audioElement(URL.createObjectURL($('sfx-file').files[0]),false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})
  }
 }
+let browserSpeechState=null;
+function buildBrowserUtterance(state){
+ const synth=window.speechSynthesis;if(!synth||!state)return;
+ const remaining=state.text.slice(state.offset);
+ if(!remaining){finishBrowserSpeech(state);return}
+ const utterance=new SpeechSynthesisUtterance(remaining);
+ utterance.lang=state.lang;if(state.voice)utterance.voice=state.voice;
+ utterance.volume=state.volume;utterance.rate=1;utterance.pitch=1;
+ state.utterance=utterance;previewSpeech=utterance;
+ utterance.onboundary=e=>{
+  if(browserSpeechState!==state||state.paused)return;
+  if(Number.isFinite(e.charIndex))state.offset=Math.min(state.text.length,state.offset+e.charIndex);
+ };
+ utterance.onend=()=>{
+  if(browserSpeechState!==state||state.paused)return;
+  state.offset=state.text.length;finishBrowserSpeech(state);
+ };
+ utterance.onerror=()=>{
+  if(browserSpeechState!==state||state.paused)return;
+  finishBrowserSpeech(state);
+ };
+ synth.speak(utterance);
+}
+function finishBrowserSpeech(state){
+ if(browserSpeechState!==state)return;
+ browserSpeechState=null;previewSpeech=null;state.resolve();
+}
 function speakBrowserText(text){
  return new Promise(resolve=>{
   const synth=window.speechSynthesis;
   if(!synth||!text){resolve();return}
   synth.cancel();
-  const utterance=new SpeechSynthesisUtterance(text);
   const voiceUri=$('browser-tts-voice')?.value||'';
   const voices=synth.getVoices?synth.getVoices():[];
   const chosen=voices.find(v=>v.voiceURI===voiceUri);
-  const lang=$('tts-lang')?.value||'vi-VN';
-  utterance.lang=chosen?.lang||lang;
-  if(chosen)utterance.voice=chosen;
-  utterance.volume=Math.max(0,Math.min(1,Number($('tts-volume')?.value||1)));
-  utterance.rate=1;utterance.pitch=1;
-  let settled=false;const finish=()=>{if(settled)return;settled=true;resolve()};
-  utterance.onend=finish;utterance.onerror=finish;
-  previewSpeech=utterance;
-  synth.speak(utterance);
+  browserSpeechState={text:String(text),offset:0,lang:chosen?.lang||$('tts-lang')?.value||'vi-VN',voice:chosen||null,volume:Math.max(0,Math.min(1,Number($('tts-volume')?.value||1))),resolve,paused:false,utterance:null};
+  buildBrowserUtterance(browserSpeechState);
  });
+}
+function pauseBrowserSpeech(){
+ const state=browserSpeechState;if(!state||state.paused)return;
+ state.paused=true;
+ if(window.speechSynthesis)window.speechSynthesis.cancel();
+}
+function resumeBrowserSpeech(){
+ const state=browserSpeechState;if(!state||!state.paused)return;
+ state.paused=false;buildBrowserUtterance(state);
+}
+function stopBrowserSpeech(){
+ const state=browserSpeechState;browserSpeechState=null;previewSpeech=null;
+ if(window.speechSynthesis)window.speechSynthesis.cancel();
+ if(state)state.resolve();
 }
 function loadBrowserTtsVoices(){
  const select=$('browser-tts-voice');if(!select||!window.speechSynthesis)return;
