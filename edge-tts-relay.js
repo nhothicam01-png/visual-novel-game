@@ -55,7 +55,7 @@ async function synthesize(text,voice,rate,pitch){
   ws.addEventListener('message',async event=>{
    if(typeof event.data==='string'){
     if(event.data.includes('Path:turn.end')){
-     finish(parts.length?null:new Error('Microsoft kết thúc nhưng không gửi frame âm thanh'));
+     finish(chunks.length?null:new Error('Microsoft kết thúc nhưng không gửi frame âm thanh'));
     }
     return;
    }
