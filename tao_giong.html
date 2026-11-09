@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Phòng tạo giọng nhân vật</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:14px;background:#070b16;color:#f8fafc;font-family:Segoe UI,Arial,sans-serif;display:flex;flex-direction:column;align-items:center;gap:12px}
+main{width:100%;max-width:850px}.nav,.panel{background:#111c30;border:1px solid #334155;border-radius:12px;padding:13px;margin-bottom:12px}
+.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{color:#e9d5ff;background:#263449;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:13px}
+h1{font-size:22px;color:#c4b5fd;margin:8px 0}h2{font-size:16px;color:#c4b5fd;margin:0 0 12px}
+p,.note{font-size:13px;line-height:1.5;color:#aebbd0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:6px;color:#dbe4f0;font-size:13px}
+input,select{width:100%;min-height:38px;border-radius:8px;border:1px solid #475569;background:#1e293b;color:white;padding:8px;font:inherit}
+input[type=range]{padding:0;accent-color:#a78bfa}.value{color:#a5f3fc;font-variant-numeric:tabular-nums}
+button{border:0;border-radius:8px;padding:10px 14px;background:linear-gradient(120deg,#6366f1,#9333ea);color:white;font-weight:650;cursor:pointer}
+button.secondary{background:#334155}button.danger{background:#9f1239}button:disabled{opacity:.5}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.status{color:#a5f3fc;font-size:13px;min-height:22px;white-space:pre-wrap}
+.profile{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #334155;border-radius:9px;margin-top:8px}.profile small{display:block;color:#94a3b8;margin-top:4px}
+.warning{color:#fbbf24}.small{font-size:12px}
+</style>
+</head>
+<body><main>
+<nav class="nav"><a href="./index.html">🏠 Trang chủ</a><a href="./thunghiem.html">🎬 Phòng dựng video</a></nav>
+<h1>🎙️ Phòng tạo giọng nhân vật</h1>
+<p>Tạo hồ sơ từ các giọng Piper có sẵn, tinh chỉnh cách phát âm rồi lưu vào thư viện dùng chung với trang dựng video. Hồ sơ được lưu trên trình duyệt của thiết bị này.</p>
+<section class="panel">
+<h2>1. Chọn giọng nền Piper</h2>
+<div class="grid">
+<label>Tên hồ sơ giọng<input id="profile-name" maxlength="50" placeholder="Ví dụ: Linh - nữ sinh dịu dàng"></label>
+<label>Ngôn ngữ<select id="lang"><option value="vi">Tiếng Việt</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="zh">中文</option></select></label>
+<label>Giọng Piper<select id="voice"><option value="">Đang tải danh sách giọng…</option></select></label>
+<label>Phong cách giọng<select id="gender"><option value="female">Nữ</option><option value="male">Nam</option><option value="neutral">Trung tính</option></select></label>
+</div>
+<p class="note">Giới tính ở đây là nhãn hồ sơ để quản lý. Muốn giọng nam thực sự, hãy chọn một model Piper nam nếu danh mục có cung cấp; kéo cao độ của giọng nữ xuống không tạo ra giọng nam tự nhiên.</p>
+</section>
+<section class="panel">
+<h2>2. Tinh chỉnh đặc điểm giọng</h2>
+<div class="grid">
+<label>Độ tuổi cảm nhận <span class="value" id="age-v">25</span><input id="age" type="range" min="5" max="90" value="25"></label>
+<label>Tốc độ đọc <span class="value" id="speed-v">1.00x</span><input id="speed" type="range" min=".65" max="1.5" step=".05" value="1"></label>
+<label>Cao độ <span class="value" id="pitch-v">0 semitone</span><input id="pitch" type="range" min="-8" max="8" value="0"></label>
+<label>Độ sáng âm sắc <span class="value" id="tone-v">50%</span><input id="tone" type="range" min="0" max="100" value="50"></label>
+<label>Độ khàn <span class="value" id="rough-v">5%</span><input id="rough" type="range" min="0" max="100" value="5"></label>
+<label>Hơi thở <span class="value" id="breath-v">10%</span><input id="breath" type="range" min="0" max="100" value="10"></label>
+</div>
+<div class="actions"><button id="test">🔊 Tạo câu thử & nghe</button><button class="secondary" id="stop">Dừng</button></div>
+<p class="note">Các thông số tinh chỉnh là xử lý hậu kỳ âm thanh, không phải tham số huấn luyện Piper. Bản thử sẽ giúp nghe model gốc; khi dùng hồ sơ ở trang dựng video, các thông số tốc độ/cao độ và màu âm sẽ được áp dụng ở bước hậu xử lý.</p>
+<div class="status" id="status">Đang chuẩn bị danh sách model Piper…</div>
+</section>
+<section class="panel">
+<h2>3. Lưu hồ sơ vào thư viện giọng</h2>
+<div class="actions"><button id="save">💾 Lưu hồ sơ giọng</button><button class="secondary" id="reset">Đặt lại thông số</button></div>
+<div id="profiles"><p class="note">Chưa có hồ sơ giọng nào được lưu.</p></div>
+</section>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id),KEY='visualNovelVoiceProfilesV1';
+let voices=[],piperModule=null,session=null,sessionVoice='',testUrl='';
+function read(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){return[]}}
+function write(list){localStorage.setItem(KEY,JSON.stringify(list));render()}
+function settings(){return {age:+$('age').value,speed:+$('speed').value,pitch:+$('pitch').value,tone:+$('tone').value,rough:+$('rough').value,breath:+$('breath').value}}
+function updateValues(){for(const id of ['age','speed','pitch','tone','rough','breath'])$(id+'-v').textContent=({age:$('age').value,speed:$('speed').value+'x',pitch:$('pitch').value+' semitone',tone:$('tone').value+'%',rough:$('rough').value+'%',breath:$('breath').value+'%'})[id]}
+['age','speed','pitch','tone','rough','breath'].forEach(id=>$(id).addEventListener('input',updateValues));
+function render(){const list=read();$('profiles').innerHTML=list.length?'':'<p class="note">Chưa có hồ sơ giọng nào được lưu.</p>';list.forEach(p=>{const el=document.createElement('div');el.className='profile';const info=document.createElement('div');info.innerHTML='<strong></strong><small></small>';info.querySelector('strong').textContent=p.name;info.querySelector('small').textContent=(p.gender==='male'?'Nam':p.gender==='female'?'Nữ':'Trung tính')+' · '+p.voiceId+' · '+p.speed+'x · Pitch '+p.pitch;const actions=document.createElement('div');actions.className='actions';const load=document.createElement('button');load.className='secondary';load.textContent='Sửa';load.onclick=()=>loadProfile(p.id);const del=document.createElement('button');del.className='danger';del.textContent='Xóa';del.onclick=()=>{if(confirm('Xóa hồ sơ '+p.name+'?'))write(read().filter(x=>x.id!==p.id))};actions.append(load,del);el.append(info,actions);$('profiles').append(el)})}
+function loadProfile(id){const p=read().find(x=>x.id===id);if(!p)return;$('profile-name').value=p.name;$('lang').value=p.lang;$('gender').value=p.gender;loadVoices().then(()=>{$('voice').value=p.voiceId});for(const k of ['age','speed','pitch','tone','rough','breath'])$(k).value=p[k];updateValues();$('status').textContent='Đã nạp hồ sơ để chỉnh sửa. Nhấn Lưu hồ sơ để cập nhật.';editing=id}
+let editing=null;
+$('save').onclick=()=>{const name=$('profile-name').value.trim(),voiceId=$('voice').value;if(!name){$('status').textContent='Hãy đặt tên cho hồ sơ.';return}if(!voiceId){$('status').textContent='Hãy chọn model Piper.';return}const p={id:editing||('voice_'+Date.now()),name,lang:$('lang').value,voiceId,gender:$('gender').value,...settings(),updatedAt:new Date().toISOString()};const list=read(),idx=list.findIndex(x=>x.id===p.id);if(idx>=0)list[idx]=p;else list.push(p);write(list);editing=p.id;$('status').textContent='Đã lưu hồ sơ. Trang thunghiem.html có thể tải danh sách này trên cùng trình duyệt.'};
+$('reset').onclick=()=>{editing=null;$('profile-name').value='';$('age').value=25;$('speed').value=1;$('pitch').value=0;$('tone').value=50;$('rough').value=5;$('breath').value=10;updateValues()};
+async function loadVoices(){const sel=$('voice');sel.innerHTML='<option value="">Đang tải…</option>';try{const res=await fetch('https://huggingface.co/rhasspy/piper-voices/resolve/main/voices.json');if(!res.ok)throw Error('catalog');const cat=await res.json();voices=Object.entries(cat).map(([key,v])=>({key,code:(v.language?.code||key.split('-')[0]).toLowerCase(),quality:v.quality||'unknown'}))}catch(e){voices=['vi_VN-vais1000-medium','en_US-lessac-medium','en_GB-alan-medium','ja_JP-kokoro-medium','ko_KR-kss-x_low','zh_CN-huayan-medium'].map(key=>({key,code:key.split('-')[0].toLowerCase(),quality:'medium'}))}
+const lang=$('lang').value;const list=voices.filter(v=>v.code.startsWith(lang+'_'));sel.innerHTML=list.map(v=>'<option value="'+v.key+'">'+v.key+'</option>').join('')||'<option value="">Không có model trong ngôn ngữ này</option>';return list}
+$('lang').onchange=()=>loadVoices();
+$('test').onclick=async()=>{const text='Xin chào! Đây là giọng thử nghiệm của nhân vật.';const voiceId=$('voice').value;if(!voiceId)return;const btn=$('test');btn.disabled=true;$('status').textContent='Đang tải Piper và tạo câu thử…';try{if(!piperModule)piperModule=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');if(!session||sessionVoice!==voiceId){session=new piperModule.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});sessionVoice=voiceId}const wav=await session.predict(text);if(testUrl)URL.revokeObjectURL(testUrl);testUrl=URL.createObjectURL(wav);const audio=new Audio(testUrl);audio.play();$('status').textContent='Đang phát mẫu Piper gốc. Hãy lưu hồ sơ sau khi chọn model và thông số.'}catch(e){$('status').textContent='Lỗi Piper: '+e.message}finally{btn.disabled=false}};
+$('stop').onclick=()=>{document.querySelectorAll('audio').forEach(a=>a.pause());if(testUrl)URL.revokeObjectURL(testUrl);testUrl='';$('status').textContent='Đã dừng.'};
+render();updateValues();loadVoices();
+})();
+</script></body></html>
