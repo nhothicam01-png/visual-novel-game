@@ -793,7 +793,7 @@ async function loadStoryCatalog(){
   if(!response.ok)throw new Error('GitHub trả về lỗi HTTP '+response.status);
   const treeData=await response.json();
   if(treeData.truncated)throw new Error('Danh sách tệp GitHub quá lớn, không thể quét đầy đủ.');
-  const files=(treeData.tree||[]).filter(item=>item.type==='blob'&&item.path.toLowerCase().endsWith('.json')&&(/^assets\\/KichBan\\/[^/]+\\/[^/]+\\.json$/i.test(item.path)&&item.path.split('/').at(-1).replace(/\\.json$/i,'')===item.path.split('/')[2])).sort((a,b)=>a.path.localeCompare(b.path,'vi'));
+  const files=(treeData.tree||[]).filter(item=>item.type==='blob'&&item.path.toLowerCase().endsWith('.json')&&(/^assets\/KichBan\/[^/]+\/[^/]+\.json$/i.test(item.path)&&item.path.split('/').at(-1).replace(/\.json$/i,'')===item.path.split('/')[2])).sort((a,b)=>a.path.localeCompare(b.path,'vi'));
   const entries=files.map(file=>({name:file.path.split('/')[2],path:file.path,url:null}));
   sel.innerHTML='';
   const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=entries.length?'-- Chọn truyện --':'Chưa có kịch bản JSON';sel.appendChild(placeholder);
