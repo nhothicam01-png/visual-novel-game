@@ -360,6 +360,7 @@ async function applyVoiceProfile(blob,p){
   const low=off.createBiquadFilter();low.type='lowshelf';low.frequency.value=240;low.gain.value=(50-(Number(p.tone)||50))*0.08;
   src.connect(high);high.connect(low);
   if((Number(p.rough)||0)>1){const sh=off.createWaveShaper(),amount=(Number(p.rough)||0)*1.8,curve=new Float32Array(44100);for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=((3+amount)*x*20*Math.PI/180)/(Math.PI+amount*Math.abs(x))}sh.curve=curve;low.connect(sh);sh.connect(off.destination)}else low.connect(off.destination);
+  src.start(0);
   const result=await off.startRendering();return encodeWav(result);
  }catch(e){console.warn('Voice profile processing fallback:',e);return blob}
  finally{await ac.close().catch(()=>{})}
