@@ -427,7 +427,6 @@
     #subtitle-preview { width:100%; min-height:120px; resize:vertical; padding:9px; color:#dbeafe; background:#020617; border:1px solid #334155; border-radius:7px; font: .75rem/1.5 ui-monospace,monospace; user-select:text; }
     #subtitle-status { font-size:.76rem; color:#94a3b8; }
 
-    #tts-export-tools{width:100%;max-width:1000px;margin-top:8px;padding:12px 14px;background:rgba(15,23,42,.92);border:1px solid rgba(167,139,250,.35);border-radius:10px;color:#e2e8f0;display:flex;flex-direction:column;gap:9px}#tts-export-tools h4{color:#c4b5fd;font-size:.9rem}
     /* Thanh điều hướng nhanh giữa các công cụ */
     #site-navigation {
       width: 100%;
@@ -473,10 +472,10 @@
 <body>
 
   <nav id="site-navigation" aria-label="Điều hướng nhanh">
-    <a class="nav-link" href="./index.html">🏠 Trang chủ</a>
+    <a class="nav-link current" href="./index.html" aria-current="page">🏠 Trang chủ</a>
     <a class="nav-link" href="./rbg.html">🎬 Xóa phông video</a>
     <a class="nav-link" href="./subtitle_voice_player.html">💬 Đọc phụ đề</a>
-    <a class="nav-link current" href="./index_test.html" aria-current="page">🧪 Trang test</a>
+    <a class="nav-link" href="./index_test.html">🧪 Trang test</a>
   </nav>
 
   <div id="game-container">
@@ -562,37 +561,6 @@
     <textarea id="subtitle-preview" spellcheck="false" placeholder="Nội dung SRT sẽ xuất hiện ở đây sau khi tạo..." aria-label="Xem trước nội dung SRT"></textarea>
   </section>
 
-  <section id="tts-export-tools" aria-label="Xuất âm thanh TTS">
-<h4>🎧 Xuất lời thoại thành file âm thanh (WAV)</h4>
-<p style="font-size:.76rem;color:#cbd5e1;line-height:1.5;">Tạo giọng đọc tiếng Việt bằng Piper AI ngay trên trình duyệt. Lần đầu cần tải mô hình giọng đọc; sau đó trình duyệt sẽ lưu bộ nhớ đệm. Âm thanh được ghép từ toàn bộ lời thoại trong kịch bản đang tải.</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><button class="btn" id="btn-tts-export" type="button">🎙️ Tạo và tải file WAV</button><button class="btn" id="btn-tts-stop" type="button" disabled>⏹ Hủy</button></div>
-<div id="tts-export-progress" role="status" style="font-size:.76rem;color:#94a3b8;">Hãy tải/import kịch bản JSON trước.</div>
-<progress id="tts-export-bar" max="100" value="0" style="width:100%;height:10px;accent-color:#a78bfa;"></progress>
-</section>
-  <section id="video-export-tools" aria-label="Xuất video WebM">
-<h4>🎬 Xuất video kịch bản (WebM)</h4>
-<p style="font-size:.76rem;color:#cbd5e1;line-height:1.5;">Chỉ dựng riêng khung truyện bằng cách chụp DOM theo từng frame: giữ kiểu chữ, khung thoại, tên nhân vật, trạng thái CSS/WAAPI, video nền và nhân vật. Âm thanh TTS Piper, nhạc nền và hiệu ứng được ghép vào video.</p>
-<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-<label style="font-size:.78rem">Tỷ lệ khung hình <select id="video-export-ratio" class="btn"><option value="landscape">Ngang · 16:9</option><option value="portrait">Dọc · 9:16</option></select></label>
-<label style="font-size:.78rem">FPS <select id="video-export-fps" class="btn"><option value="24">24 FPS · Điện ảnh</option><option value="30" selected>30 FPS · Tiêu chuẩn</option><option value="60">60 FPS · Mượt</option></select></label>
-<label style="font-size:.78rem">Chất lượng <select id="video-export-quality" class="btn"><option value="standard">Tiêu chuẩn · 4 Mbps</option><option value="high">Cao · 8 Mbps</option><option value="compact">Nhẹ · 2 Mbps</option></select></label>
-</div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="btn-video-export" type="button">🎥 Bắt đầu xuất WebM</button><button class="btn" id="btn-video-cancel" type="button" disabled>⏹ Hủy xuất</button></div>
-<div id="video-export-status" role="status" style="font-size:.76rem;color:#94a3b8;margin-top:8px">Tải hoặc import JSON trước khi xuất.</div>
-<progress id="video-export-progress" max="100" value="0" style="width:100%;height:10px;accent-color:#38bdf8"></progress>
-<p style="font-size:.7rem;color:#94a3b8">Video chỉ lấy vùng game-container, không ghi thanh trình duyệt hay phần điều khiển. Các hiệu ứng DOM được dựng lại theo frame; do giới hạn chụp DOM, tốc độ khung hình thực tế có thể thấp hơn 30 fps ở thiết bị yếu.</p>
-</section>
-  <section id="timeline-export-tools" aria-label="Xuất video theo timeline">
-    <h4>🎞️ Xuất MP4 theo timeline (thử nghiệm)</h4>
-    <p style="font-size:.76rem;color:#cbd5e1;line-height:1.5;">Bản dựng độc lập: tạo trước TTS, ghép âm thanh theo mốc thời gian rồi dựng từng khung hình cố định. Không điều khiển hoặc làm thay đổi tiến trình phát truyện hiện tại.</p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-      <button class="btn" id="btn-timeline-export" type="button">🎬 Xuất MP4 timeline</button>
-      <button class="btn" id="btn-timeline-cancel" type="button" disabled>⏹ Hủy</button>
-    </div>
-    <div id="timeline-export-status" role="status" style="font-size:.76rem;color:#94a3b8;margin-top:8px">Tải hoặc import JSON trước khi xuất.</div>
-    <progress id="timeline-export-progress" max="100" value="0" style="width:100%;height:10px;accent-color:#a78bfa"></progress>
-    <p style="font-size:.7rem;color:#fbbf24">Lưu ý: đây là bản thử nghiệm đầu tiên. Video nền/nhân vật và hiệu ứng phức tạp có thể chưa khớp hoàn toàn với trình phát trực tiếp; cần kiểm tra bằng một kịch bản ngắn trước.</p>
-  </section>
   <section id="dialogue-settings" aria-label="Cài đặt chữ thoại">
     <h4>💬 Tùy chỉnh chữ thoại</h4>
     <label class="dialogue-toggle"><input id="dialogue-visible" type="checkbox" checked onchange="trinhPhat.capNhatCaiDatThoai('visible', this.checked)"> Hiển thị khung thoại</label>
@@ -2336,51 +2304,5 @@
 
     const trinhPhat = new TrinhPhatKichBanWeb();
   </script>
-  <script>
-(()=>{let session=null,cancel=false;const $=id=>document.getElementById(id),status=s=>$('tts-export-progress').textContent=s,progress=n=>$('tts-export-bar').value=n;
-$('btn-tts-stop').addEventListener('click',()=>{cancel=true;status('Đang dừng sau đoạn thoại hiện tại...')});
-$('btn-tts-export').addEventListener('click',async()=>{const btn=$('btn-tts-export'),stop=$('btn-tts-stop'),data=typeof trinhPhat!=='undefined'?trinhPhat.duLieu:null,lines=Array.isArray(data?.danh_sach)?data.danh_sach.filter(x=>String(x?.noi_dung||'').trim()):[];
-if(!lines.length){status('Chưa có lời thoại. Hãy tải hoặc import JSON trước.');return}btn.disabled=true;stop.disabled=false;cancel=false;progress(0);
-let ctx;
-try{status('Đang khởi tạo Piper TTS...');if(!session){const lib=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');session=new lib.TtsSession({voiceId:'vi_VN-vais1000-medium',allowLocalModels:true,fallbackStrategy:'cdn',progress:p=>{if(p?.total)status('Đang tải mô hình: '+Math.round(p.loaded/p.total*100)+'%')},logger:m=>console.log('[Piper]',m)})}
-ctx=new(window.AudioContext||window.webkitAudioContext)();const buffers=[];let frames=0;
-for(let i=0;i<lines.length;i++){if(cancel)throw Error('Đã hủy theo yêu cầu.');status('Đang tạo giọng đọc '+(i+1)+'/'+lines.length+'...');const wav=await session.predict(String(lines[i].noi_dung).trim());const b=await ctx.decodeAudioData(await wav.arrayBuffer());buffers.push(b);frames+=b.length;progress((i+1)/lines.length*90)}
-if(cancel)throw Error('Đã hủy theo yêu cầu.');status('Đang ghép âm thanh...');const rate=buffers[0].sampleRate,ch=Math.min(2,buffers[0].numberOfChannels),merged=ctx.createBuffer(ch,frames,rate);let offset=0;
-for(const b of buffers){for(let k=0;k<ch;k++)merged.getChannelData(k).set(b.getChannelData(Math.min(k,b.numberOfChannels-1)),offset);offset+=b.length}
-const blob=wavEncode(merged),url=URL.createObjectURL(blob),a=document.createElement('a'),raw=String(data.ten_kich_ban||data.title||trinhPhat.tenFileKichBan||'kich-ban'),name=raw.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'')||'kich-ban';
-a.href=url;a.download=name+'-tts.wav';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);progress(100);status('Hoàn tất! Đã ghép '+lines.length+' lượt thoại thành file WAV.')
-}catch(e){status('Không xuất được âm thanh: '+(e?.message||e));console.error('[Piper TTS]',e)}finally{if(ctx)await ctx.close().catch(()=>{});btn.disabled=false;stop.disabled=true}});
-function wavEncode(b){const n=b.numberOfChannels,rate=b.sampleRate,len=b.length,size=len*n*2,ab=new ArrayBuffer(44+size),v=new DataView(ab),w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};w(0,'RIFF');v.setUint32(4,36+size,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,n,true);v.setUint32(24,rate,true);v.setUint32(28,rate*n*2,true);v.setUint16(32,n*2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,size,true);const d=Array.from({length:n},(_,i)=>b.getChannelData(i));let p=44;for(let i=0;i<len;i++)for(let k=0;k<n;k++){const s=Math.max(-1,Math.min(1,d[k][i]));v.setInt16(p,s<0?s*32768:s*32767,true);p+=2}return new Blob([ab],{type:'audio/wav'})}
-})();
-</script>
-<script>
-(()=> {
-const $=id=>document.getElementById(id);
-let busy=false,cancelled=false,rec=null,chunks=[],ctx=null,piper=null,srcNow=null,oldTts=null,raf=0,rendering=false,frameCanvas=null,html2canvasFn=null,originalPortrait=false;
-const status=t=>$('video-export-status').textContent=t,progress=n=>$('video-export-progress').value=n;
-const name=()=>String(trinhPhat.duLieu?.ten_kich_ban||trinhPhat.duLieu?.title||trinhPhat.tenFileKichBan||'visual-novel').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'')||'visual-novel';
-async function audioSetup(){if(!ctx)ctx=new(window.AudioContext||window.webkitAudioContext)();let dest=ctx.createMediaStreamDestination();for(let el of [trinhPhat.audioBgm,trinhPhat.audioSfx]){let n=el.__vnExportSource;if(!n){n=ctx.createMediaElementSource(el);el.__vnExportSource=n}n.connect(ctx.destination);n.connect(dest)}await ctx.resume();return dest}
-async function speak(s,t,done){try{let blob=await piper.predict(String(t).trim());if(cancelled){done();return}let b=await ctx.decodeAudioData(await blob.arrayBuffer()),src=ctx.createBufferSource();src.buffer=b;src.connect(ctx.destination);src.connect(window.__vnWebmDest);srcNow=src;src.onended=()=>{srcNow=null;done()};src.start()}catch(e){status('Lỗi Piper TTS: '+e.message);done()}}
-function freezeAnimatedStyles(sourceDoc,cloneDoc){const src=sourceDoc.querySelectorAll('*'),dst=cloneDoc.querySelectorAll('*');for(let i=0;i<Math.min(src.length,dst.length);i++){const cs=getComputedStyle(src[i]),st=dst[i].style;for(const p of ['transform','opacity','filter','clip-path','object-position','background-position','box-shadow']){const v=cs.getPropertyValue(p);if(v)st.setProperty(p,v)}}}
-async function cloneVideoFrames(cloneDoc){for(const id of ['layer-bg-video','layer-character','layer-character-buffer']){const live=document.getElementById(id),copy=cloneDoc.getElementById(id);if(!live||!copy||live.readyState<HTMLMediaElement.HAVE_CURRENT_DATA||!live.videoWidth||!live.videoHeight)continue;try{const c=document.createElement('canvas');c.width=live.videoWidth;c.height=live.videoHeight;const cx=c.getContext('2d');if(!cx)continue;cx.drawImage(live,0,0,c.width,c.height);const dataUrl=c.toDataURL('image/png');const img=cloneDoc.createElement('img');img.id=copy.id;img.className=copy.className;img.style.cssText=copy.style.cssText;img.alt='';img.src=dataUrl;copy.replaceWith(img)}catch(e){console.warn('Không thể chụp frame video '+id+' (có thể do CORS):',e);/* Không để một video lỗi làm hỏng toàn bộ frame; giữ nguyên bản clone để các lớp ảnh/DOM khác vẫn được dựng. */}}}
-async function renderFrame(){if(rendering||cancelled||!busy)return false;rendering=true;try{const el=trinhPhat.container;const rect=el.getBoundingClientRect();if(rect.width<2||rect.height<2)throw Error('Khung truyện đang bị ẩn hoặc chưa có kích thước.');const targetW=frameCanvas.width,targetH=frameCanvas.height;const shot=await html2canvasFn(el,{backgroundColor:'#000000',width:rect.width,height:rect.height,scale:targetW/rect.width,logging:false,useCORS:true,allowTaint:false,onclone:async cloneDoc=>{freezeAnimatedStyles(document,cloneDoc);await cloneVideoFrames(cloneDoc)}});const c=frameCanvas.getContext('2d');if(!c)throw Error('Không tạo được canvas xuất video.');c.clearRect(0,0,targetW,targetH);c.drawImage(shot,0,0,targetW,targetH);return true}catch(e){console.error('Lỗi dựng frame DOM:',e);status('Lỗi dựng hình: '+(e.message||e));return false}finally{rendering=false}}
-function captureLoop(){if(!busy||cancelled)return;renderFrame().finally(()=>{if(busy&&!cancelled)raf=requestAnimationFrame(captureLoop)})}
-function clean(){if(raf)cancelAnimationFrame(raf);raf=0;busy=false;$('btn-video-export').disabled=false;$('btn-video-cancel').disabled=true;if(oldTts)trinhPhat.docVanBanBangTTS=oldTts;delete window.__vnWebmDest;trinhPhat.container.classList.toggle('portrait',originalPortrait);frameCanvas=null}
-function finish(save){if(rec&&rec.state!=='inactive'){rec.onstop=()=>{if(save&&chunks.length){let blob=new Blob(chunks,{type:rec.mimeType||'video/webm'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name()+'.webm';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);progress(100);status('Hoàn tất · '+(blob.size/1048576).toFixed(1)+' MB · WebM')}else status('Đã hủy xuất video.');clean()};rec.stop()}else clean()}
-async function start(){if(busy)return;let ds=trinhPhat.duLieu?.danh_sach||trinhPhat.duLieu?.KichBanToanBo||[];if(!ds.length){status('Hãy tải/import JSON trước khi xuất.');return}if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){status('Trình duyệt chưa hỗ trợ xuất WebM từ canvas.');return}busy=true;cancelled=false;chunks=[];progress(0);$('btn-video-export').disabled=true;$('btn-video-cancel').disabled=false;originalPortrait=trinhPhat.container.classList.contains('portrait');
-try{status('Đang nạp bộ dựng giao diện và Piper TTS...');const mods=await Promise.all([import('https://esm.sh/html2canvas@1.4.1'),import('https://esm.sh/@realtimex/piper-tts-web@1.1.1')]);html2canvasFn=mods[0].default;piper=new mods[1].TtsSession({voiceId:'vi_VN-vais1000-medium',allowLocalModels:true,fallbackStrategy:'cdn'});
-const portrait=$('video-export-ratio').value==='portrait';trinhPhat.container.classList.toggle('portrait',portrait);await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));const rect=trinhPhat.container.getBoundingClientRect();const w=portrait?1080:1920,h=portrait?1920:1080;frameCanvas=document.createElement('canvas');frameCanvas.width=w;frameCanvas.height=h;const fps=Number($('video-export-fps').value)||30;status('Đang kiểm tra khung hình trước khi ghi...');if(!await renderFrame())throw Error('Không dựng được khung hình. Hãy kiểm tra trạng thái báo lỗi phía trên.');const stream=frameCanvas.captureStream(fps);const dest=await audioSetup();window.__vnWebmDest=dest;dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
-const q=$('video-export-quality').value,rate=q==='high'?8000000:q==='compact'?2000000:4000000,mime=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));if(!mime)throw Error('Không tìm thấy bộ mã hóa WebM.');
-rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:rate});rec.ondataavailable=e=>{if(e.data?.size)chunks.push(e.data)};rec.start(1000);
-oldTts=trinhPhat.docVanBanBangTTS.bind(trinhPhat);trinhPhat.docVanBanBangTTS=(speaker,text,done)=>speak(speaker,text,done);
-trinhPhat.dung();trinhPhat.currentIndex=0;trinhPhat.playbackStarted=false;trinhPhat.subtitlePlaybackRecords=new Map();status('Đang ghi riêng khung truyện và hiệu ứng CSS/JS...');captureLoop();await trinhPhat.batDau();
-while(!cancelled&&(trinhPhat.dangChay||trinhPhat.currentIndex<ds.length)){const n=Math.min(trinhPhat.currentIndex,ds.length);progress(Math.min(99,Math.round(n/ds.length*100)));status('Đang xuất WebM: '+n+' / '+ds.length+' lượt thoại');if(!trinhPhat.dangChay&&trinhPhat.currentIndex>=ds.length)break;await new Promise(r=>setTimeout(r,300))}
-if(cancelled){finish(false);return}await new Promise(r=>setTimeout(r,700));finish(true)
-}catch(e){console.error(e);status('Không xuất được: '+(e.message||e));if(rec&&rec.state!=='inactive')finish(false);else clean()}}
-$('btn-video-export').addEventListener('click',start);
-$('btn-video-cancel').addEventListener('click',()=>{if(!busy)return;cancelled=true;status('Đang dừng...');try{srcNow?.stop()}catch(_){}try{trinhPhat.dung()}catch(_){}finish(false)});
-})();
-</script>
-<script src="timeline_export.js"></script>
 </body>
 </html>
