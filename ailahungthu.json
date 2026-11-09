@@ -1,382 +1,164 @@
 {
-  "thoi_gian_giu_khung": 1,
-  "thoi_gian_cho_giua": 0.02,
-  "toc_do_go_chu": 0.03,
+  "phien_ban": 2,
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.5,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "nhan_vat_1": {
+      "ten_hien_thi": "Nhân vật 1",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": "afternoon_between_leaves.mp3"
+  },
   "danh_sach": [
     {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Đêm 31 tháng 10. Mình vừa lướt thấy một thử thách đang làm cả mạng xã hội bàn tán: No Nut November.",
-      "anh_nen": "phong_ngu_dem.png",
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Cuối buổi chiều, hành lang trường đã vắng tanh. Mình chỉ định quay lại lớp lấy cuốn sổ bỏ quên, vậy mà nơi này tối hơn mình tưởng.",
+      "anh_nen": "hanh_lang_toi.png",
       "anh_hieu_ung": "",
-      "am_thanh_nen": "bgm_gentle.mp3",
-      "am_thanh_hieu_ung": "",
-      "hieu_ung_nhan_vat": {
-        "kieu": "breath",
-        "toc_do": 1,
-        "cuong_do": 0.7,
-        "lap": true
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-enter"
+        ],
+        "nen": [
+          "bg-zoom"
+        ],
+        "camera": [
+          "camera-drift"
+        ],
+        "moi_truong": [
+          "rays",
+          "dust"
+        ]
       },
-      "hieu_ung_camera": {
-        "kieu": "zoom-in",
-        "toc_do": 1,
-        "cuong_do": 0.7,
-        "lap": false,
-        "thoi_gian": 1.2
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
       }
     },
     {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Nói đơn giản là trong suốt tháng 11, mình sẽ kiêng thủ dâm. Nghe thì có vẻ dễ... nhưng mình quyết định thử xem bản thân trụ được bao lâu.",
-      "anh_nen": "",
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "A, cuốn sổ ở ngay bàn cuối! May quá, mình cứ tưởng đã làm mất nó rồi. Ánh nắng cuối ngày vẫn còn len qua cửa sổ lớp học.",
+      "anh_nen": "lop_hoc_anh_sang_mem.png",
       "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ba mươi ngày. Không viện cớ, không phá luật, cũng không tự thương lượng kiểu 'chỉ lần này thôi'.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Mình còn đăng trạng thái lên nhóm bạn: 'Tháng 11 này tôi sẽ hoàn thành thử thách!'",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": "sfx_pop.mp3"
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Khoan! Cậu vừa tuyên bố cái gì đấy? Thử thách tháng 11 á?",
-      "anh_nen": "san_truong_ban_ngay.png",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Đúng vậy. Ba mươi ngày rèn tính kỷ luật. Tớ muốn xem mình có kiểm soát được thói quen của bản thân không.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Nghe khí thế ghê. Nhưng cậu có kế hoạch gì chưa, hay chỉ đăng status cho ngầu?",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ờ thì... chưa. Tớ nghĩ cứ quyết tâm là được.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Sai lầm đầu tiên! Muốn làm được thì phải tránh những thứ dễ khiến cậu mất tập trung, ngủ đủ và tìm việc khác để làm.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Được! Tớ sẽ lập kế hoạch. Khi nào thấy thôi thúc thì đứng dậy đi bộ, tập thể dục hoặc làm việc gì đó có ích.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ngày 3. Hai ngày đầu trôi qua khá ổn. Nhưng tối đến, nằm một mình với điện thoại đúng là thử thách thật sự.",
-      "anh_nen": "phong_ngu_dem.png",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Mình suýt mở lại những nội dung dễ khiến bản thân xao nhãng. Nhưng rồi nhớ lời đã hứa, mình đặt điện thoại xuống.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Không cần phải chứng minh với ai cả. Mình chỉ đang tập lựa chọn điều mình muốn làm thay vì hành động theo thói quen.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Báo cáo tình hình nào, chiến binh tháng 11? Còn sống chứ?",
-      "anh_nen": "san_truong_ban_ngay.png",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Còn! Nhưng tớ phát hiện thời gian rảnh buổi tối nguy hiểm hơn tớ tưởng.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Thế thì đừng nằm lướt điện thoại mãi. Đi chạy bộ, đọc sách, học thứ mới. Để lịch trình kín vừa đủ, chứ đừng ép mình kiệt sức.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Nghe hợp lý đấy. Tối nay tớ sẽ đi bộ một vòng rồi về ngủ sớm.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ngày 7. Một tuần đã qua. Mình bắt đầu quen với việc không để điện thoại kéo đi hết buổi tối.",
-      "anh_nen": "cong_vien_truong.png",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "afternoon_between_leaves.mp3",
-      "am_thanh_hieu_ung": "",
-      "hieu_ung_camera": {
-        "kieu": "pan",
-        "toc_do": 1,
-        "cuong_do": 0.7,
-        "lap": false,
-        "thoi_gian": 1.2
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-sway"
+        ],
+        "nen": [
+          "bg-left"
+        ],
+        "camera": [],
+        "moi_truong": [
+          "petals"
+        ]
       },
-      "hieu_ung_nen": {
-        "kieu": "pan",
-        "huong": "right",
-        "toc_do": 0.7,
-        "cuong_do": 0.5,
-        "lap": false,
-        "thoi_gian": 3
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
       }
     },
     {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Mình cũng nhận ra thử thách không phải cuộc thi xem ai chịu đựng giỏi hơn. Điều quan trọng là hiểu thói quen của mình và điều chỉnh nó.",
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Khoan đã... cửa lớp vừa tự đóng sao? Có ai ở ngoài đó không? Đừng nói là mình đang ở đây một mình nhé!",
       "anh_nen": "",
       "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Một tuần rồi đó! Cậu thấy có gì thay đổi không?",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Mình thấy có thêm thời gian cho việc khác. Còn những lời đồn kiểu làm thử thách là tự nhiên thành siêu nhân thì chắc chắn không đúng đâu nhé.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Chuẩn. Đừng tin mấy lời hứa thần kỳ. Cứ xem đây là mục tiêu cá nhân, không phải phương thuốc chữa mọi vấn đề.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ngày 15. Nửa tháng! Có hôm mình vẫn thấy khó chịu hoặc mất tập trung, nhưng mình không xem một cảm giác thoáng qua là thất bại.",
-      "anh_nen": "phong_ngu_dem.png",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": "",
-      "hieu_ung_camera": {
-        "kieu": "zoom-in",
-        "toc_do": 0.8,
-        "cuong_do": 0.6,
-        "lap": false,
-        "thoi_gian": 1.5
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-shake"
+        ],
+        "nen": [
+          "bg-zoom"
+        ],
+        "camera": [
+          "camera-shake"
+        ],
+        "moi_truong": [
+          "lightning",
+          "flash"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
       }
     },
     {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Mình tiếp tục giữ lịch sinh hoạt bình thường, vận động, ngủ đủ và tránh nội dung khiến mình dễ quay lại thói quen cũ.",
-      "anh_nen": "",
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Phù... chỉ là cành cây quệt vào cửa kính thôi. Mình tự dọa mình mất rồi. Bình tĩnh nào, ra sân thượng hít thở một chút là ổn.",
+      "anh_nen": "san_thuong_hoang_hon.png",
       "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Nhớ nhé, nếu có lúc không đạt mục tiêu thì cũng đừng tự ghét bản thân. Nhìn lại nguyên nhân rồi điều chỉnh, vậy mới là tiến bộ.",
-      "anh_nen": "san_truong_ban_ngay.png",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Tớ biết. Đây là thử thách tự nguyện, không phải lý do để xấu hổ hay phán xét người khác.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ngày 23. Còn một tuần nữa. Mình không còn đếm từng giờ như những ngày đầu, vì đã tìm được những việc khác để tập trung.",
-      "anh_nen": "cong_vien_truong.png",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Thay vì thức khuya lướt mạng, mình hoàn thành công việc sớm hơn, dành thời gian vận động và gặp bạn bè.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Vậy là cậu đã tìm được cách sống dễ chịu hơn, chứ không chỉ cố gồng để giữ lời tuyên bố ban đầu.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Đúng vậy. Mục tiêu không phải biến mình thành người hoàn hảo trong ba mươi ngày. Mục tiêu là hiểu bản thân và làm chủ lựa chọn của mình.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ngày 30 tháng 11. Hôm nay là ngày cuối cùng. Mình đã hoàn thành thử thách mà mình đặt ra.",
-      "anh_nen": "phong_ngu_dem.png",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "bgm_gentle.mp3",
-      "am_thanh_hieu_ung": "",
-      "hieu_ung_camera": {
-        "kieu": "zoom-in",
-        "toc_do": 1,
-        "cuong_do": 0.7,
-        "lap": false,
-        "thoi_gian": 1.2
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-fade"
+        ],
+        "nen": [
+          "bg-blur"
+        ],
+        "camera": [
+          "camera-pull"
+        ],
+        "moi_truong": [
+          "fog"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
       }
     },
     {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Chúc mừng nhé! Cảm giác thế nào khi về đích?",
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Hoàng hôn đẹp thật. Cuối cùng thì cuốn sổ cũng tìm lại được, còn nỗi sợ ban nãy chắc chỉ là do mình tưởng tượng quá nhiều. Ngày mai nhất định phải về nhà sớm hơn!",
       "anh_nen": "",
       "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Vui, nhưng điều đáng giá nhất không phải cái mốc ba mươi ngày. Mình đã học cách nhận ra lúc nào mình đang hành động theo thói quen và biết chuyển sự chú ý sang việc khác.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "2",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Thế tháng sau cậu có tiếp tục thử thách không?",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Chắc mình không cần biến nó thành cuộc thi mãi mãi. Mình sẽ giữ những thói quen tốt đã xây dựng, và sống cân bằng hơn.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Nếu bạn cũng muốn thử một tháng thay đổi thói quen, hãy đặt mục tiêu phù hợp với bản thân, đừng ép mình quá mức và cũng đừng lấy thử thách để đánh giá người khác.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
-    },
-    {
-      "nhan_vat": "1",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
-      "noi_dung": "Ba mươi ngày không làm mình thành siêu nhân. Nhưng nó nhắc mình một điều: quyết tâm sẽ có ý nghĩa hơn khi đi cùng kế hoạch và sự kiên nhẫn.",
-      "anh_nen": "",
-      "anh_hieu_ung": "",
-      "am_thanh_nen": "",
-      "am_thanh_hieu_ung": ""
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "soft-sway"
+        ],
+        "nen": [],
+        "camera": [],
+        "moi_truong": [
+          "sparkle"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
     }
   ]
 }
