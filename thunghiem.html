@@ -502,7 +502,7 @@ class ExportVideoFrameReader{
    if(!track)throw new Error('Không tìm thấy track video: '+url);
    const duration=await track.computeDuration(),first=await track.getFirstTimestamp();
    if(!Number.isFinite(duration)||duration<=0)throw new Error('Video không có thời lượng hợp lệ: '+url);
-   const sink=new mb.CanvasSink(track);
+   const sink=new mb.CanvasSink(track,{poolSize:3});
    const reader=new ExportVideoFrameReader(input,sink,first,duration);
    await reader.reset();
    return reader;
@@ -992,7 +992,7 @@ async function exportVideo(){
   const mb=await import('https://esm.sh/mediabunny@1.62.1');
   const target=new mb.BufferTarget(),format=new mb.Mp4OutputFormat();
   output=new mb.Output({format,target});
-  const videoSource=new mb.CanvasSource(renderCanvas,{codec:'avc',quality:new mb.Quality({bitrate:8000000}),hardwareAcceleration:'prefer-hardware',latencyMode:'realtime',keyFrameInterval:2,contentHint:'motion'});
+  const videoSource=new mb.CanvasSource(renderCanvas,{codec:'avc',quality:new mb.Quality({bitrate:8000000}),hardwareAcceleration:'prefer-hardware',keyFrameInterval:2,contentHint:'motion'});
   const audioSource=new mb.AudioBufferSource({codec:'aac',quality:new mb.Quality({bitrate:160000})});
   output.addVideoTrack(videoSource,{frameRate:fps});output.addAudioTrack(audioSource);await output.start();
   const frameCount=Math.ceil(finalDuration*fps);let frameIndex=0;
