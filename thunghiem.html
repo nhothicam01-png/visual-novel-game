@@ -119,8 +119,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <div class="preview-toolbar">
 <button class="btn" id="play-preview">▶ Chạy</button>
 <button class="btn secondary" id="stop-scene">■ Dừng chạy</button>
-<button class="btn secondary" id="ratio-landscape">📺 16:9</button>
-<button class="btn secondary" id="ratio-portrait">📱 9:16</button>
+<button class="btn secondary" id="ratio-toggle">📐 Tỉ lệ: 16:9</button>
 <button class="btn secondary" id="toggle-fullscreen">⛶ Toàn màn hình</button>
 <label class="field preview-tts-control">Phạm vi chạy<select id="preview-scope"><option value="scene">Chỉ cảnh đang chọn</option><option value="full">Toàn bộ kịch bản</option></select></label>
 <label class="field preview-tts-control">Giọng xem trước<select id="preview-tts-mode"><option value="browser">TTS trình duyệt · nhanh</option><option value="render">Giọng render · giống video</option></select></label>
@@ -207,8 +206,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 
 <details class="panel main-panel"><summary class="panel-heading">3. Khung hình & bố cục</summary>
 <div class="row">
-<button class="btn secondary" id="ratio-landscape-settings">📺 Ngang 16:9</button>
-<button class="btn secondary" id="ratio-portrait-settings">📱 Dọc 9:16</button>
+<button class="btn secondary" id="ratio-toggle-settings">📐 Tỉ lệ: 16:9</button>
 <label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
 <label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
 <label class="field">Kiểu khung thoại
@@ -316,11 +314,16 @@ function finishTaskProgress(label){
  setTimeout(()=>{$('task-progress').hidden=true;$('task-progress').classList.remove('indeterminate');$('progress-fill').style.width='0%'},1800);
 }
 
+function updateRatioButtons(){
+ const label='📐 Tỉ lệ: '+(isPortrait?'9:16':'16:9');
+ ['ratio-toggle','ratio-toggle-settings'].forEach(id=>{const el=$(id);if(el)el.textContent=label;});
+}
+function toggleAspectRatio(){resizeCanvas(!isPortrait)}
 function resizeCanvas(portrait){
  isPortrait=!!portrait;stage.classList.toggle('portrait',isPortrait);
  stage.classList.remove('force-landscape','force-portrait');
  if(document.fullscreenElement)stage.classList.add(isPortrait?'force-portrait':'force-landscape');
- canvas.width=isPortrait?1080:1920;canvas.height=isPortrait?1920:1080;drawFrame(0);
+ canvas.width=isPortrait?1080:1920;canvas.height=isPortrait?1920:1080;updateRatioButtons();drawFrame(0);
 }
 async function togglePreviewFullscreen(){
  try{
@@ -1093,10 +1096,8 @@ $('seek-prev').addEventListener('click',()=>seekSourceLine(currentSourceIndex()-
 $('seek-next').addEventListener('click',()=>seekSourceLine(currentSourceIndex()+1));
 $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)));
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
-$('ratio-landscape').addEventListener('click',()=>resizeCanvas(false));
-$('ratio-portrait').addEventListener('click',()=>resizeCanvas(true));
-$('ratio-landscape-settings').addEventListener('click',()=>resizeCanvas(false));
-$('ratio-portrait-settings').addEventListener('click',()=>resizeCanvas(true));
+$('ratio-toggle').addEventListener('click',toggleAspectRatio);
+$('ratio-toggle-settings').addEventListener('click',toggleAspectRatio);
 $('stop-scene').addEventListener('click',stopPreview);
 
 $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
