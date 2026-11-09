@@ -128,6 +128,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="field">Giọng Piper<select id="piper-voice"><option value="">Đang tải danh sách giọng…</option></select></label>
 </div>
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
+<label class="field">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
 <div class="row">
 <button class="btn" id="generate-piper">✨ Tạo WAV cho câu này</button>
 <button class="btn secondary" id="speak-preview">🔊 Nghe thử</button>
@@ -508,7 +509,7 @@ $('voice-profile').addEventListener('change',()=>{
  const p=selectedVoiceProfile();if(!p)return;
  const langMap={vi:'vi-VN',en:'en-US',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
  $('tts-lang').value=langMap[p.lang]||'vi-VN';
- loadPiperVoices().then(()=>{$('piper-voice').value=p.voiceId;setTtsStatus('Đã chọn hồ sơ "'+p.name+'". Giọng sẽ được dùng cho lời thoại này.')});
+ loadPiperVoices().then(()=>{$('piper-voice').value=p.voiceId;saveCurrentLine();renderLineList();setTtsStatus('Đã chọn hồ sơ "'+p.name+'". Giọng sẽ được dùng cho lời thoại này.')});
 });
 function encodeWav(buffer){
  const channels=buffer.numberOfChannels,sampleRate=buffer.sampleRate,frames=buffer.length;
@@ -653,7 +654,7 @@ async function exportVideo(){
   }
   if(!allAudio.length)throw new Error('Không có WAV thoại để xuất.');
   const fps=Number($('fps').value)||30,sampleRate=audioContext.sampleRate;
-  const finalDuration=Math.max(.5,totalDuration);
+  const finalDuration=Math.max(.5,Math.ceil(totalDuration*fps)/fps);
   const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const offline=new Offline(2,Math.ceil(finalDuration*sampleRate),sampleRate);
   const addAudio=(buffer,volume,offset,loop=false)=>{
@@ -682,7 +683,8 @@ async function exportVideo(){
    let sceneElapsed=0;
    for(const entry of pack.lines){
     activeLineIndex=scenes[si].lines.indexOf(entry.line);loadLineToEditor(entry.line);
-    const lineFrames=Math.ceil((entry.duration+entry.pause)*fps);
+    const lineEndFrame=Math.min(frameCount,Math.round((entry.start+entry.duration+entry.pause)*fps));
+    const lineFrames=Math.max(0,lineEndFrame-frameIndex);
     for(let f=0;f<lineFrames;f++){
      const local=f/fps;
      if(sceneElapsed+local>entry.duration+entry.pause)break;
@@ -738,7 +740,7 @@ function saveCurrentLine(){
  line.speaker=$('speaker').value.trim()||'Nhân vật';
  line.text=$('dialogue').value;
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
- line.pauseAfter=Number(line.pauseAfter??.3);
+ line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
  if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
 }
 function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual()}
@@ -746,7 +748,7 @@ function loadLineToEditor(line){
  if(!line)return;
  $('speaker').value=line.speaker||'Nhân vật 1';$('dialogue').value=line.text||'';
  $('voice-profile').value=line.profileId||'';
- $('tts-lang').value=line.lang||'vi-VN';
+ $('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
  const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};
  fillVoice();
  generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';
@@ -782,7 +784,7 @@ $('delete-line').addEventListener('click',()=>{
  list.splice(activeLineIndex,1);activeLineIndex=Math.max(0,activeLineIndex-1);loadLineToEditor(getCurrentLine());renderLineList();
 });
 $('dialogue-line-list').addEventListener('click',e=>{const item=e.target.closest('[data-line-index]');if(item)selectLine(Number(item.dataset.lineIndex))});
-['speaker','dialogue','voice-profile','tts-lang','piper-voice'].forEach(id=>{
+['speaker','dialogue','voice-profile','tts-lang','piper-voice','line-pause'].forEach(id=>{
  $(id).addEventListener('input',()=>{saveCurrentLine();renderLineList()});
  $(id).addEventListener('change',()=>{saveCurrentLine();renderLineList()});
 });
