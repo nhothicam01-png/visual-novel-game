@@ -488,13 +488,14 @@ function drawFrame(elapsed){
 }
 function animate(){
  if(!raf) return;
- const t=previewing?Math.max(0,(performance.now()-previewStartedAt)/1000):0;
+ // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
+ const t=previewing?Math.max(0,((previewPaused?previewPauseStartedAt:performance.now())-previewStartedAt)/1000):0;
  // Luôn vẽ preview lên canvas xem trước, không ghi đè canvas xuất video.
  const activeCanvas=canvas,activeCtx=ctx;canvas=previewCanvas;ctx=previewCtx;
  try{drawFrame(t)}finally{canvas=activeCanvas;ctx=activeCtx}
  raf=requestAnimationFrame(animate);
 }
-let previewStartedAt=0,previewRunId=0;
+let previewStartedAt=0,previewPauseStartedAt=0,previewRunId=0;
 function startRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=1;animate()}
 function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;drawFrame(0)}
 
@@ -503,7 +504,7 @@ function updatePlaybackButtons(){
 }
 function pausePreview(){
  if(!previewing||previewPaused)return;
- previewPaused=true;
+ previewPaused=true;previewPauseStartedAt=performance.now();
  Object.values(previewAudio).forEach(a=>{if(a&&!a.paused)a.pause()});
  if(window.speechSynthesis)window.speechSynthesis.pause();
  if(charVideo)charVideo.pause();if(bgVideo)bgVideo.pause();
@@ -511,9 +512,17 @@ function pausePreview(){
 }
 function resumePreview(){
  if(!previewing||!previewPaused)return;
- previewPaused=false;
- Object.values(previewAudio).forEach(a=>{if(a&&a.currentTime>0)a.play().catch(()=>{})});
- if(window.speechSynthesis)window.speechSynthesis.resume();
+ // Bu khoang thoi gian tam dung de hoat anh tiep tuc dung vi tri cu.
+ if(previewPauseStartedAt)previewStartedAt+=performance.now()-previewPauseStartedAt;
+ previewPauseStartedAt=0;previewPaused=false;
+ // Phat lai ca audio dang o vi tri 0 giay, tranh loi bi ket khi vua bat dau.
+ Object.values(previewAudio).forEach(a=>{
+  if(a&&a.paused&&!a.ended)a.play().catch(err=>console.warn('Khong the tiep tuc am thanh preview:',err));
+ });
+ if(window.speechSynthesis){
+  window.speechSynthesis.resume();
+  if(window.speechSynthesis.paused)window.speechSynthesis.resume();
+ }
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  updatePlaybackButtons();setTtsStatus('Đang tiếp tục chạy…');
 }
@@ -522,7 +531,7 @@ async function waitWhilePaused(run){
  return previewing&&run===previewRunId;
 }
 function stopPreview(){
- previewRunId++;previewing=false;previewPaused=false;previewLineBgmName='';previewLineSfxName='';
+ previewRunId++;previewing=false;previewPaused=false;previewPauseStartedAt=0;previewLineBgmName='';previewLineSfxName='';
  if(window.speechSynthesis)window.speechSynthesis.cancel();
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
@@ -606,7 +615,7 @@ async function playPreview(){
   try{for(const item of items){await loadSourceLineForPlayback(item);if($('dialogue').value.trim())await ensureTtsReady()}}
   catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));return}
  }
- stopPreview();previewing=true;previewPaused=false;previewStartedAt=performance.now();const run=previewRunId;
+ stopPreview();previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  previewLineBgmName='';startRenderLoop();updatePlaybackButtons();
  for(const item of items){
