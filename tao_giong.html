@@ -21,7 +21,7 @@ button.secondary{background:#334155}button.danger{background:#9f1239}button:disa
 </style>
 </head>
 <body><main>
-<nav class="nav"><a href="./index.html">🏠 Trang chủ</a><a href="./thunghiem.html">🎬 Phòng dựng video</a></nav>
+<nav class="nav"><a href="./index.html">🏠 Trang chủ</a><a href="./thunghiem.html">🎬 Phòng dựng video</a><a href="./github_manager.html">⬆ GitHub Manager</a></nav>
 <h1>🎙️ Phòng tạo giọng nhân vật</h1>
 <p>Tạo hồ sơ từ giọng Edge Neural (nhanh, tự nhiên, miễn phí) hoặc Piper offline, tinh chỉnh cách phát âm rồi lưu vào thư viện dùng chung với trang dựng video. Hồ sơ được lưu trên trình duyệt của thiết bị này.</p>
 <section class="panel">
@@ -183,4 +183,5 @@ $('export-config').onclick=exportConfig;$('import-config').onclick=()=>$('config
 $('config-file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text()),incoming=Array.isArray(data)?data:data.profiles;if(!Array.isArray(incoming))throw Error('Không có profiles');const map=new Map(read().map(p=>[p.id,p]));incoming.forEach(p=>{if(p&&p.id&&p.name&&(p.voiceId||p.edgeVoice)){map.set(p.id,{...p,speed:Number(p.speed??1),pitch:Number(p.pitch??0),rough:Number(p.rough??0),volume:Number(p.volume??100)});const gone=new Set(deletedRead());gone.delete(p.id);localStorage.setItem(DELETED_KEY,JSON.stringify([...gone]))}});write([...map.values()]);$('status').textContent='Đã nhập '+incoming.length+' hồ sơ.'}catch(err){$('status').textContent='Lỗi JSON: '+err.message}e.target.value=''};
 render();updateValues();loadVoices();loadEdgeVoices();syncEngine();loadRemoteProfiles();
 })();
-</script></body></html>
+</script><script src="./github-manager.js"></script>
+</body></html>
