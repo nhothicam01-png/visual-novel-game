@@ -122,6 +122,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <button class="btn secondary" id="ratio-landscape">📺 16:9</button>
 <button class="btn secondary" id="ratio-portrait">📱 9:16</button>
 <button class="btn secondary" id="toggle-fullscreen">⛶ Toàn màn hình</button>
+<label class="field preview-tts-control">Phạm vi chạy<select id="preview-scope"><option value="scene">Chỉ cảnh đang chọn</option><option value="full">Toàn bộ kịch bản</option></select></label>
 <label class="field preview-tts-control">Giọng xem trước<select id="preview-tts-mode"><option value="browser">TTS trình duyệt · nhanh</option><option value="render">Giọng render · giống video</option></select></label>
 <label class="field preview-tts-control">Giọng trình duyệt<select id="browser-tts-voice"><option value="">Tự chọn theo ngôn ngữ</option></select></label>
 </div>
@@ -549,27 +550,44 @@ function loadBrowserTtsVoices(){
  select.innerHTML='<option value="">Tự chọn theo ngôn ngữ</option>'+voices.map(v=>'<option value="'+safeText(v.voiceURI)+'">'+safeText(v.name)+' · '+safeText(v.lang)+(v.default?' · mặc định':'')+'</option>').join('');
  if(voices.some(v=>v.voiceURI===previous))select.value=previous;
 }
+async function loadSourceLineForPlayback(item){
+ saveCurrentLine();saveCurrentScene();
+ activeSceneIndex=item.sceneIndex;activeLineIndex=item.lineIndex;
+ const line=getCurrentLine(),frame=line.sourceFrame||{};
+ applyVisual(getCurrentScene().visual);
+ if(line.sourceIndex!==undefined){
+  $('character').value=characterAssetFolder(frame.nhan_vat??line.characterAsset);
+  $('expression').value=normalizeExpression(frame.bieu_cam||line.expression);
+  $('background').value=backgroundAtSourceIndex(line.sourceIndex)||getCurrentScene().visual.background;
+ }
+ loadLineToEditor(line);renderSceneList();renderLineList();applyLineEffects(line);updateSeekUI(line.sourceIndex??0);
+ await updateAssets();
+ if(line.speakerId)await applyVoiceForCurrentLine();
+}
 async function playPreview(){
- const scene=getCurrentScene();if(!scene)return;
+ const scope=$('preview-scope').value;
+ const items=scope==='full'?allSourceLines():allSourceLines().filter(item=>item.sceneIndex===activeSceneIndex);
+ if(!items.length)return;
  saveCurrentLine();saveCurrentScene();
  const useBrowser=$('preview-tts-mode').value==='browser';
  if(!useBrowser){
-  try{for(let i=0;i<scene.lines.length;i++){selectLine(i);if($('dialogue').value.trim())await ensureTtsReady()}}
+  try{for(const item of items){await loadSourceLineForPlayback(item);if($('dialogue').value.trim())await ensureTtsReady()}}
   catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));return}
  }
  stopPreview();previewing=true;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  previewLineBgmName='';startRenderLoop();
- for(let i=0;i<scene.lines.length&&previewing&&run===previewRunId;i++){
-  selectLine(i);const line=scene.lines[i];
-  await updateAssets();if(!previewing||run!==previewRunId)break;
-  await playLineAudio(line);
+ for(const item of items){
+  if(!previewing||run!==previewRunId)break;
+  await loadSourceLineForPlayback(item);if(!previewing||run!==previewRunId)break;
+  const line=getCurrentLine();await playLineAudio(line);
   const text=$('dialogue').value.trim();
   if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
   else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
    await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
   }
-  if(previewing&&run===previewRunId)await new Promise(resolve=>setTimeout(resolve,250));
+  const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
+  if(previewing&&run===previewRunId&&pause)await new Promise(resolve=>setTimeout(resolve,pause*1000));
  }
  if(previewing&&run===previewRunId)stopPreview();
 }
@@ -1010,7 +1028,7 @@ function buildScenesFromJson(data){
   const characterFolder=characterAssetFolder(characterId),expression=normalizeExpression(frame.bieu_cam);
   const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;
   const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim();
-  const starts=!current||!!rawBg;
+  const starts=!current||(!!rawBg&&rawBg!==current.visual.background);
   if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;
   current.lines.push({speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterFolder,expression});
