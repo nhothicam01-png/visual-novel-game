@@ -71,6 +71,15 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 .main-panel[open]>*:not(.panel-heading){margin-left:12px;margin-right:12px}
 .main-panel[open]>*:last-child{margin-bottom:12px}
 
+
+.task-progress{width:100%;max-width:1000px;margin:8px auto 14px;padding:10px 12px;background:#111c30;border:1px solid #334155;border-radius:9px}
+.task-progress[hidden]{display:none}
+.task-progress-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:7px;color:#c4b5fd;font-size:.76rem}
+.task-progress-track{height:9px;background:#334155;border-radius:20px;overflow:hidden}
+#progress-fill{height:100%;width:0;background:linear-gradient(90deg,#6366f1,#c084fc);border-radius:20px;transition:width .18s ease}
+#task-progress.indeterminate #progress-fill{width:35%!important;animation:task-loading 1.1s ease-in-out infinite alternate}
+@keyframes task-loading{from{transform:translateX(-35%)}to{transform:translateX(190%)}}
+
 </style>
 </head>
 <body>
@@ -85,6 +94,10 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <div class="row preview-controls">
 <button class="btn" id="play-preview">▶ Xem trước cảnh</button>
 <button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
+</div>
+<div id="task-progress" class="task-progress" hidden>
+<div class="task-progress-head"><span id="task-progress-label">Đang xử lý…</span><strong id="task-progress-percent"></strong></div>
+<div class="task-progress-track"><div id="progress-fill"></div></div>
 </div>
 
 <details class="panel main-panel"><summary class="panel-heading">1. Lời thoại & giọng đọc Piper AI</summary>
@@ -202,7 +215,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <div class="row">
 <button class="btn" id="export-video">🎬 Xuất video MP4 (timeline)</button>
 </div>
-<div id="progress"><div id="progress-fill"></div></div>
+
 <div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
 <p class="note">Định dạng xuất: MP4 (video + âm thanh), dựng từng khung hình theo timeline. Có thể mất thời gian trên điện thoại nhưng không cần chạy theo thời gian thực.</p>
 </details>
@@ -242,6 +255,21 @@ $('background').value='san_truong_ban_ngay.png';
 
 function setStatus(s){$('export-status').textContent=s}
 function setTtsStatus(s){$('tts-status').textContent=s}
+function setTaskProgress(label,percent=null){
+ const box=$('task-progress'),fill=$('progress-fill');
+ if(!box||!fill)return;
+ box.hidden=false;
+ $('task-progress-label').textContent=label||'Đang xử lý…';
+ const indeterminate=percent===null;
+ box.classList.toggle('indeterminate',indeterminate);
+ $('task-progress-percent').textContent=indeterminate?'':Math.max(0,Math.min(100,Math.round(percent)))+'%';
+ if(!indeterminate)fill.style.width=Math.max(0,Math.min(100,percent))+'%';
+}
+function finishTaskProgress(label){
+ setTaskProgress(label||'Hoàn tất',100);
+ setTimeout(()=>{$('task-progress').hidden=true;$('task-progress').classList.remove('indeterminate');$('progress-fill').style.width='0%'},1800);
+}
+
 function resizeCanvas(portrait){
  stage.classList.toggle('portrait',portrait);
  canvas.width=portrait?1080:1920;canvas.height=portrait?1920:1080;
@@ -510,23 +538,24 @@ async function generatePiperAudio(){
  if(!voiceId)throw new Error('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');
  const btn=$('generate-piper');btn.disabled=true;
  try{
-  setTtsStatus('Đang tải Piper và mô hình giọng (lần đầu có thể mất một lúc)…');
+  setTtsStatus('Đang tải Piper và mô hình giọng (lần đầu có thể mất một lúc)…');setTaskProgress('Đang tải thư viện và mô hình giọng Piper…');
   if(!piperModule)piperModule=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');
   if(!piperSession||piperSessionVoice!==voiceId){
    piperSession=new piperModule.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});
    piperSessionVoice=voiceId;
   }
-  setTtsStatus('Đang tạo giọng đọc Piper…');
+  setTtsStatus('Đang tạo giọng đọc Piper…');setTaskProgress('Đang tạo giọng đọc…');
   const wav=await piperSession.predict(text);
   if(!wav||!wav.size)throw new Error('Piper không trả về file âm thanh.');
   let blob=new Blob([await wav.arrayBuffer()],{type:'audio/wav'});
-  if(profile){setTtsStatus('Đang áp dụng hồ sơ giọng '+profile.name+'…');blob=await applyVoiceProfile(blob,profile);}
-  generatedTtsBlob=blob;generatedTtsKey=ttsRequestKey();
+  if(profile){setTtsStatus('Đang áp dụng hồ sơ giọng '+profile.name+'…');setTaskProgress('Đang xử lý hồ sơ giọng…');blob=await applyVoiceProfile(blob,profile);}
+  generatedTtsBlob=blob;generatedTtsKey=ttsRequestKey();setTaskProgress('Đã tạo xong giọng đọc',100);
   const testUrl=URL.createObjectURL(blob),audio=new Audio(testUrl);
   audio.onloadedmetadata=()=>{$('duration').value=Math.max(1,Math.ceil(audio.duration*10)/10);setTtsStatus('Đã tạo giọng '+(profile?profile.name:'Piper')+' · '+audio.duration.toFixed(2)+' giây. Sẵn sàng xem trước và xuất video.');URL.revokeObjectURL(testUrl)};
   audio.onerror=()=>{setTtsStatus('Đã tạo WAV nhưng không đọc được bản xem trước. Bạn vẫn có thể thử xuất video.');URL.revokeObjectURL(testUrl)};
   return blob;
- }finally{btn.disabled=false}
+ }catch(err){setTaskProgress('Tạo giọng thất bại');setTimeout(()=>{$('task-progress').hidden=true},1800);throw err}
+ finally{btn.disabled=false}
 }
 async function ensureTtsReady(){
  const text=$('dialogue').value.trim();
@@ -582,9 +611,9 @@ async function exportVideo(){
  const fps=Number($('fps').value)||30;
  const requestedDuration=Math.max(1,Number($('duration').value)||8);
  let audioContext=null,output=null;
- recording=true;$('export-video').disabled=true;$('progress-fill').style.width='0%';
+ recording=true;$('export-video').disabled=true;$('progress-fill').style.width='0%';setTaskProgress('Đang chuẩn bị xuất video…',0);
  try{
-  setStatus('Đang tải bộ mã hóa video…');
+  setStatus('Đang tải bộ mã hóa video…');setTaskProgress('Đang tải bộ mã hóa video…',2);
   const mb=await import('https://esm.sh/mediabunny@1.62.1');
   audioContext=new (window.AudioContext||window.webkitAudioContext)();
   await audioContext.resume();
@@ -608,7 +637,7 @@ async function exportVideo(){
   addAudio(ttsBuffer,Number($('tts-volume').value),false,0);
   addAudio(bgmBuffer,Number($('bgm-volume').value),true,0);
   addAudio(sfxBuffer,Number($('sfx-volume').value),false,.15);
-  setStatus('Đang trộn âm thanh theo timeline…');
+  setStatus('Đang trộn âm thanh theo timeline…');setTaskProgress('Đang trộn âm thanh…',8);
   const mixedAudio=await offline.startRendering();
   if(charVideo){charVideo.pause();charVideo.loop=false}
   if(bgVideo){bgVideo.pause();bgVideo.loop=false}
@@ -631,10 +660,11 @@ async function exportVideo(){
    if(i%Math.max(1,Math.floor(fps/2))===0){
     const percent=Math.round((i+1)/frameCount*88);
     $('progress-fill').style.width=percent+'%';
-    setStatus('Đang dựng timeline: '+(i+1)+' / '+frameCount+' khung hình · '+time.toFixed(2)+' giây');
+    const taskLabel='Đang dựng video: '+(i+1)+' / '+frameCount+' khung hình · '+time.toFixed(2)+' giây';
+    setStatus(taskLabel);setTaskProgress(taskLabel,percent);
    }
   }
-  setStatus('Đang thêm âm thanh và hoàn tất MP4…');
+  setStatus('Đang thêm âm thanh và hoàn tất MP4…');setTaskProgress('Đang hoàn tất và đóng gói MP4…',94);
   await audioSource.add(mixedAudio);
   await output.finalize();
   const blob=new Blob([target.buffer],{type:'video/mp4'});
@@ -642,9 +672,9 @@ async function exportVideo(){
   a.href=url;a.download='thu-nghiem-timeline-'+Date.now()+'.mp4';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
   $('progress-fill').style.width='100%';
-  setStatus('Hoàn tất MP4 theo timeline · '+(blob.size/1024/1024).toFixed(1)+' MB. Khung hình không phụ thuộc tốc độ phát màn hình.');
+  setStatus('Hoàn tất MP4 theo timeline · '+(blob.size/1024/1024).toFixed(1)+' MB. Khung hình không phụ thuộc tốc độ phát màn hình.');finishTaskProgress('Xuất video hoàn tất');
  }catch(err){
-  console.error(err);setStatus('Không thể xuất video timeline: '+(err.message||err));
+  console.error(err);setStatus('Không thể xuất video timeline: '+(err.message||err));setTaskProgress('Xuất video thất bại',100);setTimeout(()=>{$('task-progress').hidden=true},2200);
  }finally{
   try{await audioContext?.close()}catch(_){}
   if(charVideo){charVideo.loop=true;charVideo.play().catch(()=>{})}
