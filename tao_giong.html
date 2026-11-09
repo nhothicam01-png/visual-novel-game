@@ -93,6 +93,7 @@ async function processPreviewWav(blob){
    for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=((3+amount)*x*20*Math.PI/180)/(Math.PI+amount*Math.abs(x))}
    sh.curve=curve;low.connect(sh);sh.connect(off.destination);
   }else low.connect(off.destination);
+  src.start(0);
   const rendered=await off.startRendering();
   const channels=rendered.numberOfChannels,bytes=44+rendered.length*channels*2,buffer=new ArrayBuffer(bytes),view=new DataView(buffer);
   const write=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i))};
