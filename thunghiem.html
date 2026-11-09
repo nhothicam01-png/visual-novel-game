@@ -455,7 +455,7 @@ function resolvedLineAudio(line,kind){
  const override=line?.audioOverride?.[kind];
  if(override?.mode==='off')return '';
  if(override?.mode==='override')return String(override.file||'').trim();
- return String(line?.sourceAudio?.[kind]||'').trim();
+ return String(line?.sourceAudio?.[kind]||(kind==='bgm'?$('bgm').value:'')).trim();
 }
 let previewLineBgmName='',previewLineSfxName='';
 async function playLineAudio(line){
@@ -707,7 +707,9 @@ async function exportVideo(){
   allAudio.forEach(e=>addAudio(e.buffer,Number($('tts-volume').value),e.start));
   const audioBuffers={bgm:new Map(),sfx:new Map()};
   const getLineAudioBuffer=async(line,kind)=>{
-   const name=resolvedLineAudio(line,kind);if(!name)return null;
+   const name=resolvedLineAudio(line,kind);
+   if(!name&&kind==='sfx'&&$('sfx-file').files[0])return audioContext.decodeAudioData(await $('sfx-file').files[0].arrayBuffer());
+   if(!name)return null;
    const cache=audioBuffers[kind];if(cache.has(name))return cache.get(name);
    const folder=kind==='bgm'?'Nen/':'HieuUng/';
    const buffer=await decodeUrl(BASE+'AmThanh/'+folder+name,audioContext);cache.set(name,buffer);return buffer;
@@ -841,7 +843,7 @@ function resolveVoiceForLine(line){
 async function applyVoiceForCurrentLine(){
  const line=getCurrentLine();if(!line)return;
  const resolved=resolveVoiceForLine(line);
- if(!resolved){$('voice-fallback-status').textContent='Chưa có giọng Piper hợp lệ. Hãy chọn giọng mặc định hoặc gán giọng cho nhân vật.';return}
+ if(!resolved){$('voice-profile').value='';$('piper-voice').value='';$('voice-fallback-status').textContent='Chưa có giọng Piper hợp lệ. Hãy chọn giọng mặc định hoặc gán giọng cho nhân vật.';return}
  const p=resolved.profile,langMap={vi:'vi-VN',en:'en-US',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
  $('voice-profile').value=p.id||'';
  $('tts-lang').value=langMap[String(p.lang||'vi').slice(0,2)]||'vi-VN';
