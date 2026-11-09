@@ -140,6 +140,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <button class="btn" id="import-json-button" type="button">📂 Import JSON từ máy</button>
 <input id="import-json-file" type="file" accept=".json,application/json" hidden>
 <button class="btn secondary" id="reload-story-list" type="button">↻ Tải lại danh sách GitHub</button>
+<button class="btn secondary" id="load-sample-json" type="button">📘 Nạp mẫu ailahungthu.json</button>
 </div>
 <div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 2.</div>
 <p class="note">Mỗi nhân vật có thể chọn một hồ sơ giọng riêng. Nếu JSON chưa có giọng, giọng bị thiếu hoặc không tải được, hệ thống tự dùng giọng mặc định dự phòng bên dưới.</p>
@@ -756,7 +757,7 @@ async function exportVideo(){
   const audioBuffers={bgm:new Map(),sfx:new Map()};
   const getLineAudioBuffer=async(line,kind)=>{
    const name=resolvedLineAudio(line,kind);
-   if(!name&&kind==='sfx'&&$('sfx-file').files[0])return audioContext.decodeAudioData(await $('sfx-file').files[0].arrayBuffer());
+   if(!name&&kind==='sfx'&&!activeStoryData&&$('sfx-file').files[0])return audioContext.decodeAudioData(await $('sfx-file').files[0].arrayBuffer());
    if(!name)return null;
    const cache=audioBuffers[kind];if(cache.has(name))return cache.get(name);
    const folder=kind==='bgm'?'Nen/':'HieuUng/';
@@ -1011,6 +1012,14 @@ $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
 document.addEventListener('fullscreenchange',()=>{$('toggle-fullscreen').textContent=document.fullscreenElement?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
 
 $('reload-story-list').addEventListener('click',loadStoryCatalog);
+$('load-sample-json').addEventListener('click',async()=>{
+ $('story-status').textContent='Đang tải ailahungthu.json…';
+ try{
+  const response=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/ailahungthu.json',{cache:'no-store'});
+  if(!response.ok)throw new Error('Không tải được JSON mẫu (HTTP '+response.status+')');
+  await applyStoryData(await response.json(),'ailahungthu');
+ }catch(err){$('story-status').textContent='Lỗi tải JSON mẫu: '+(err.message||err)}
+});
 $('import-json-button').addEventListener('click',()=>$('import-json-file').click());
 $('import-json-file').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());await applyStoryData(data,file.name)}catch(err){$('story-status').textContent='Import thất bại: '+(err.message||err);setStatus('Không thể import JSON.')}finally{e.target.value=''}});
 
@@ -1031,7 +1040,8 @@ function updateSeekUI(index=currentSourceIndex()){
 }
 async function seekSourceLine(sourceIndex){
  const list=allSourceLines();if(!list.length)return;
- const target=Math.max(0,Math.min(sourceLineCount-1,Math.round(Number(sourceIndex)||0)));
+ const total=sourceLineCount||list.length;
+ const target=Math.max(0,Math.min(total-1,Math.round(Number(sourceIndex)||0)));
  const found=list.find(item=>item.sourceIndex===target)||list.reduce((best,item)=>Math.abs(item.sourceIndex-target)<Math.abs(best.sourceIndex-target)?item:best,list[0]);
  stopPreview();activeSceneIndex=found.sceneIndex;activeLineIndex=found.lineIndex;
  const line=getCurrentLine(),frame=line.sourceFrame||{};
@@ -1099,7 +1109,10 @@ function selectLine(i){
 }
 async function selectScene(i){
  saveCurrentLine();saveCurrentScene();activeSceneIndex=Math.max(0,Math.min(i,scenes.length-1));activeLineIndex=0;
- applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());renderSceneList();renderLineList();await updateAssets();if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
+ applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());renderSceneList();renderLineList();
+ updateSeekUI(getCurrentLine()?.sourceIndex??0);
+ await updateAssets();if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
+ if(getCurrentLine()?.sourceIndex!==undefined)preloadAdjacentAssets(getCurrentLine().sourceIndex+1);
 }
 function newLine(){return {speaker:'Nhân vật 1',text:'',effectSettings:[],effectStrength:50,profileId:'',lang:$('tts-lang').value||'vi-VN',voiceId:$('piper-voice').value||'',pauseAfter:.3,wavBlob:null,cacheKey:''}}
 $('scene-select').addEventListener('change',e=>selectScene(Number(e.target.value)));
