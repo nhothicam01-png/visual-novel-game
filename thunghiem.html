@@ -204,8 +204,8 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 
 <details class="panel main-panel"><summary class="panel-heading">3. Khung hình & bố cục</summary>
 <div class="row">
-<button class="btn secondary" id="ratio-landscape">📺 Ngang 16:9</button>
-<button class="btn secondary" id="ratio-portrait">📱 Dọc 9:16</button>
+<button class="btn secondary" id="ratio-landscape-settings">📺 Ngang 16:9</button>
+<button class="btn secondary" id="ratio-portrait-settings">📱 Dọc 9:16</button>
 <label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
 <label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
 <label class="field">Kiểu khung thoại
@@ -1008,6 +1008,10 @@ $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
 $('ratio-landscape').addEventListener('click',()=>resizeCanvas(false));
 $('ratio-portrait').addEventListener('click',()=>resizeCanvas(true));
+$('ratio-landscape-settings').addEventListener('click',()=>resizeCanvas(false));
+$('ratio-portrait-settings').addEventListener('click',()=>resizeCanvas(true));
+$('stop-scene').addEventListener('click',stopPreview);
+
 $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
 document.addEventListener('fullscreenchange',()=>{$('toggle-fullscreen').textContent=document.fullscreenElement?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
 
