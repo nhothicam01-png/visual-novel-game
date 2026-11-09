@@ -1183,10 +1183,6 @@ document.addEventListener('fullscreenchange',()=>{$('toggle-fullscreen').textCon
 document.addEventListener('webkitfullscreenchange',()=>{$('toggle-fullscreen').textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
 
 $('reload-story-list').addEventListener('click',loadStoryCatalog);
-if(!response.ok)throw new Error('Không tải được JSON mẫu (HTTP '+response.status+')');
-  await applyStoryData(await response.json(),'ailahungthu');
- }catch(err){$('story-status').textContent='Lỗi tải JSON mẫu: '+(err.message||err)}
-});
 $('import-json-button').addEventListener('click',()=>$('import-json-file').click());
 $('import-json-file').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());await applyStoryData(data,file.name)}catch(err){$('story-status').textContent='Import thất bại: '+(err.message||err);setStatus('Không thể import JSON.')}finally{e.target.value=''}});
 
