@@ -785,19 +785,26 @@ function safeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<
 function storySettingsKey(){return 'visualNovelSceneSetupV1:'+activeStoryName}
 function saveStorySettings(){if(!activeStoryName)return;try{localStorage.setItem(storySettingsKey(),JSON.stringify({characterVoiceMap,defaultVoiceProfileId}))}catch(e){console.warn('Không lưu được thiết lập giọng',e)}}
 async function loadStoryCatalog(){
- const sel=$('story-select');
+ const sel=$('story-select'),status=$('story-status');
+ if(!sel||!status)return;
+ sel.disabled=true;status.textContent='Đang cập nhật danh sách truyện từ GitHub…';
  try{
-  const dirs=await fetch(GH_API).then(r=>{if(!r.ok)throw new Error('Không tải được danh sách truyện từ GitHub');return r.json()});
-  const entries=[];
-  for(const dir of dirs.filter(x=>x.type==='dir')){
-   const files=await fetch(dir.url).then(r=>r.ok?r.json():[]);
-   const match=files.find(f=>f.type==='file'&&f.name.toLowerCase()===dir.name.toLowerCase()+'.json');
-   if(match)entries.push({name:dir.name,path:match.path,url:match.download_url});
-  }
-  sel.innerHTML='<option value="">-- Chọn truyện --</option>'+entries.map((x,i)=>'<option value="'+i+'">'+safeText(x.name)+'</option>').join('');
+  const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
+  if(!response.ok)throw new Error('GitHub trả về lỗi HTTP '+response.status);
+  const treeData=await response.json();
+  if(treeData.truncated)throw new Error('Danh sách tệp GitHub quá lớn, không thể quét đầy đủ.');
+  const files=(treeData.tree||[]).filter(item=>item.type==='blob'&&item.path.toLowerCase().endsWith('.json')&&(/^assets\\/KichBan\\/[^/]+\\/[^/]+\\.json$/i.test(item.path)&&item.path.split('/').at(-1).replace(/\\.json$/i,'')===item.path.split('/')[2])).sort((a,b)=>a.path.localeCompare(b.path,'vi'));
+  const entries=files.map(file=>({name:file.path.split('/')[2],path:file.path,url:null}));
+  sel.innerHTML='';
+  const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=entries.length?'-- Chọn truyện --':'Chưa có kịch bản JSON';sel.appendChild(placeholder);
+  entries.forEach((entry,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=entry.name+' / '+entry.path.split('/').at(-1);sel.appendChild(option)});
   sel._stories=entries;
-  $('story-status').textContent='Đã tìm thấy '+entries.length+' truyện có tệp JSON đúng quy ước tên thư mục/tệp.';
- }catch(err){sel.innerHTML='<option value="">Không tải được danh sách truyện</option>';$('story-status').textContent=err.message}
+  status.textContent='Tìm thấy '+entries.length+' truyện trong assets/KichBan. Danh sách được lấy theo cùng cách với index.html.';
+ }catch(err){
+  sel.innerHTML='<option value="">Không tải được danh sách</option>';sel._stories=[];
+  status.textContent='Lỗi tải danh sách: '+err.message;
+  console.warn('Không thể lấy danh sách kịch bản GitHub:',err);
+ }finally{sel.disabled=false}
 }
 function uniqueCharacters(rows){
  const map=new Map();
@@ -883,7 +890,7 @@ async function loadStory(index){
  stopPreview();$('story-select').disabled=true;$('story-status').textContent='Đang tải '+entry.name+'…';
  try{
   let data=storyCache.get(entry.path);
-  if(!data){const response=await fetch(entry.url||('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+entry.path));if(!response.ok)throw new Error('Không tải được tệp JSON.');data=await response.json();storyCache.set(entry.path,data)}
+  if(!data){const encodedPath=entry.path.split('/').map(part=>encodeURIComponent(part)).join('/');const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+encodedPath;const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error('Không tải được file (HTTP '+response.status+')');data=await response.json();storyCache.set(entry.path,data)}
   activeStoryData=data;activeStoryName=entry.name;
   const rows=data.danh_sach||data.KichBanToanBo||[];
   characterDirectory=uniqueCharacters(rows);
