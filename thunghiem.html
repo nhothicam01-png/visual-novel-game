@@ -17,7 +17,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 #preview-canvas{display:block;width:100%;height:100%;object-fit:contain;background:#000}
 #preview-loading{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#050811d9;color:#e2e8f0;font-size:.85rem;text-align:center;padding:18px}
 #preview-loading.active{display:flex}
-.preview-toolbar{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.preview-toolbar{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.preview-tts-control{min-width:190px;max-width:250px}
 .seek-panel{width:100%;max-width:1000px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 12px;background:#0f172acc;border:1px solid #a855f744;border-radius:10px}
 .seek-panel input[type=range]{flex:1;min-width:140px;accent-color:#a855f7}
 #seek-position{min-width:78px;text-align:center;color:#c4b5fd;font-variant-numeric:tabular-nums}
@@ -122,6 +122,8 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <button class="btn secondary" id="ratio-landscape">📺 16:9</button>
 <button class="btn secondary" id="ratio-portrait">📱 9:16</button>
 <button class="btn secondary" id="toggle-fullscreen">⛶ Toàn màn hình</button>
+<label class="field preview-tts-control">Giọng xem trước<select id="preview-tts-mode"><option value="browser">TTS trình duyệt · nhanh</option><option value="render">Giọng render · giống video</option></select></label>
+<label class="field preview-tts-control">Giọng trình duyệt<select id="browser-tts-voice"><option value="">Tự chọn theo ngôn ngữ</option></select></label>
 </div>
 <div class="seek-panel" aria-label="Điều khiển thoại">
 <button class="btn secondary" id="seek-prev">⏮ Lùi 1 thoại</button>
@@ -385,7 +387,9 @@ function drawCover(media,w,h){
 function drawCharacter(media,w,h){
  const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height;
  if(!sw||!sh)return;
- const scale=Math.min(w/sw,h/sh),dw=sw*scale,dh=sh*scale;
+ // Khung dọc: phóng nhân vật theo đúng 100% chiều cao, cắt phần tràn ngang ở mép khung.
+ // Khung ngang: giữ cách fit hiện tại để nhân vật phủ đủ chiều rộng mà không méo.
+ const scale=isPortrait?h/sh:Math.min(w/sw,h/sh),dw=sw*scale,dh=sh*scale;
  ctx.drawImage(media,(w-dw)/2,h-dh,dw,dh);
 }
 function roundRect(x,y,w,h,r){
@@ -488,6 +492,7 @@ function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;drawFrame(0)}
 
 function stopPreview(){
  previewRunId++;previewing=false;previewLineBgmName='';previewLineSfxName='';
+ if(window.speechSynthesis)window.speechSynthesis.cancel();
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
  if(charVideo)charVideo.pause();
@@ -518,30 +523,66 @@ async function playLineAudio(line){
   previewAudio.sfx=audioElement(URL.createObjectURL($('sfx-file').files[0]),false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})
  }
 }
+function speakBrowserText(text){
+ return new Promise(resolve=>{
+  const synth=window.speechSynthesis;
+  if(!synth||!text){resolve();return}
+  synth.cancel();
+  const utterance=new SpeechSynthesisUtterance(text);
+  const voiceUri=$('browser-tts-voice')?.value||'';
+  const voices=synth.getVoices?synth.getVoices():[];
+  const chosen=voices.find(v=>v.voiceURI===voiceUri);
+  const lang=$('tts-lang')?.value||'vi-VN';
+  utterance.lang=chosen?.lang||lang;
+  if(chosen)utterance.voice=chosen;
+  utterance.volume=Math.max(0,Math.min(1,Number($('tts-volume')?.value||1)));
+  utterance.rate=1;utterance.pitch=1;
+  let settled=false;const finish=()=>{if(settled)return;settled=true;resolve()};
+  utterance.onend=finish;utterance.onerror=finish;
+  previewSpeech=utterance;
+  synth.speak(utterance);
+ });
+}
+function loadBrowserTtsVoices(){
+ const select=$('browser-tts-voice');if(!select||!window.speechSynthesis)return;
+ const previous=select.value,voices=window.speechSynthesis.getVoices();
+ select.innerHTML='<option value="">Tự chọn theo ngôn ngữ</option>'+voices.map(v=>'<option value="'+safeText(v.voiceURI)+'">'+safeText(v.name)+' · '+safeText(v.lang)+(v.default?' · mặc định':'')+'</option>').join('');
+ if(voices.some(v=>v.voiceURI===previous))select.value=previous;
+}
 async function playPreview(){
  const scene=getCurrentScene();if(!scene)return;
  saveCurrentLine();saveCurrentScene();
- try{
-  for(let i=0;i<scene.lines.length;i++){selectLine(i);if($('dialogue').value.trim())await ensureTtsReady()}
- }catch(err){setTtsStatus('Không thể xem trước vì tạo WAV thất bại: '+(err.message||err));return}
+ const useBrowser=$('preview-tts-mode').value==='browser';
+ if(!useBrowser){
+  try{for(let i=0;i<scene.lines.length;i++){selectLine(i);if($('dialogue').value.trim())await ensureTtsReady()}}
+  catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));return}
+ }
  stopPreview();previewing=true;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  previewLineBgmName='';startRenderLoop();
  for(let i=0;i<scene.lines.length&&previewing&&run===previewRunId;i++){
-  selectLine(i);const line=scene.lines[i],blob=line.wavBlob;
-  await updateAssets();await playLineAudio(line);
-  if(!blob)continue;
-  const url=URL.createObjectURL(blob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
-  await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});
-  URL.revokeObjectURL(url);
+  selectLine(i);const line=scene.lines[i];
+  await updateAssets();if(!previewing||run!==previewRunId)break;
+  await playLineAudio(line);
+  const text=$('dialogue').value.trim();
+  if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
+  else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
+   await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
+  }
   if(previewing&&run===previewRunId)await new Promise(resolve=>setTimeout(resolve,250));
  }
  if(previewing&&run===previewRunId)stopPreview();
 }
+if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
+$('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
 $('play-preview').addEventListener('click',playPreview);
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
 $('stop-scene').addEventListener('click',stopPreview);
-$('speak-preview').addEventListener('click',()=>{
+$('speak-preview').addEventListener('click',async()=>{
+ if($('preview-tts-mode').value==='browser'){
+  if(previewAudio.tts){previewAudio.tts.pause();previewAudio.tts=null}
+  setTtsStatus('Đang nghe thử bằng TTS trình duyệt…');await speakBrowserText($('dialogue').value.trim());return;
+ }
  const ready=currentTtsBlob();
  if(!ready){setTtsStatus('Câu thoại này chưa có WAV phù hợp. Hãy tạo giọng trước khi nghe thử.');return}
  if(previewAudio.tts){previewAudio.tts.pause();previewAudio.tts=null}
