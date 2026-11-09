@@ -44,6 +44,27 @@
       camera_tilt_right: { label:'Camera nghiêng phải', transform:[{transform:'rotate(0deg)'},{transform:'rotate(7deg)'}], duration:900, once:true }
     }
   };
+  const catalog = [
+    {id:'char-bob',label:'Nhấp nhô',targets:['character'],renderAs:{character:'char-bob'}},
+    {id:'char-sway',label:'Đung đưa',targets:['character'],renderAs:{character:'char-sway'}},
+    {id:'char-shake',label:'Rung',targets:['character'],renderAs:{character:'char-shake'}},
+    {id:'char-zoom',label:'Phóng to nhẹ',targets:['character'],renderAs:{character:'char-zoom'}},
+    {id:'char-float',label:'Trôi nhẹ',targets:['character'],renderAs:{character:'char-float'}},
+    {id:'char-breathe',label:'Thở nhẹ',targets:['character'],renderAs:{character:'char-breathe'}},
+    {id:'char-enter',label:'Đi vào cảnh',targets:['character'],renderAs:{character:'char-enter'}},
+    {id:'char-fade',label:'Mờ dần xuất hiện',targets:['character'],renderAs:{character:'char-fade'}},
+    {id:'bg-zoom',label:'Zoom chậm',targets:['background'],renderAs:{background:'bg-zoom'}},
+    {id:'bg-left',label:'Lia trái',targets:['background'],renderAs:{background:'bg-left'}},
+    {id:'bg-right',label:'Lia phải',targets:['background'],renderAs:{background:'bg-right'}},
+    {id:'bg-float',label:'Trôi nhẹ',targets:['background'],renderAs:{background:'bg-float'}},
+    {id:'bg-blur',label:'Mờ điện ảnh',targets:['background'],renderAs:{background:'bg-blur'}},
+    {id:'bg-pulse',label:'Ánh sáng nhịp',targets:['background'],renderAs:{background:'bg-pulse'}},
+    {id:'camera-shake',label:'Rung lắc',targets:['camera'],renderAs:{camera:'camera-shake'}},
+    {id:'camera-zoom',label:'Zoom gần',targets:['camera'],renderAs:{camera:'camera-zoom'}},
+    {id:'camera-pull',label:'Zoom xa',targets:['camera'],renderAs:{camera:'camera-pull'}},
+    {id:'camera-drift',label:'Lia máy nhẹ',targets:['camera'],renderAs:{camera:'camera-drift'}},
+    {id:'soft-sway',label:'Chuyển động đung đưa mềm',targets:['character','background','camera'],renderAs:{character:'char-sway',background:'bg-float',camera:'camera-drift'}}
+  ];
   const active = new WeakMap();
   const allNodes = new Set();
   function cancelNode(node) {
@@ -97,8 +118,12 @@
     allNodes.forEach(cancelNode);
     allNodes.clear();
   }
-  function list() {
-    return Object.fromEntries(Object.entries(registry).map(([group, effects]) => [group, Object.entries(effects).map(([id, def]) => ({id, label:def.label}))]));
+  function list(target) {
+    return catalog.filter(item => !target || item.targets.includes(target)).map(item => ({id:item.id,label:item.label,targets:item.targets.slice()}));
   }
-  window.VNEffects = Object.freeze({apply, clear, list, registry});
+  function renderKey(target,id) {
+    const item=catalog.find(entry=>entry.id===id);
+    return item?.renderAs?.[target] || id;
+  }
+  window.VNEffects = Object.freeze({apply, clear, list, renderKey, registry, catalog});
 })();
