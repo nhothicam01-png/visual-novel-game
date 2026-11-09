@@ -571,15 +571,15 @@ function buildBrowserUtterance(state){
  utterance.volume=state.volume;utterance.rate=1;utterance.pitch=1;
  state.utterance=utterance;previewSpeech=utterance;
  utterance.onboundary=e=>{
-  if(browserSpeechState!==state||state.paused)return;
+  if(browserSpeechState!==state||state.paused||state.utterance!==utterance)return;
   if(Number.isFinite(e.charIndex))state.offset=Math.min(state.text.length,baseOffset+e.charIndex);
  };
  utterance.onend=()=>{
-  if(browserSpeechState!==state||state.paused)return;
+  if(browserSpeechState!==state||state.paused||state.utterance!==utterance)return;
   state.offset=state.text.length;finishBrowserSpeech(state);
  };
  utterance.onerror=()=>{
-  if(browserSpeechState!==state||state.paused)return;
+  if(browserSpeechState!==state||state.paused||state.utterance!==utterance)return;
   finishBrowserSpeech(state);
  };
  synth.speak(utterance);
