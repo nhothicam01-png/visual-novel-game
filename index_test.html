@@ -612,6 +612,22 @@
     </div>
   </div>
 
+  <section id="timeline-export-panel" aria-label="Xuất video MP4" style="margin:12px auto;padding:12px;max-width:960px;border:1px solid rgba(148,163,184,.25);border-radius:12px;background:rgba(15,23,42,.6);color:#e2e8f0;display:flex;flex-direction:column;gap:8px;">
+    <h4 style="margin:0;">🎬 Xuất video MP4 (không cần chạy kịch bản)</h4>
+    <div style="font-size:.76rem;color:#94a3b8;">Dựng thẳng từ JSON theo timeline: nền + nhân vật + hiệu ứng + khung thoại, trộn BGM/SFX và giọng TTS (Piper tiếng Việt) rồi xuất MP4. Cần trình duyệt Chrome/Edge hỗ trợ WebCodecs và có mạng để tải Piper lần đầu.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.82rem;">
+      <label>Tỷ lệ <select id="video-export-ratio"><option value="landscape">Ngang 1920×1080</option><option value="portrait">Dọc 1080×1920</option></select></label>
+      <label>FPS <select id="video-export-fps"><option value="24">24</option><option value="30" selected>30</option><option value="60">60</option></select></label>
+      <label>Chất lượng <select id="video-export-quality"><option value="compact">Nhẹ</option><option value="normal" selected>Vừa</option><option value="high">Cao</option></select></label>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+      <button class="btn" type="button" id="btn-timeline-export">🎬 Xuất MP4</button>
+      <button class="btn" type="button" id="btn-timeline-cancel" disabled>✖ Hủy</button>
+      <progress id="timeline-export-progress" value="0" max="100" style="flex:1;min-width:140px;"></progress>
+    </div>
+    <div id="timeline-export-status" role="status" style="font-size:.78rem;color:#cbd5e1;">Hãy tải/import kịch bản JSON trước, rồi bấm “Xuất MP4”.</div>
+  </section>
+
   <audio id="audio-bgm" loop crossorigin="anonymous"></audio>
   <audio id="audio-sfx" crossorigin="anonymous"></audio>
   <audio id="audio-tts" crossorigin="anonymous"></audio>
@@ -2304,5 +2320,6 @@
 
     const trinhPhat = new TrinhPhatKichBanWeb();
   </script>
+  <script src="./timeline_export.js"></script>
 </body>
 </html>
