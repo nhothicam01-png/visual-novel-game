@@ -1,5 +1,32 @@
 {
   "schemaVersion": 1,
-  "updatedAt": null,
-  "profiles": []
+  "updatedAt": "2026-11-09T07:09:22.180Z",
+  "profiles": [
+    {
+      "id": "voice_1794192970852",
+      "name": "Embe",
+      "lang": "vi",
+      "voiceId": "vi_VN-vais1000-medium",
+      "gender": "female",
+      "age": 34,
+      "speed": 1.1,
+      "pitch": 3,
+      "tone": 50,
+      "rough": 50,
+      "breath": 27,
+      "updatedAt": "2026-11-09T02:56:59.452Z"
+    },
+    {
+      "id": "voice_1794205520158",
+      "name": "Hoà",
+      "lang": "vi",
+      "voiceId": "vi_VN-vais1000-medium",
+      "gender": "female",
+      "speed": 1,
+      "pitch": 0,
+      "rough": 5,
+      "volume": 100,
+      "updatedAt": "2026-11-09T06:25:20.158Z"
+    }
+  ]
 }
