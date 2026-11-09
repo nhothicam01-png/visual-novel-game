@@ -117,8 +117,9 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <div id="preview-loading"><strong>⏳ Đang tải tài nguyên…</strong><span id="preview-loading-status">Đang chuẩn bị cảnh</span></div>
 </div>
 <div class="preview-toolbar">
-<button class="btn" id="play-preview">▶ Xem trước cảnh</button>
-<button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
+<button class="btn" id="play-preview">▶ Chạy</button>
+<button class="btn secondary" id="pause-preview" disabled>⏸ Tạm dừng</button>
+<button class="btn secondary" id="stop-scene">■ Dừng chạy</button>
 <button class="btn secondary" id="ratio-landscape">📺 16:9</button>
 <button class="btn secondary" id="ratio-portrait">📱 9:16</button>
 <button class="btn secondary" id="toggle-fullscreen">⛶ Toàn màn hình</button>
@@ -280,7 +281,7 @@ const backgrounds=[
  ['thu_vien.png','Thư viện'],
  ['render.mp4','Video nền render.mp4']
 ];
-let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
+let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewPaused=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
 let piperVoices=[];
 let previewAudio={bgm:null,tts:null,sfx:null};
 let recordingTimer=null;
@@ -491,14 +492,39 @@ let previewStartedAt=0,previewRunId=0;
 function startRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=1;animate()}
 function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;drawFrame(0)}
 
+function updatePlaybackButtons(){
+ const pauseButton=$('pause-preview');
+ if(pauseButton){pauseButton.disabled=!previewing;pauseButton.textContent=previewPaused?'▶ Tiếp tục':'⏸ Tạm dừng'}
+ $('play-preview').textContent=previewing?'▶ Chạy lại':'▶ Chạy';
+}
+function pausePreview(){
+ if(!previewing||previewPaused)return;
+ previewPaused=true;
+ Object.values(previewAudio).forEach(a=>{if(a&&!a.paused)a.pause()});
+ if(window.speechSynthesis)window.speechSynthesis.pause();
+ if(charVideo)charVideo.pause();if(bgVideo)bgVideo.pause();
+ updatePlaybackButtons();setTtsStatus('Đã tạm dừng. Nhấn Tiếp tục để chạy tiếp.');
+}
+function resumePreview(){
+ if(!previewing||!previewPaused)return;
+ previewPaused=false;
+ Object.values(previewAudio).forEach(a=>{if(a&&a.currentTime>0)a.play().catch(()=>{})});
+ if(window.speechSynthesis)window.speechSynthesis.resume();
+ if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
+ updatePlaybackButtons();setTtsStatus('Đang tiếp tục chạy…');
+}
+async function waitWhilePaused(run){
+ while(previewing&&run===previewRunId&&previewPaused)await new Promise(resolve=>setTimeout(resolve,80));
+ return previewing&&run===previewRunId;
+}
 function stopPreview(){
- previewRunId++;previewing=false;previewLineBgmName='';previewLineSfxName='';
+ previewRunId++;previewing=false;previewPaused=false;previewLineBgmName='';previewLineSfxName='';
  if(window.speechSynthesis)window.speechSynthesis.cancel();
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
  if(charVideo)charVideo.pause();
  if(bgVideo)bgVideo.pause();
- stopRenderLoop();
+ stopRenderLoop();updatePlaybackButtons();
 }
 function audioElement(url,loop,volume){
  const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
@@ -574,12 +600,12 @@ async function playPreview(){
   try{for(const item of items){await loadSourceLineForPlayback(item);if($('dialogue').value.trim())await ensureTtsReady()}}
   catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));return}
  }
- stopPreview();previewing=true;previewStartedAt=performance.now();const run=previewRunId;
+ stopPreview();previewing=true;previewPaused=false;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
- previewLineBgmName='';startRenderLoop();
+ previewLineBgmName='';startRenderLoop();updatePlaybackButtons();
  for(const item of items){
-  if(!previewing||run!==previewRunId)break;
-  await loadSourceLineForPlayback(item);if(!previewing||run!==previewRunId)break;
+  if(!await waitWhilePaused(run))break;
+  await loadSourceLineForPlayback(item);if(!await waitWhilePaused(run))break;
   const line=getCurrentLine();await playLineAudio(line);
   const text=$('dialogue').value.trim();
   if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
@@ -587,13 +613,18 @@ async function playPreview(){
    await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
   }
   const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
-  if(previewing&&run===previewRunId&&pause)await new Promise(resolve=>setTimeout(resolve,pause*1000));
+  let remaining=pause*1000;
+  while(previewing&&run===previewRunId&&remaining>0){
+   if(!await waitWhilePaused(run))break;
+   const step=Math.min(80,remaining);await new Promise(resolve=>setTimeout(resolve,step));remaining-=step;
+  }
  }
  if(previewing&&run===previewRunId)stopPreview();
 }
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
-$('play-preview').addEventListener('click',playPreview);
+$('play-preview').addEventListener('click',()=>{if(previewing){stopPreview();playPreview()}else playPreview()});
+$('pause-preview').addEventListener('click',()=>previewPaused?resumePreview():pausePreview());
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
 $('stop-scene').addEventListener('click',stopPreview);
 $('speak-preview').addEventListener('click',async()=>{
