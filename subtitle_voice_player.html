@@ -67,6 +67,27 @@ input[type=range]{padding:0;accent-color:var(--accent)}
   <div style="margin-top:15px"><input id="timeline" type="range" min="0" max="0" step=".05" value="0" disabled><div class="time-row"><span id="now">00:00</span><span id="duration">00:00</span></div></div>
   <div id="status" class="status" role="status">Sẵn sàng.</div>
 </section>
+<section class="panel" id="audioExportPanel">
+  <strong>🎧 Xuất thẳng ra file âm thanh (WAV / MP3) — không cần phát hay ghi âm tab</strong>
+  <div class="note" style="margin-top:6px">Đọc từng câu bằng giọng Piper chạy ngay trong trình duyệt, đặt đúng mốc bắt đầu của phụ đề rồi trộn thành một file. Có thể dịch sang ngôn ngữ khác trước khi đọc; mốc thời gian vẫn giữ theo file gốc. Dùng thanh “Tốc độ tối đa khi cần khớp” và “Âm lượng” ở trên.</div>
+  <div class="grid">
+    <label class="field">Ngôn ngữ của file âm thanh (dịch sang)<select id="axTarget"></select></label>
+    <label class="field">Cách dịch<select id="axEngine"><option value="chrome">Chrome/Edge trên máy (miễn phí)</option><option value="mymemory">MyMemory (online, có giới hạn)</option><option value="none">Không dịch — giữ nguyên lời</option></select></label>
+    <label class="field">Giọng Piper<select id="axVoice"><option value="">Đang tải danh sách giọng…</option></select></label>
+    <label class="field">Định dạng<select id="axFormat"><option value="mp3">MP3 (128 kbps)</option><option value="wav">WAV (không nén)</option></select></label>
+    <label class="field">Tần số lấy mẫu<select id="axRate"><option value="44100">44.1 kHz (chuẩn)</option><option value="22050">22.05 kHz (nhẹ hơn)</option></select></label>
+  </div>
+  <div id="axEngineNote" class="note" style="margin-top:8px"></div>
+  <div class="record-actions">
+    <button id="axExport" disabled>🎧 Xuất file âm thanh</button>
+    <button id="axCancel" class="secondary" disabled>✖ Hủy</button>
+    <button id="axSrtBtn" class="secondary" disabled>⬇ Tải SRT đã dịch</button>
+    <progress id="axProgress" value="0" max="100" style="flex:1;min-width:140px"></progress>
+  </div>
+  <div id="axStatus" class="status" role="status" aria-live="polite">Import phụ đề, chọn ngôn ngữ và giọng, rồi bấm “Xuất file âm thanh”.</div>
+  <div id="axResult" hidden><audio id="axPreview" controls></audio><div class="record-actions"><a id="axLink" style="color:var(--cyan)"></a></div></div>
+  <div class="note" style="margin-top:8px">Cần Chrome/Edge và có mạng để tải Piper cùng mô hình giọng lần đầu. Giọng riêng theo nhân vật (cấu hình Web Speech) không áp dụng ở đây — toàn bộ file dùng một giọng Piper.</div>
+</section>
 <section class="panel"><div class="controls" style="justify-content:space-between"><strong>Danh sách câu phụ đề</strong><span class="note">Bấm vào một câu để tua đến đó</span></div><div id="cueList" class="list" style="margin-top:12px"><div class="note">Chưa có dữ liệu phụ đề.</div></div></section>
 <footer class="note">Âm thanh được tạo từ giọng đọc Speech Synthesis đang phát và âm thanh tab mà bạn cho phép chia sẻ.</footer>
 </main>
@@ -161,7 +182,7 @@ function applySpeakerDetection(){
  render();return {matched,total:cues.length};
 }
 function setStatus(s){$('status').textContent=s}
-function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c._displayText||c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length;$('recordPlay').disabled=!cues.length}
+function render(){const list=$('cueList');list.innerHTML='';cues.forEach((c,i)=>{const d=document.createElement('div');d.className='cue';d.dataset.i=i;const t=document.createElement('time');t.textContent=fmt(c.start)+' – '+fmt(c.end);const p=document.createElement('p');p.textContent=c._displayText||c.text;d.append(t,p);d.addEventListener('click',()=>seek(c.start));list.append(d)});$('count').textContent=cues.length+' câu';const dur=Math.max(...cues.map(c=>c.end),0);$('timeline').max=dur;$('duration').textContent=fmt(dur);$('timeline').disabled=!cues.length;$('play').disabled=!cues.length;$('stop').disabled=!cues.length;$('recordPlay').disabled=!cues.length;document.dispatchEvent(new CustomEvent('vn-subtitle-changed'))}
 function setActive(i){if(i===activeIndex)return;activeIndex=i;document.querySelectorAll('.cue').forEach((el)=>el.classList.toggle('active',+el.dataset.i===i));if(i>=0){const c=cues[i];$('current').innerHTML='';const small=document.createElement('small');small.textContent='CÂU '+(i+1)+' · '+fmt(c.start)+' → '+fmt(c.end);const body=document.createElement('div');body.textContent=c._displayText||c.text;$('current').append(small,body);const el=document.querySelector('.cue[data-i="'+i+'"]');if(el)el.scrollIntoView({block:'nearest',behavior:'smooth'})}}
 function clearTimers(){timers.forEach(clearTimeout);timers=[];cancelAnimationFrame(raf)}
 function clock(){if(!playing||paused)return;playhead=(performance.now()-startedAt)/1000;$('timeline').value=playhead;$('now').textContent=fmt(playhead);const i=cues.findIndex(c=>playhead>=c.start&&playhead<c.end);setActive(i);if(playhead>=Math.max(...cues.map(c=>c.end))+.1){stop();setStatus('Đã phát hết phụ đề.');if(recording||recordingFinalizing)$('recordStatus').textContent='Đã phát hết — đang hoàn tất MP3…'}else raf=requestAnimationFrame(clock)}
@@ -376,5 +397,7 @@ $('test').onclick=()=>{synth.cancel();const u=new SpeechSynthesisUtterance('Hola
 $('rate').oninput=e=>$('rateVal').textContent=(+e.target.value).toFixed(2)+'×';$('maxRate').oninput=e=>$('maxVal').textContent=(+e.target.value).toFixed(1)+'×';$('volume').oninput=e=>$('volVal').textContent=Math.round(+e.target.value*100)+'%';
 $('lang').onchange=()=>{loadVoices();if(playing){pause();resume()}};
 if(synth){loadVoices();synth.onvoiceschanged=loadVoices}else{setStatus('Trình duyệt này không hỗ trợ Speech Synthesis. Hãy thử Chrome hoặc Edge mới nhất.')}
+window.VNSubtitle={get cues(){return cues},get lang(){return $('lang').value}};
 })();
-</script></body></html>
+</script>
+<script src="./subtitle_audio_export.js"></script></body></html>
