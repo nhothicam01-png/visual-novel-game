@@ -118,7 +118,6 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 </div>
 <div class="preview-toolbar">
 <button class="btn" id="play-preview">▶ Chạy</button>
-<button class="btn secondary" id="pause-preview" disabled>⏸ Tạm dừng</button>
 <button class="btn secondary" id="stop-scene">■ Dừng chạy</button>
 <button class="btn secondary" id="ratio-landscape">📺 16:9</button>
 <button class="btn secondary" id="ratio-portrait">📱 9:16</button>
@@ -493,9 +492,7 @@ function startRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=1;animate()}
 function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;drawFrame(0)}
 
 function updatePlaybackButtons(){
- const pauseButton=$('pause-preview');
- if(pauseButton){pauseButton.disabled=!previewing;pauseButton.textContent=previewPaused?'▶ Tiếp tục':'⏸ Tạm dừng'}
- $('play-preview').textContent=previewing?'▶ Chạy lại':'▶ Chạy';
+ $('play-preview').textContent=previewing?(previewPaused?'▶ Tiếp tục':'⏸ Tạm dừng'):'▶ Chạy';
 }
 function pausePreview(){
  if(!previewing||previewPaused)return;
@@ -623,8 +620,7 @@ async function playPreview(){
 }
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
-$('play-preview').addEventListener('click',()=>{if(previewing){stopPreview();playPreview()}else playPreview()});
-$('pause-preview').addEventListener('click',()=>previewPaused?resumePreview():pausePreview());
+$('play-preview').addEventListener('click',()=>{if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
 $('stop-scene').addEventListener('click',stopPreview);
 $('speak-preview').addEventListener('click',async()=>{
