@@ -321,7 +321,7 @@ function resizeCanvas(portrait){
 }
 async function togglePreviewFullscreen(){
  try{
-  if(!document.fullscreenElement){
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement){
    stage.classList.toggle('force-portrait',isPortrait);stage.classList.toggle('force-landscape',!isPortrait);
    if(stage.requestFullscreen)await stage.requestFullscreen();else if(stage.webkitRequestFullscreen)await stage.webkitRequestFullscreen();
    if(screen.orientation?.lock)screen.orientation.lock(isPortrait?'portrait':'landscape').catch(()=>{});
@@ -761,7 +761,8 @@ async function exportVideo(){
    if(!name)return null;
    const cache=audioBuffers[kind];if(cache.has(name))return cache.get(name);
    const folder=kind==='bgm'?'Nen/':'HieuUng/';
-   const buffer=await decodeUrl(BASE+'AmThanh/'+folder+name,audioContext);cache.set(name,buffer);return buffer;
+   try{const buffer=await decodeUrl(BASE+'AmThanh/'+folder+name,audioContext);cache.set(name,buffer);return buffer}
+   catch(err){cache.set(name,null);setStatus('Bỏ qua âm thanh không tải được: '+name);console.warn('Không thể nạp âm thanh',name,err);return null}
   };
   const bgmSegments=[];
   for(const entry of allAudio){
@@ -1013,7 +1014,8 @@ $('ratio-portrait-settings').addEventListener('click',()=>resizeCanvas(true));
 $('stop-scene').addEventListener('click',stopPreview);
 
 $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
-document.addEventListener('fullscreenchange',()=>{$('toggle-fullscreen').textContent=document.fullscreenElement?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
+document.addEventListener('fullscreenchange',()=>{$('toggle-fullscreen').textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
+document.addEventListener('webkitfullscreenchange',()=>{$('toggle-fullscreen').textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
 
 $('reload-story-list').addEventListener('click',loadStoryCatalog);
 $('load-sample-json').addEventListener('click',async()=>{
