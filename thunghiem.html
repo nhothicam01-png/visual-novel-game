@@ -969,7 +969,7 @@ function buildScenesFromJson(data){
   const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;
   const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim();
   const starts=!current||!!rawBg;
-  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground||$('background').value,character:characterFolder,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
+  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;
   current.lines.push({speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterFolder,expression});
   current.sourceAudio={bgm:activeBgm,sfx};
