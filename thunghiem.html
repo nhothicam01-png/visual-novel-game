@@ -406,11 +406,34 @@ function wrapText(text,maxWidth){
  for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test}
  if(line)lines.push(line);return lines;
 }
-function drawFrame(elapsed){
- const w=canvas.width,h=canvas.height;
+function captureRenderState(){
  const effects=(group,target)=>Array.from(document.querySelectorAll('[data-effect="'+group+'"]:checked')).map(x=>target&&window.VNEffects?window.VNEffects.renderKey(target,x.value):x.value);
  const bgFx=effects('bg','background'),charFx=effects('char','character'),camFx=effects('camera','camera'),atmFx=effects('atm');
  const strength=Number($('effect-strength')?.value||50)/50;
+ let dialogue=null;
+ if($('show-dialogue').checked&&$('dialogue').value.trim()){
+  const text=$('dialogue').value.trim(),name=$('speaker').value.trim();
+  const mode=$('dialogue-width-mode')?.value||'percent';
+  const pad=canvas.width*.018,fontSize=Math.max(24,Math.round(canvas.width*.022));
+  const percent=Number($('dialogue-width')?.value||75)/100;
+  const maxW=mode==='fit'?canvas.width*.88:canvas.width*percent;
+  ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';
+  const lines=wrapText(text,maxW-pad*2),lineH=fontSize*1.28;
+  const measured=Math.max(0,...lines.map(line=>ctx.measureText(line).width));
+  const boxW=mode==='fit'?Math.min(canvas.width*.92,measured+pad*2):maxW;
+  const boxX=(canvas.width-boxW)/2;
+  const nameH=$('show-speaker').checked&&name?fontSize*1.05:0;
+  const topPad=pad*.42,bottomPad=pad*.42;
+  const boxH=topPad+nameH+lines.length*lineH+bottomPad;
+  const boxY=canvas.height-boxH-canvas.height*.025;
+  dialogue={text,name,pad,fontSize,lines,lineH,boxW,boxX,nameH,topPad,boxY};
+ }
+ return {bgFx,charFx,camFx,atmFx,strength,dialogue};
+}
+function drawFrame(elapsed,mediaOverride=null,stateOverride=null){
+ const w=canvas.width,h=canvas.height,state=stateOverride||captureRenderState();
+ const bgFx=state.bgFx,charFx=state.charFx,camFx=state.camFx,atmFx=state.atmFx,strength=state.strength;
+ const activeBgVideo=mediaOverride?.bgVideo||bgVideo,activeCharVideo=mediaOverride?.charVideo||charVideo;
  ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
  let shakeX=0,shakeY=0,zoom=1;
  if(camFx.includes('camera-shake')&&elapsed<1.5){shakeX=Math.sin(elapsed*55)*w*.008*strength;shakeY=Math.cos(elapsed*48)*h*.008*strength}
@@ -418,8 +441,7 @@ function drawFrame(elapsed){
  if(camFx.includes('camera-pull'))zoom*=1-Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08*strength);
  if(camFx.includes('camera-drift')){shakeX+=Math.sin(elapsed*.55)*w*.012*strength;shakeY+=Math.cos(elapsed*.4)*h*.008*strength}
  ctx.save();ctx.translate(w/2+shakeX,h/2+shakeY);ctx.scale(zoom,zoom);ctx.translate(-w/2,-h/2);
- // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
- if(bgAsset||bgVideo) {
+ if(bgAsset||activeBgVideo) {
   let bz=1,bx=0,by=0;
   if(bgFx.includes('bg-zoom'))bz+=Math.sin(elapsed*1.2)*.035*strength;
   if(bgFx.includes('bg-left'))bx-=Math.sin(elapsed*.8)*w*.025*strength;
@@ -428,10 +450,9 @@ function drawFrame(elapsed){
   if(bgFx.includes('bg-pulse'))bz+=Math.sin(elapsed*2)*.012*strength;
   ctx.save();ctx.translate(w/2+bx,h/2+by);ctx.scale(bz,bz);ctx.translate(-w/2,-h/2);
   if(bgFx.includes('bg-blur'))ctx.filter='blur('+Math.round(2*strength)+'px)';
-  drawCover(bgAsset||bgVideo,w,h);ctx.filter='none';ctx.restore();
+  drawCover(bgAsset||activeBgVideo,w,h);ctx.filter='none';ctx.restore();
  }
- // Nhân vật có lớp biến đổi độc lập với nền và camera.
- if(charVideo){
+ if(activeCharVideo){
   ctx.save();
   let charAlpha=1;
   if(charFx.includes('char-bob'))ctx.translate(0,Math.sin(elapsed*5)*h*.008*strength);
@@ -441,15 +462,14 @@ function drawFrame(elapsed){
   if(charFx.includes('char-float'))ctx.translate(Math.sin(elapsed*1.15)*w*.012*strength,Math.sin(elapsed*1.7)*h*.006*strength);
   if(charFx.includes('char-enter'))ctx.translate(0,(1-Math.min(1,elapsed/1.1))*h*.22);
   if(charFx.includes('char-fade'))charAlpha=Math.min(1,elapsed/1.4);
-  ctx.globalAlpha=charAlpha;drawCharacter(charVideo,w,h);ctx.globalAlpha=1;ctx.restore();
+  ctx.globalAlpha=charAlpha;drawCharacter(activeCharVideo,w,h);ctx.globalAlpha=1;ctx.restore();
  }
- // Các lớp không khí được tính theo elapsed để preview và video xuất dùng cùng một timeline.
  if(atmFx.length){
   ctx.save();
   if(atmFx.includes('rays')){ctx.globalAlpha=.10*strength;const grad=ctx.createLinearGradient(0,0,w,h);grad.addColorStop(0,'rgba(255,244,190,.7)');grad.addColorStop(1,'rgba(255,244,190,0)');ctx.fillStyle=grad;ctx.beginPath();ctx.moveTo(w*.12,0);ctx.lineTo(w*.48,0);ctx.lineTo(w*.78,h);ctx.lineTo(w*.42,h);ctx.closePath();ctx.fill();ctx.globalAlpha=1}
   if(atmFx.includes('snow')||atmFx.includes('rain')||atmFx.includes('petals')||atmFx.includes('dust')||atmFx.includes('sparkle')){
    const count=atmFx.includes('rain')?95:atmFx.includes('snow')?65:42;
-   for(let i=0;i<count;i++){const seed=i*127.1,phase=(elapsed*(atmFx.includes('rain')?1.2:.22)+i*.173)%1,x=((seed* Math.sin(i+2)*.5+.5)*w+Math.sin(elapsed*.8+i)*w*.025+w*2)%w,y=((i/count* h+elapsed*(atmFx.includes('rain')?h*1.25:h*.16))%h);
+   for(let i=0;i<count;i++){const seed=i*127.1,x=((seed*Math.sin(i+2)*.5+.5)*w+Math.sin(elapsed*.8+i)*w*.025+w*2)%w,y=((i/count*h+elapsed*(atmFx.includes('rain')?h*1.25:h*.16))%h);
     if(atmFx.includes('rain')){ctx.strokeStyle='rgba(190,220,255,.48)';ctx.lineWidth=Math.max(1,w*.0008);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-w*.008,y+h*.035);ctx.stroke()}
     else if(atmFx.includes('petals')){ctx.save();ctx.translate(x,y);ctx.rotate(elapsed+i);ctx.fillStyle='rgba(255,160,195,.72)';ctx.beginPath();ctx.ellipse(0,0,w*.004,h*.009,0,0,Math.PI*2);ctx.fill();ctx.restore()}
     else {const r=atmFx.includes('snow')?w*.0025:w*.0015;ctx.fillStyle=atmFx.includes('snow')?'rgba(255,255,255,.78)':'rgba(255,235,170,.65)';ctx.beginPath();ctx.arc(x,y,r*(.5+((i%4)/4)),0,Math.PI*2);ctx.fill()}
@@ -463,28 +483,64 @@ function drawFrame(elapsed){
   ctx.restore();
  }
  ctx.restore();
- if($('show-dialogue').checked&&$('dialogue').value.trim()){
-  const text=$('dialogue').value.trim(),name=$('speaker').value.trim();
-  const mode=$('dialogue-width-mode')?.value||'percent';
-  const pad=w*.018,fontSize=Math.max(24,Math.round(w*.022));
-  const percent=Number($('dialogue-width')?.value||75)/100;
-  const maxW=mode==='fit'?w*.88:w*percent;
-  ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';
-  const lines=wrapText(text,maxW-pad*2),lineH=fontSize*1.28;
-  const measured=Math.max(0,...lines.map(line=>ctx.measureText(line).width));
-  const boxW=mode==='fit'?Math.min(w*.92,measured+pad*2):maxW;
-  const boxX=(w-boxW)/2;
-  const nameH=$('show-speaker').checked&&name?fontSize*1.05:0;
-  const topPad=pad*.42,bottomPad=pad*.42;
-  const boxH=topPad+nameH+lines.length*lineH+bottomPad;
-  const boxY=h-boxH-h*.025;
-  ctx.fillStyle='rgba(5,8,17,.72)';roundRect(boxX,boxY,boxW,boxH,Math.max(12,w*.009));ctx.fill();
+ const d=state.dialogue;
+ if(d){
+  ctx.fillStyle='rgba(5,8,17,.72)';roundRect(d.boxX,d.boxY,d.boxW,d.topPad+d.nameH+d.lines.length*d.lineH+d.pad*.42,Math.max(12,w*.009));ctx.fill();
   ctx.textAlign='center';ctx.textBaseline='top';
-  if(nameH){ctx.font='700 '+Math.round(fontSize*.75)+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#c4b5fd';ctx.fillText(name,w/2,boxY+topPad)}
-  ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#fff';ctx.shadowColor='#000';ctx.shadowBlur=5;
-  lines.forEach((line,i)=>ctx.fillText(line,w/2,boxY+topPad+nameH+i*lineH,boxW-pad));
+  if(d.nameH){ctx.font='700 '+Math.round(d.fontSize*.75)+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#c4b5fd';ctx.fillText(d.name,w/2,d.boxY+d.topPad)}
+  ctx.font='600 '+d.fontSize+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#fff';ctx.shadowColor='#000';ctx.shadowBlur=5;
+  d.lines.forEach((line,i)=>ctx.fillText(line,w/2,d.boxY+d.topPad+d.nameH+i*d.lineH,d.boxW-d.pad));
   ctx.shadowBlur=0;
  }
+}
+class ExportVideoFrameReader{
+ constructor(input,sink,first,duration){this.input=input;this.sink=sink;this.first=first;this.duration=duration;this.iterator=null;this.current=null;this.next=null;this.lastTarget=null}
+ static async create(url,mb){
+  const input=new mb.Input({formats:mb.ALL_FORMATS,source:new mb.UrlSource(url)});
+  try{
+   const track=await input.getPrimaryVideoTrack();
+   if(!track)throw new Error('Không tìm thấy track video: '+url);
+   const duration=await track.computeDuration(),first=await track.getFirstTimestamp();
+   if(!Number.isFinite(duration)||duration<=0)throw new Error('Video không có thời lượng hợp lệ: '+url);
+   const sink=new mb.CanvasSink(track);
+   const reader=new ExportVideoFrameReader(input,sink,first,duration);
+   await reader.reset();
+   return reader;
+  }catch(err){input.dispose?.();throw err}
+ }
+ async reset(){
+  try{await this.iterator?.return?.()}catch(_){}
+  this.iterator=this.sink.canvases(this.first,this.first+this.duration)[Symbol.asyncIterator]();
+  const item=await this.iterator.next();
+  this.current=item.done?null:item.value;this.next=null;this.lastTarget=null;
+  if(!this.current)throw new Error('Không giải mã được frame đầu tiên của video.');
+ }
+ async frameAt(time){
+  const local=((time%this.duration)+this.duration)%this.duration,target=this.first+local;
+  if(this.lastTarget!==null&&target<this.lastTarget-.001)await this.reset();
+  while(true){
+   if(!this.next){const item=await this.iterator.next();this.next=item.done?null:item.value}
+   if(this.next&&this.next.timestamp<=target+.0001){this.current=this.next;this.next=null;continue}
+   break;
+  }
+  this.lastTarget=target;
+  return this.current?.canvas||null;
+ }
+ close(){try{this.iterator?.return?.()}catch(_){}try{this.input.dispose?.()}catch(_){}this.current=null;this.next=null}
+}
+const exportVideoReaders=new Map(),exportVideoReaderFailures=new Set();
+async function getExportVideoReader(url,mb){
+ if(!url||exportVideoReaderFailures.has(url))return null;
+ if(exportVideoReaders.has(url)){const value=exportVideoReaders.get(url);exportVideoReaders.delete(url);exportVideoReaders.set(url,value);return value}
+ try{
+  const reader=await ExportVideoFrameReader.create(url,mb);exportVideoReaders.set(url,reader);
+  while(exportVideoReaders.size>6){const firstKey=exportVideoReaders.keys().next().value,old=exportVideoReaders.get(firstKey);exportVideoReaders.delete(firstKey);old.close()}
+  return reader;
+ }catch(err){exportVideoReaderFailures.add(url);console.warn('Mediabunny decode fallback:',url,err);return null}
+}
+function currentExportVideoUrls(){
+ const bg=$('background').value,character=$('character').value,expression=normalizeExpression($('expression').value);
+ return {bg:/\.mp4$/i.test(bg)?BASE+'Nen/'+bg:'',character:character&&expression?BASE+'NhanVat/'+character+'/'+expression+'.webm':''};
 }
 function animate(){
  if(!raf) return;
@@ -936,7 +992,7 @@ async function exportVideo(){
   const mb=await import('https://esm.sh/mediabunny@1.62.1');
   const target=new mb.BufferTarget(),format=new mb.Mp4OutputFormat();
   output=new mb.Output({format,target});
-  const videoSource=new mb.CanvasSource(renderCanvas,{codec:'avc',quality:new mb.Quality({bitrate:8000000})});
+  const videoSource=new mb.CanvasSource(renderCanvas,{codec:'avc',quality:new mb.Quality({bitrate:8000000}),hardwareAcceleration:'prefer-hardware',latencyMode:'realtime',keyFrameInterval:2,contentHint:'motion'});
   const audioSource=new mb.AudioBufferSource({codec:'aac',quality:new mb.Quality({bitrate:160000})});
   output.addVideoTrack(videoSource,{frameRate:fps});output.addAudioTrack(audioSource);await output.start();
   const frameCount=Math.ceil(finalDuration*fps);let frameIndex=0;
@@ -944,6 +1000,9 @@ async function exportVideo(){
    const pack=prepared[si];if(!pack.lines.length)continue;
    activeSceneIndex=si;applyVisual(pack.visual);await updateAssets();
    let sceneElapsed=0;
+   let mediaUrls=currentExportVideoUrls();
+   let bgReader=mediaUrls.bg?await getExportVideoReader(mediaUrls.bg,mb):null;
+   let charReader=mediaUrls.character?await getExportVideoReader(mediaUrls.character,mb):null;
    for(const entry of pack.lines){
     activeLineIndex=scenes[si].lines.indexOf(entry.line);loadLineToEditor(entry.line);
     const frame=entry.line.sourceFrame;
@@ -953,15 +1012,20 @@ async function exportVideo(){
      if(frame.anh_nen)$('background').value=frame.anh_nen;
      applyLineEffects(entry.line);
      await updateAssets();
+     mediaUrls=currentExportVideoUrls();
+     bgReader=mediaUrls.bg?await getExportVideoReader(mediaUrls.bg,mb):null;
+     charReader=mediaUrls.character?await getExportVideoReader(mediaUrls.character,mb):null;
     }
+    const frameState=captureRenderState();
     const lineEndFrame=Math.min(frameCount,Math.round((entry.start+entry.duration+entry.pause)*fps));
     const lineFrames=Math.max(0,lineEndFrame-frameIndex);
     for(let f=0;f<lineFrames;f++){
      const local=f/fps;
      if(local>entry.duration+entry.pause)break;
-     if(bgVideo)await seekVideoFrame(bgVideo,sceneElapsed+local);
-     if(charVideo)await seekVideoFrame(charVideo,sceneElapsed+local);
-     drawFrame(sceneElapsed+local);await videoSource.add(frameIndex/fps,1/fps);
+     const frameTime=sceneElapsed+local,mediaOverride={};
+     if(bgVideo){const decoded=bgReader?await bgReader.frameAt(frameTime):null;if(decoded)mediaOverride.bgVideo=decoded;else{await seekVideoFrame(bgVideo,frameTime);mediaOverride.bgVideo=bgVideo}}
+     if(charVideo){const decoded=charReader?await charReader.frameAt(frameTime):null;if(decoded)mediaOverride.charVideo=decoded;else{await seekVideoFrame(charVideo,frameTime);mediaOverride.charVideo=charVideo}}
+     drawFrame(frameTime,mediaOverride,frameState);await videoSource.add(frameIndex/fps,1/fps);
      frameIndex++;
      if(frameIndex%Math.max(1,Math.floor(fps/2))===0){
       const pct=5+Math.round(frameIndex/frameCount*88);
@@ -979,6 +1043,7 @@ async function exportVideo(){
  }catch(err){console.error(err);setStatus('Không thể xuất video: '+(err.message||err));setTaskProgress('Xuất video thất bại',100);setTimeout(()=>{$('task-progress').hidden=true},2200)}
  finally{
   try{await audioContext?.close()}catch(_){}
+  for(const reader of exportVideoReaders.values())reader.close();exportVideoReaders.clear();exportVideoReaderFailures.clear();
   // Trả lại canvas preview sau khi hoàn tất hoặc lỗi khi xuất.
   canvas=previewCanvas;ctx=previewCtx;renderCanvas=null;renderCtx=null;
   activeSceneIndex=originalScene;activeLineIndex=originalLine;
