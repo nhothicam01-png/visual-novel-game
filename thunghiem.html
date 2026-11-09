@@ -122,11 +122,11 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <div class="row">
 <button class="btn" id="play-preview">▶ Xem trước cảnh</button>
 <button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
-<button class="btn" id="export-video">🎬 Xuất video WebM</button>
+<button class="btn" id="export-video">🎬 Xuất video MP4 (timeline)</button>
 </div>
 <div id="progress"><div id="progress-fill"></div></div>
 <div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
-<p class="note">Định dạng xuất: WebM (video + âm thanh). Nên giữ trang mở trong lúc xuất. Video dài và độ phân giải cao có thể cần vài phút trên điện thoại.</p>
+<p class="note">Định dạng xuất: MP4 (video + âm thanh), dựng từng khung hình theo timeline. Có thể mất thời gian trên điện thoại nhưng không cần chạy theo thời gian thực.</p>
 </section>
 
 <script>
@@ -354,80 +354,94 @@ async function decodeUrl(url,ac){
  return await ac.decodeAudioData(await response.arrayBuffer());
 }
 function makeGain(ac,value,dest){const g=ac.createGain();g.gain.value=value;g.connect(dest);return g}
+async function seekVideoFrame(video,time){
+ if(!video||!Number.isFinite(video.duration)||video.duration<=0)return;
+ const target=((time%video.duration)+video.duration)%video.duration;
+ if(Math.abs(video.currentTime-target)<0.015&&video.readyState>=2)return;
+ await new Promise((resolve,reject)=>{
+  let done=false;
+  const finish=()=>{if(done)return;done=true;clearTimeout(timer);video.removeEventListener('seeked',finish);resolve()};
+  const timer=setTimeout(()=>{if(done)return;done=true;video.removeEventListener('seeked',finish);reject(new Error('Không thể giải mã khung hình video tại '+target.toFixed(2)+'s'))},8000);
+  video.addEventListener('seeked',finish,{once:true});
+  try{video.currentTime=target}catch(e){clearTimeout(timer);done=true;reject(e)}
+ });
+}
 async function exportVideo(){
  if(recording)return;
- const Recorder=window.MediaRecorder;
- if(!Recorder||!canvas.captureStream){setStatus('Trình duyệt không hỗ trợ MediaRecorder/canvas capture. Hãy dùng Chrome hoặc Edge mới.');return}
+ if(!window.VideoEncoder||!window.AudioEncoder){setStatus('Trình duyệt chưa hỗ trợ WebCodecs. Hãy dùng Chrome hoặc Edge mới.');return}
  const ttsFile=currentTtsBlob();
- if(!$('dialogue').value.trim()&&!ttsFile){setStatus('Hãy nhập lời thoại và tạo giọng Piper.');return}
  if(!ttsFile){setStatus('Hãy tạo giọng đọc Piper trước khi xuất video.');return}
- const duration=Math.max(1,Number($('duration').value)||8,0);
  const fps=Number($('fps').value)||30;
- const chunks=[];
- let ac=null,mediaStream=null,rec=null,allSources=[];
+ const requestedDuration=Math.max(1,Number($('duration').value)||8);
+ let audioContext=null,output=null;
+ recording=true;$('export-video').disabled=true;$('progress-fill').style.width='0%';
  try{
-  $('export-video').disabled=true;recording=true;setStatus('Đang chuẩn bị tài nguyên và âm thanh...');
-  if(charVideo){charVideo.currentTime=0;await charVideo.play()}
-  if(bgVideo){bgVideo.currentTime=0;await bgVideo.play()}
-  ac=new (window.AudioContext||window.webkitAudioContext)();
-  await ac.resume();
-  const dest=ac.createMediaStreamDestination();
-  const monitor=ac.destination;
-  const connectBuffer=(buffer,volume,loop)=>{
-   if(!buffer)return null;
-   const src=ac.createBufferSource();src.buffer=buffer;src.loop=!!loop;
-   const gain=ac.createGain();gain.gain.value=volume;
-   src.connect(gain);gain.connect(dest);gain.connect(monitor);allSources.push(src);return src;
-  };
+  setStatus('Đang tải bộ mã hóa video…');
+  const mb=await import('https://esm.sh/mediabunny@1.62.1');
+  audioContext=new (window.AudioContext||window.webkitAudioContext)();
+  await audioContext.resume();
+  const ttsBuffer=await audioContext.decodeAudioData(await ttsFile.arrayBuffer());
+  let bgmBuffer=null,sfxBuffer=null;
   const bgmName=$('bgm').value;
-  let bgmBuffer=null;
-  if(bgmName)bgmBuffer=await decodeUrl(BASE+'AmThanh/Nen/'+bgmName,ac);
-  const ttsBuffer=await ac.decodeAudioData(await ttsFile.arrayBuffer());
+  if(bgmName)bgmBuffer=await decodeUrl(BASE+'AmThanh/Nen/'+bgmName,audioContext);
   const sfxFile=$('sfx-file').files[0];
-  const sfxBuffer=sfxFile?await ac.decodeAudioData(await sfxFile.arrayBuffer()):null;
-  const finalDuration=Math.max(duration,ttsBuffer.duration);
-  const videoStream=canvas.captureStream(fps);
-  mediaStream=new MediaStream([...videoStream.getVideoTracks(),...dest.stream.getAudioTracks()]);
-  let mime='video/webm;codecs=vp9,opus';
-  if(!Recorder.isTypeSupported(mime))mime='video/webm;codecs=vp8,opus';
-  if(!Recorder.isTypeSupported(mime))mime='video/webm';
-  rec=new Recorder(mediaStream,{mimeType:mime,videoBitsPerSecond:8000000,audioBitsPerSecond:192000});
-  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
-  rec.onerror=e=>{throw e.error||new Error('MediaRecorder gặp lỗi')};
-  const startAt=ac.currentTime+.15;
-  const bgmSrc=connectBuffer(bgmBuffer,Number($('bgm-volume').value),true);
-  const ttsSrc=connectBuffer(ttsBuffer,Number($('tts-volume').value),false);
-  const sfxSrc=connectBuffer(sfxBuffer,Number($('sfx-volume').value),false);
-  rec.onstop=async()=>{
-   const blob=new Blob(chunks,{type:rec.mimeType||'video/webm'});
-   const url=URL.createObjectURL(blob),a=document.createElement('a');
-   a.href=url;a.download='thu-nghiem-video-'+Date.now()+'.webm';document.body.appendChild(a);a.click();a.remove();
-   setTimeout(()=>URL.revokeObjectURL(url),60000);
-   if(mediaStream)mediaStream.getTracks().forEach(t=>t.stop());
-   if(ac)await ac.close().catch(()=>{});
-   recording=false;$('export-video').disabled=false;$('progress-fill').style.width='100%';
-   setStatus('Xuất video hoàn tất · '+(blob.size/1024/1024).toFixed(1)+' MB · WebM. Hãy kiểm tra âm thanh và hình ảnh sau khi tải.');
-   stopPreview();
+  if(sfxFile)sfxBuffer=await audioContext.decodeAudioData(await sfxFile.arrayBuffer());
+  const finalDuration=Math.max(requestedDuration,ttsBuffer.duration);
+  const sampleRate=audioContext.sampleRate;
+  const offline=new OfflineAudioContext(2,Math.ceil(finalDuration*sampleRate),sampleRate);
+  const addAudio=(buffer,volume,loop=false,offset=0)=>{
+   if(!buffer)return;
+   const source=offline.createBufferSource(),gain=offline.createGain();
+   source.buffer=buffer;source.loop=loop;gain.gain.value=volume;
+   source.connect(gain).connect(offline.destination);
+   source.start(offset);
+   if(!loop)source.stop(Math.min(finalDuration,offset+buffer.duration));
   };
-  rec.start(250);
-  if(bgmSrc)bgmSrc.start(startAt);
-  ttsSrc.start(startAt);
-  if(sfxSrc)sfxSrc.start(startAt+.15);
-  previewing=true;previewStartedAt=performance.now();startRenderLoop();
-  const started=performance.now();
-  const updateProgress=()=>{
-   if(!recording)return;
-   const elapsed=(performance.now()-started)/1000;
-   $('progress-fill').style.width=Math.min(99,elapsed/finalDuration*100)+'%';
-   setStatus('Đang xuất video: '+Math.min(elapsed,finalDuration).toFixed(1)+' / '+finalDuration.toFixed(1)+' giây');
-   if(elapsed>=finalDuration){clearInterval(recordingTimer);recordingTimer=null;try{allSources.forEach(s=>{try{s.stop()}catch(_){}})}catch(_){};if(rec.state!=='inactive')rec.stop()}
-  };
-  recordingTimer=setInterval(updateProgress,100);
+  addAudio(ttsBuffer,Number($('tts-volume').value),false,0);
+  addAudio(bgmBuffer,Number($('bgm-volume').value),true,0);
+  addAudio(sfxBuffer,Number($('sfx-volume').value),false,.15);
+  setStatus('Đang trộn âm thanh theo timeline…');
+  const mixedAudio=await offline.startRendering();
+  if(charVideo){charVideo.pause();charVideo.loop=false}
+  if(bgVideo){bgVideo.pause();bgVideo.loop=false}
+  const target=new mb.BufferTarget();
+  output=new mb.Output({format:new mb.Mp4OutputFormat(),target});
+  const videoQuality=new mb.Quality({bitrate:8000000});
+  const audioQuality=new mb.Quality({bitrate:160000});
+  const videoSource=new mb.CanvasSource(canvas,{codec:'avc',quality:videoQuality});
+  const audioSource=new mb.AudioBufferSource({codec:'aac',quality:audioQuality});
+  output.addVideoTrack(videoSource,{frameRate:fps});
+  output.addAudioTrack(audioSource);
+  await output.start();
+  const frameCount=Math.ceil(finalDuration*fps);
+  for(let i=0;i<frameCount;i++){
+   const time=i/fps;
+   if(bgVideo)await seekVideoFrame(bgVideo,time);
+   if(charVideo)await seekVideoFrame(charVideo,time);
+   drawFrame(time);
+   await videoSource.add(time,1/fps);
+   if(i%Math.max(1,Math.floor(fps/2))===0){
+    const percent=Math.round((i+1)/frameCount*88);
+    $('progress-fill').style.width=percent+'%';
+    setStatus('Đang dựng timeline: '+(i+1)+' / '+frameCount+' khung hình · '+time.toFixed(2)+' giây');
+   }
+  }
+  setStatus('Đang thêm âm thanh và hoàn tất MP4…');
+  await audioSource.add(mixedAudio);
+  await output.finalize();
+  const blob=new Blob([target.buffer],{type:'video/mp4'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='thu-nghiem-timeline-'+Date.now()+'.mp4';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  $('progress-fill').style.width='100%';
+  setStatus('Hoàn tất MP4 theo timeline · '+(blob.size/1024/1024).toFixed(1)+' MB. Khung hình không phụ thuộc tốc độ phát màn hình.');
  }catch(err){
-  console.error(err);recording=false;$('export-video').disabled=false;
-  if(mediaStream)mediaStream.getTracks().forEach(t=>t.stop());
-  if(ac)await ac.close().catch(()=>{});
-  setStatus('Không thể xuất video: '+(err.message||err));
+  console.error(err);setStatus('Không thể xuất video timeline: '+(err.message||err));
+ }finally{
+  try{await audioContext?.close()}catch(_){}
+  if(charVideo){charVideo.loop=true;charVideo.play().catch(()=>{})}
+  if(bgVideo){bgVideo.loop=true;bgVideo.play().catch(()=>{})}
+  recording=false;$('export-video').disabled=false;
  }
 }
 $('export-video').addEventListener('click',exportVideo);
