@@ -391,7 +391,10 @@ function stopPreview(){
 function audioElement(url,loop,volume){
  const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
 }
-function playPreview(){
+async function playPreview(){
+ try{
+  if($('dialogue').value.trim())await ensureTtsReady();
+ }catch(err){setTtsStatus('Không thể xem trước vì tạo giọng thất bại: '+(err.message||err));return}
  stopPreview();previewing=true;previewStartedAt=performance.now();
  if(charVideo)charVideo.play().catch(()=>{});
  if(bgVideo)bgVideo.play().catch(()=>{});
@@ -419,7 +422,7 @@ $('speak-preview').addEventListener('click',()=>{
 [['bgm-volume','bgm-volume-value'],['tts-volume','tts-volume-value'],['sfx-volume','sfx-volume-value']].forEach(([input,out])=>{
  $(input).addEventListener('input',()=>{$(out).textContent=Math.round(Number($(input).value)*100)+'%'});
 });
-function currentTtsBlob(){return generatedTtsBlob}
+function currentTtsBlob(){return generatedTtsBlob&&generatedTtsKey===ttsRequestKey()?generatedTtsBlob:null}
 async function loadPiperVoices(){
  const sel=$('piper-voice');sel.innerHTML='<option value="">Đang tải giọng…</option>';
  try{
@@ -496,12 +499,18 @@ async function applyVoiceProfile(blob,p){
 
 $('tts-lang').addEventListener('change',loadPiperVoices);
 loadSavedVoiceProfiles();
-$('generate-piper').addEventListener('click',async()=>{
+let generatedTtsKey='',ttsGenerationPromise=null;
+function ttsRequestKey(){
+ const profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
+ return JSON.stringify({text:$('dialogue').value.trim(),voiceId,profile:profile||null,lang:$('tts-lang').value});
+}
+async function generatePiperAudio(){
  const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
- if(!text){setTtsStatus('Hãy nhập lời thoại trước khi tạo Piper.');return}
- if(!voiceId){setTtsStatus('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');return}
- const btn=$('generate-piper');btn.disabled=true;setTtsStatus('Đang tải Piper và mô hình giọng (lần đầu có thể mất một lúc)…');
+ if(!text)throw new Error('Bạn chưa nhập lời thoại.');
+ if(!voiceId)throw new Error('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');
+ const btn=$('generate-piper');btn.disabled=true;
  try{
+  setTtsStatus('Đang tải Piper và mô hình giọng (lần đầu có thể mất một lúc)…');
   if(!piperModule)piperModule=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');
   if(!piperSession||piperSessionVoice!==voiceId){
    piperSession=new piperModule.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});
@@ -510,13 +519,26 @@ $('generate-piper').addEventListener('click',async()=>{
   setTtsStatus('Đang tạo giọng đọc Piper…');
   const wav=await piperSession.predict(text);
   if(!wav||!wav.size)throw new Error('Piper không trả về file âm thanh.');
-  generatedTtsBlob=new Blob([await wav.arrayBuffer()],{type:'audio/wav'});
-  if(profile){setTtsStatus('Đang áp dụng hồ sơ giọng '+profile.name+'…');generatedTtsBlob=await applyVoiceProfile(generatedTtsBlob,profile);}
-    const testUrl=URL.createObjectURL(generatedTtsBlob),audio=new Audio(testUrl);
-  audio.onloadedmetadata=()=>{$('duration').value=Math.max(1,Math.ceil(audio.duration*10)/10);setTtsStatus('Đã tạo giọng '+(profile?profile.name:'Piper')+' · '+audio.duration.toFixed(2)+' giây. WAV đã sẵn sàng để nghe thử và xuất video.');URL.revokeObjectURL(testUrl)};
+  let blob=new Blob([await wav.arrayBuffer()],{type:'audio/wav'});
+  if(profile){setTtsStatus('Đang áp dụng hồ sơ giọng '+profile.name+'…');blob=await applyVoiceProfile(blob,profile);}
+  generatedTtsBlob=blob;generatedTtsKey=ttsRequestKey();
+  const testUrl=URL.createObjectURL(blob),audio=new Audio(testUrl);
+  audio.onloadedmetadata=()=>{$('duration').value=Math.max(1,Math.ceil(audio.duration*10)/10);setTtsStatus('Đã tạo giọng '+(profile?profile.name:'Piper')+' · '+audio.duration.toFixed(2)+' giây. Sẵn sàng xem trước và xuất video.');URL.revokeObjectURL(testUrl)};
   audio.onerror=()=>{setTtsStatus('Đã tạo WAV nhưng không đọc được bản xem trước. Bạn vẫn có thể thử xuất video.');URL.revokeObjectURL(testUrl)};
- }catch(err){console.error(err);setTtsStatus('Piper gặp lỗi: '+(err.message||err)+'. Hãy mở bằng Chrome/Edge mới và kiểm tra kết nối mạng.')}
- finally{btn.disabled=false}
+  return blob;
+ }finally{btn.disabled=false}
+}
+async function ensureTtsReady(){
+ const text=$('dialogue').value.trim();
+ if(!text)return null;
+ if(generatedTtsBlob&&generatedTtsKey===ttsRequestKey())return generatedTtsBlob;
+ if(!ttsGenerationPromise){
+  ttsGenerationPromise=generatePiperAudio().catch(err=>{generatedTtsBlob=null;generatedTtsKey='';throw err}).finally(()=>{ttsGenerationPromise=null});
+ }
+ return await ttsGenerationPromise;
+}
+$('generate-piper').addEventListener('click',async()=>{
+ try{await ensureTtsReady()}catch(err){setTtsStatus('Không tạo được giọng: '+(err.message||err))}
 });
 loadPiperVoices();
 $('dialogue').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
@@ -554,8 +576,9 @@ async function seekVideoFrame(video,time){
 async function exportVideo(){
  if(recording)return;
  if(!window.VideoEncoder||!window.AudioEncoder){setStatus('Trình duyệt chưa hỗ trợ WebCodecs. Hãy dùng Chrome hoặc Edge mới.');return}
- const ttsFile=currentTtsBlob();
- if(!ttsFile){setStatus('Hãy tạo giọng đọc Piper trước khi xuất video.');return}
+ let ttsFile=null;
+ try{ttsFile=await ensureTtsReady()}catch(err){setStatus('Không thể xuất video vì tạo giọng thất bại: '+(err.message||err));return}
+ if(!ttsFile){setStatus('Hãy nhập lời thoại trước khi xuất video.');return}
  const fps=Number($('fps').value)||30;
  const requestedDuration=Math.max(1,Number($('duration').value)||8);
  let audioContext=null,output=null;
