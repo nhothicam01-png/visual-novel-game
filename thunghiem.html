@@ -58,14 +58,26 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
 <label class="field">Ảnh nền
 <select id="background"></select></label>
-<label class="field">Hiệu ứng cảnh
-<select id="effect">
-<option value="none">Không hiệu ứng</option>
-<option value="char-bob">Nhân vật nhấp nhô</option>
-<option value="char-shake">Nhân vật rung</option>
+<label class="field">Hiệu ứng nền
+<select id="bg-effect">
+<option value="none">Không hiệu ứng nền</option>
 <option value="bg-zoom">Zoom nền chậm</option>
 <option value="bg-left">Lia nền sang trái</option>
 <option value="bg-right">Lia nền sang phải</option>
+<option value="bg-float">Nền chuyển động nhẹ</option>
+</select></label>
+<label class="field">Hiệu ứng nhân vật
+<select id="char-effect">
+<option value="none">Không hiệu ứng nhân vật</option>
+<option value="char-bob">Nhân vật nhấp nhô</option>
+<option value="char-sway">Nhân vật đung đưa</option>
+<option value="char-shake">Nhân vật rung</option>
+<option value="char-zoom">Nhân vật phóng to nhẹ</option>
+<option value="char-float">Nhân vật trôi nhẹ</option>
+</select></label>
+<label class="field">Hiệu ứng camera
+<select id="camera-effect">
+<option value="none">Không hiệu ứng camera</option>
 <option value="camera-shake">Rung camera</option>
 <option value="camera-zoom">Camera zoom gần</option>
 </select></label>
@@ -217,23 +229,30 @@ function wrapText(text,maxWidth){
  if(line)lines.push(line);return lines;
 }
 function drawFrame(elapsed){
- const w=canvas.width,h=canvas.height,fx=$('effect').value;
+ const w=canvas.width,h=canvas.height,bgFx=$('bg-effect').value,charFx=$('char-effect').value,camFx=$('camera-effect').value;
  ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
  let shakeX=0,shakeY=0,zoom=1;
- if(fx==='camera-shake'&&elapsed<1.2){shakeX=Math.sin(elapsed*55)*w*.008;shakeY=Math.cos(elapsed*48)*h*.008}
- if(fx==='camera-zoom')zoom=1+Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08);
+ if(camFx==='camera-shake'&&elapsed<1.2){shakeX=Math.sin(elapsed*55)*w*.008;shakeY=Math.cos(elapsed*48)*h*.008}
+ if(camFx==='camera-zoom')zoom=1+Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08);
  ctx.save();ctx.translate(w/2+shakeX,h/2+shakeY);ctx.scale(zoom,zoom);ctx.translate(-w/2,-h/2);
- if(bgAsset) {
-  let z=1,px=0;
-  if(fx==='bg-zoom')z=1+Math.sin(elapsed*1.2)*.035;
-  if(fx==='bg-left')px=-Math.sin(elapsed*.8)*w*.025;
-  if(fx==='bg-right')px=Math.sin(elapsed*.8)*w*.025;
-  ctx.save();ctx.translate(w/2+px,h/2);ctx.scale(z,z);ctx.translate(-w/2,-h/2);drawCover(bgAsset,w,h);ctx.restore();
- }else if(bgVideo)drawCover(bgVideo,w,h);
+ // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
+ if(bgAsset||bgVideo) {
+  let bz=1,bx=0,by=0;
+  if(bgFx==='bg-zoom')bz=1+Math.sin(elapsed*1.2)*.035;
+  if(bgFx==='bg-left')bx=-Math.sin(elapsed*.8)*w*.025;
+  if(bgFx==='bg-right')bx=Math.sin(elapsed*.8)*w*.025;
+  if(bgFx==='bg-float'){bz=1.035;bx=Math.sin(elapsed*.45)*w*.012;by=Math.cos(elapsed*.38)*h*.009}
+  ctx.save();ctx.translate(w/2+bx,h/2+by);ctx.scale(bz,bz);ctx.translate(-w/2,-h/2);
+  drawCover(bgAsset||bgVideo,w,h);ctx.restore();
+ }
+ // Nhân vật có lớp biến đổi độc lập với nền và camera.
  if(charVideo){
   ctx.save();
-  if(fx==='char-bob')ctx.translate(0,Math.sin(elapsed*5)*h*.008);
-  if(fx==='char-shake'&&elapsed<2)ctx.translate(Math.sin(elapsed*42)*w*.009,0);
+  if(charFx==='char-bob')ctx.translate(0,Math.sin(elapsed*5)*h*.008);
+  if(charFx==='char-sway'){ctx.translate(w/2,h);ctx.rotate(Math.sin(elapsed*1.8)*.018);ctx.translate(-w/2,-h)}
+  if(charFx==='char-shake'&&elapsed<2)ctx.translate(Math.sin(elapsed*42)*w*.009,0);
+  if(charFx==='char-zoom'){const cz=1+Math.sin(elapsed*2.2)*.018;ctx.translate(w/2,h);ctx.scale(cz,cz);ctx.translate(-w/2,-h)}
+  if(charFx==='char-float')ctx.translate(Math.sin(elapsed*1.15)*w*.012,Math.sin(elapsed*1.7)*h*.006);
   drawCharacter(charVideo,w,h);ctx.restore();
  }
  ctx.restore();
@@ -406,7 +425,7 @@ $('dialogue').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
 $('speaker').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
 $('show-dialogue').addEventListener('change',()=>drawFrame(0));
 $('show-speaker').addEventListener('change',()=>drawFrame(0));
-$('effect').addEventListener('change',()=>drawFrame(0));
+['bg-effect','char-effect','camera-effect'].forEach(id=>$(id).addEventListener('change',()=>drawFrame(0)));
 
 async function decodeFile(file){
  if(!file)return null;
