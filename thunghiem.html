@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Thử nghiệm dựng cảnh & xuất video</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-height:100vh;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px}
+h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
+.intro{max-width:1000px;color:#cbd5e1;font-size:.85rem;line-height:1.55;text-align:center}
+#game-container{position:relative;width:100%;max-width:1000px;aspect-ratio:16/9;max-height:75vh;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px #000b}
+#game-container.portrait{aspect-ratio:9/16;max-width:420px;max-height:78vh}
+#preview-canvas{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+.panel{width:100%;max-width:1000px;background:rgba(15,23,42,.88);border:1px solid rgba(168,85,247,.28);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.panel h2{font-size:.95rem;color:#c4b5fd;border-bottom:1px solid #ffffff20;padding-bottom:7px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0;color:#cbd5e1;font-size:.78rem}
+.field input,.field select,.field textarea{width:100%;min-height:36px;padding:7px 9px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:7px;font:inherit;user-select:text}
+.field textarea{min-height:76px;resize:vertical;line-height:1.45}
+.field input[type=file]{padding:6px;font-size:.72rem}
+.field input[type=range]{padding:0;accent-color:#a855f7}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border:0;border-radius:8px;padding:9px 14px;font-size:.82rem;font-weight:650;cursor:pointer;touch-action:manipulation}
+.btn.secondary{background:#263449;border:1px solid #64748b}
+.btn.danger{background:#9f1239}
+.btn:disabled{opacity:.45;cursor:wait}
+.note{font-size:.75rem;line-height:1.5;color:#94a3b8}
+.warning{color:#fbbf24}
+.status{font-size:.78rem;color:#a5f3fc;min-height:20px;white-space:pre-wrap}
+.check{display:flex;align-items:center;gap:7px;font-size:.78rem;color:#cbd5e1}
+.check input{accent-color:#a855f7}
+#progress{height:8px;background:#334155;border-radius:20px;overflow:hidden}
+#progress-fill{height:100%;width:0;background:linear-gradient(90deg,#6366f1,#c084fc)}
+#game-container.portrait #preview-canvas{object-fit:contain}
+@media(max-width:600px){body{padding:8px}.panel{padding:10px}.grid{grid-template-columns:1fr 1fr}.field{font-size:.74rem}.btn{padding:8px 10px;font-size:.76rem}}
+</style>
+</head>
+<body>
+<h1>🧪 Thử nghiệm dựng cảnh & xuất video</h1>
+<p class="intro">Tự chọn nhân vật, biểu cảm, bối cảnh, lời thoại và âm thanh để dựng một cảnh độc lập. Không cần tải hoặc chạy kịch bản JSON.</p>
+
+<div id="game-container"><canvas id="preview-canvas" width="1920" height="1080"></canvas></div>
+
+<section class="panel">
+<h2>1. Khung hình & bố cục</h2>
+<div class="row">
+<button class="btn secondary" id="ratio-landscape">📺 Ngang 16:9</button>
+<button class="btn secondary" id="ratio-portrait">📱 Dọc 9:16</button>
+<label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
+<label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
+</div>
+<div class="grid">
+<label class="field">Nhân vật
+<select id="character"></select></label>
+<label class="field">Biểu cảm / chuyển động
+<select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
+<label class="field">Ảnh nền
+<select id="background"></select></label>
+<label class="field">Hiệu ứng cảnh
+<select id="effect">
+<option value="none">Không hiệu ứng</option>
+<option value="char-bob">Nhân vật nhấp nhô</option>
+<option value="char-shake">Nhân vật rung</option>
+<option value="bg-zoom">Zoom nền chậm</option>
+<option value="bg-left">Lia nền sang trái</option>
+<option value="bg-right">Lia nền sang phải</option>
+<option value="camera-shake">Rung camera</option>
+<option value="camera-zoom">Camera zoom gần</option>
+</select></label>
+</div>
+</section>
+
+<section class="panel">
+<h2>2. Lời thoại & TTS</h2>
+<label class="field">Tên hiển thị
+<input id="speaker" value="Nhân vật 1" maxlength="40"></label>
+<label class="field">Nội dung lời thoại
+<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
+<div class="grid">
+<label class="field">Ngôn ngữ TTS
+<select id="tts-lang"><option value="vi-VN">Tiếng Việt</option><option value="en-US">English</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="zh-CN">中文</option></select></label>
+<label class="field">Giọng đọc trên thiết bị
+<select id="tts-voice"><option value="-1">Giọng mặc định</option></select></label>
+<label class="field">Tốc độ đọc <span id="rate-value">1.0</span>
+<input id="tts-rate" type="range" min="0.6" max="1.5" step="0.05" value="1"></label>
+<label class="field">Cao độ <span id="pitch-value">1.0</span>
+<input id="tts-pitch" type="range" min="0.5" max="1.5" step="0.05" value="1"></label>
+</div>
+<div class="row">
+<button class="btn" id="speak-preview">🔊 Nghe thử TTS</button>
+<button class="btn secondary" id="stop-preview">Dừng nghe</button>
+</div>
+<p class="note">TTS tự tạo dùng giọng đọc có sẵn trong trình duyệt/thiết bị để nghe thử. Trình duyệt không cung cấp luồng âm thanh SpeechSynthesis cho bộ mã hóa video, vì vậy muốn xuất video có giọng TTS này, hãy tải file TTS (MP3/WAV/OGG) ở mục bên dưới. File tải lên sẽ được ghép đồng bộ vào video.</p>
+<label class="field">Hoặc tải file TTS đã tạo (MP3 / WAV / OGG)
+<input type="file" id="tts-file" accept="audio/*"></label>
+<div class="status" id="tts-status">Chưa chọn file TTS. Bạn vẫn có thể nghe thử giọng đọc bằng nút phía trên.</div>
+</section>
+
+<section class="panel">
+<h2>3. Âm thanh nền & hiệu ứng</h2>
+<div class="grid">
+<label class="field">Nhạc nền có sẵn
+<select id="bgm">
+<option value="">Không dùng nhạc nền</option>
+<option value="afternoon_between_leaves.mp3">afternoon_between_leaves.mp3</option>
+</select></label>
+<label class="field">Âm lượng nhạc nền <span id="bgm-volume-value">25%</span>
+<input id="bgm-volume" type="range" min="0" max="1" step="0.05" value="0.25"></label>
+<label class="field">Âm lượng TTS <span id="tts-volume-value">100%</span>
+<input id="tts-volume" type="range" min="0" max="1" step="0.05" value="1"></label>
+<label class="field">File âm thanh hiệu ứng (tuỳ chọn)
+<input type="file" id="sfx-file" accept="audio/*"></label>
+<label class="field">Âm lượng hiệu ứng <span id="sfx-volume-value">80%</span>
+<input id="sfx-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
+</div>
+</section>
+
+<section class="panel">
+<h2>4. Xem trước & xuất video</h2>
+<div class="grid">
+<label class="field">Thời lượng video (giây)
+<input type="number" id="duration" min="1" max="600" step="0.5" value="8"></label>
+<label class="field">FPS
+<select id="fps"><option value="24">24 FPS</option><option value="30" selected>30 FPS</option><option value="60">60 FPS</option></select></label>
+</div>
+<div class="row">
+<button class="btn" id="play-preview">▶ Xem trước cảnh</button>
+<button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
+<button class="btn" id="export-video">🎬 Xuất video WebM</button>
+</div>
+<div id="progress"><div id="progress-fill"></div></div>
+<div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
+<p class="note">Định dạng xuất: WebM (video + âm thanh). Nên giữ trang mở trong lúc xuất. Video dài và độ phân giải cao có thể cần vài phút trên điện thoại.</p>
+</section>
+
+<script>
+(function(){
+'use strict';
+const BASE='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/';
+const $=id=>document.getElementById(id);
+const canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
+const stage=$('game-container');
+const characters=['1','2','3','4','5','6'];
+const backgrounds=[
+ ['bg_school.png','Sân trường (bg_school)'],
+ ['con_duong_dem.png','Con đường đêm'],
+ ['cong_truong_anime.png','Cổng trường anime'],
+ ['cong_vien_truong.png','Công viên trường'],
+ ['hanh_lang_toi.png','Hành lang tối'],
+ ['hanhlangtruong.png','Hành lang trường'],
+ ['lop_hoc_anh_sang_mem.png','Lớp học ánh sáng mềm'],
+ ['lop_hoc_chieu.png','Lớp học buổi chiều'],
+ ['phong_ngu_dem.png','Phòng ngủ đêm'],
+ ['san_thuong_hoang_hon.png','Sân thượng hoàng hôn'],
+ ['san_truong_ban_ngay.png','Sân trường ban ngày'],
+ ['san_truong_dem.png','Sân trường đêm'],
+ ['thu_vien.png','Thư viện'],
+ ['render.mp4','Video nền render.mp4']
+];
+let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewSpeech=null,raf=0,recording=false;
+let previewAudio={bgm:null,tts:null,sfx:null};
+let speechVoices=[];
+let recordingTimer=null;
+const charSelect=$('character');
+characters.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent='Nhân vật '+n;charSelect.appendChild(o)});
+backgrounds.forEach(([file,label])=>{const o=document.createElement('option');o.value=file;o.textContent=label;$('background').appendChild(o)});
+$('background').value='san_truong_ban_ngay.png';
+
+function setStatus(s){$('export-status').textContent=s}
+function setTtsStatus(s){$('tts-status').textContent=s}
+function resizeCanvas(portrait){
+ stage.classList.toggle('portrait',portrait);
+ canvas.width=portrait?1080:1920;canvas.height=portrait?1920:1080;
+ drawFrame(0);
+}
+$('ratio-landscape').addEventListener('click',()=>resizeCanvas(false));
+$('ratio-portrait').addEventListener('click',()=>resizeCanvas(true));
+
+function loadImage(src){return new Promise((resolve,reject)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('Không tải được ảnh nền: '+src));im.src=src})}
+function loadVideo(src){return new Promise((resolve,reject)=>{const v=document.createElement('video');v.crossOrigin='anonymous';v.muted=true;v.loop=true;v.playsInline=true;v.preload='auto';v.onloadeddata=()=>resolve(v);v.onerror=()=>reject(new Error('Không tải được video: '+src));v.src=src;v.load()})}
+async function updateAssets(){
+ const bg=$('background').value,character=$('character').value,expr=$('expression').value;
+ try{
+  if(bgVideo){bgVideo.pause();bgVideo=null}
+  bgAsset=null;
+  const bgPath=BASE+'Nen/'+bg;
+  if(/\.mp4$/i.test(bg)){bgVideo=await loadVideo(bgPath);await bgVideo.play().catch(()=>{})}
+  else bgAsset=await loadImage(bgPath);
+  if(charVideo){charVideo.pause();charVideo.removeAttribute('src');charVideo.load()}
+  charVideo=await loadVideo(BASE+'NhanVat/'+character+'/'+expr+'.webm');
+  await charVideo.play().catch(()=>{});
+  drawFrame(0);
+ }catch(e){setStatus(e.message);console.error(e)}
+}
+$('background').addEventListener('change',updateAssets);
+$('character').addEventListener('change',updateAssets);
+$('expression').addEventListener('change',updateAssets);
+
+function drawCover(media,w,h){
+ const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height;
+ if(!sw||!sh)return;
+ const scale=Math.max(w/sw,h/sh),dw=sw*scale,dh=sh*scale;
+ ctx.drawImage(media,(w-dw)/2,(h-dh)/2,dw,dh);
+}
+function drawCharacter(media,w,h){
+ const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height;
+ if(!sw||!sh)return;
+ const scale=Math.min(w/sw,h/sh),dw=sw*scale,dh=sh*scale;
+ ctx.drawImage(media,(w-dw)/2,h-dh,dw,dh);
+}
+function roundRect(x,y,w,h,r){
+ ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();
+}
+function wrapText(text,maxWidth){
+ const words=String(text||'').split(/\s+/);const lines=[];let line='';
+ for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test}
+ if(line)lines.push(line);return lines;
+}
+function drawFrame(elapsed){
+ const w=canvas.width,h=canvas.height,fx=$('effect').value;
+ ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
+ let shakeX=0,shakeY=0,zoom=1;
+ if(fx==='camera-shake'&&elapsed<1.2){shakeX=Math.sin(elapsed*55)*w*.008;shakeY=Math.cos(elapsed*48)*h*.008}
+ if(fx==='camera-zoom')zoom=1+Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08);
+ ctx.save();ctx.translate(w/2+shakeX,h/2+shakeY);ctx.scale(zoom,zoom);ctx.translate(-w/2,-h/2);
+ if(bgAsset) {
+  let z=1,px=0;
+  if(fx==='bg-zoom')z=1+Math.sin(elapsed*1.2)*.035;
+  if(fx==='bg-left')px=-Math.sin(elapsed*.8)*w*.025;
+  if(fx==='bg-right')px=Math.sin(elapsed*.8)*w*.025;
+  ctx.save();ctx.translate(w/2+px,h/2);ctx.scale(z,z);ctx.translate(-w/2,-h/2);drawCover(bgAsset,w,h);ctx.restore();
+ }else if(bgVideo)drawCover(bgVideo,w,h);
+ if(charVideo){
+  ctx.save();
+  if(fx==='char-bob')ctx.translate(0,Math.sin(elapsed*5)*h*.008);
+  if(fx==='char-shake'&&elapsed<2)ctx.translate(Math.sin(elapsed*42)*w*.009,0);
+  drawCharacter(charVideo,w,h);ctx.restore();
+ }
+ ctx.restore();
+ if($('show-dialogue').checked&&$('dialogue').value.trim()){
+  const text=$('dialogue').value.trim(),name=$('speaker').value.trim();
+  const pad=w*.025,fontSize=Math.max(24,Math.round(w*.022)),maxW=w*.88;
+  ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';
+  const lines=wrapText(text,maxW-pad*2),lineH=fontSize*1.42;
+  const nameH=$('show-speaker').checked&&name?fontSize*1.15:0;
+  const boxH=pad*1.4+nameH+lines.length*lineH;
+  const boxY=h-boxH-h*.025;
+  ctx.fillStyle='rgba(5,8,17,.72)';roundRect(w*.04,boxY,w*.92,boxH,Math.max(12,w*.009));ctx.fill();
+  ctx.textAlign='center';ctx.textBaseline='top';
+  if(nameH){ctx.font='700 '+Math.round(fontSize*.75)+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#c4b5fd';ctx.fillText(name,w/2,boxY+pad*.55)}
+  ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#fff';ctx.shadowColor='#000';ctx.shadowBlur=5;
+  lines.forEach((line,i)=>ctx.fillText(line,w/2,boxY+pad*.55+nameH+i*lineH,maxW));
+  ctx.shadowBlur=0;
+ }
+}
+function animate(){
+ if(!raf) return;
+ const t=previewing?Math.max(0,(performance.now()-previewStartedAt)/1000):0;
+ drawFrame(t);
+ raf=requestAnimationFrame(animate);
+}
+let previewStartedAt=0;
+function startRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=1;animate()}
+function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;drawFrame(0)}
+
+function stopPreview(){
+ previewing=false;
+ if(window.speechSynthesis)window.speechSynthesis.cancel();
+ if(previewSpeech){previewSpeech=null}
+ Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
+ if(charVideo)charVideo.pause();
+ if(bgVideo)bgVideo.pause();
+ stopRenderLoop();
+}
+function audioElement(url,loop,volume){
+ const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
+}
+function playPreview(){
+ stopPreview();previewing=true;previewStartedAt=performance.now();
+ if(charVideo)charVideo.play().catch(()=>{});
+ if(bgVideo)bgVideo.play().catch(()=>{});
+ const bgm=$('bgm').value;
+ if(bgm){previewAudio.bgm=audioElement(BASE+'AmThanh/Nen/'+bgm,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
+ const ttsFile=$('tts-file').files[0];
+ if(ttsFile){previewAudio.tts=audioElement(URL.createObjectURL(ttsFile),false,Number($('tts-volume').value));previewAudio.tts.onended=()=>stopPreview();previewAudio.tts.play().catch(()=>{})}
+ else{
+  const text=$('dialogue').value.trim();
+  if(text&&window.speechSynthesis){
+   previewSpeech=new SpeechSynthesisUtterance(text);previewSpeech.lang=$('tts-lang').value;
+   const vi=Number($('tts-voice').value);if(vi>=0&&speechVoices[vi])previewSpeech.voice=speechVoices[vi];
+   previewSpeech.rate=Number($('tts-rate').value);previewSpeech.pitch=Number($('tts-pitch').value);
+   previewSpeech.onend=()=>{if(previewing)stopPreview()};window.speechSynthesis.speak(previewSpeech);
+  }
+ }
+ const sfx=$('sfx-file').files[0];
+ if(sfx){previewAudio.sfx=audioElement(URL.createObjectURL(sfx),false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
+ startRenderLoop();
+}
+$('play-preview').addEventListener('click',playPreview);
+$('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
+$('stop-scene').addEventListener('click',stopPreview);
+$('speak-preview').addEventListener('click',()=>{
+ const text=$('dialogue').value.trim();if(!text){setTtsStatus('Hãy nhập lời thoại trước.');return}
+ if(!window.speechSynthesis){setTtsStatus('Trình duyệt này không hỗ trợ SpeechSynthesis.');return}
+ window.speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang=$('tts-lang').value;
+ const vi=Number($('tts-voice').value);if(vi>=0&&speechVoices[vi])u.voice=speechVoices[vi];
+ u.rate=Number($('tts-rate').value);u.pitch=Number($('tts-pitch').value);
+ u.onstart=()=>setTtsStatus('Đang đọc thử bằng giọng '+(u.voice?u.voice.name:u.lang)+'.');
+ u.onend=()=>setTtsStatus('Đã đọc thử xong. Muốn đưa giọng này vào video, hãy tải file TTS tương ứng lên.');
+ u.onerror=()=>setTtsStatus('Không thể phát giọng đọc này trên thiết bị.');
+ window.speechSynthesis.speak(u);
+});
+function refreshVoices(){
+ speechVoices=window.speechSynthesis?window.speechSynthesis.getVoices():[];
+ const sel=$('tts-voice');sel.innerHTML='<option value="-1">Giọng mặc định</option>';
+ speechVoices.forEach((v,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=v.name+' ('+v.lang+')';sel.appendChild(o)});
+}
+if(window.speechSynthesis){refreshVoices();window.speechSynthesis.onvoiceschanged=refreshVoices}
+[['tts-rate','rate-value'],['tts-pitch','pitch-value'],['bgm-volume','bgm-volume-value'],['tts-volume','tts-volume-value'],['sfx-volume','sfx-volume-value']].forEach(([input,out])=>{
+ $(input).addEventListener('input',()=>{$(out).textContent=input.includes('volume')?Math.round(Number($(input).value)*100)+'%':Number($(input).value).toFixed(2).replace(/0$/,'')});
+});
+$('tts-file').addEventListener('change',()=>{
+ const f=$('tts-file').files[0];
+ if(!f){setTtsStatus('Chưa chọn file TTS.');return}
+ const url=URL.createObjectURL(f),a=new Audio(url);
+ a.onloadedmetadata=()=>{$('duration').value=Math.max(1,Math.ceil(a.duration*10)/10);setTtsStatus('Đã chọn '+f.name+' · '+a.duration.toFixed(2)+' giây. File này sẽ được ghép vào video xuất.')};
+ a.onerror=()=>setTtsStatus('Không đọc được metadata file âm thanh.');
+});
+$('dialogue').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
+$('speaker').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
+$('show-dialogue').addEventListener('change',()=>drawFrame(0));
+$('show-speaker').addEventListener('change',()=>drawFrame(0));
+$('effect').addEventListener('change',()=>drawFrame(0));
+
+async function decodeFile(file){
+ if(!file)return null;
+ const ac=new (window.AudioContext||window.webkitAudioContext)();
+ try{const buf=await file.arrayBuffer();return await ac.decodeAudioData(buf)}finally{await ac.close()}
+}
+async function decodeUrl(url,ac){
+ const response=await fetch(url);if(!response.ok)throw new Error('Không tải được âm thanh: '+url);
+ return await ac.decodeAudioData(await response.arrayBuffer());
+}
+function makeGain(ac,value,dest){const g=ac.createGain();g.gain.value=value;g.connect(dest);return g}
+async function exportVideo(){
+ if(recording)return;
+ const Recorder=window.MediaRecorder;
+ if(!Recorder||!canvas.captureStream){setStatus('Trình duyệt không hỗ trợ MediaRecorder/canvas capture. Hãy dùng Chrome hoặc Edge mới.');return}
+ const ttsFile=$('tts-file').files[0];
+ if(!$('dialogue').value.trim()&&!ttsFile){setStatus('Hãy nhập lời thoại hoặc chọn file TTS.');return}
+ if(!ttsFile){setStatus('Để xuất video có giọng TTS, cần tải file TTS vào ô "Tải file TTS đã tạo". Giọng SpeechSynthesis chỉ nghe thử được, không thể thu trực tiếp vào video từ trình duyệt.');return}
+ const duration=Math.max(1,Number($('duration').value)||8,0);
+ const fps=Number($('fps').value)||30;
+ const chunks=[];
+ let ac=null,mediaStream=null,rec=null,allSources=[];
+ try{
+  $('export-video').disabled=true;recording=true;setStatus('Đang chuẩn bị tài nguyên và âm thanh...');
+  if(charVideo){charVideo.currentTime=0;await charVideo.play()}
+  if(bgVideo){bgVideo.currentTime=0;await bgVideo.play()}
+  ac=new (window.AudioContext||window.webkitAudioContext)();
+  await ac.resume();
+  const dest=ac.createMediaStreamDestination();
+  const monitor=ac.destination;
+  const connectBuffer=(buffer,volume,loop)=>{
+   if(!buffer)return null;
+   const src=ac.createBufferSource();src.buffer=buffer;src.loop=!!loop;
+   const gain=ac.createGain();gain.gain.value=volume;
+   src.connect(gain);gain.connect(dest);gain.connect(monitor);allSources.push(src);return src;
+  };
+  const bgmName=$('bgm').value;
+  let bgmBuffer=null;
+  if(bgmName)bgmBuffer=await decodeUrl(BASE+'AmThanh/Nen/'+bgmName,ac);
+  const ttsBuffer=await ac.decodeAudioData(await ttsFile.arrayBuffer());
+  const sfxFile=$('sfx-file').files[0];
+  const sfxBuffer=sfxFile?await ac.decodeAudioData(await sfxFile.arrayBuffer()):null;
+  const finalDuration=Math.max(duration,ttsBuffer.duration);
+  const videoStream=canvas.captureStream(fps);
+  mediaStream=new MediaStream([...videoStream.getVideoTracks(),...dest.stream.getAudioTracks()]);
+  let mime='video/webm;codecs=vp9,opus';
+  if(!Recorder.isTypeSupported(mime))mime='video/webm;codecs=vp8,opus';
+  if(!Recorder.isTypeSupported(mime))mime='video/webm';
+  rec=new Recorder(mediaStream,{mimeType:mime,videoBitsPerSecond:8000000,audioBitsPerSecond:192000});
+  rec.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  rec.onerror=e=>{throw e.error||new Error('MediaRecorder gặp lỗi')};
+  const startAt=ac.currentTime+.15;
+  const bgmSrc=connectBuffer(bgmBuffer,Number($('bgm-volume').value),true);
+  const ttsSrc=connectBuffer(ttsBuffer,Number($('tts-volume').value),false);
+  const sfxSrc=connectBuffer(sfxBuffer,Number($('sfx-volume').value),false);
+  rec.onstop=async()=>{
+   const blob=new Blob(chunks,{type:rec.mimeType||'video/webm'});
+   const url=URL.createObjectURL(blob),a=document.createElement('a');
+   a.href=url;a.download='thu-nghiem-video-'+Date.now()+'.webm';document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),60000);
+   if(mediaStream)mediaStream.getTracks().forEach(t=>t.stop());
+   if(ac)await ac.close().catch(()=>{});
+   recording=false;$('export-video').disabled=false;$('progress-fill').style.width='100%';
+   setStatus('Xuất video hoàn tất · '+(blob.size/1024/1024).toFixed(1)+' MB · WebM. Hãy kiểm tra âm thanh và hình ảnh sau khi tải.');
+   stopPreview();
+  };
+  rec.start(250);
+  if(bgmSrc)bgmSrc.start(startAt);
+  ttsSrc.start(startAt);
+  if(sfxSrc)sfxSrc.start(startAt+.15);
+  previewing=true;previewStartedAt=performance.now();startRenderLoop();
+  const started=performance.now();
+  const updateProgress=()=>{
+   if(!recording)return;
+   const elapsed=(performance.now()-started)/1000;
+   $('progress-fill').style.width=Math.min(99,elapsed/finalDuration*100)+'%';
+   setStatus('Đang xuất video: '+Math.min(elapsed,finalDuration).toFixed(1)+' / '+finalDuration.toFixed(1)+' giây');
+   if(elapsed>=finalDuration){clearInterval(recordingTimer);recordingTimer=null;try{allSources.forEach(s=>{try{s.stop()}catch(_){}})}catch(_){};if(rec.state!=='inactive')rec.stop()}
+  };
+  recordingTimer=setInterval(updateProgress,100);
+ }catch(err){
+  console.error(err);recording=false;$('export-video').disabled=false;
+  if(mediaStream)mediaStream.getTracks().forEach(t=>t.stop());
+  if(ac)await ac.close().catch(()=>{});
+  setStatus('Không thể xuất video: '+(err.message||err));
+ }
+}
+$('export-video').addEventListener('click',exportVideo);
+
+resizeCanvas(false);
+updateAssets();
+drawFrame(0);
+})();
+</script>
+</body>
+</html>
