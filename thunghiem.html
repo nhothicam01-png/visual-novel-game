@@ -37,6 +37,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 </style>
 </head>
 <body>
+<nav class="panel" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:8px"><a href="./index.html" style="color:#c4b5fd">🏠 Trang chủ</a><a href="./tao_giong.html" style="color:#c4b5fd">🎙️ Phòng tạo giọng</a></nav>
 <h1>🧪 Thử nghiệm dựng cảnh & xuất video</h1>
 <p class="intro">Tự chọn nhân vật, biểu cảm, bối cảnh, lời thoại và âm thanh để dựng một cảnh độc lập. Không cần tải hoặc chạy kịch bản JSON.</p>
 
@@ -75,6 +76,9 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <h2>2. Lời thoại & giọng đọc Piper AI</h2>
 <label class="field">Tên hiển thị
 <input id="speaker" value="Nhân vật 1" maxlength="40"></label>
+<label class="field">Hồ sơ giọng đã lưu
+<select id="voice-profile"><option value="">Dùng giọng Piper bên dưới</option></select></label>
+<p class="note">Tạo và quản lý hồ sơ tại <a href="./tao_giong.html" style="color:#c4b5fd">Phòng tạo giọng</a>. Hồ sơ được chia sẻ qua cùng trình duyệt.</p>
 <label class="field">Nội dung lời thoại
 <textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
 <div class="grid">
@@ -315,9 +319,54 @@ async function loadPiperVoices(){
  const options=matches.length?matches:piperVoices.filter(v=>v.code.toLowerCase().startsWith('vi_'));
  sel.innerHTML=options.map((v,i)=>'<option value="'+v.key+'">'+(i===0?'★ ':'')+v.key+'</option>').join('')||'<option value="">Không tìm thấy giọng cho ngôn ngữ này</option>';
 }
+
+const VOICE_PROFILE_KEY='visualNovelVoiceProfilesV1';
+function getVoiceProfiles(){try{return JSON.parse(localStorage.getItem(VOICE_PROFILE_KEY)||'[]')}catch(_){return[]}}
+function loadSavedVoiceProfiles(){
+ const sel=$('voice-profile'),list=getVoiceProfiles();
+ sel.innerHTML='<option value="">Dùng giọng Piper bên dưới</option>'+list.map(p=>'<option value="'+p.id+'">'+p.name.replace(/[&<>"]/g,'')+' · '+p.voiceId+'</option>').join('');
+}
+function selectedVoiceProfile(){return getVoiceProfiles().find(p=>p.id===$('voice-profile').value)||null}
+$('voice-profile').addEventListener('change',()=>{
+ const p=selectedVoiceProfile();if(!p)return;
+ const langMap={vi:'vi-VN',en:'en-US',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
+ $('tts-lang').value=langMap[p.lang]||'vi-VN';
+ loadPiperVoices().then(()=>{$('piper-voice').value=p.voiceId;setTtsStatus('Đã chọn hồ sơ "'+p.name+'". Giọng sẽ được dùng cho lời thoại này.')});
+});
+function encodeWav(buffer){
+ const channels=buffer.numberOfChannels,sampleRate=buffer.sampleRate,frames=buffer.length;
+ const bytes=44+frames*channels*2,ab=new ArrayBuffer(bytes),v=new DataView(ab);
+ const str=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};
+ str(0,'RIFF');v.setUint32(4,bytes-8,true);str(8,'WAVE');str(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,channels,true);v.setUint32(24,sampleRate,true);v.setUint32(28,sampleRate*channels*2,true);v.setUint16(32,channels*2,true);v.setUint16(34,16,true);str(36,'data');v.setUint32(40,bytes-44,true);
+ let offset=44;for(let i=0;i<frames;i++)for(let ch=0;ch<channels;ch++){const s=Math.max(-1,Math.min(1,buffer.getChannelData(ch)[i]));v.setInt16(offset,s<0?s*32768:s*32767,true);offset+=2}
+ return new Blob([ab],{type:'audio/wav'});
+}
+async function applyVoiceProfile(blob,p){
+ if(!p)return blob;
+ const AC=window.AudioContext||window.webkitAudioContext,Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+ if(!AC||!Offline)return blob;
+ const ac=new AC();
+ try{
+  const decoded=await ac.decodeAudioData(await blob.arrayBuffer());
+  const speed=Math.max(.65,Math.min(1.5,Number(p.speed)||1));
+  const pitch=Math.pow(2,(Number(p.pitch)||0)/12);
+  const rate=speed*pitch;
+  const length=Math.max(1,Math.ceil(decoded.length/rate));
+  const off=new Offline(decoded.numberOfChannels,length,decoded.sampleRate);
+  const src=off.createBufferSource();src.buffer=decoded;src.playbackRate.value=rate;
+  const high=off.createBiquadFilter();high.type='highshelf';high.frequency.value=2600;high.gain.value=((Number(p.tone)||50)-50)*0.12;
+  const low=off.createBiquadFilter();low.type='lowshelf';low.frequency.value=240;low.gain.value=(50-(Number(p.tone)||50))*0.08;
+  src.connect(high);high.connect(low);
+  if((Number(p.rough)||0)>1){const sh=off.createWaveShaper(),amount=(Number(p.rough)||0)*1.8,curve=new Float32Array(44100);for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=((3+amount)*x*20*Math.PI/180)/(Math.PI+amount*Math.abs(x))}sh.curve=curve;low.connect(sh);sh.connect(off.destination)}else low.connect(off.destination);
+  const result=await off.startRendering();return encodeWav(result);
+ }catch(e){console.warn('Voice profile processing fallback:',e);return blob}
+ finally{await ac.close().catch(()=>{})}
+}
+
 $('tts-lang').addEventListener('change',loadPiperVoices);
+loadSavedVoiceProfiles();
 $('generate-piper').addEventListener('click',async()=>{
- const text=$('dialogue').value.trim(),voiceId=$('piper-voice').value;
+ const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
  if(!text){setTtsStatus('Hãy nhập lời thoại trước khi tạo Piper.');return}
  if(!voiceId){setTtsStatus('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');return}
  const btn=$('generate-piper');btn.disabled=true;setTtsStatus('Đang tải Piper và mô hình giọng (lần đầu có thể mất một lúc)…');
@@ -331,8 +380,9 @@ $('generate-piper').addEventListener('click',async()=>{
   const wav=await piperSession.predict(text);
   if(!wav||!wav.size)throw new Error('Piper không trả về file âm thanh.');
   generatedTtsBlob=new Blob([await wav.arrayBuffer()],{type:'audio/wav'});
+  if(profile){setTtsStatus('Đang áp dụng hồ sơ giọng '+profile.name+'…');generatedTtsBlob=await applyVoiceProfile(generatedTtsBlob,profile);}
     const testUrl=URL.createObjectURL(generatedTtsBlob),audio=new Audio(testUrl);
-  audio.onloadedmetadata=()=>{$('duration').value=Math.max(1,Math.ceil(audio.duration*10)/10);setTtsStatus('Đã tạo giọng Piper thành công · '+audio.duration.toFixed(2)+' giây. WAV đã sẵn sàng để nghe thử và xuất video.');URL.revokeObjectURL(testUrl)};
+  audio.onloadedmetadata=()=>{$('duration').value=Math.max(1,Math.ceil(audio.duration*10)/10);setTtsStatus('Đã tạo giọng '+(profile?profile.name:'Piper')+' · '+audio.duration.toFixed(2)+' giây. WAV đã sẵn sàng để nghe thử và xuất video.');URL.revokeObjectURL(testUrl)};
   audio.onerror=()=>{setTtsStatus('Đã tạo WAV nhưng không đọc được bản xem trước. Bạn vẫn có thể thử xuất video.');URL.revokeObjectURL(testUrl)};
  }catch(err){console.error(err);setTtsStatus('Piper gặp lỗi: '+(err.message||err)+'. Hãy mở bằng Chrome/Edge mới và kiểm tra kết nối mạng.')}
  finally{btn.disabled=false}
