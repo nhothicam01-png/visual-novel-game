@@ -150,46 +150,14 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
 <label class="field">Chọn nhân vật<select id="character"></select></label>
 <label class="field">Biểu cảm / chuyển động<select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
-<div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="char" value="char-bob"> Nhấp nhô</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-sway"> Đung đưa</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-shake"> Rung</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-zoom"> Phóng to nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-float"> Trôi nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-breathe"> Thở nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-enter"> Đi vào cảnh</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-fade"> Mờ dần xuất hiện</label>
-</div></details>
+<div class="effect-options" data-effect-list="character"></div></details>
 <details class="effect-panel"><summary>🌄 Bối cảnh & nền</summary>
 <label class="field">Ảnh nền<select id="background"></select></label>
-<div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-zoom"> Zoom chậm</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-left"> Lia trái</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-right"> Lia phải</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-float"> Trôi nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-blur"> Mờ điện ảnh</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-pulse"> Ánh sáng nhịp</label>
-</div></details>
+<div class="effect-options" data-effect-list="background"></div></details>
 <details class="effect-panel"><summary>📷 Camera</summary>
-<div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="camera" value="camera-shake"> Rung camera</label>
-<label class="check"><input type="checkbox" data-effect="camera" value="camera-zoom"> Zoom gần</label>
-<label class="check"><input type="checkbox" data-effect="camera" value="camera-pull"> Zoom xa</label>
-<label class="check"><input type="checkbox" data-effect="camera" value="camera-drift"> Lia máy nhẹ</label>
-</div></details>
+<div class="effect-options" data-effect-list="camera"></div></details>
 <details class="effect-panel"><summary>✨ Môi trường</summary>
-<div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="atm" value="snow"> Tuyết rơi</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="rain"> Mưa</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="petals"> Cánh hoa bay</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="dust"> Bụi sáng</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="sparkle"> Lấp lánh</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="fog"> Sương mờ</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="rays"> Tia nắng</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="lightning"> Chớp sáng</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="vignette"> Tối góc</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="flash"> Flash trắng</label>
-</div></details>
+<div class="effect-options" data-environment-effect-list></div></details>
 </div>
 <label class="field">Cường độ hiệu ứng <span id="effect-strength-value">50%</span>
 <input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
@@ -255,6 +223,8 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <p class="note">Định dạng xuất: MP4 (video + âm thanh), dựng từng khung hình theo timeline. Có thể mất thời gian trên điện thoại nhưng không cần chạy theo thời gian thực.</p>
 </details>
 
+<script src="./effects.js"></script>
+<script src="./environment-effects.js"></script>
 <script>
 (function(){
 'use strict';
@@ -288,6 +258,16 @@ characters.forEach(n=>{const o=document.createElement('option');o.value=n;o.text
 backgrounds.forEach(([file,label])=>{const o=document.createElement('option');o.value=file;o.textContent=label;$('background').appendChild(o)});
 $('background').value='san_truong_ban_ngay.png';
 
+function renderEffectCatalogs(){
+ const groups=[['character','char'],['background','bg'],['camera','camera']];
+ groups.forEach(([target,group])=>{
+  const host=document.querySelector('[data-effect-list="'+target+'"]');
+  if(!host)return;
+  host.innerHTML=(window.VNEffects?.list(target)||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="'+group+'" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
+ });
+ const env=document.querySelector('[data-environment-effect-list]');
+ if(env)env.innerHTML=(window.VNEnvironmentEffects?.list()||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="atm" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
+}
 function setStatus(s){$('export-status').textContent=s}
 function setTtsStatus(s){$('tts-status').textContent=s}
 function setTaskProgress(label,percent=null){
@@ -355,8 +335,8 @@ function wrapText(text,maxWidth){
 }
 function drawFrame(elapsed){
  const w=canvas.width,h=canvas.height;
- const effects=group=>Array.from(document.querySelectorAll('[data-effect="'+group+'"]:checked')).map(x=>x.value);
- const bgFx=effects('bg'),charFx=effects('char'),camFx=effects('camera'),atmFx=effects('atm');
+ const effects=(group,target)=>Array.from(document.querySelectorAll('[data-effect="'+group+'"]:checked')).map(x=>target&&window.VNEffects?window.VNEffects.renderKey(target,x.value):x.value);
+ const bgFx=effects('bg','background'),charFx=effects('char','character'),camFx=effects('camera','camera'),atmFx=effects('atm');
  const strength=Number($('effect-strength')?.value||50)/50;
  ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
  let shakeX=0,shakeY=0,zoom=1;
@@ -876,7 +856,7 @@ function mapJsonEffects(frame){
  };
  add('camera',frame?.hieu_ung?.camera||frame?.camera_effects,{camera_shake:'camera-shake',shake:'camera-shake',camera_zoom_in:'camera-zoom',zoom_in:'camera-zoom',camera_zoom_out:'camera-pull',zoom_out:'camera-pull',camera_sway:'camera-drift',camera_pan_down:'camera-drift',camera_pan_right:'camera-drift',drift:'camera-drift'});
  add('bg',frame?.hieu_ung?.nen||frame?.background_effects,{zoom:'bg-zoom',left:'bg-left',right:'bg-right',float:'bg-float',blur:'bg-blur',pulse:'bg-pulse'});
- add('char',frame?.hieu_ung?.nhan_vat||frame?.character_effects,{bob:'char-bob',sway:'char-sway',shake:'char-shake',zoom:'char-zoom',float:'char-float',breathe:'char-breathe',enter:'char-enter',fade:'char-fade'});
+ add('char',frame?.hieu_ung?.nhan_vat||frame?.character_effects,{bob:'char-bob',walk_bob:'char-bob',sway:'char-sway',shake:'char-shake',fear_shake:'char-shake',zoom:'char-zoom',giant:'char-zoom',float:'char-float',breathe:'char-breathe',enter:'char-enter',fade:'char-fade'});
  add('atm',frame?.hieu_ung?.moi_truong||frame?.hieu_ung?.environment||frame?.hieu_ung?.atmosphere||frame?.moi_truong||frame?.environment_effects,{snow:'snow',rain:'rain',petals:'petals',flower:'petals',dust:'dust',sparkle:'sparkle',fog:'fog',mist:'fog',rays:'rays',sun_rays:'rays',lightning:'lightning',flash:'flash',vignette:'vignette'});
  return [...new Set(effects)];
 }
@@ -1016,6 +996,7 @@ $('dialogue-line-list').addEventListener('click',e=>{const item=e.target.closest
 document.querySelectorAll('#character,#expression,#background,#show-dialogue,#show-speaker,#dialogue-width-mode,#dialogue-width').forEach(el=>el.addEventListener('change',()=>saveCurrentScene()));
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
+renderEffectCatalogs();
 scenes=[{name:'Cảnh 1',visual:captureVisual(),lines:[newLine()]}];
 renderSceneList();loadLineToEditor(getCurrentLine());renderLineList();
 resizeCanvas(false);
