@@ -322,11 +322,15 @@ async function loadPiperVoices(){
  if(lang==='vi'&&options.some(v=>v.key==='vi_VN-vais1000-medium'))sel.value='vi_VN-vais1000-medium';
 }
 
-const VOICE_PROFILE_KEY='visualNovelVoiceProfilesV1';
-function getVoiceProfiles(){try{return JSON.parse(localStorage.getItem(VOICE_PROFILE_KEY)||'[]')}catch(_){return[]}}
-function loadSavedVoiceProfiles(){
- const sel=$('voice-profile'),list=getVoiceProfiles();
- sel.innerHTML='<option value="">Dùng giọng Piper bên dưới</option>'+list.map(p=>'<option value="'+p.id+'">'+p.name.replace(/[&<>"]/g,'')+' · '+p.voiceId+'</option>').join('');
+const VOICE_PROFILE_KEY='visualNovelVoiceProfilesV1',REMOTE_VOICE_CONFIG='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/giong-noi/danh-sach-giong.json';
+let remoteVoiceProfiles=[];
+function localVoiceProfiles(){try{return JSON.parse(localStorage.getItem(VOICE_PROFILE_KEY)||'[]')}catch(_){return[]}}
+function getVoiceProfiles(){const map=new Map();remoteVoiceProfiles.forEach(p=>map.set(p.id,p));localVoiceProfiles().forEach(p=>map.set(p.id,p));return [...map.values()]}
+async function loadSavedVoiceProfiles(){
+ const sel=$('voice-profile');sel.innerHTML='<option value="">Dùng giọng Piper bên dưới</option>';
+ try{const r=await fetch(REMOTE_VOICE_CONFIG+'?v='+Date.now());if(r.ok){const data=await r.json();remoteVoiceProfiles=Array.isArray(data)?data:(data.profiles||[])}}
+ catch(e){console.warn('Không tải được thư viện giọng GitHub',e)}
+ const list=getVoiceProfiles();sel.innerHTML='<option value="">Dùng giọng Piper bên dưới</option>'+list.map(p=>'<option value="'+String(p.id).replace(/["&<>]/g,'')+'">'+String(p.name).replace(/[&<>"]/g,'')+' · '+String(p.voiceId)+'</option>').join('');
 }
 function selectedVoiceProfile(){return getVoiceProfiles().find(p=>p.id===$('voice-profile').value)||null}
 $('voice-profile').addEventListener('change',()=>{
@@ -357,17 +361,15 @@ async function applyVoiceProfile(blob,p){
   const durationFrames=Math.max(1,Math.ceil(decoded.length/rate));
   const off=new Offline(decoded.numberOfChannels,durationFrames,decoded.sampleRate);
   const src=off.createBufferSource();src.buffer=decoded;src.playbackRate.value=rate;
-  const high=off.createBiquadFilter();high.type='highshelf';high.frequency.value=3200;high.gain.value=((Number(p.tone)||50)-50)*0.045;
-  const low=off.createBiquadFilter();low.type='lowshelf';low.frequency.value=220;low.gain.value=(50-(Number(p.tone)||50))*0.035;
-  const comp=off.createDynamicsCompressor();comp.threshold.value=-8;comp.knee.value=8;comp.ratio.value=4;comp.attack.value=0.004;comp.release.value=0.12;
-  src.connect(high);high.connect(low);
+  const comp=off.createDynamicsCompressor();comp.threshold.value=-10;comp.knee.value=10;comp.ratio.value=3;comp.attack.value=0.006;comp.release.value=0.15;
+   src.connect(comp);
   const rough=Math.max(0,Math.min(100,Number(p.rough)||0));
-  if(rough>0){const sh=off.createWaveShaper(),drive=1+rough/100*0.35,curve=new Float32Array(2048);for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=Math.tanh(x*drive)/Math.tanh(drive)}sh.curve=curve;sh.oversample='2x';low.connect(sh);sh.connect(comp)}else low.connect(comp);
+  if(rough>0){const sh=off.createWaveShaper(),drive=1+rough/100*0.35,curve=new Float32Array(2048);for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=Math.tanh(x*drive)/Math.tanh(drive)}sh.curve=curve;sh.oversample='2x';src.disconnect();src.connect(sh);sh.connect(comp)}
   comp.connect(off.destination);
   src.start(0);
   const result=await off.startRendering();
   let peak=0;for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)peak=Math.max(peak,Math.abs(d[j]))}
-  const norm=peak>0?Math.min(1.4,0.86/peak):1;
+  const norm=(peak>0?Math.min(1.4,0.86/peak):1)*(Math.max(0,Math.min(150,Number(p.volume??100)||0))/100);
   for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)d[j]*=norm}
   return encodeWav(result);
  }catch(e){console.warn('Voice profile processing fallback:',e);return blob}
