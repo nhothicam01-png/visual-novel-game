@@ -54,6 +54,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 @media(max-width:600px){body{padding:8px}.panel{padding:10px}.grid{grid-template-columns:1fr 1fr}.field{font-size:.74rem}.btn{padding:8px 10px;font-size:.76rem}}
 
 .scene-groups .effect-panel{padding:0;overflow:hidden;gap:0}
+.line-effects{padding:0;overflow:hidden;gap:0}.line-effects>summary{list-style:none;display:flex;justify-content:space-between;padding:12px;color:#c4b5fd;font-weight:700;cursor:pointer}.line-effects>summary::-webkit-details-marker{display:none}.line-effects>summary::after{content:"＋"}.line-effects[open]>summary::after{content:"－"}.line-effects[open]>.scene-groups,.line-effects[open]>.field,.line-effects[open]>.note{margin:0 12px 12px}.line-effects .scene-groups{margin-top:4px}
 .scene-groups .effect-panel>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;font-size:.88rem;font-weight:700;color:#c4b5fd;cursor:pointer;touch-action:manipulation}
 .scene-groups .effect-panel>summary::-webkit-details-marker{display:none}
 .scene-groups .effect-panel>summary::after{content:'＋';font-size:1rem;color:#cbd5e1}
@@ -144,31 +145,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="field">Nhạc hiệu ứng<select id="line-sfx-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
 <label class="field">Tên tệp hiệu ứng (trong AmThanh/HieuUng)<input id="line-sfx-file" placeholder="vd: door_open.mp3"></label>
 <p class="note">Mặc định kế thừa âm thanh đã khai báo trong JSON. Chỉ ghi đè hoặc tắt khi bạn chủ động chọn.</p>
-</details>
-<div class="row">
-<button class="btn" id="generate-piper">✨ Tạo WAV cho câu này</button>
-<button class="btn secondary" id="speak-preview">🔊 Nghe thử</button>
-<button class="btn secondary" id="stop-preview">Dừng nghe</button>
-</div>
-<div class="status" id="tts-status">Mỗi câu thoại có một file WAV riêng. Giọng sẽ tự tạo khi xem trước hoặc xuất video.</div>
-<p class="note">Mỗi câu thoại lưu riêng nội dung, nhân vật và hồ sơ giọng. WAV được lưu tạm trong bộ nhớ trang hiện tại để tái sử dụng khi xuất.</p>
-</div>
-</details>
-
-<details class="panel main-panel"><summary class="panel-heading">3. Khung hình & bố cục</summary>
-<div class="row">
-<button class="btn secondary" id="ratio-landscape">📺 Ngang 16:9</button>
-<button class="btn secondary" id="ratio-portrait">📱 Dọc 9:16</button>
-<label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
-<label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
-<label class="field">Kiểu khung thoại
-<select id="dialogue-width-mode">
-<option value="fit">Ôm sát nội dung</option>
-<option value="percent">Theo % màn hình</option>
-</select></label>
-<label class="field" id="dialogue-width-control">Chiều rộng khung thoại <span id="dialogue-width-value">75%</span>
-<input id="dialogue-width" type="range" min="35" max="95" step="1" value="75"></label>
-</div>
+</details><details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
 <div class="scene-groups">
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
 <label class="field">Chọn nhân vật<select id="character"></select></label>
@@ -214,6 +191,36 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="check"><input type="checkbox" data-effect="atm" value="flash"> Flash trắng</label>
 </div></details>
 </div>
+<label class="field">Cường độ hiệu ứng <span id="effect-strength-value">50%</span>
+<input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
+<p class="note">Hiệu ứng được nạp từ JSON cho từng thoại. Khi thay đổi, thiết lập chỉ áp dụng cho thoại đang chọn.</p>
+</details>
+
+<div class="row">
+<button class="btn" id="generate-piper">✨ Tạo WAV cho câu này</button>
+<button class="btn secondary" id="speak-preview">🔊 Nghe thử</button>
+<button class="btn secondary" id="stop-preview">Dừng nghe</button>
+</div>
+<div class="status" id="tts-status">Mỗi câu thoại có một file WAV riêng. Giọng sẽ tự tạo khi xem trước hoặc xuất video.</div>
+<p class="note">Mỗi câu thoại lưu riêng nội dung, nhân vật và hồ sơ giọng. WAV được lưu tạm trong bộ nhớ trang hiện tại để tái sử dụng khi xuất.</p>
+</div>
+</details>
+
+<details class="panel main-panel"><summary class="panel-heading">3. Khung hình & bố cục</summary>
+<div class="row">
+<button class="btn secondary" id="ratio-landscape">📺 Ngang 16:9</button>
+<button class="btn secondary" id="ratio-portrait">📱 Dọc 9:16</button>
+<label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
+<label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
+<label class="field">Kiểu khung thoại
+<select id="dialogue-width-mode">
+<option value="fit">Ôm sát nội dung</option>
+<option value="percent">Theo % màn hình</option>
+</select></label>
+<label class="field" id="dialogue-width-control">Chiều rộng khung thoại <span id="dialogue-width-value">75%</span>
+<input id="dialogue-width" type="range" min="35" max="95" step="1" value="75"></label>
+</div>
+
 <label class="field">Cường độ hiệu ứng <span id="effect-strength-value">50%</span>
 <input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
 </details>
@@ -740,7 +747,7 @@ async function exportVideo(){
      if(frame.nhan_vat!==undefined)$('character').value=String(frame.nhan_vat);
      if(frame.bieu_cam)$('expression').value=frame.bieu_cam;
      if(frame.anh_nen)$('background').value=frame.anh_nen;
-     const fx=mapJsonEffects(frame);document.querySelectorAll('[data-effect]').forEach(x=>x.checked=fx.includes(x.dataset.effect+':'+x.value));
+     applyLineEffects(entry.line);
      await updateAssets();
     }
     const lineEndFrame=Math.min(frameCount,Math.round((entry.start+entry.duration+entry.pause)*fps));
@@ -859,13 +866,35 @@ async function applyVoiceForCurrentLine(){
  $('voice-fallback-status').textContent='Đang dùng '+resolved.source+': '+(p.name||p.voiceId)+' cho '+(line.speaker||'nhân vật')+'.';
 }
 function mapJsonEffects(frame){
- const effects=[],camMap={camera_shake:'camera-shake',camera_zoom_in:'camera-zoom',camera_zoom_out:'camera-pull',camera_sway:'camera-drift',camera_pan_down:'camera-drift',camera_pan_right:'camera-drift'};
- (frame.hieu_ung?.camera||[]).forEach(v=>{const k=String(v).replace(/-/g,'_');if(camMap[k])effects.push('camera:'+camMap[k])});
- const bgMap={zoom:'bg-zoom',left:'bg-left',right:'bg-right',float:'bg-float',blur:'bg-blur',pulse:'bg-pulse'};
- (frame.hieu_ung?.nen||[]).forEach(v=>{const k=String(v).replace(/^bg[_-]/,'').replace(/-/g,'_');if(bgMap[k])effects.push('bg:'+bgMap[k])});
- const charMap={bob:'char-bob',sway:'char-sway',shake:'char-shake',zoom:'char-zoom',float:'char-float',breathe:'char-breathe',enter:'char-enter',fade:'char-fade'};
- (frame.hieu_ung?.nhan_vat||[]).forEach(v=>{const k=String(v).replace(/^char[_-]/,'').replace(/-/g,'_');if(charMap[k])effects.push('char:'+charMap[k])});
- return effects;
+ const effects=[];
+ const add=(group,values,map)=>{
+  const list=Array.isArray(values)?values:(values?[values]:[]);
+  list.forEach(v=>{
+   const raw=String(v).toLowerCase().replace(/-/g,'_');
+   const key=raw.replace(/^(char|character|bg|background|camera|atm|environment|moi_truong)_/,'');
+   if(map[key])effects.push(group+':'+map[key]);
+  });
+ };
+ add('camera',frame?.hieu_ung?.camera||frame?.camera_effects,{camera_shake:'camera-shake',shake:'camera-shake',camera_zoom_in:'camera-zoom',zoom_in:'camera-zoom',camera_zoom_out:'camera-pull',zoom_out:'camera-pull',camera_sway:'camera-drift',camera_pan_down:'camera-drift',camera_pan_right:'camera-drift',drift:'camera-drift'});
+ add('bg',frame?.hieu_ung?.nen||frame?.background_effects,{zoom:'bg-zoom',left:'bg-left',right:'bg-right',float:'bg-float',blur:'bg-blur',pulse:'bg-pulse'});
+ add('char',frame?.hieu_ung?.nhan_vat||frame?.character_effects,{bob:'char-bob',sway:'char-sway',shake:'char-shake',zoom:'char-zoom',float:'char-float',breathe:'char-breathe',enter:'char-enter',fade:'char-fade'});
+ add('atm',frame?.hieu_ung?.moi_truong||frame?.hieu_ung?.environment||frame?.hieu_ung?.atmosphere||frame?.moi_truong||frame?.environment_effects,{snow:'snow',rain:'rain',petals:'petals',flower:'petals',dust:'dust',sparkle:'sparkle',fog:'fog',mist:'fog',rays:'rays',sun_rays:'rays',lightning:'lightning',flash:'flash',vignette:'vignette'});
+ return [...new Set(effects)];
+}
+function applyLineEffects(line){
+ if(!line)return;
+ const effects=Array.isArray(line.effectSettings)?line.effectSettings:mapJsonEffects(line.sourceFrame||{});
+ line.effectSettings=effects.slice();
+ document.querySelectorAll('[data-effect]').forEach(x=>x.checked=effects.includes(x.dataset.effect+':'+x.value));
+ const strength=Number(line.effectStrength??50);
+ $('effect-strength').value=strength;$('effect-strength-value').textContent=strength+'%';
+}
+function saveLineEffects(){
+ const line=getCurrentLine();if(!line)return;
+ line.effectSettings=Array.from(document.querySelectorAll('[data-effect]:checked')).map(x=>x.dataset.effect+':'+x.value);
+ line.effectStrength=Number($('effect-strength').value||50);
+ $('effect-strength-value').textContent=line.effectStrength+'%';
+ drawFrame(previewing?Math.max(0,(performance.now()-previewStartedAt)/1000):0);
 }
 function buildScenesFromJson(data){
  const rows=data.danh_sach||data.KichBanToanBo||[];
@@ -880,7 +909,7 @@ function buildScenesFromJson(data){
    current={name:'Cảnh '+(out.length+1),sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground||$('background').value,character:String(frame.nhan_vat??characters[0]),expression:frame.bieu_cam||'say_hello_bieu_cam_binh_thuong',effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:frame.am_thanh_nen||'',sfx:frame.am_thanh_hieu_ung||''}};
   }
   current.sourceEnd=index;
-  current.lines.push({speaker:frame.ten_hien_thi||frame.nhan_vat||'Nhân vật',speakerId:String(frame.nhan_vat??''),text:frame.noi_dung||'',profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Number(data.thoi_gian_cho_giua??.3),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:frame.am_thanh_nen||'',sfx:frame.am_thanh_hieu_ung||''},sourceFrame:frame});
+  current.lines.push({speaker:frame.ten_hien_thi||frame.nhan_vat||'Nhân vật',speakerId:String(frame.nhan_vat??''),text:frame.noi_dung||'',effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Number(data.thoi_gian_cho_giua??.3),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:frame.am_thanh_nen||'',sfx:frame.am_thanh_hieu_ung||''},sourceFrame:frame});
  });
  if(current)out.push(current);
  return out;
@@ -950,6 +979,7 @@ function loadLineToEditor(line){
  const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};
  fillVoice();
  generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';
+ applyLineEffects(line);
  $('line-editor-title').textContent='Chỉnh sửa câu thoại '+(activeLineIndex+1);
 }
 function renderSceneList(){
@@ -959,12 +989,12 @@ function renderSceneList(){
 function renderLineList(){
  $('dialogue-line-list').innerHTML=getCurrentScene().lines.map((line,i)=>'<div class="dialogue-line-item '+(i===activeLineIndex?'active':'')+'" data-line-index="'+i+'"><div class="line-copy"><strong>Thoại '+(i+1)+' · '+String(line.speaker||'Nhân vật').replace(/[&<>"]/g,'')+'</strong><span>'+String(line.text||'Chưa nhập nội dung').replace(/[&<>"]/g,'')+'</span></div><span class="line-state">'+(line.wavBlob&&line.cacheKey?'✓ WAV':'Chưa tạo WAV')+'</span></div>').join('');
 }
-function selectLine(i){saveCurrentLine();activeLineIndex=Math.max(0,Math.min(i,getCurrentScene().lines.length-1));loadLineToEditor(getCurrentLine());renderLineList();if(getCurrentLine()?.speakerId){const line=getCurrentLine(),frame=line.sourceFrame||{};if(frame.nhan_vat!==undefined)$('character').value=String(frame.nhan_vat);if(frame.bieu_cam)$('expression').value=frame.bieu_cam;const effects=mapJsonEffects(frame);document.querySelectorAll('[data-effect]').forEach(x=>x.checked=effects.includes(x.dataset.effect+':'+x.value));updateAssets();applyVoiceForCurrentLine()}}
+function selectLine(i){saveCurrentLine();activeLineIndex=Math.max(0,Math.min(i,getCurrentScene().lines.length-1));loadLineToEditor(getCurrentLine());renderLineList();if(getCurrentLine()?.speakerId){const line=getCurrentLine(),frame=line.sourceFrame||{};if(frame.nhan_vat!==undefined)$('character').value=String(frame.nhan_vat);if(frame.bieu_cam)$('expression').value=frame.bieu_cam;applyLineEffects(getCurrentLine());updateAssets();applyVoiceForCurrentLine()}}
 async function selectScene(i){
  saveCurrentLine();saveCurrentScene();activeSceneIndex=Math.max(0,Math.min(i,scenes.length-1));activeLineIndex=0;
  applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());renderSceneList();renderLineList();await updateAssets();if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
 }
-function newLine(){return {speaker:'Nhân vật 1',text:'',profileId:'',lang:$('tts-lang').value||'vi-VN',voiceId:$('piper-voice').value||'',pauseAfter:.3,wavBlob:null,cacheKey:''}}
+function newLine(){return {speaker:'Nhân vật 1',text:'',effectSettings:[],effectStrength:50,profileId:'',lang:$('tts-lang').value||'vi-VN',voiceId:$('piper-voice').value||'',pauseAfter:.3,wavBlob:null,cacheKey:''}}
 $('scene-select').addEventListener('change',e=>selectScene(Number(e.target.value)));
 $('add-scene').addEventListener('click',async()=>{
  saveCurrentLine();saveCurrentScene();
@@ -986,7 +1016,8 @@ $('dialogue-line-list').addEventListener('click',e=>{const item=e.target.closest
  $(id).addEventListener('input',()=>{saveCurrentLine();renderLineList()});
  $(id).addEventListener('change',()=>{saveCurrentLine();renderLineList()});
 });
-document.querySelectorAll('#character,#expression,#background,#show-dialogue,#show-speaker,#dialogue-width-mode,#dialogue-width,#effect-strength,[data-effect]').forEach(el=>el.addEventListener('change',()=>saveCurrentScene()));
+document.querySelectorAll('#character,#expression,#background,#show-dialogue,#show-speaker,#dialogue-width-mode,#dialogue-width').forEach(el=>el.addEventListener('change',()=>saveCurrentScene()));
+document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
 scenes=[{name:'Cảnh 1',visual:captureVisual(),lines:[newLine()]}];
 renderSceneList();loadLineToEditor(getCurrentLine());renderLineList();
