@@ -61,6 +61,16 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 .scene-groups .effect-panel[open]>.field,.scene-groups .effect-panel[open]>.effect-options{margin:0 12px 12px}
 .scene-groups .effect-panel[open]>.field:first-of-type{margin-top:2px}
 
+
+.main-panel{padding:0;overflow:hidden;gap:0}
+.main-panel>.panel-heading{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 12px;color:#c4b5fd;font-size:.95rem;font-weight:700;cursor:pointer;touch-action:manipulation;border-bottom:1px solid transparent}
+.main-panel>.panel-heading::-webkit-details-marker{display:none}
+.main-panel>.panel-heading::after{content:'＋';font-size:1rem;color:#cbd5e1}
+.main-panel[open]>.panel-heading{border-bottom-color:#ffffff20;margin-bottom:10px}
+.main-panel[open]>.panel-heading::after{content:'－'}
+.main-panel[open]>*:not(.panel-heading){margin-left:12px;margin-right:12px}
+.main-panel[open]>*:last-child{margin-bottom:12px}
+
 </style>
 </head>
 <body>
@@ -68,8 +78,16 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <h1>🧪 Thử nghiệm dựng cảnh & xuất video</h1>
 <p class="intro">Tự chọn nhân vật, biểu cảm, bối cảnh, lời thoại và âm thanh để dựng một cảnh độc lập. Không cần tải hoặc chạy kịch bản JSON.</p>
 
-<section class="panel">
-<h2>1. Lời thoại & giọng đọc Piper AI</h2>
+
+
+
+<div id="game-container"><canvas id="preview-canvas" width="1920" height="1080"></canvas></div>
+<div class="row preview-controls">
+<button class="btn" id="play-preview">▶ Xem trước cảnh</button>
+<button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
+</div>
+
+<details class="panel main-panel"><summary class="panel-heading">1. Lời thoại & giọng đọc Piper AI</summary>
 <label class="field">Tên hiển thị
 <input id="speaker" value="Nhân vật 1" maxlength="40"></label>
 <label class="field">Hồ sơ giọng đã lưu
@@ -90,17 +108,9 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 </div>
 <div class="status" id="tts-status">Chọn giọng và nhập lời thoại để tạo âm thanh.</div>
 <p class="note">Piper tạo WAV trực tiếp trong trình duyệt. Lần đầu cần Internet để tải thư viện và mô hình giọng.</p>
-</section>
+</details>
 
-
-<div id="game-container"><canvas id="preview-canvas" width="1920" height="1080"></canvas></div>
-<div class="row preview-controls">
-<button class="btn" id="play-preview">▶ Xem trước cảnh</button>
-<button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
-</div>
-
-<section class="panel">
-<h2>2. Khung hình & bố cục</h2>
+<details class="panel main-panel"><summary class="panel-heading">2. Khung hình & bố cục</summary>
 <div class="row">
 <button class="btn secondary" id="ratio-landscape">📺 Ngang 16:9</button>
 <button class="btn secondary" id="ratio-portrait">📱 Dọc 9:16</button>
@@ -120,7 +130,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="check"><input type="checkbox" data-effect="char" value="char-breathe"> Thở nhẹ</label>
 <label class="check"><input type="checkbox" data-effect="char" value="char-enter"> Đi vào cảnh</label>
 <label class="check"><input type="checkbox" data-effect="char" value="char-fade"> Mờ dần xuất hiện</label>
-</details>
+</div></details>
 <details class="effect-panel"><summary>🌄 Bối cảnh & nền</summary>
 <label class="field">Ảnh nền<select id="background"></select></label>
 <div class="effect-options">
@@ -130,14 +140,14 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="check"><input type="checkbox" data-effect="bg" value="bg-float"> Trôi nhẹ</label>
 <label class="check"><input type="checkbox" data-effect="bg" value="bg-blur"> Mờ điện ảnh</label>
 <label class="check"><input type="checkbox" data-effect="bg" value="bg-pulse"> Ánh sáng nhịp</label>
-</details>
+</div></details>
 <details class="effect-panel"><summary>📷 Camera</summary>
 <div class="effect-options">
 <label class="check"><input type="checkbox" data-effect="camera" value="camera-shake"> Rung camera</label>
 <label class="check"><input type="checkbox" data-effect="camera" value="camera-zoom"> Zoom gần</label>
 <label class="check"><input type="checkbox" data-effect="camera" value="camera-pull"> Zoom xa</label>
 <label class="check"><input type="checkbox" data-effect="camera" value="camera-drift"> Lia máy nhẹ</label>
-</details>
+</div></details>
 <details class="effect-panel"><summary>✨ Môi trường</summary>
 <div class="effect-options">
 <label class="check"><input type="checkbox" data-effect="atm" value="snow"> Tuyết rơi</label>
@@ -150,15 +160,14 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="check"><input type="checkbox" data-effect="atm" value="lightning"> Chớp sáng</label>
 <label class="check"><input type="checkbox" data-effect="atm" value="vignette"> Tối góc</label>
 <label class="check"><input type="checkbox" data-effect="atm" value="flash"> Flash trắng</label>
-</details>
+</div></details>
 </div>
 <label class="field">Cường độ hiệu ứng <span id="effect-strength-value">50%</span>
 <input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
-</section>
+</details>
 
 
-<section class="panel">
-<h2>3. Âm thanh nền & hiệu ứng</h2>
+<details class="panel main-panel"><summary class="panel-heading">3. Âm thanh nền & hiệu ứng</summary>
 <div class="grid">
 <label class="field">Nhạc nền có sẵn
 <select id="bgm">
@@ -174,10 +183,9 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="field">Âm lượng hiệu ứng <span id="sfx-volume-value">80%</span>
 <input id="sfx-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
 </div>
-</section>
+</details>
 
-<section class="panel">
-<h2>4. Xem trước & xuất video</h2>
+<details class="panel main-panel"><summary class="panel-heading">4. Xem trước & xuất video</summary>
 <div class="grid">
 <label class="field">Thời lượng video (giây)
 <input type="number" id="duration" min="1" max="600" step="0.5" value="8"></label>
@@ -190,7 +198,7 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <div id="progress"><div id="progress-fill"></div></div>
 <div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
 <p class="note">Định dạng xuất: MP4 (video + âm thanh), dựng từng khung hình theo timeline. Có thể mất thời gian trên điện thoại nhưng không cần chạy theo thời gian thực.</p>
-</section>
+</details>
 
 <script>
 (function(){
