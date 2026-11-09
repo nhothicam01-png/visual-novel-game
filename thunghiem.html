@@ -52,6 +52,15 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 #progress-fill{height:100%;width:0;background:linear-gradient(90deg,#6366f1,#c084fc)}
 #game-container.portrait #preview-canvas{object-fit:contain}
 @media(max-width:600px){body{padding:8px}.panel{padding:10px}.grid{grid-template-columns:1fr 1fr}.field{font-size:.74rem}.btn{padding:8px 10px;font-size:.76rem}}
+
+.scene-groups .effect-panel{padding:0;overflow:hidden;gap:0}
+.scene-groups .effect-panel>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;font-size:.88rem;font-weight:700;color:#c4b5fd;cursor:pointer;touch-action:manipulation}
+.scene-groups .effect-panel>summary::-webkit-details-marker{display:none}
+.scene-groups .effect-panel>summary::after{content:'＋';font-size:1rem;color:#cbd5e1}
+.scene-groups .effect-panel[open]>summary::after{content:'－'}
+.scene-groups .effect-panel[open]>.field,.scene-groups .effect-panel[open]>.effect-options{margin:0 12px 12px}
+.scene-groups .effect-panel[open]>.field:first-of-type{margin-top:2px}
+
 </style>
 </head>
 <body>
@@ -59,79 +68,8 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <h1>🧪 Thử nghiệm dựng cảnh & xuất video</h1>
 <p class="intro">Tự chọn nhân vật, biểu cảm, bối cảnh, lời thoại và âm thanh để dựng một cảnh độc lập. Không cần tải hoặc chạy kịch bản JSON.</p>
 
-<div id="game-container"><canvas id="preview-canvas" width="1920" height="1080"></canvas></div>
-<div class="row preview-controls">
-<button class="btn" id="play-preview">▶ Xem trước cảnh</button>
-<button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
-</div>
-
 <section class="panel">
-<h2>1. Khung hình & bố cục</h2>
-<div class="row">
-<button class="btn secondary" id="ratio-landscape">📺 Ngang 16:9</button>
-<button class="btn secondary" id="ratio-portrait">📱 Dọc 9:16</button>
-<label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
-<label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
-</div>
-<div class="scene-groups">
-<div class="effect-panel">
-<strong>🧍 Nhân vật</strong>
-<label class="field">Chọn nhân vật<select id="character"></select></label>
-<label class="field">Biểu cảm / chuyển động<select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
-<div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="char" value="char-bob"> Nhấp nhô</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-sway"> Đung đưa</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-shake"> Rung</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-zoom"> Phóng to nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-float"> Trôi nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-breathe"> Thở nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-enter"> Đi vào cảnh</label>
-<label class="check"><input type="checkbox" data-effect="char" value="char-fade"> Mờ dần xuất hiện</label>
-</div>
-</div>
-<div class="effect-panel">
-<strong>🌄 Bối cảnh & nền</strong>
-<label class="field">Ảnh nền<select id="background"></select></label>
-<div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-zoom"> Zoom chậm</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-left"> Lia trái</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-right"> Lia phải</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-float"> Trôi nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-blur"> Mờ điện ảnh</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-pulse"> Ánh sáng nhịp</label>
-</div>
-</div>
-<div class="effect-panel">
-<strong>📷 Camera</strong>
-<div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="camera" value="camera-shake"> Rung camera</label>
-<label class="check"><input type="checkbox" data-effect="camera" value="camera-zoom"> Zoom gần</label>
-<label class="check"><input type="checkbox" data-effect="camera" value="camera-pull"> Zoom xa</label>
-<label class="check"><input type="checkbox" data-effect="camera" value="camera-drift"> Lia máy nhẹ</label>
-</div>
-</div>
-<div class="effect-panel">
-<strong>✨ Môi trường</strong>
-<div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="atm" value="snow"> Tuyết rơi</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="rain"> Mưa</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="petals"> Cánh hoa bay</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="dust"> Bụi sáng</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="sparkle"> Lấp lánh</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="fog"> Sương mờ</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="rays"> Tia nắng</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="lightning"> Chớp sáng</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="vignette"> Tối góc</label>
-<label class="check"><input type="checkbox" data-effect="atm" value="flash"> Flash trắng</label>
-</div>
-</div>
-</div>
-<label class="field">Cường độ hiệu ứng <span id="effect-strength-value">50%</span>
-<input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
-</section>
-
-<section class="panel">
-<h2>2. Lời thoại & giọng đọc Piper AI</h2>
+<h2>1. Lời thoại & giọng đọc Piper AI</h2>
 <label class="field">Tên hiển thị
 <input id="speaker" value="Nhân vật 1" maxlength="40"></label>
 <label class="field">Hồ sơ giọng đã lưu
@@ -153,6 +91,71 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <div class="status" id="tts-status">Chọn giọng và nhập lời thoại để tạo âm thanh.</div>
 <p class="note">Piper tạo WAV trực tiếp trong trình duyệt. Lần đầu cần Internet để tải thư viện và mô hình giọng.</p>
 </section>
+
+
+<div id="game-container"><canvas id="preview-canvas" width="1920" height="1080"></canvas></div>
+<div class="row preview-controls">
+<button class="btn" id="play-preview">▶ Xem trước cảnh</button>
+<button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
+</div>
+
+<section class="panel">
+<h2>2. Khung hình & bố cục</h2>
+<div class="row">
+<button class="btn secondary" id="ratio-landscape">📺 Ngang 16:9</button>
+<button class="btn secondary" id="ratio-portrait">📱 Dọc 9:16</button>
+<label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
+<label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
+</div>
+<div class="scene-groups">
+<details class="effect-panel"><summary>🧍 Nhân vật</summary>
+<label class="field">Chọn nhân vật<select id="character"></select></label>
+<label class="field">Biểu cảm / chuyển động<select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
+<div class="effect-options">
+<label class="check"><input type="checkbox" data-effect="char" value="char-bob"> Nhấp nhô</label>
+<label class="check"><input type="checkbox" data-effect="char" value="char-sway"> Đung đưa</label>
+<label class="check"><input type="checkbox" data-effect="char" value="char-shake"> Rung</label>
+<label class="check"><input type="checkbox" data-effect="char" value="char-zoom"> Phóng to nhẹ</label>
+<label class="check"><input type="checkbox" data-effect="char" value="char-float"> Trôi nhẹ</label>
+<label class="check"><input type="checkbox" data-effect="char" value="char-breathe"> Thở nhẹ</label>
+<label class="check"><input type="checkbox" data-effect="char" value="char-enter"> Đi vào cảnh</label>
+<label class="check"><input type="checkbox" data-effect="char" value="char-fade"> Mờ dần xuất hiện</label>
+</details>
+<details class="effect-panel"><summary>🌄 Bối cảnh & nền</summary>
+<label class="field">Ảnh nền<select id="background"></select></label>
+<div class="effect-options">
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-zoom"> Zoom chậm</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-left"> Lia trái</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-right"> Lia phải</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-float"> Trôi nhẹ</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-blur"> Mờ điện ảnh</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-pulse"> Ánh sáng nhịp</label>
+</details>
+<details class="effect-panel"><summary>📷 Camera</summary>
+<div class="effect-options">
+<label class="check"><input type="checkbox" data-effect="camera" value="camera-shake"> Rung camera</label>
+<label class="check"><input type="checkbox" data-effect="camera" value="camera-zoom"> Zoom gần</label>
+<label class="check"><input type="checkbox" data-effect="camera" value="camera-pull"> Zoom xa</label>
+<label class="check"><input type="checkbox" data-effect="camera" value="camera-drift"> Lia máy nhẹ</label>
+</details>
+<details class="effect-panel"><summary>✨ Môi trường</summary>
+<div class="effect-options">
+<label class="check"><input type="checkbox" data-effect="atm" value="snow"> Tuyết rơi</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="rain"> Mưa</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="petals"> Cánh hoa bay</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="dust"> Bụi sáng</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="sparkle"> Lấp lánh</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="fog"> Sương mờ</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="rays"> Tia nắng</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="lightning"> Chớp sáng</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="vignette"> Tối góc</label>
+<label class="check"><input type="checkbox" data-effect="atm" value="flash"> Flash trắng</label>
+</details>
+</div>
+<label class="field">Cường độ hiệu ứng <span id="effect-strength-value">50%</span>
+<input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
+</section>
+
 
 <section class="panel">
 <h2>3. Âm thanh nền & hiệu ứng</h2>
