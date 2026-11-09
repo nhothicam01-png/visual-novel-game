@@ -1,0 +1,164 @@
+{
+  "phien_ban": 2,
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.5,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "nhan_vat_1": {
+      "ten_hien_thi": "Nhân vật 1",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": "afternoon_between_leaves.mp3"
+  },
+  "danh_sach": [
+    {
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Cuối buổi chiều, hành lang trường đã vắng tanh. Mình chỉ định quay lại lớp lấy cuốn sổ bỏ quên, vậy mà nơi này tối hơn mình tưởng.",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-enter"
+        ],
+        "nen": [
+          "bg-zoom"
+        ],
+        "camera": [
+          "camera-drift"
+        ],
+        "moi_truong": [
+          "rays",
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "A, cuốn sổ ở ngay bàn cuối! May quá, mình cứ tưởng đã làm mất nó rồi. Ánh nắng cuối ngày vẫn còn len qua cửa sổ lớp học.",
+      "anh_nen": "lop_hoc_anh_sang_mem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-sway"
+        ],
+        "nen": [
+          "bg-left"
+        ],
+        "camera": [],
+        "moi_truong": [
+          "petals"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Khoan đã... cửa lớp vừa tự đóng sao? Có ai ở ngoài đó không? Đừng nói là mình đang ở đây một mình nhé!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-shake"
+        ],
+        "nen": [
+          "bg-zoom"
+        ],
+        "camera": [
+          "camera-shake"
+        ],
+        "moi_truong": [
+          "lightning",
+          "flash"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Phù... chỉ là cành cây quệt vào cửa kính thôi. Mình tự dọa mình mất rồi. Bình tĩnh nào, ra sân thượng hít thở một chút là ổn.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-fade"
+        ],
+        "nen": [
+          "bg-blur"
+        ],
+        "camera": [
+          "camera-pull"
+        ],
+        "moi_truong": [
+          "fog"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "nhan_vat": "nhan_vat_1",
+      "noi_dung": "Hoàng hôn đẹp thật. Cuối cùng thì cuốn sổ cũng tìm lại được, còn nỗi sợ ban nãy chắc chỉ là do mình tưởng tượng quá nhiều. Ngày mai nhất định phải về nhà sớm hơn!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "hieu_ung": {
+        "nhan_vat": [
+          "soft-sway"
+        ],
+        "nen": [],
+        "camera": [],
+        "moi_truong": [
+          "sparkle"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    }
+  ]
+}
