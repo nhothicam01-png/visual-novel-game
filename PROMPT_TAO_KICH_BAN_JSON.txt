@@ -24,7 +24,7 @@ Các thư mục tài nguyên:
 THƯ MỤC TRUYỆN CẦN XỬ LÝ:
 <TEN_THU_MUC_TRUYEN>
 
-Tên thư mục này do người dùng chỉ định trong yêu cầu hiện tại. Có thể là bất kỳ thư mục nào nằm trong assets/KichBan/.
+Tên thư mục này do người dùng chỉ định trong yêu cầu hiện tại nếu có. Nếu người dùng không chỉ định, tự động tạo tên thư mục từ tên truyện theo quy tắc tại mục B bên dưới; không hỏi lại chỉ để lấy tên thư mục.
 
 Ví dụ:
 - assets/KichBan/NhungLamYoutube/
@@ -33,7 +33,7 @@ Ví dụ:
 
 Không được mặc định tên truyện là NhungLamYoutube.
 
-Nếu người dùng chưa chỉ định thư mục truyện, hãy hỏi lại trước khi thực hiện.
+Nếu người dùng chưa chỉ định thư mục truyện nhưng đã cung cấp cốt truyện/nội dung mới, hãy tự đặt tên thư mục theo tên truyện và tiếp tục quy trình. Chỉ hỏi lại khi chưa xác định được nội dung nguồn hoặc có nhiều nguồn mâu thuẫn.
 
 ==================================================
 QUY TẮC NGUỒN TRUYỆN: GITHUB HOẶC NỘI DUNG NGƯỜI DÙNG CUNG CẤP
@@ -50,7 +50,7 @@ B. TRUYỆN CHƯA CÓ TRÊN GITHUB
 - Người dùng có thể dán nội dung truyện trực tiếp vào khung chat hoặc đính kèm file .txt.
 - Khi người dùng đã cung cấp nội dung truyện trong chat hoặc file đính kèm, hãy dùng chính nội dung đó làm nguồn chính. Không yêu cầu người dùng phải tải truyện lên GitHub trước.
 - Đọc toàn bộ nội dung được cung cấp; nếu file đính kèm không đọc được hoặc nội dung bị thiếu, hãy thông báo và yêu cầu gửi lại, không tự đoán phần bị thiếu.
-- Người dùng cần chỉ định tên thư mục truyện muốn tạo trong assets/KichBan/. Nếu chưa có tên thư mục, hãy hỏi lại trước khi lưu.
+- Nếu người dùng chỉ định tên thư mục, sử dụng đúng tên đó. Nếu không chỉ định, tự động tạo tên thư mục từ tiêu đề truyện: bỏ dấu tiếng Việt, bỏ ký tự đặc biệt, chuyển thành PascalCase không dấu cách; ví dụ “Món tiền đổi lấy quả thận” thành `MonTienDoiLayQuaThan`. Tên này chỉ dùng cho thư mục truyện, không phải tên tài nguyên. Kiểm tra tên/path đã tồn tại; nếu đã tồn tại và không phải đúng truyện hiện tại, thêm hậu tố số tăng dần (`-2`, `-3`...) cho đến khi có tên chưa được sử dụng. Không hỏi lại người dùng chỉ để xác nhận tên thư mục tự sinh.
 - Kiểm tra thư mục đích đã tồn tại hay chưa. Nếu chưa tồn tại, tạo đường dẫn thư mục bằng cách tạo file JSON bên trong thư mục đó.
 - Khi tạo một thư mục truyện mới, đồng thời tạo sẵn thư mục phụ `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/` để người dùng tải các file phụ đề lên sau này.
 - GitHub không lưu được thư mục rỗng, vì vậy phải tạo file giữ chỗ `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/.gitkeep` (nội dung có thể để trống) để thư mục `PhuDe` xuất hiện trong repository. Không dùng `.gitkeep` làm file phụ đề và không tạo phụ đề giả.
@@ -414,7 +414,7 @@ Trước khi tạo JSON:
 1. Kiểm tra repository và đúng thư mục truyện người dùng chỉ định.
 2. Liệt kê tài nguyên thực tế trong các thư mục liên quan; không dựa vào danh sách đã nhớ từ lần trước.
 3. Kiểm tra chính xác tên file, phần mở rộng, chữ hoa/chữ thường và đường dẫn.
-4. Không tự tạo tên thư mục, tên file, ID nhân vật, biểu cảm, giọng nói hoặc tài nguyên.
+4. Không tự tạo tên thư mục tài nguyên, tên file tài nguyên, ID nhân vật, biểu cảm, giọng nói hoặc tài nguyên. Ngoại lệ duy nhất: được tự tạo tên thư mục chứa truyện theo quy tắc tự sinh tên tại mục I-B khi người dùng không chỉ định tên thư mục.
 5. Nếu không đọc/kiểm tra được thư mục, phải nói rõ; không giả vờ đã xác minh.
 
 NHÂN VẬT:
@@ -645,7 +645,7 @@ Trước khi lưu:
 X. QUY TẮC LƯU FILE
 ==================================================
 
-Tên thư mục truyện do người dùng chỉ định trong yêu cầu hiện tại.
+Tên thư mục truyện: ưu tiên tên do người dùng chỉ định; nếu không có, tự sinh từ tên truyện theo quy tắc tại mục I-B. Không hỏi lại chỉ để xác nhận tên thư mục tự sinh.
 
 File JSON chính:
 `assets/KichBan/<TEN_THU_MUC_TRUYEN>/<TEN_THU_MUC_TRUYEN>.json`
@@ -693,7 +693,7 @@ Nguồn truyện:
 Yêu cầu bổ sung:
 <YEU_CAU_RIENG_NEU_CO>
 
-Nếu chưa có tên thư mục truyện hoặc chưa rõ nguồn truyện, hỏi người dùng trước khi lưu.
+Nếu người dùng không nêu tên thư mục nhưng đã cung cấp cốt truyện, tự sinh tên thư mục và tiếp tục lưu. Chỉ hỏi khi nguồn truyện thực sự chưa rõ, bị thiếu hoặc có nhiều nguồn cần người dùng chọn.
 
 BẮT ĐẦU:
 Đọc đúng nguồn truyện, đọc toàn bộ nội dung, kiểm tra tài nguyên hiện có, đọc danh mục hiệu ứng mới nhất, lập kế hoạch chuyển thể, tạo JSON phiên bản 2, kiểm tra toàn bộ dữ liệu và chỉ sau đó mới lưu vào đúng đường dẫn.
