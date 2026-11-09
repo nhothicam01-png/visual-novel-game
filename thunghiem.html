@@ -221,8 +221,6 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <input id="dialogue-width" type="range" min="35" max="95" step="1" value="75"></label>
 </div>
 
-<label class="field">Cường độ hiệu ứng <span id="effect-strength-value">50%</span>
-<input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
 </details>
 
 
@@ -944,7 +942,7 @@ $('character-voice-list').addEventListener('change',e=>{
 $('default-voice-profile').addEventListener('change',e=>{defaultVoiceProfileId=e.target.value;saveStorySettings();if(getCurrentLine())applyVoiceForCurrentLine()});
 
 function captureVisual(){
- return {character:$('character').value,expression:$('expression').value,background:$('background').value,showDialogue:$('show-dialogue').checked,showSpeaker:$('show-speaker').checked,dialogueMode:$('dialogue-width-mode').value,dialogueWidth:$('dialogue-width').value,effectStrength:$('effect-strength').value,effects:Array.from(document.querySelectorAll('[data-effect]:checked')).map(x=>x.dataset.effect+':'+x.value),portrait:stage.classList.contains('portrait')};
+ return {character:$('character').value,expression:$('expression').value,background:$('background').value,showDialogue:$('show-dialogue').checked,showSpeaker:$('show-speaker').checked,dialogueMode:$('dialogue-width-mode').value,dialogueWidth:$('dialogue-width').value,portrait:stage.classList.contains('portrait')};
 }
 function applyVisual(v){
  if(!v)return;
@@ -953,8 +951,6 @@ function applyVisual(v){
  $('dialogue-width-mode').value=v.dialogueMode||'percent';$('dialogue-width').value=v.dialogueWidth||75;
  $('dialogue-width-control').style.display=v.dialogueMode==='fit'?'none':'flex';
  $('dialogue-width-value').textContent=$('dialogue-width').value+'%';
- $('effect-strength').value=v.effectStrength||50;$('effect-strength-value').textContent=$('effect-strength').value+'%';
- document.querySelectorAll('[data-effect]').forEach(x=>x.checked=(v.effects||[]).includes(x.dataset.effect+':'+x.value));
  resizeCanvas(!!v.portrait);
 }
 function getCurrentScene(){return scenes[activeSceneIndex]}
