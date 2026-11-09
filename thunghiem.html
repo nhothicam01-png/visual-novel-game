@@ -703,9 +703,12 @@ async function exportVideo(){
   const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const offline=new Offline(2,Math.ceil(finalDuration*sampleRate),sampleRate);
   const addAudio=(buffer,volume,offset,loop=false,stopAt=finalDuration)=>{
-   if(!buffer)return;const source=offline.createBufferSource(),gain=offline.createGain();
+   if(!buffer)return;
+   const end=Math.min(finalDuration,Math.max(offset,Number.isFinite(Number(stopAt))?Number(stopAt):finalDuration));
+   if(end<=offset)return;
+   const source=offline.createBufferSource(),gain=offline.createGain();
    source.buffer=buffer;source.loop=loop;gain.gain.value=volume;source.connect(gain).connect(offline.destination);
-   source.start(offset);if(loop)source.stop(Math.max(offset+.05,stopAt));
+   source.start(offset);source.stop(end);
   };
   allAudio.forEach(e=>addAudio(e.buffer,Number($('tts-volume').value),e.start));
   const audioBuffers={bgm:new Map(),sfx:new Map()};
@@ -721,7 +724,7 @@ async function exportVideo(){
    const bg=await getLineAudioBuffer(entry.line,'bgm'),sf=await getLineAudioBuffer(entry.line,'sfx');
    const end=entry.start+entry.duration+entry.pause;
    if(bg)addAudio(bg,Number($('bgm-volume').value),entry.start,true,end);
-   if(sf)addAudio(sf,Number($('sfx-volume').value),entry.start,false,end);
+   if(sf)addAudio(sf,Number($('sfx-volume').value),entry.start,false,finalDuration);
   }
   setTaskProgress('Đang trộn âm thanh các câu thoại…',5);
   const mixedAudio=await offline.startRendering();
