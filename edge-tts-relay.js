@@ -40,14 +40,15 @@ async function synthesize(text,voice,rate,pitch){
  // Cloudflare đổi mặc định frame nhị phân sang Blob từ compatibility date mới.
  // Đặt binaryType trước accept(); đồng thời vẫn hỗ trợ Blob để phòng thay đổi runtime.
  ws.binaryType='arraybuffer';
- const parts=await new Promise((resolve,reject)=>{
+ const chunks=[];
+ await new Promise((resolve,reject)=>{
   let settled=false;
   const finish=error=>{
    if(settled)return;
    settled=true;
    clearTimeout(timer);
    try{ws.close()}catch(_){}
-   if(error)reject(error);else resolve(parts);
+   if(error)reject(error);else resolve(chunks);
   };
   const timer=setTimeout(()=>finish(new Error('Microsoft không trả kết quả trong 20 giây')),20000);
 
@@ -66,7 +67,7 @@ async function synthesize(text,voice,rate,pitch){
     const audioOffset=2+headerLength;
     if(audioOffset>buffer.byteLength)return;
     const header=new TextDecoder().decode(new Uint8Array(buffer,2,headerLength));
-    if(header.includes('Path:audio')&&audioOffset<buffer.byteLength)parts.push(buffer.slice(audioOffset));
+    if(header.includes('Path:audio')&&audioOffset<buffer.byteLength)chunks.push(buffer.slice(audioOffset));
    }catch(_){/* Bỏ qua frame lỗi; báo lỗi nếu không thu được âm thanh. */}
   });
   ws.addEventListener('error',()=>finish(new Error('WebSocket tới Microsoft phát sinh lỗi')));
@@ -80,7 +81,7 @@ async function synthesize(text,voice,rate,pitch){
    ws.send('X-RequestId:'+id+'\r\nContent-Type:application/ssml+xml\r\nX-Timestamp:'+dt()+'Z\r\nPath:ssml\r\n\r\n'+ssml);
   }catch(error){finish(error)}
  });
- return parts;
+ return chunks;
 }
 
 export default{async fetch(req){
