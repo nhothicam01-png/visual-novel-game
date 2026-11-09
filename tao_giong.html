@@ -76,7 +76,7 @@ async function loadVoices(){const sel=$('voice');sel.innerHTML='<option value=""
 const lang=$('lang').value;let list=voices.filter(v=>v.code.startsWith(lang+'_'));if(lang==='vi')list=list.filter(v=>!/(25hours_single|vivos)/i.test(v.key));list.sort((a,b)=>({medium:0,high:1,low:2,x_low:3}[a.quality]??9)-({medium:0,high:1,low:2,x_low:3}[b.quality]??9));sel.innerHTML=list.map(v=>'<option value="'+v.key+'">'+v.key+'</option>').join('')||'<option value="">Không có model tương thích trong ngôn ngữ này</option>';if(lang==='vi'&&list.some(v=>v.key==='vi_VN-vais1000-medium'))sel.value='vi_VN-vais1000-medium';return list}
 
 // ===== Edge Neural TTS (miễn phí, không cần key) – cùng giao thức với trang dựng video =====
-const EDGE_TOKEN='6A5AA1D4EAFF4E9FB37E23D68491D6F4',EDGE_VER='1-130.0.2849.68';
+const EDGE_TOKEN='6A5AA1D4EAFF4E9FB37E23D68491D6F4',EDGE_VER='2-143.0.3650.96';
 const PIPER_FALLBACK={vi:'vi_VN-vais1000-medium',en:'en_US-lessac-medium',ja:'ja_JP-kokoro-medium',ko:'ko_KR-kss-x_low',zh:'zh_CN-huayan-medium'};
 const TEST_TEXT={vi:'Xin chào! Đây là giọng thử nghiệm của nhân vật.',en:'Hello! This is a test voice for the character.',ja:'こんにちは！これはキャラクターのテスト音声です。',ko:'안녕하세요! 캐릭터 테스트 음성입니다.',zh:'你好！这是角色的测试语音。'};
 const EDGE_LIST=[
@@ -99,7 +99,22 @@ function edgeRelay(){try{return (localStorage.getItem('vnEdgeRelayUrl')||'').tri
 {const el=$('edge-relay');el.value=edgeRelay();el.addEventListener('change',()=>{try{localStorage.setItem('vnEdgeRelayUrl',el.value.trim())}catch(_){}})}
 
 $('edge-voice').onchange=()=>{const v=EDGE_LIST.find(x=>x[0]===$('edge-voice').value);if(v)$('gender').value=v[2]};
-async function edgeGec(){let t=Math.floor(Date.now()/1000)+11644473600;t-=t%300;const h=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode((BigInt(t)*10000000n).toString()+EDGE_TOKEN)));return Array.from(h,b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}
+const G2C='Copyright (C) Microsoft Corporation. All rights reserved.',G2S1=[0xEF0569FB,0x76F50F34,0xC3EFEA97],G2S2=[0xC31713DB,0x1881CE3C,0x35BD1EC9],G2M1=[0xCF98B111,0x87085B9F,0x12CEB96D,0x257E1D83],G2M2=[0xA27416F5,0xD38396FF,0x7C932B89,0xBFA49F69];
+const g2h=v=>((v<<16)|(v>>>16))>>>0,g2hex=b=>Array.from(b,x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();
+const g2t=(w,k,m)=>{const s=Math.imul(w,k)+Math.imul(g2h(w),m[0]),p=Math.imul(g2h(s),m[1])>>>0;return (Math.imul(g2h(p),m[2])+p)>>>0};
+const g2m=(v,ms)=>{for(const m of ms)v=Math.imul(g2h(v),m)>>>0;return v};
+function g2cs64(msg,dg){
+ const dv=new DataView(dg.buffer,dg.byteOffset,dg.byteLength),k1=(dv.getUint32(0,true)|1)>>>0,k2=(dv.getUint32(4,true)|1)>>>0;
+ const pad=new Uint8Array(Math.ceil(msg.length/8)*8);pad.set(msg);const w=new DataView(pad.buffer);let ss=0,ls=0,mx=0,ms=0;
+ for(let o=0;o<pad.length;o+=8){const a=w.getUint32(o,true),b=w.getUint32(o+4,true),f=g2t(a,k1,G2S1);ls=g2t(b,k2,G2S2);ss=(ss+f+ls)>>>0;mx=g2m(Math.imul(mx+a,k1),G2M1);ms=(ms+mx)>>>0;mx=g2m(Math.imul(mx+b,k2),G2M2);ms=(ms+mx)>>>0}
+ const out=new Uint8Array(8),ov=new DataView(out.buffer);ov.setUint32(0,(ls^mx)>>>0,true);ov.setUint32(4,(ss^ms)>>>0,true);return out;
+}
+// Sec-MS-GEC v2 (bắt buộc từ 10/2026): <CS64>-<SHA256 của dòng bản quyền Edge + ticks + token>
+async function edgeGec(){
+ let t=Math.floor(Date.now()/1000)+11644473600;t-=t%300;
+ const msg=new TextEncoder().encode(G2C+(BigInt(t)*10000000n).toString()+EDGE_TOKEN),dg=new Uint8Array(await crypto.subtle.digest('SHA-256',msg));
+ return g2hex(g2cs64(msg,dg))+'-'+g2hex(dg);
+}
 function edgeDate(){return new Date().toUTCString().replace(/^(\w+), (\d+) (\w+) (\d+)/,'$1 $3 $2 $4').replace('GMT','GMT+0000 (Coordinated Universal Time)')}
 function edgeEsc(s){return s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
 async function edgeTest(text){
