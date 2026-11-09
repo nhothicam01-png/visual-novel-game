@@ -97,7 +97,6 @@ async function processPreviewWav(blob){
   let peak=0;for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)peak=Math.max(peak,Math.abs(d[j]))}
   const norm=peak>0?Math.min(1.4,0.86/peak):1;
   for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)d[j]*=norm}
-  const rendered=await off.startRendering();
   const rendered=result;
   const channels=rendered.numberOfChannels,bytes=44+rendered.length*channels*2,buffer=new ArrayBuffer(bytes),view=new DataView(buffer);
   const write=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i))};
