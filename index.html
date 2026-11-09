@@ -143,6 +143,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <button class="btn" id="import-json-button" type="button">📂 Import JSON từ máy</button>
 <input id="import-json-file" type="file" accept=".json,application/json" hidden>
 <button class="btn secondary" id="reload-story-list" type="button">↻ Tải lại danh sách GitHub</button>
+<button class="btn" id="export-json-button" type="button">💾 Xuất JSON đã chỉnh sửa</button>
 
 </div>
 <div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 2.</div>
@@ -159,7 +160,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <div class="row" style="justify-content:space-between"><strong style="color:#c4b5fd">Các câu thoại trong cảnh</strong><button class="btn" id="add-line">＋ Thêm thoại</button></div>
 <div id="dialogue-line-list" class="dialogue-line-list"></div>
 <div class="line-editor">
-<div class="row" style="justify-content:space-between"><strong id="line-editor-title" style="color:#c4b5fd">Chỉnh sửa câu thoại</strong><button class="btn danger" id="delete-line">Xóa câu thoại</button></div>
+<div class="row" style="justify-content:space-between"><strong id="line-editor-title" style="color:#c4b5fd">Chỉnh sửa câu thoại</strong><div class="row"><button class="btn secondary" id="move-line-up" type="button">↑ Lên</button><button class="btn secondary" id="move-line-down" type="button">↓ Xuống</button><button class="btn danger" id="delete-line">Xóa câu thoại</button></div></div>
 <label class="field">Tên nhân vật nói<input id="speaker" value="Nhân vật 1" maxlength="40"></label>
 
 <div class="grid" hidden>
@@ -1360,7 +1361,7 @@ async function applyStoryData(data,name){
  characterVoiceMap=saved.characterVoiceMap||{};defaultVoiceProfileId=saved.defaultVoiceProfileId||'';
  scenes=buildScenesFromJson(data);activeSceneIndex=0;activeLineIndex=0;restorePlaybackProgress();
  renderCharacterVoiceSetup();renderSceneList();renderLineList();applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());
- $('speaker').readOnly=true;$('dialogue').readOnly=false;updateSeekUI(0);
+ $('speaker').readOnly=false;$('dialogue').readOnly=false;updateSeekUI(0);
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(0);
  $('story-status').textContent='Đã nạp '+activeStoryName+': '+rows.length+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh. JSON gốc không bị chỉnh sửa.';
  setStatus('Đã nạp kịch bản '+activeStoryName+'.');
@@ -1389,6 +1390,7 @@ document.addEventListener('fullscreenchange',()=>{$('toggle-fullscreen').textCon
 document.addEventListener('webkitfullscreenchange',()=>{$('toggle-fullscreen').textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
 
 $('reload-story-list').addEventListener('click',loadStoryCatalog);
+$('export-json-button').addEventListener('click',exportEditedStoryJson);
 $('import-json-button').addEventListener('click',()=>$('import-json-file').click());
 $('import-json-file').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());await applyStoryData(data,file.name)}catch(err){$('story-status').textContent='Import thất bại: '+(err.message||err);setStatus('Không thể import JSON.')}finally{e.target.value=''}});
 
@@ -1399,6 +1401,39 @@ $('character-voice-list').addEventListener('change',e=>{
 });
 $('default-voice-profile').addEventListener('change',e=>{defaultVoiceProfileId=e.target.value;saveStorySettings();if(getCurrentLine())applyVoiceForCurrentLine()});
 
+function exportEditedStoryJson(){
+ try{
+  saveCurrentLine();saveCurrentScene();
+  if(!activeStoryData)throw new Error('Hãy chọn hoặc import kịch bản JSON trước khi xuất.');
+  const output=JSON.parse(JSON.stringify(activeStoryData)),rows=[],profiles=getVoiceProfiles();
+  const characterMap=output.nhan_vat&&typeof output.nhan_vat==='object'?output.nhan_vat:(output.nhan_vat={});
+  let lastBackground='';
+  scenes.forEach(scene=>scene.lines.forEach(line=>{
+   const frame=line.sourceFrame&&typeof line.sourceFrame==='object'?JSON.parse(JSON.stringify(line.sourceFrame)):{};
+   const asset=String(line.characterAsset||'').trim();
+   const matched=characterDirectory.find(ch=>ch.id===asset||characterAssetFolder(ch.id)===asset);
+   const characterId=matched?.id||line.speakerId||asset;
+   if(characterId)frame.nhan_vat=characterId;
+   frame.noi_dung=String(line.text??'');
+   const expression=String(line.expression||'').trim();if(expression)frame.bieu_cam=expression;
+   const bg=String(line.background||scene.visual?.background||'').trim();
+   if(bg){if(bg!==lastBackground)frame.anh_nen=bg;else if(Object.prototype.hasOwnProperty.call(frame,'anh_nen'))frame.anh_nen=bg;lastBackground=bg}
+   if(line.speaker?.trim())frame.ten_hien_thi=line.speaker.trim();
+   const profile=profiles.find(p=>p.id===line.profileId)||profiles.find(p=>p.voiceId===line.voiceId);
+   const voiceId=String(profile?.voiceId||line.voiceId||'').trim();
+   if(voiceId)frame.giong_noi={...(frame.giong_noi&&typeof frame.giong_noi==='object'?frame.giong_noi:{}),profileId:profile?.id||line.profileId||'',voiceId,name:profile?.name||'',lang:line.lang||profile?.lang||'vi'};
+   if(characterId&&line.speaker?.trim()){
+    const prior=characterMap[characterId]&&typeof characterMap[characterId]==='object'?characterMap[characterId]:{};
+    characterMap[characterId]={...prior,ten_hien_thi:line.speaker.trim()};
+   }
+   rows.push(frame);
+  }));
+  output.danh_sach=rows;
+  const blob=new Blob([JSON.stringify(output,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  const base=(activeStoryName||'kich_ban').replace(/[^\w-]+/g,'_');a.href=url;a.download=base+'_edited.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  $('story-status').textContent='Đã xuất '+rows.length+' câu thoại. File đã tải về; hãy kiểm tra rồi tự commit lên GitHub.';setStatus('Xuất JSON thành công. Chưa commit tự động.');
+ }catch(err){$('story-status').textContent='Không thể xuất JSON: '+(err.message||err);setStatus('Xuất JSON thất bại.');console.error(err)}
+}
 function allSourceLines(){return scenes.flatMap((scene,sceneIndex)=>scene.lines.map((line,lineIndex)=>({sceneIndex,lineIndex,sourceIndex:line.sourceIndex??0}))).sort((a,b)=>a.sourceIndex-b.sourceIndex)}
 function currentSourceIndex(){return getCurrentLine()?.sourceIndex??0}
 function updateSeekUI(index=currentSourceIndex()){
@@ -1440,14 +1475,18 @@ function saveCurrentLine(){
  const oldKey=line.cacheKey;
  line.speaker=$('speaker').value.trim()||'Nhân vật';
  line.text=$('dialogue').value;
+ line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
  line.audioOverride={bgm:{mode:$('line-bgm-mode').value,file:$('line-bgm-file').value.trim()},sfx:{mode:$('line-sfx-mode').value,file:$('line-sfx-file').value.trim()}};
  if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
 }
-function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual()}
+function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual();const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
  if(!line)return;
+ if(line.characterAsset&&Array.from($('character').options).some(o=>o.value===line.characterAsset))$('character').value=line.characterAsset;
+ if(line.expression&&Array.from($('expression').options).some(o=>o.value===line.expression))$('expression').value=line.expression;
+ if(line.background&&Array.from($('background').options).some(o=>o.value===line.background))$('background').value=line.background;
  $('speaker').value=line.speaker||'Nhân vật 1';$('speaker').readOnly=!!activeStoryData;$('dialogue').value=line.text||'';
  $('voice-profile').value=line.profileId||'';
  $('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
@@ -1464,6 +1503,9 @@ function renderSceneList(){
 }
 function renderLineList(){
  $('dialogue-line-list').innerHTML=getCurrentScene().lines.map((line,i)=>'<div class="dialogue-line-item '+(i===activeLineIndex?'active':'')+'" data-line-index="'+i+'"><div class="line-copy"><strong>Thoại '+(i+1)+' · '+String(line.speaker||'Nhân vật').replace(/[&<>"]/g,'')+'</strong><span>'+String(line.text||'Chưa nhập nội dung').replace(/[&<>"]/g,'')+'</span></div><span class="line-state">'+(line.wavBlob&&line.cacheKey?'✓ WAV':'Chưa tạo WAV')+'</span></div>').join('');
+}
+function moveCurrentLine(direction){
+ const list=getCurrentScene()?.lines;if(!list)return;saveCurrentLine();saveCurrentScene();const from=activeLineIndex,to=from+direction;if(to<0||to>=list.length)return;[list[from],list[to]]=[list[to],list[from]];activeLineIndex=to;loadLineToEditor(getCurrentLine());renderLineList();updateSeekUI(currentSourceIndex());
 }
 function selectLine(i){
  saveCurrentLine();activeLineIndex=Math.max(0,Math.min(i,getCurrentScene().lines.length-1));
@@ -1496,6 +1538,7 @@ $('delete-scene').addEventListener('click',async()=>{
  applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());renderSceneList();renderLineList();await updateAssets();
 });
 $('add-line').addEventListener('click',()=>{saveCurrentLine();getCurrentScene().lines.push(newLine());selectLine(getCurrentScene().lines.length-1)});
+$('move-line-up').addEventListener('click',()=>moveCurrentLine(-1));$('move-line-down').addEventListener('click',()=>moveCurrentLine(1));
 $('delete-line').addEventListener('click',()=>{
  const list=getCurrentScene().lines;if(list.length<=1){setStatus('Mỗi cảnh cần ít nhất một dòng thoại.');return}
  list.splice(activeLineIndex,1);activeLineIndex=Math.max(0,activeLineIndex-1);loadLineToEditor(getCurrentLine());renderLineList();
