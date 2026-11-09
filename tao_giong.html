@@ -80,21 +80,25 @@ async function processPreviewWav(blob){
   const input=await ac.decodeAudioData(await blob.arrayBuffer());
   const speed=Math.max(.65,Math.min(1.5,Number($('speed').value)||1));
   const pitch=Math.pow(2,(Number($('pitch').value)||0)/12);
+  // Gentler EQ, controlled saturation and compression to reduce harsh/rattling sound.
   const rate=speed*pitch;
-  const frames=Math.max(1,Math.ceil(input.length/rate));
-  const off=new Offline(input.numberOfChannels,frames,input.sampleRate);
+  const durationFrames=Math.max(1,Math.ceil(input.length/rate));
+  const off=new Offline(input.numberOfChannels,durationFrames,input.sampleRate);
   const src=off.createBufferSource();src.buffer=input;src.playbackRate.value=rate;
-  const high=off.createBiquadFilter();high.type='highshelf';high.frequency.value=2600;high.gain.value=(Number($('tone').value)-50)*0.12;
-  const low=off.createBiquadFilter();low.type='lowshelf';low.frequency.value=240;low.gain.value=(50-Number($('tone').value))*0.08;
+  const high=off.createBiquadFilter();high.type='highshelf';high.frequency.value=3200;high.gain.value=(Number($('tone').value)-50)*0.045;
+  const low=off.createBiquadFilter();low.type='lowshelf';low.frequency.value=220;low.gain.value=(50-Number($('tone').value))*0.035;
+  const comp=off.createDynamicsCompressor();comp.threshold.value=-8;comp.knee.value=8;comp.ratio.value=4;comp.attack.value=0.004;comp.release.value=0.12;
   src.connect(high);high.connect(low);
-  const rough=Number($('rough').value);
-  if(rough>1){
-   const sh=off.createWaveShaper(),amount=rough*1.8,curve=new Float32Array(44100);
-   for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=((3+amount)*x*20*Math.PI/180)/(Math.PI+amount*Math.abs(x))}
-   sh.curve=curve;low.connect(sh);sh.connect(off.destination);
-  }else low.connect(off.destination);
+  const rough=Math.max(0,Math.min(100,Number($('rough').value)||0));
+  if(rough>0){const sh=off.createWaveShaper(),drive=1+rough/100*0.35,curve=new Float32Array(2048);for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=Math.tanh(x*drive)/Math.tanh(drive)}sh.curve=curve;sh.oversample='2x';low.connect(sh);sh.connect(comp)}else low.connect(comp);
+  comp.connect(off.destination);
   src.start(0);
+  const result=await off.startRendering();
+  let peak=0;for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)peak=Math.max(peak,Math.abs(d[j]))}
+  const norm=peak>0?Math.min(1.4,0.86/peak):1;
+  for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)d[j]*=norm}
   const rendered=await off.startRendering();
+  const rendered=result;
   const channels=rendered.numberOfChannels,bytes=44+rendered.length*channels*2,buffer=new ArrayBuffer(bytes),view=new DataView(buffer);
   const write=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i))};
   write(0,'RIFF');view.setUint32(4,bytes-8,true);write(8,'WAVE');write(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,rendered.sampleRate,true);view.setUint32(28,rendered.sampleRate*channels*2,true);view.setUint16(32,channels*2,true);view.setUint16(34,16,true);write(36,'data');view.setUint32(40,bytes-44,true);
