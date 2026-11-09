@@ -591,10 +591,12 @@ async function loadSourceLineForPlayback(item){
  if(line.speakerId)await applyVoiceForCurrentLine();
 }
 async function playPreview(){
- const scope=$('preview-scope').value;
- const items=scope==='full'?allSourceLines():allSourceLines().filter(item=>item.sceneIndex===activeSceneIndex);
- if(!items.length)return;
+ // Lưu vị trí đang chọn trước khi tạo danh sách phát, để luôn bắt đầu từ thoại hiện tại.
  saveCurrentLine();saveCurrentScene();
+ const scope=$('preview-scope').value;
+ const startIndex=currentSourceIndex();
+ const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
+ if(!items.length)return;
  const useBrowser=$('preview-tts-mode').value==='browser';
  if(!useBrowser){
   try{for(const item of items){await loadSourceLineForPlayback(item);if($('dialogue').value.trim())await ensureTtsReady()}}
