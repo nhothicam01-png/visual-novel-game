@@ -591,7 +591,7 @@ function loadBrowserTtsVoices(){
 }
 async function loadSourceLineForPlayback(item){
  saveCurrentLine();saveCurrentScene();
- activeSceneIndex=item.sceneIndex;activeLineIndex=item.lineIndex;
+ activeSceneIndex=item.sceneIndex;activeLineIndex=item.lineIndex;savePlaybackProgress(item.sourceIndex);
  const line=getCurrentLine(),frame=line.sourceFrame||{};
  applyVisual(getCurrentScene().visual);
  if(line.sourceIndex!==undefined){
@@ -953,6 +953,21 @@ const GH_API='https://api.github.com/repos/nhothicam01-png/visual-novel-game/con
 const storyCache=new Map();
 function safeText(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function storySettingsKey(){return 'visualNovelSceneSetupV1:'+activeStoryName}
+function playbackProgressKey(){return 'visualNovelPlaybackProgressV1:'+activeStoryName}
+function savePlaybackProgress(sourceIndex=currentSourceIndex()){
+ if(!activeStoryName||!Number.isFinite(Number(sourceIndex)))return;
+ try{localStorage.setItem(playbackProgressKey(),JSON.stringify({sourceIndex:Number(sourceIndex),savedAt:Date.now()}))}catch(e){console.warn('Không lưu được tiến trình phát',e)}
+}
+function restorePlaybackProgress(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(playbackProgressKey())||'null');
+  if(!saved||!Number.isFinite(Number(saved.sourceIndex)))return false;
+  const list=allSourceLines();if(!list.length)return false;
+  const target=Math.max(0,Math.min((sourceLineCount||list.length)-1,Math.round(Number(saved.sourceIndex))));
+  const found=list.find(item=>item.sourceIndex===target)||list.reduce((best,item)=>Math.abs(best.sourceIndex-target)<=Math.abs(item.sourceIndex-target)?best:item,list[0]);
+  activeSceneIndex=found.sceneIndex;activeLineIndex=found.lineIndex;return true;
+ }catch(e){console.warn('Không đọc được tiến trình phát đã lưu',e);return false}
+}
 function saveStorySettings(){if(!activeStoryName)return;try{localStorage.setItem(storySettingsKey(),JSON.stringify({characterVoiceMap,defaultVoiceProfileId}))}catch(e){console.warn('Không lưu được thiết lập giọng',e)}}
 async function loadStoryCatalog(){
  const sel=$('story-select'),status=$('story-status');
@@ -1096,7 +1111,7 @@ async function applyStoryData(data,name){
  characterDirectory=uniqueCharacters(data);
  let saved={};try{saved=JSON.parse(localStorage.getItem(storySettingsKey())||'{}')}catch(e){}
  characterVoiceMap=saved.characterVoiceMap||{};defaultVoiceProfileId=saved.defaultVoiceProfileId||'';
- scenes=buildScenesFromJson(data);activeSceneIndex=0;activeLineIndex=0;
+ scenes=buildScenesFromJson(data);activeSceneIndex=0;activeLineIndex=0;restorePlaybackProgress();
  renderCharacterVoiceSetup();renderSceneList();renderLineList();applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());
  $('speaker').readOnly=true;$('dialogue').readOnly=false;updateSeekUI(0);
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(0);
