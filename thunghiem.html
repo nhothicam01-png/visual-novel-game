@@ -259,7 +259,9 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 'use strict';
 const BASE='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/';
 const $=id=>document.getElementById(id);
-const canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
+let canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
+const previewCanvas=canvas,previewCtx=ctx;
+let renderCanvas=null,renderCtx=null;
 const stage=$('game-container');
 const characters=['1','2','3','4','5','6'];
 const backgrounds=[
@@ -487,7 +489,9 @@ function drawFrame(elapsed){
 function animate(){
  if(!raf) return;
  const t=previewing?Math.max(0,(performance.now()-previewStartedAt)/1000):0;
- drawFrame(t);
+ // Luôn vẽ preview lên canvas xem trước, không ghi đè canvas xuất video.
+ const activeCanvas=canvas,activeCtx=ctx;canvas=previewCanvas;ctx=previewCtx;
+ try{drawFrame(t)}finally{canvas=activeCanvas;ctx=activeCtx}
  raf=requestAnimationFrame(animate);
 }
 let previewStartedAt=0,previewRunId=0;
@@ -870,10 +874,15 @@ async function exportVideo(){
   }
   setTaskProgress('Đang trộn âm thanh các câu thoại…',5);
   const mixedAudio=await offline.startRendering();
+  // Tạo canvas xuất riêng; preview tiếp tục dùng canvas và context gốc.
+  renderCanvas=document.createElement('canvas');
+  renderCanvas.width=isPortrait?1080:1920;renderCanvas.height=isPortrait?1920:1080;
+  renderCtx=renderCanvas.getContext('2d',{alpha:false});
+  canvas=renderCanvas;ctx=renderCtx;
   const mb=await import('https://esm.sh/mediabunny@1.62.1');
   const target=new mb.BufferTarget(),format=new mb.Mp4OutputFormat();
   output=new mb.Output({format,target});
-  const videoSource=new mb.CanvasSource(canvas,{codec:'avc',quality:new mb.Quality({bitrate:8000000})});
+  const videoSource=new mb.CanvasSource(renderCanvas,{codec:'avc',quality:new mb.Quality({bitrate:8000000})});
   const audioSource=new mb.AudioBufferSource({codec:'aac',quality:new mb.Quality({bitrate:160000})});
   output.addVideoTrack(videoSource,{frameRate:fps});output.addAudioTrack(audioSource);await output.start();
   const frameCount=Math.ceil(finalDuration*fps);let frameIndex=0;
@@ -916,6 +925,8 @@ async function exportVideo(){
  }catch(err){console.error(err);setStatus('Không thể xuất video: '+(err.message||err));setTaskProgress('Xuất video thất bại',100);setTimeout(()=>{$('task-progress').hidden=true},2200)}
  finally{
   try{await audioContext?.close()}catch(_){}
+  // Trả lại canvas preview sau khi hoàn tất hoặc lỗi khi xuất.
+  canvas=previewCanvas;ctx=previewCtx;renderCanvas=null;renderCtx=null;
   activeSceneIndex=originalScene;activeLineIndex=originalLine;
   if(scenes[activeSceneIndex]){applyVisual(scenes[activeSceneIndex].visual);loadLineToEditor(scenes[activeSceneIndex].lines[activeLineIndex]);await updateAssets()}
   recording=false;$('export-video').disabled=false;renderSceneList();renderLineList();
