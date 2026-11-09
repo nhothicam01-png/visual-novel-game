@@ -138,6 +138,13 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 </div>
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
 <label class="field">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
+<details class="effect-panel"><summary>🔊 Âm thanh tùy chỉnh cho thoại này</summary>
+<label class="field">Nhạc nền<select id="line-bgm-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
+<label class="field">Tên tệp nhạc nền (trong AmThanh/Nen)<input id="line-bgm-file" placeholder="vd: afternoon_between_leaves.mp3"></label>
+<label class="field">Nhạc hiệu ứng<select id="line-sfx-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
+<label class="field">Tên tệp hiệu ứng (trong AmThanh/HieuUng)<input id="line-sfx-file" placeholder="vd: door_open.mp3"></label>
+<p class="note">Mặc định kế thừa âm thanh đã khai báo trong JSON. Chỉ ghi đè hoặc tắt khi bạn chủ động chọn.</p>
+</details>
 <div class="row">
 <button class="btn" id="generate-piper">✨ Tạo WAV cho câu này</button>
 <button class="btn secondary" id="speak-preview">🔊 Nghe thử</button>
@@ -434,7 +441,7 @@ function startRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=1;animate()}
 function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;drawFrame(0)}
 
 function stopPreview(){
- previewRunId++;previewing=false;
+ previewRunId++;previewing=false;previewLineBgmName='';previewLineSfxName='';
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
  if(charVideo)charVideo.pause();
@@ -444,6 +451,27 @@ function stopPreview(){
 function audioElement(url,loop,volume){
  const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
 }
+function resolvedLineAudio(line,kind){
+ const override=line?.audioOverride?.[kind];
+ if(override?.mode==='off')return '';
+ if(override?.mode==='override')return String(override.file||'').trim();
+ return String(line?.sourceAudio?.[kind]||'').trim();
+}
+let previewLineBgmName='',previewLineSfxName='';
+async function playLineAudio(line){
+ const bgm=resolvedLineAudio(line,'bgm');
+ if(bgm!==previewLineBgmName){
+  if(previewAudio.bgm){previewAudio.bgm.pause();previewAudio.bgm=null}
+  previewLineBgmName=bgm;
+  if(bgm){previewAudio.bgm=audioElement(BASE+'AmThanh/Nen/'+bgm,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
+ }
+ const sfx=resolvedLineAudio(line,'sfx');
+ if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}
+ if(sfx){previewLineSfxName=sfx;previewAudio.sfx=audioElement(BASE+'AmThanh/HieuUng/'+sfx,false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
+ else if(!line?.sourceAudio?.sfx&&$('sfx-file').files[0]){
+  previewAudio.sfx=audioElement(URL.createObjectURL($('sfx-file').files[0]),false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})
+ }
+}
 async function playPreview(){
  const scene=getCurrentScene();if(!scene)return;
  saveCurrentLine();saveCurrentScene();
@@ -452,13 +480,10 @@ async function playPreview(){
  }catch(err){setTtsStatus('Không thể xem trước vì tạo WAV thất bại: '+(err.message||err));return}
  stopPreview();previewing=true;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
- const bgm=getCurrentScene()?.sourceAudio?.bgm||$('bgm').value;
- if(bgm){previewAudio.bgm=audioElement(BASE+'AmThanh/Nen/'+bgm,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
- const sfx=$('sfx-file').files[0];
- if(sfx){previewAudio.sfx=audioElement(URL.createObjectURL(sfx),false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
- startRenderLoop();
+ previewLineBgmName='';startRenderLoop();
  for(let i=0;i<scene.lines.length&&previewing&&run===previewRunId;i++){
   selectLine(i);const line=scene.lines[i],blob=line.wavBlob;
+  await updateAssets();await playLineAudio(line);
   if(!blob)continue;
   const url=URL.createObjectURL(blob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
   await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});
@@ -674,17 +699,25 @@ async function exportVideo(){
   const finalDuration=Math.max(.5,Math.ceil(totalDuration*fps)/fps);
   const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const offline=new Offline(2,Math.ceil(finalDuration*sampleRate),sampleRate);
-  const addAudio=(buffer,volume,offset,loop=false)=>{
+  const addAudio=(buffer,volume,offset,loop=false,stopAt=finalDuration)=>{
    if(!buffer)return;const source=offline.createBufferSource(),gain=offline.createGain();
    source.buffer=buffer;source.loop=loop;gain.gain.value=volume;source.connect(gain).connect(offline.destination);
-   source.start(offset);if(loop)source.stop(finalDuration);
+   source.start(offset);if(loop)source.stop(Math.max(offset+.05,stopAt));
   };
   allAudio.forEach(e=>addAudio(e.buffer,Number($('tts-volume').value),e.start));
-  const bgmName=$('bgm').value;let bgmBuffer=null,sfxBuffer=null;
-  if(bgmName)bgmBuffer=await decodeUrl(BASE+'AmThanh/Nen/'+bgmName,audioContext);
-  const sfxFile=$('sfx-file').files[0];if(sfxFile)sfxBuffer=await audioContext.decodeAudioData(await sfxFile.arrayBuffer());
-  if(bgmBuffer)addAudio(bgmBuffer,Number($('bgm-volume').value),0,true);
-  if(sfxBuffer){let offset=0;for(const sc of prepared){addAudio(sfxBuffer,Number($('sfx-volume').value),offset);offset+=sc.lines.reduce((n,e)=>n+e.duration+e.pause,0)}}
+  const audioBuffers={bgm:new Map(),sfx:new Map()};
+  const getLineAudioBuffer=async(line,kind)=>{
+   const name=resolvedLineAudio(line,kind);if(!name)return null;
+   const cache=audioBuffers[kind];if(cache.has(name))return cache.get(name);
+   const folder=kind==='bgm'?'Nen/':'HieuUng/';
+   const buffer=await decodeUrl(BASE+'AmThanh/'+folder+name,audioContext);cache.set(name,buffer);return buffer;
+  };
+  for(const entry of allAudio){
+   const bg=await getLineAudioBuffer(entry.line,'bgm'),sf=await getLineAudioBuffer(entry.line,'sfx');
+   const end=entry.start+entry.duration+entry.pause;
+   if(bg)addAudio(bg,Number($('bgm-volume').value),entry.start,true,end);
+   if(sf)addAudio(sf,Number($('sfx-volume').value),entry.start,false,end);
+  }
   setTaskProgress('Đang trộn âm thanh các câu thoại…',5);
   const mixedAudio=await offline.startRendering();
   const mb=await import('https://esm.sh/mediabunny@1.62.1');
@@ -700,6 +733,14 @@ async function exportVideo(){
    let sceneElapsed=0;
    for(const entry of pack.lines){
     activeLineIndex=scenes[si].lines.indexOf(entry.line);loadLineToEditor(entry.line);
+    const frame=entry.line.sourceFrame;
+    if(frame){
+     if(frame.nhan_vat!==undefined)$('character').value=String(frame.nhan_vat);
+     if(frame.bieu_cam)$('expression').value=frame.bieu_cam;
+     if(frame.anh_nen)$('background').value=frame.anh_nen;
+     const fx=mapJsonEffects(frame);document.querySelectorAll('[data-effect]').forEach(x=>x.checked=fx.includes(x.dataset.effect+':'+x.value));
+     await updateAssets();
+    }
     const lineEndFrame=Math.min(frameCount,Math.round((entry.start+entry.duration+entry.pause)*fps));
     const lineFrames=Math.max(0,lineEndFrame-frameIndex);
     for(let f=0;f<lineFrames;f++){
@@ -887,6 +928,7 @@ function saveCurrentLine(){
  line.text=$('dialogue').value;
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
+ line.audioOverride={bgm:{mode:$('line-bgm-mode').value,file:$('line-bgm-file').value.trim()},sfx:{mode:$('line-sfx-mode').value,file:$('line-sfx-file').value.trim()}};
  if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
 }
 function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual()}
@@ -895,6 +937,7 @@ function loadLineToEditor(line){
  $('speaker').value=line.speaker||'Nhân vật 1';$('speaker').readOnly=!!activeStoryData;$('dialogue').value=line.text||'';
  $('voice-profile').value=line.profileId||'';
  $('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
+ const ao=line.audioOverride||{};$('line-bgm-mode').value=ao.bgm?.mode||'inherit';$('line-bgm-file').value=ao.bgm?.file||'';$('line-sfx-mode').value=ao.sfx?.mode||'inherit';$('line-sfx-file').value=ao.sfx?.file||'';
  const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};
  fillVoice();
  generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';
@@ -930,7 +973,7 @@ $('delete-line').addEventListener('click',()=>{
  list.splice(activeLineIndex,1);activeLineIndex=Math.max(0,activeLineIndex-1);loadLineToEditor(getCurrentLine());renderLineList();
 });
 $('dialogue-line-list').addEventListener('click',e=>{const item=e.target.closest('[data-line-index]');if(item)selectLine(Number(item.dataset.lineIndex))});
-['speaker','dialogue','voice-profile','tts-lang','piper-voice','line-pause'].forEach(id=>{
+['speaker','dialogue','voice-profile','tts-lang','piper-voice','line-pause','line-bgm-mode','line-bgm-file','line-sfx-mode','line-sfx-file'].forEach(id=>{
  $(id).addEventListener('input',()=>{saveCurrentLine();renderLineList()});
  $(id).addEventListener('change',()=>{saveCurrentLine();renderLineList()});
 });
