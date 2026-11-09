@@ -322,10 +322,11 @@ async function loadPiperVoices(){
  if(lang==='vi'&&options.some(v=>v.key==='vi_VN-vais1000-medium'))sel.value='vi_VN-vais1000-medium';
 }
 
-const VOICE_PROFILE_KEY='visualNovelVoiceProfilesV1',REMOTE_VOICE_CONFIG='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/GiongNoi/danh-sach-giong.json';
+const VOICE_PROFILE_KEY='visualNovelVoiceProfilesV1',DELETED_VOICE_PROFILE_KEY='visualNovelDeletedVoiceProfileIdsV1',REMOTE_VOICE_CONFIG='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/GiongNoi/danh-sach-giong.json';
 let remoteVoiceProfiles=[];
 function localVoiceProfiles(){try{return JSON.parse(localStorage.getItem(VOICE_PROFILE_KEY)||'[]')}catch(_){return[]}}
-function getVoiceProfiles(){const map=new Map();remoteVoiceProfiles.forEach(p=>map.set(p.id,p));localVoiceProfiles().forEach(p=>map.set(p.id,p));return [...map.values()]}
+function deletedVoiceProfileIds(){try{return new Set(JSON.parse(localStorage.getItem(DELETED_VOICE_PROFILE_KEY)||'[]'))}catch(_){return new Set()}}
+function getVoiceProfiles(){const map=new Map();remoteVoiceProfiles.forEach(p=>{if(p&&p.id)map.set(p.id,p)});localVoiceProfiles().forEach(p=>{if(p&&p.id)map.set(p.id,p)});const deleted=deletedVoiceProfileIds();return [...map.values()].filter(p=>!deleted.has(p.id))}
 async function loadSavedVoiceProfiles(){
  const sel=$('voice-profile');sel.innerHTML='<option value="">Dùng giọng Piper bên dưới</option>';
  try{const r=await fetch(REMOTE_VOICE_CONFIG+'?v='+Date.now());if(r.ok){const data=await r.json();remoteVoiceProfiles=Array.isArray(data)?data:(data.profiles||[])}}
