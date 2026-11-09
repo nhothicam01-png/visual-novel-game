@@ -462,9 +462,10 @@ $('play-preview').addEventListener('click',playPreview);
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
 $('stop-scene').addEventListener('click',stopPreview);
 $('speak-preview').addEventListener('click',()=>{
- if(!generatedTtsBlob){setTtsStatus('Hãy tạo giọng Piper trước khi nghe thử.');return}
+ const ready=currentTtsBlob();
+ if(!ready){setTtsStatus('Câu thoại này chưa có WAV phù hợp. Hãy tạo giọng trước khi nghe thử.');return}
  if(previewAudio.tts){previewAudio.tts.pause();previewAudio.tts=null}
- const url=URL.createObjectURL(generatedTtsBlob),audio=new Audio(url);
+ const url=URL.createObjectURL(ready),audio=new Audio(url);
  previewAudio.tts=audio;
  audio.onended=()=>{URL.revokeObjectURL(url);previewAudio.tts=null};
  audio.onerror=()=>setTtsStatus('Không phát được file WAV vừa tạo.');
@@ -548,7 +549,10 @@ async function applyVoiceProfile(blob,p){
  finally{await ac.close().catch(()=>{})}
 }
 
-$('tts-lang').addEventListener('change',loadPiperVoices);
+$('tts-lang').addEventListener('change',async()=>{
+ await loadPiperVoices();
+ const line=getCurrentLine();if(line){line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;saveCurrentLine();renderLineList()}
+});
 loadSavedVoiceProfiles();
 let generatedTtsKey='',ttsGenerationPromise=null;
 function ttsRequestKey(){
@@ -563,7 +567,9 @@ async function generatePiperAudio(){
  const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
  if(!text)throw new Error('Bạn chưa nhập lời thoại.');
  if(!voiceId)throw new Error('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');
- const btn=$('generate-piper'),key=ttsRequestKey(),line=getCurrentLine();btn.disabled=true;
+ const btn=$('generate-piper'),key=ttsRequestKey(),line=getCurrentLine();
+ if(line){line.text=text;line.speaker=$('speaker').value.trim()||'Nhân vật';line.profileId=profile?.id||'';line.lang=$('tts-lang').value;line.voiceId=voiceId}
+ btn.disabled=true;
  try{
   setTtsStatus('Đang tải Piper và mô hình giọng…');setTaskProgress('Đang tải thư viện và mô hình giọng Piper…');
   if(!piperModule)piperModule=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');
@@ -593,7 +599,7 @@ async function ensureTtsReady(){
 $('generate-piper').addEventListener('click',async()=>{
  try{await ensureTtsReady()}catch(err){setTtsStatus('Không tạo được giọng: '+(err.message||err))}
 });
-loadPiperVoices();
+loadPiperVoices().then(()=>{const line=getCurrentLine();if(line&&!line.voiceId){line.voiceId=$('piper-voice').value;renderLineList()}});
 $('dialogue').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
 $('speaker').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
 $('show-dialogue').addEventListener('change',()=>drawFrame(0));
