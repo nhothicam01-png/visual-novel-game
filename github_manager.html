@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#090d19">
+<title>GitHub Manager · Visual Novel Studio</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:14px;background:#070b16;color:#f8fafc;font-family:Segoe UI,Arial,sans-serif;display:flex;flex-direction:column;align-items:center;gap:12px}
+main{width:100%;max-width:850px}.nav,.panel{background:#111c30;border:1px solid #334155;border-radius:12px;padding:14px;margin-bottom:12px}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{color:#e9d5ff;background:#263449;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:13px}
+h1{font-size:22px;color:#c4b5fd;margin:8px 0}h2{font-size:16px;color:#c4b5fd;margin:0 0 12px}p,.note{font-size:13px;line-height:1.55;color:#aab8cc}.field{display:flex;flex-direction:column;gap:6px;margin:10px 0;color:#cbd5e1;font-size:13px}.field input,.field textarea{width:100%;min-height:42px;padding:10px;color:#fff;background:#0b1425;border:1px solid #475569;border-radius:8px;font:inherit}.field textarea{min-height:170px;resize:vertical;line-height:1.45}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.btn{border:0;border-radius:8px;padding:10px 14px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-weight:700;cursor:pointer}.btn.secondary{background:#263449;border:1px solid #64748b}.btn.danger{background:#9f1239}.btn:disabled{opacity:.5}.status{font-size:13px;line-height:1.5;min-height:20px;color:#a5f3fc;white-space:pre-wrap;overflow-wrap:anywhere}.warning{padding:10px;border:1px solid #92400e;background:#42200655;border-radius:8px;color:#fde68a;font-size:12px;line-height:1.5}.success{color:#86efac}.small{font-size:11px;color:#94a3b8}.hidden{display:none!important}
+@media(max-width:560px){body{padding:8px}.grid{grid-template-columns:1fr}.panel{padding:11px}}
+</style>
+</head>
+<body>
+<main>
+<nav class="nav"><a href="./index.html">🏠 Trang chủ</a><a href="./thunghiem.html">🎬 Phòng dựng video</a><a href="./tao_giong.html">🎙️ Phòng tạo giọng</a></nav>
+<h1>🔐 GitHub Manager</h1>
+<p>Quản lý token một lần, sau đó dùng cùng token trên các trang cùng tên miền GitHub Pages. Có thể đẩy file HTML, JS, CSS, JSON và các tệp khác lên repository.</p>
+<section class="panel">
+<h2>1. Kết nối GitHub</h2>
+<label class="field">Personal Access Token<input id="token" type="password" autocomplete="off" placeholder="github_pat_..."></label>
+<div class="row"><button class="btn" id="save-token">Lưu token & kiểm tra</button><button class="btn secondary" id="show-token">Hiện / Ẩn</button><button class="btn danger" id="clear-token">Xóa token</button></div>
+<div class="status" id="connection-status">Chưa kiểm tra kết nối.</div>
+<div class="warning">Bảo mật: token được lưu trong localStorage của trình duyệt để các trang cùng origin dùng chung. Mọi JavaScript chạy trên website này đều có thể đọc token. Chỉ dùng token Fine-grained giới hạn đúng repository, chỉ cấp Contents: Read and write; không cấp quyền quản trị. Không dùng trên máy công cộng. Khi nghi ngờ lộ token, hãy thu hồi token tại GitHub.</div>
+</section>
+<section class="panel">
+<h2>2. Repository đích</h2>
+<div class="grid"><label class="field">Owner<input id="owner" value="nhothicam01-png"></label><label class="field">Repository<input id="repo" value="visual-novel-game"></label></div>
+<div class="grid"><label class="field">Branch<input id="branch" value="main"></label><label class="field">Đường dẫn file trên GitHub<input id="path" placeholder="vd: KichBan/truyen-moi.json"></label></div>
+<p class="small">Nếu đường dẫn đã tồn tại, hệ thống sẽ cập nhật file. Nếu chưa tồn tại, hệ thống sẽ tạo file mới.</p>
+</section>
+<section class="panel">
+<h2>3. Chọn nội dung cần push</h2>
+<label class="field">Chọn file từ điện thoại / máy tính<input id="file" type="file"></label>
+<label class="field">Hoặc dán / chỉnh sửa nội dung file<textarea id="content" spellcheck="false" placeholder="Dán nội dung JSON, HTML, JS, CSS... vào đây"></textarea></label>
+<label class="field">Commit message<input id="message" value="Update file from browser"></label>
+<div class="row"><button class="btn" id="push">⬆ Push lên GitHub</button><button class="btn secondary" id="clear-content">Xóa nội dung</button></div>
+<div class="status" id="push-status"></div>
+</section>
+<section class="panel">
+<h2>4. Mở nhanh</h2>
+<div class="row"><a id="repo-link" href="https://github.com/nhothicam01-png/visual-novel-game" target="_blank" rel="noopener" style="color:#c4b5fd">Mở repository</a><span>·</span><a id="pages-link" href="https://nhothicam01-png.github.io/visual-novel-game/" target="_blank" rel="noopener" style="color:#c4b5fd">Mở website</a></div>
+</section>
+</main>
+<script src="./github-manager.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+function config(){return {owner:$('owner').value.trim(),repo:$('repo').value.trim(),branch:$('branch').value.trim()||'main'}}
+function saveConfig(){GitHubManager.setConfig(config());const c=config();$('repo-link').href='https://github.com/'+c.owner+'/'+c.repo;$('pages-link').href='https://'+c.owner+'.github.io/'+c.repo+'/'}
+function syncConfig(){const c=GitHubManager.getConfig();if(c.owner)$('owner').value=c.owner;if(c.repo)$('repo').value=c.repo;if(c.branch)$('branch').value=c.branch;saveConfig()}
+function setStatus(message,ok=false){$('connection-status').textContent=message;$('connection-status').className='status'+(ok?' success':'')}
+$('token').value=GitHubManager.getToken();
+syncConfig();
+$('save-token').addEventListener('click',async()=>{
+ const token=$('token').value.trim();if(!token){setStatus('Hãy nhập token trước.');return}
+ try{GitHubManager.setToken(token);$('save-token').disabled=true;setStatus('Đang kiểm tra token…');const user=await GitHubManager.checkConnection();setStatus('Đã kết nối GitHub: @'+user.login+'. Token đã lưu trên trình duyệt này.',true)}
+ catch(e){setStatus('Lỗi: '+e.message)}
+ finally{$('save-token').disabled=false}
+});
+$('show-token').addEventListener('click',()=>{$('token').type=$('token').type==='password'?'text':'password'});
+$('clear-token').addEventListener('click',()=>{if(!confirm('Xóa token khỏi trình duyệt này?'))return;GitHubManager.clearToken();$('token').value='';setStatus('Đã xóa token khỏi localStorage.')});
+['owner','repo','branch'].forEach(id=>$(id).addEventListener('change',saveConfig));
+$('file').addEventListener('change',()=>{const f=$('file').files[0];if(!f)return;if(!$('path').value.trim())$('path').value=f.name;$('content').value='';$('push-status').textContent='Đã chọn '+f.name+' ('+f.size+' bytes).'});
+$('clear-content').addEventListener('click',()=>{$('content').value='';$('file').value='';$('push-status').textContent='Đã xóa nội dung nhập.'});
+$('push').addEventListener('click',async()=>{
+ const c=config(),file=$('file').files[0],path=$('path').value.trim();
+ if(!GitHubManager.getToken()){ $('push-status').textContent='Chưa có token. Hãy kết nối ở mục 1.';return}
+ if(!c.owner||!c.repo||!path){$('push-status').textContent='Hãy nhập owner, repository và đường dẫn file.';return}
+ if(!file&&!$('content').value){$('push-status').textContent='Hãy chọn file hoặc nhập nội dung.';return}
+ if(!confirm('Xác nhận push '+path+' lên '+c.owner+'/'+c.repo+' ('+c.branch+')?'))return;
+ $('push').disabled=true;$('push-status').textContent='Đang kiểm tra phiên bản hiện tại và gửi commit…';
+ try{
+  const result=file?await GitHubManager.pushFile({...c,path,file,message:$('message').value.trim()}):await GitHubManager.pushTextFile({...c,path,content:$('content').value,message:$('message').value.trim()});
+  $('push-status').innerHTML='';$('push-status').textContent=(result.created?'Đã tạo file mới. ':'Đã cập nhật file. ')+'Commit: '+result.commitSha+'\n'+result.htmlUrl;
+ }catch(e){$('push-status').textContent='Push thất bại: '+e.message}
+ finally{$('push').disabled=false}
+});
+</script>
+</body>
+</html>
