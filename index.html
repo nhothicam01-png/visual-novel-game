@@ -164,6 +164,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <div class="grid" hidden>
 <label class="field">Nguồn giọng (TTS)<select id="tts-engine"><option value="edge">⚡ Edge Neural · miễn phí · rất nhanh (khuyên dùng)</option><option value="piper">Piper offline · chậm (dự phòng)</option></select></label>
+<label class="field">Relay Edge TTS (tùy chọn – dùng khi trình duyệt chặn Edge)<input id="edge-relay" placeholder="https://ten-ban.workers.dev" autocomplete="off"></label>
 <label class="field">Giọng Edge mặc định<select id="edge-gender"><option value="F">Nữ</option><option value="M">Nam</option></select></label>
 <label class="field">Hồ sơ giọng đã lưu<select id="voice-profile"><option value="">Dùng giọng Piper bên dưới</option></select></label>
 <label class="field">Ngôn ngữ<select id="tts-lang"><option value="vi-VN">Tiếng Việt</option><option value="en-US">English</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="zh-CN">中文</option></select></label>
@@ -835,6 +836,8 @@ function edgePlan(spec){
 function edgeGain(spec){return Math.max(0,Math.min(150,Number(spec.profile?.volume??100)||0))/100}
 function edgeKey(spec){const pl=edgePlan(spec);return 'edge1|'+spec.lang+'|'+pl.voice+'|'+pl.rate+'|'+pl.pitch+'|'+spec.text}
 async function edgeSynthOnce(text,lang,plan){
+ const relay=edgeRelay();
+ if(relay){const r=await fetch(relay,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,voice:plan.voice,rate:plan.rate,pitch:plan.pitch})});if(!r.ok)throw new Error('Relay Edge lỗi '+r.status);return [await r.arrayBuffer()]}
  const gec=await edgeGec(),id=crypto.randomUUID().replace(/-/g,'');
  const url='wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken='+EDGE_TOKEN+'&ConnectionId='+id+'&Sec-MS-GEC='+gec+'&Sec-MS-GEC-Version='+EDGE_VER;
  return await new Promise((resolve,reject)=>{
@@ -855,6 +858,8 @@ async function edgeSynthOnce(text,lang,plan){
   ws.onclose=()=>fin(ended?null:new Error('Edge TTS đóng kết nối sớm'));
  });
 }
+function edgeRelay(){try{return (localStorage.getItem('vnEdgeRelayUrl')||'').trim()}catch(_){return ''}}
+{const el=$('edge-relay');el.value=edgeRelay();el.addEventListener('change',()=>{try{localStorage.setItem('vnEdgeRelayUrl',el.value.trim())}catch(_){}edgeDead=false;edgeFails=0})}
 async function edgeSynthesize(spec){
  if(edgeDead)throw new Error('Edge TTS không khả dụng');
  const plan=edgePlan(spec);let lastErr;
@@ -898,6 +903,14 @@ function ttsRequestKey(){
  const profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
  return JSON.stringify({text:$('dialogue').value.trim(),voiceId,profile:profile||null,lang:$('tts-lang').value,engine:$('tts-engine').value+(edgeDead?'-x':''),eg:$('edge-gender').value});
 }
+const piperMods=new Map();
+async function getPiperSession(voiceId){
+ if(piperSession&&piperSessionVoice===voiceId)return piperSession;
+ let mod=piperMods.get(voiceId);
+ if(!mod){try{mod=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1'+(piperMods.size?'?x='+encodeURIComponent(voiceId):''))}catch(_){mod=piperModule||await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1')}piperMods.set(voiceId,mod)}
+ piperModule=mod;try{if(mod.TtsSession&&mod.TtsSession._instance&&mod.TtsSession._instance.voiceId&&mod.TtsSession._instance.voiceId!==voiceId)mod.TtsSession._instance=null}catch(_){}
+ piperSession=new mod.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});piperSessionVoice=voiceId;return piperSession;
+}
 async function generatePiperAudio(){
  const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
  if(!text)throw new Error('Bạn chưa nhập lời thoại.');
@@ -924,8 +937,8 @@ async function generatePiperAudio(){
   }
  }
  setTtsStatus('Đang tải Piper và mô hình giọng…');setTaskProgress('Đang tải thư viện và mô hình giọng Piper…');
-  if(!piperModule)piperModule=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');
-  if(!piperSession||piperSessionVoice!==voiceId){piperSession=new piperModule.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});piperSessionVoice=voiceId}
+  
+  piperSession=await getPiperSession(voiceId);
   setTtsStatus('Đang tạo WAV cho câu thoại…');setTaskProgress('Đang tạo WAV: '+(line?line.speaker:'nhân vật')+'…');
   const wav=await piperSession.predict(text);
   if(!wav||!wav.size)throw new Error('Piper không trả về file âm thanh.');

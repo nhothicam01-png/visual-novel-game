@@ -31,6 +31,7 @@ button.secondary{background:#334155}button.danger{background:#9f1239}button:disa
 <label>Ngôn ngữ<select id="lang"><option value="vi">Tiếng Việt</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="zh">中文</option></select></label>
 <label>Nguồn giọng<select id="engine"><option value="edge" selected>⚡ Edge Neural · nhanh, tự nhiên (khuyên dùng)</option><option value="piper">Piper offline · chậm</option></select></label>
 <label id="edge-wrap">Giọng Edge Neural<select id="edge-voice"></select></label>
+<label>Relay Edge TTS (tùy chọn)<input id="edge-relay" placeholder="https://ten-ban.workers.dev" autocomplete="off"></label>
 <label>Giọng Piper (offline / dự phòng khi Edge lỗi)<select id="voice"><option value="">Đang tải danh sách giọng…</option></select></label>
 <label>Phong cách giọng<select id="gender"><option value="female">Nữ</option><option value="male">Nam</option><option value="neutral">Trung tính</option></select></label>
 </div>
@@ -94,6 +95,9 @@ function loadEdgeVoices(selected){
 }
 function syncEngine(){$('edge-wrap').style.display=$('engine').value==='edge'?'':'none'}
 $('engine').onchange=syncEngine;
+function edgeRelay(){try{return (localStorage.getItem('vnEdgeRelayUrl')||'').trim()}catch(_){return ''}}
+{const el=$('edge-relay');el.value=edgeRelay();el.addEventListener('change',()=>{try{localStorage.setItem('vnEdgeRelayUrl',el.value.trim())}catch(_){}})}
+
 $('edge-voice').onchange=()=>{const v=EDGE_LIST.find(x=>x[0]===$('edge-voice').value);if(v)$('gender').value=v[2]};
 async function edgeGec(){let t=Math.floor(Date.now()/1000)+11644473600;t-=t%300;const h=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode((BigInt(t)*10000000n).toString()+EDGE_TOKEN)));return Array.from(h,b=>b.toString(16).padStart(2,'0')).join('').toUpperCase()}
 function edgeDate(){return new Date().toUTCString().replace(/^(\w+), (\d+) (\w+) (\d+)/,'$1 $3 $2 $4').replace('GMT','GMT+0000 (Coordinated Universal Time)')}
@@ -101,6 +105,8 @@ function edgeEsc(s){return s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g
 async function edgeTest(text){
  const voice=$('edge-voice').value;if(!voice)throw Error('Chưa chọn giọng Edge');
  const rate=Math.round((Math.max(.5,Math.min(2,+$('speed').value||1))-1)*100),hz=Math.round(180*(Math.pow(2,(+$('pitch').value||0)/12)-1));
+ const relay=edgeRelay();
+ if(relay){const r=await fetch(relay,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,voice,rate:(rate>=0?'+':'')+rate+'%',pitch:(hz>=0?'+':'')+hz+'Hz'})});if(!r.ok)throw Error('relay '+r.status+' '+(await r.text()).slice(0,80));return new Blob([await r.arrayBuffer()],{type:'audio/mpeg'})}
  const gec=await edgeGec(),id=crypto.randomUUID().replace(/-/g,'');
  const url='wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken='+EDGE_TOKEN+'&ConnectionId='+id+'&Sec-MS-GEC='+gec+'&Sec-MS-GEC-Version='+EDGE_VER;
  const chunks=await new Promise((resolve,reject)=>{
@@ -119,6 +125,14 @@ async function edgeTest(text){
 }
 $('lang').onchange=()=>{loadVoices();loadEdgeVoices()};
 
+const piperMods=new Map();
+async function getPiperSession(voiceId){
+ if(session&&sessionVoice===voiceId)return session;
+ let mod=piperMods.get(voiceId);
+ if(!mod){try{mod=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1'+(piperMods.size?'?x='+encodeURIComponent(voiceId):''))}catch(_){mod=piperModule||await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1')}piperMods.set(voiceId,mod)}
+ piperModule=mod;try{if(mod.TtsSession&&mod.TtsSession._instance&&mod.TtsSession._instance.voiceId&&mod.TtsSession._instance.voiceId!==voiceId)mod.TtsSession._instance=null}catch(_){}
+ session=new mod.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});sessionVoice=voiceId;return session;
+}
 async function processPreviewWav(blob,native){
  const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
  const AC=window.AudioContext||window.webkitAudioContext;
@@ -151,7 +165,7 @@ async function processPreviewWav(blob,native){
   return new Blob([buffer],{type:'audio/wav'});
  }finally{await ac.close().catch(()=>{})}
 }
-$('test').onclick=async()=>{const text=TEST_TEXT[$('lang').value]||TEST_TEXT.vi;const voiceId=$('voice').value,useEdge=$('engine').value==='edge';if(!voiceId&&!useEdge)return;const btn=$('test');btn.disabled=true;$('status').textContent=useEdge?'Đang tạo câu thử bằng Edge Neural…':'Đang tải Piper và tạo câu thử…';try{let wav,native=false;if(useEdge){try{wav=await edgeTest(text);native=true}catch(e){if(!voiceId)throw e;$('status').textContent='Edge lỗi ('+e.message+'), dùng Piper dự phòng…'}}if(!wav){if(!piperModule)piperModule=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1');if(!session||sessionVoice!==voiceId){session=new piperModule.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});sessionVoice=voiceId}wav=await session.predict(text)}$('status').textContent='Đang áp dụng thông số giọng đã chọn…';const processed=await processPreviewWav(wav,native);if(testUrl)URL.revokeObjectURL(testUrl);testUrl=URL.createObjectURL(processed);document.querySelectorAll('audio').forEach(a=>{a.pause();a.currentTime=0});const audio=new Audio(testUrl);audio.onended=()=>{};await audio.play();$('status').textContent='Đang nghe bản đã xử lý · tốc độ '+$('speed').value+'x · cao độ '+$('pitch').value+' semitone · khàn '+$('rough').value+'%.'}catch(e){$('status').textContent='Lỗi tạo giọng: '+e.message}finally{btn.disabled=false}};
+$('test').onclick=async()=>{const text=TEST_TEXT[$('lang').value]||TEST_TEXT.vi;const voiceId=$('voice').value,useEdge=$('engine').value==='edge';if(!voiceId&&!useEdge)return;const btn=$('test');btn.disabled=true;$('status').textContent=useEdge?'Đang tạo câu thử bằng Edge Neural…':'Đang tải Piper và tạo câu thử…';try{let wav,native=false;if(useEdge){try{wav=await edgeTest(text);native=true}catch(e){if(!voiceId)throw e;$('status').textContent='Edge lỗi ('+e.message+'), dùng Piper dự phòng…'}}if(!wav){wav=await (await getPiperSession(voiceId)).predict(text)}$('status').textContent='Đang áp dụng thông số giọng đã chọn…';const processed=await processPreviewWav(wav,native);if(testUrl)URL.revokeObjectURL(testUrl);testUrl=URL.createObjectURL(processed);document.querySelectorAll('audio').forEach(a=>{a.pause();a.currentTime=0});const audio=new Audio(testUrl);audio.onended=()=>{};await audio.play();$('status').textContent='Đang nghe bản đã xử lý · tốc độ '+$('speed').value+'x · cao độ '+$('pitch').value+' semitone · khàn '+$('rough').value+'%.'}catch(e){$('status').textContent='Lỗi tạo giọng: '+e.message}finally{btn.disabled=false}};
 $('stop').onclick=()=>{document.querySelectorAll('audio').forEach(a=>a.pause());if(testUrl)URL.revokeObjectURL(testUrl);testUrl='';$('status').textContent='Đã dừng.'};
 function exportConfig(){const payload={schemaVersion:1,updatedAt:new Date().toISOString(),profiles:read()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='danh-sach-giong.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);$('status').textContent='Đã xuất danh-sach-giong.json. Hãy tải file lên thư mục assets/GiongNoi/ trên GitHub.'}
 $('export-config').onclick=exportConfig;$('import-config').onclick=()=>$('config-file').click();
