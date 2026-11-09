@@ -314,10 +314,12 @@ async function loadPiperVoices(){
   piperVoices=['vi_VN-vais1000-medium','en_US-lessac-medium','en_GB-alan-medium','ja_JP-kokoro-medium','ko_KR-kss-x_low','zh_CN-huayan-medium'].map(key=>({key,code:key.split('-')[0],quality:key.split('-').pop()}));
  }
  const lang=$('tts-lang').value.split('-')[0].toLowerCase();
- const matches=piperVoices.filter(v=>v.code.toLowerCase().startsWith(lang+'_')||v.key.toLowerCase().startsWith(lang+'_'));
+ let matches=piperVoices.filter(v=>v.code.toLowerCase().startsWith(lang+'_')||v.key.toLowerCase().startsWith(lang+'_'));
+ if(lang==='vi')matches=matches.filter(v=>!/(25hours_single|vivos)/i.test(v.key));
  matches.sort((a,b)=>({medium:0,high:1,low:2,x_low:3}[a.quality]??9)-({medium:0,high:1,low:2,x_low:3}[b.quality]??9));
- const options=matches.length?matches:piperVoices.filter(v=>v.code.toLowerCase().startsWith('vi_'));
- sel.innerHTML=options.map((v,i)=>'<option value="'+v.key+'">'+(i===0?'★ ':'')+v.key+'</option>').join('')||'<option value="">Không tìm thấy giọng cho ngôn ngữ này</option>';
+ const options=matches.length?matches:piperVoices.filter(v=>v.code.toLowerCase().startsWith('vi_')&&!/(25hours_single|vivos)/i.test(v.key));
+ sel.innerHTML=options.map((v,i)=>'<option value="'+v.key+'">'+(i===0?'★ ':'')+v.key+'</option>').join('')||'<option value="">Không tìm thấy model tương thích</option>';
+ if(lang==='vi'&&options.some(v=>v.key==='vi_VN-vais1000-medium'))sel.value='vi_VN-vais1000-medium';
 }
 
 const VOICE_PROFILE_KEY='visualNovelVoiceProfilesV1';
