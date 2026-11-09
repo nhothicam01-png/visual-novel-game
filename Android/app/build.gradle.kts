@@ -3,6 +3,9 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+val webAppUrl = (project.findProperty("WEB_APP_URL") as String?)
+    ?: "https://nhothicam01-png.github.io/visual-novel-game/thunghiem.html"
+
 android {
     namespace = "vn.visualnovel.studio"
     compileSdk = 35
@@ -13,11 +16,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "0.1.0"
-        buildConfigField(
-            "String",
-            "WEB_APP_URL",
-            "\"\${(project.findProperty("WEB_APP_URL") as String?) ?: "https://nhothicam01-png.github.io/visual-novel-game/thunghiem.html"}\""
-        )
+        buildConfigField("String", "WEB_APP_URL", "\"$webAppUrl\"")
     }
 
     buildFeatures { buildConfig = true }
