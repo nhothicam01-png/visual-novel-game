@@ -315,7 +315,7 @@ async function loadPiperVoices(){
  const options=matches.length?matches:piperVoices.filter(v=>v.code.toLowerCase().startsWith('vi_'));
  sel.innerHTML=options.map((v,i)=>'<option value="'+v.key+'">'+(i===0?'★ ':'')+v.key+'</option>').join('')||'<option value="">Không tìm thấy giọng cho ngôn ngữ này</option>';
 }
-$('tts-lang').addEventListener('change',()=>{if($('tts-engine').value==='piper')loadPiperVoices()});
+$('tts-lang').addEventListener('change',loadPiperVoices);
 $('generate-piper').addEventListener('click',async()=>{
  const text=$('dialogue').value.trim(),voiceId=$('piper-voice').value;
  if(!text){setTtsStatus('Hãy nhập lời thoại trước khi tạo Piper.');return}
