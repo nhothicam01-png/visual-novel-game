@@ -9,9 +9,19 @@
 body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-height:100vh;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px}
 h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 .intro{max-width:1000px;color:#cbd5e1;font-size:.85rem;line-height:1.55;text-align:center}
-#game-container{position:relative;width:100%;max-width:1000px;aspect-ratio:16/9;max-height:75vh;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px #000b}
-#game-container.portrait{aspect-ratio:9/16;max-width:420px;max-height:78vh}
+#game-container{position:relative;width:100%;max-width:1000px;aspect-ratio:16/9;max-height:75vh;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 10px 30px #000b;transition:aspect-ratio .25s ease}
+#game-container.portrait{aspect-ratio:9/16;max-width:420px;max-height:85vh}
+#game-container:fullscreen,#game-container:-webkit-full-screen{width:100vw;height:100vh;max-width:none;max-height:none;border-radius:0;box-shadow:none;background:#000}
+#game-container:fullscreen.force-landscape,#game-container:-webkit-full-screen.force-landscape{aspect-ratio:16/9!important;width:100vw!important;height:56.25vw!important;max-height:100vh!important;max-width:calc(100vh * 16 / 9)!important;margin:auto!important}
+#game-container:fullscreen.force-portrait,#game-container:-webkit-full-screen.force-portrait{aspect-ratio:9/16!important;height:100vh!important;width:calc(100vh * 9 / 16)!important;max-width:100vw!important;max-height:100vh!important;margin:auto!important}
 #preview-canvas{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+#preview-loading{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#050811d9;color:#e2e8f0;font-size:.85rem;text-align:center;padding:18px}
+#preview-loading.active{display:flex}
+.preview-toolbar{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.seek-panel{width:100%;max-width:1000px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 12px;background:#0f172acc;border:1px solid #a855f744;border-radius:10px}
+.seek-panel input[type=range]{flex:1;min-width:140px;accent-color:#a855f7}
+#seek-position{min-width:78px;text-align:center;color:#c4b5fd;font-variant-numeric:tabular-nums}
+@media(max-width:600px){.seek-panel{gap:6px;padding:8px}.seek-panel .btn{padding:7px 9px}#seek-position{min-width:65px}}
 .panel{width:100%;max-width:1000px;background:rgba(15,23,42,.88);border:1px solid rgba(168,85,247,.28);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px}
 .panel h2{font-size:.95rem;color:#c4b5fd;border-bottom:1px solid #ffffff20;padding-bottom:7px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
@@ -102,10 +112,22 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 
 
 
-<div id="game-container"><canvas id="preview-canvas" width="1920" height="1080"></canvas></div>
-<div class="row preview-controls">
+<div id="game-container">
+<canvas id="preview-canvas" width="1920" height="1080"></canvas>
+<div id="preview-loading"><strong>⏳ Đang tải tài nguyên…</strong><span id="preview-loading-status">Đang chuẩn bị cảnh</span></div>
+</div>
+<div class="preview-toolbar">
 <button class="btn" id="play-preview">▶ Xem trước cảnh</button>
 <button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
+<button class="btn secondary" id="ratio-landscape">📺 16:9</button>
+<button class="btn secondary" id="ratio-portrait">📱 9:16</button>
+<button class="btn secondary" id="toggle-fullscreen">⛶ Toàn màn hình</button>
+</div>
+<div class="seek-panel" aria-label="Điều khiển thoại">
+<button class="btn secondary" id="seek-prev">⏮ Lùi 1 thoại</button>
+<input id="seek-slider" type="range" min="0" max="0" value="0" step="1" aria-label="Tua đến thoại">
+<span id="seek-position">0 / 0</span>
+<button class="btn secondary" id="seek-next">Tiến 1 thoại ⏭</button>
 </div>
 <div id="task-progress" class="task-progress" hidden>
 <div class="task-progress-head"><span id="task-progress-label">Đang xử lý…</span><strong id="task-progress-percent"></strong></div>
@@ -114,7 +136,12 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 
 <details class="panel main-panel" open><summary class="panel-heading">1. Chọn truyện & thiết lập cảnh</summary>
 <label class="field">Chọn truyện từ thư mục KichBan<select id="story-select"><option value="">Đang tải danh sách truyện…</option></select></label>
-<div class="status" id="story-status">Chọn một truyện để nạp lời thoại và bối cảnh từ JSON.</div>
+<div class="row">
+<button class="btn" id="import-json-button" type="button">📂 Import JSON từ máy</button>
+<input id="import-json-file" type="file" accept=".json,application/json" hidden>
+<button class="btn secondary" id="reload-story-list" type="button">↻ Tải lại danh sách GitHub</button>
+</div>
+<div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 2.</div>
 <p class="note">Mỗi nhân vật có thể chọn một hồ sơ giọng riêng. Nếu JSON chưa có giọng, giọng bị thiếu hoặc không tải được, hệ thống tự dùng giọng mặc định dự phòng bên dưới.</p>
 <div id="character-voice-list" class="grid"></div>
 <label class="field">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
@@ -764,6 +791,8 @@ $('export-video').addEventListener('click',exportVideo);
 
 let scenes=[],activeSceneIndex=0,activeLineIndex=0;
 let activeStoryData=null,activeStoryName='',characterVoiceMap={},characterDirectory=[],defaultVoiceProfileId='';
+let sourceLineCount=0,assetLoadToken=0,isPortrait=false;
+const imageAssetCache=new Map(),videoAssetCache=new Map();
 function clone(obj){return JSON.parse(JSON.stringify(obj))}
 const GH_API='https://api.github.com/repos/nhothicam01-png/visual-novel-game/contents/assets/KichBan?ref=main';
 const storyCache=new Map();
