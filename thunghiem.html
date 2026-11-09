@@ -536,6 +536,20 @@ function stopPreview(){
  if(bgVideo)bgVideo.pause();
  stopRenderLoop();updatePlaybackButtons();
 }
+async function stopAndResetPreview(){
+ stopPreview();
+ if(!scenes.length)return;
+ saveCurrentLine();saveCurrentScene();
+ activeSceneIndex=0;activeLineIndex=0;
+ savePlaybackProgress(0);
+ renderSceneList();renderLineList();
+ applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());
+ applyLineEffects(getCurrentLine());updateSeekUI(0);
+ await updateAssets();
+ if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
+ preloadAdjacentAssets(0);
+ setTtsStatus('Đã dừng và đặt lại tiến trình về thoại đầu tiên.');
+}
 function audioElement(url,loop,volume){
  const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
 }
@@ -671,7 +685,7 @@ if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEven
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
 $('play-preview').addEventListener('click',()=>{if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
-$('stop-scene').addEventListener('click',stopPreview);
+$('stop-scene').addEventListener('click',stopAndResetPreview);
 $('speak-preview').addEventListener('click',async()=>{
  if($('preview-tts-mode').value==='browser'){
   if(previewAudio.tts){previewAudio.tts.pause();previewAudio.tts=null}
@@ -1166,7 +1180,7 @@ $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
 $('ratio-toggle').addEventListener('click',toggleAspectRatio);
 $('ratio-toggle-settings').addEventListener('click',toggleAspectRatio);
-$('stop-scene').addEventListener('click',stopPreview);
+$('stop-scene').addEventListener('click',stopAndResetPreview);
 
 $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
 document.addEventListener('fullscreenchange',()=>{$('toggle-fullscreen').textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
