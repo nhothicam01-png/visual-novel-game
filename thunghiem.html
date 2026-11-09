@@ -116,6 +116,13 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <button class="btn secondary" id="ratio-portrait">📱 Dọc 9:16</button>
 <label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
 <label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
+<label class="field">Kiểu khung thoại
+<select id="dialogue-width-mode">
+<option value="fit">Ôm sát nội dung</option>
+<option value="percent">Theo % màn hình</option>
+</select></label>
+<label class="field" id="dialogue-width-control">Chiều rộng khung thoại <span id="dialogue-width-value">75%</span>
+<input id="dialogue-width" type="range" min="35" max="95" step="1" value="75"></label>
 </div>
 <div class="scene-groups">
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
@@ -342,17 +349,24 @@ function drawFrame(elapsed){
  ctx.restore();
  if($('show-dialogue').checked&&$('dialogue').value.trim()){
   const text=$('dialogue').value.trim(),name=$('speaker').value.trim();
-  const pad=w*.025,fontSize=Math.max(24,Math.round(w*.022)),maxW=w*.88;
+  const mode=$('dialogue-width-mode')?.value||'percent';
+  const pad=w*.018,fontSize=Math.max(24,Math.round(w*.022));
+  const percent=Number($('dialogue-width')?.value||75)/100;
+  const maxW=mode==='fit'?w*.88:w*percent;
   ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';
-  const lines=wrapText(text,maxW-pad*2),lineH=fontSize*1.42;
-  const nameH=$('show-speaker').checked&&name?fontSize*1.15:0;
-  const boxH=pad*1.4+nameH+lines.length*lineH;
+  const lines=wrapText(text,maxW-pad*2),lineH=fontSize*1.28;
+  const measured=Math.max(0,...lines.map(line=>ctx.measureText(line).width));
+  const boxW=mode==='fit'?Math.min(w*.92,measured+pad*2):maxW;
+  const boxX=(w-boxW)/2;
+  const nameH=$('show-speaker').checked&&name?fontSize*1.05:0;
+  const topPad=pad*.42,bottomPad=pad*.42;
+  const boxH=topPad+nameH+lines.length*lineH+bottomPad;
   const boxY=h-boxH-h*.025;
-  ctx.fillStyle='rgba(5,8,17,.72)';roundRect(w*.04,boxY,w*.92,boxH,Math.max(12,w*.009));ctx.fill();
+  ctx.fillStyle='rgba(5,8,17,.72)';roundRect(boxX,boxY,boxW,boxH,Math.max(12,w*.009));ctx.fill();
   ctx.textAlign='center';ctx.textBaseline='top';
-  if(nameH){ctx.font='700 '+Math.round(fontSize*.75)+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#c4b5fd';ctx.fillText(name,w/2,boxY+pad*.55)}
+  if(nameH){ctx.font='700 '+Math.round(fontSize*.75)+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#c4b5fd';ctx.fillText(name,w/2,boxY+topPad)}
   ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#fff';ctx.shadowColor='#000';ctx.shadowBlur=5;
-  lines.forEach((line,i)=>ctx.fillText(line,w/2,boxY+pad*.55+nameH+i*lineH,maxW));
+  lines.forEach((line,i)=>ctx.fillText(line,w/2,boxY+topPad+nameH+i*lineH,boxW-pad));
   ctx.shadowBlur=0;
  }
 }
@@ -509,6 +523,9 @@ $('dialogue').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
 $('speaker').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
 $('show-dialogue').addEventListener('change',()=>drawFrame(0));
 $('show-speaker').addEventListener('change',()=>drawFrame(0));
+$('dialogue-width-mode').addEventListener('change',()=>{const fit=$('dialogue-width-mode').value==='fit';$('dialogue-width-control').style.display=fit?'none':'flex';drawFrame(0)});
+$('dialogue-width').addEventListener('input',()=>{$('dialogue-width-value').textContent=$('dialogue-width').value+'%';if(!previewing)drawFrame(0)});
+$('dialogue-width-control').style.display='flex';
 document.querySelectorAll('[data-effect]').forEach(el=>el.addEventListener('change',()=>{if(!previewing)drawFrame(0)}));
  $('effect-strength').addEventListener('input',()=>{$('effect-strength-value').textContent=$('effect-strength').value+'%';if(!previewing)drawFrame(0)});
 
