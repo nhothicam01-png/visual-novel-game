@@ -78,6 +78,8 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="field">Nội dung lời thoại
 <textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
 <div class="grid">
+<label class="field">Nguồn tạo giọng
+<select id="tts-engine"><option value="browser">TTS trình duyệt</option><option value="piper">Piper AI (qua máy chủ Piper)</option></select></label>
 <label class="field">Ngôn ngữ TTS
 <select id="tts-lang"><option value="vi-VN">Tiếng Việt</option><option value="en-US">English</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="zh-CN">中文</option></select></label>
 <label class="field">Giọng đọc trên thiết bị
@@ -87,11 +89,24 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="field">Cao độ <span id="pitch-value">1.0</span>
 <input id="tts-pitch" type="range" min="0.5" max="1.5" step="0.05" value="1"></label>
 </div>
+<div id="piper-settings" class="panel" style="padding:10px;background:#111c30;display:none">
+<strong style="font-size:.82rem;color:#c4b5fd">⚙️ Kết nối Piper TTS</strong>
+<label class="field">Địa chỉ máy chủ Piper (API)
+<input id="piper-url" type="url" value="http://localhost:5000/" placeholder="http://localhost:5000/"></label>
+<div class="grid">
+<label class="field">Tên giọng Piper
+<input id="piper-voice" value="vi_VN-vais1000-medium" placeholder="Tên model giọng, ví dụ vi_VN-..."></label>
+<label class="field">Tốc độ đọc Piper <span id="piper-rate-value">1.00</span>
+<input id="piper-rate" type="range" min="0.65" max="1.5" step="0.05" value="1"></label>
+</div>
+<button class="btn" id="generate-piper">✨ Tạo file giọng đọc Piper</button>
+<p class="note">Piper tạo WAV từ máy chủ Piper mà bạn đã cài và chạy. Địa chỉ mặc định là máy chủ trên cùng thiết bị. Để dùng máy chủ ở máy khác, nhập địa chỉ máy chủ có thể truy cập được và hỗ trợ HTTPS/CORS khi trang chạy trên GitHub Pages.</p>
+</div>
 <div class="row">
 <button class="btn" id="speak-preview">🔊 Nghe thử TTS</button>
 <button class="btn secondary" id="stop-preview">Dừng nghe</button>
 </div>
-<p class="note">TTS tự tạo dùng giọng đọc có sẵn trong trình duyệt/thiết bị để nghe thử. Trình duyệt không cung cấp luồng âm thanh SpeechSynthesis cho bộ mã hóa video, vì vậy muốn xuất video có giọng TTS này, hãy tải file TTS (MP3/WAV/OGG) ở mục bên dưới. File tải lên sẽ được ghép đồng bộ vào video.</p>
+<p class="note">Chọn TTS trình duyệt để nghe thử, chọn Piper để tạo WAV có thể xuất video, hoặc tải file TTS có sẵn. Piper cần một máy chủ Piper đang chạy; trang web không tự cài Piper lên điện thoại.</p>
 <label class="field">Hoặc tải file TTS đã tạo (MP3 / WAV / OGG)
 <input type="file" id="tts-file" accept="audio/*"></label>
 <div class="status" id="tts-status">Chưa chọn file TTS. Bạn vẫn có thể nghe thử giọng đọc bằng nút phía trên.</div>
@@ -158,7 +173,7 @@ const backgrounds=[
  ['thu_vien.png','Thư viện'],
  ['render.mp4','Video nền render.mp4']
 ];
-let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewSpeech=null,raf=0,recording=false;
+let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null;
 let previewAudio={bgm:null,tts:null,sfx:null};
 let speechVoices=[];
 let recordingTimer=null;
@@ -282,7 +297,7 @@ function playPreview(){
  if(bgVideo)bgVideo.play().catch(()=>{});
  const bgm=$('bgm').value;
  if(bgm){previewAudio.bgm=audioElement(BASE+'AmThanh/Nen/'+bgm,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
- const ttsFile=$('tts-file').files[0];
+ const ttsFile=currentTtsBlob();
  if(ttsFile){previewAudio.tts=audioElement(URL.createObjectURL(ttsFile),false,Number($('tts-volume').value));previewAudio.tts.onended=()=>stopPreview();previewAudio.tts.play().catch(()=>{})}
  else{
   const text=$('dialogue').value.trim();
@@ -321,6 +336,28 @@ if(window.speechSynthesis){refreshVoices();window.speechSynthesis.onvoiceschange
 [['tts-rate','rate-value'],['tts-pitch','pitch-value'],['bgm-volume','bgm-volume-value'],['tts-volume','tts-volume-value'],['sfx-volume','sfx-volume-value']].forEach(([input,out])=>{
  $(input).addEventListener('input',()=>{$(out).textContent=input.includes('volume')?Math.round(Number($(input).value)*100)+'%':Number($(input).value).toFixed(2).replace(/0$/,'')});
 });
+$('tts-engine').addEventListener('change',()=>{$('piper-settings').style.display=$('tts-engine').value==='piper'?'flex':'none'});
+$('piper-rate').addEventListener('input',()=>{$('piper-rate-value').textContent=Number($('piper-rate').value).toFixed(2)});
+function currentTtsBlob(){return $('tts-file').files[0]||generatedTtsBlob}
+$('generate-piper').addEventListener('click',async()=>{
+ const text=$('dialogue').value.trim();
+ const endpoint=$('piper-url').value.trim();
+ if(!text){setTtsStatus('Hãy nhập lời thoại trước khi tạo Piper.');return}
+ if(!endpoint){setTtsStatus('Hãy nhập địa chỉ máy chủ Piper.');return}
+ const btn=$('generate-piper');btn.disabled=true;setTtsStatus('Đang gửi lời thoại đến Piper để tạo WAV...');
+ try{
+  const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,voice:$('piper-voice').value.trim()||undefined,length_scale:Number($('piper-rate').value)})});
+  if(!response.ok){const detail=await response.text().catch(()=> '');throw new Error('Piper trả về HTTP '+response.status+(detail?' · '+detail.slice(0,240):''))}
+  const blob=await response.blob();
+  if(!blob.size)throw new Error('Piper trả về file âm thanh rỗng.');
+  generatedTtsBlob=new Blob([blob],{type:blob.type||'audio/wav'});
+  $('tts-file').value='';
+  const testUrl=URL.createObjectURL(generatedTtsBlob),audio=new Audio(testUrl);
+  audio.onloadedmetadata=()=>{$('duration').value=Math.max(1,Math.ceil(audio.duration*10)/10);setTtsStatus('Piper đã tạo WAV thành công · '+audio.duration.toFixed(2)+' giây. File đã sẵn sàng để nghe thử và xuất video.');URL.revokeObjectURL(testUrl)};
+  audio.onerror=()=>{setTtsStatus('Đã nhận file từ Piper nhưng không đọc được metadata. Bạn vẫn có thể thử xuất video.');URL.revokeObjectURL(testUrl)};
+ }catch(err){setTtsStatus('Không kết nối/tạo được Piper: '+err.message+'. Kiểm tra máy chủ, URL, HTTPS và CORS.')}
+ finally{btn.disabled=false}
+});
 $('tts-file').addEventListener('change',()=>{
  const f=$('tts-file').files[0];
  if(!f){setTtsStatus('Chưa chọn file TTS.');return}
@@ -348,9 +385,9 @@ async function exportVideo(){
  if(recording)return;
  const Recorder=window.MediaRecorder;
  if(!Recorder||!canvas.captureStream){setStatus('Trình duyệt không hỗ trợ MediaRecorder/canvas capture. Hãy dùng Chrome hoặc Edge mới.');return}
- const ttsFile=$('tts-file').files[0];
+ const ttsFile=currentTtsBlob();
  if(!$('dialogue').value.trim()&&!ttsFile){setStatus('Hãy nhập lời thoại hoặc chọn file TTS.');return}
- if(!ttsFile){setStatus('Để xuất video có giọng TTS, cần tải file TTS vào ô "Tải file TTS đã tạo". Giọng SpeechSynthesis chỉ nghe thử được, không thể thu trực tiếp vào video từ trình duyệt.');return}
+ if(!ttsFile){setStatus('Hãy tạo WAV bằng Piper hoặc tải file TTS lên. Giọng SpeechSynthesis chỉ nghe thử được, không thể thu trực tiếp vào video.');return}
  const duration=Math.max(1,Number($('duration').value)||8,0);
  const fps=Number($('fps').value)||30;
  const chunks=[];
