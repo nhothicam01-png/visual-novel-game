@@ -18,6 +18,16 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 .field{display:flex;flex-direction:column;gap:5px;min-width:0;color:#cbd5e1;font-size:.78rem}
 .field input,.field select,.field textarea{width:100%;min-height:36px;padding:7px 9px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:7px;font:inherit;user-select:text}
 .field textarea{min-height:76px;resize:vertical;line-height:1.45}\n.effect-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:7px;padding:8px;background:#0f172a;border-radius:8px}\n.effect-options .check{font-size:.74rem}
+.preview-controls{width:100%;max-width:1000px;justify-content:center;margin-top:-3px}
+.preview-controls .btn{min-width:145px}
+.scene-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.scene-groups .effect-panel{min-width:0;padding:12px;background:#111c30;border:1px solid #475569;border-radius:9px;display:flex;flex-direction:column;gap:10px}
+.scene-groups .effect-panel>strong{font-size:.88rem;color:#c4b5fd;padding-bottom:8px;border-bottom:1px solid #ffffff24}
+.scene-groups .effect-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 12px;padding:2px 0;background:transparent}
+.scene-groups .effect-options .check{display:flex;align-items:center;gap:7px;min-width:0;white-space:normal;line-height:1.35;font-size:.78rem}
+.scene-groups .effect-options input[type=checkbox]{width:17px!important;height:17px!important;min-height:17px!important;flex:0 0 17px;padding:0;margin:0;accent-color:#a855f7}
+@media(max-width:600px){.scene-groups{grid-template-columns:1fr}.scene-groups .effect-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 .effects-layout{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}
 .effect-panel{min-width:0;padding:10px;background:#111c30;border:1px solid #334155;border-radius:9px;display:flex;flex-direction:column;gap:9px}
 .effect-panel>strong{font-size:.82rem;color:#c4b5fd;padding-bottom:7px;border-bottom:1px solid #ffffff20}
@@ -50,6 +60,10 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <p class="intro">Tự chọn nhân vật, biểu cảm, bối cảnh, lời thoại và âm thanh để dựng một cảnh độc lập. Không cần tải hoặc chạy kịch bản JSON.</p>
 
 <div id="game-container"><canvas id="preview-canvas" width="1920" height="1080"></canvas></div>
+<div class="row preview-controls">
+<button class="btn" id="play-preview">▶ Xem trước cảnh</button>
+<button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
+</div>
 
 <section class="panel">
 <h2>1. Khung hình & bố cục</h2>
@@ -59,22 +73,12 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
 <label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
 </div>
-<div class="grid">
-<label class="field">Nhân vật
-<select id="character"></select></label>
-<label class="field">Biểu cảm / chuyển động
-<select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
-<label class="field">Ảnh nền
-<select id="background"></select></label>
-<div class="effects-layout"><div class="effect-panel"><strong>Hiệu ứng nền (chọn nhiều)</strong><div class="effect-options">
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-zoom"> Zoom chậm</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-left"> Lia trái</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-right"> Lia phải</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-float"> Trôi nhẹ</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-blur"> Mờ điện ảnh</label>
-<label class="check"><input type="checkbox" data-effect="bg" value="bg-pulse"> Ánh sáng nhịp</label>
-</div></div>
-<div class="effect-panel"><strong>Hiệu ứng nhân vật (chọn nhiều)</strong><div class="effect-options">
+<div class="scene-groups">
+<div class="effect-panel">
+<strong>🧍 Nhân vật</strong>
+<label class="field">Chọn nhân vật<select id="character"></select></label>
+<label class="field">Biểu cảm / chuyển động<select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
+<div class="effect-options">
 <label class="check"><input type="checkbox" data-effect="char" value="char-bob"> Nhấp nhô</label>
 <label class="check"><input type="checkbox" data-effect="char" value="char-sway"> Đung đưa</label>
 <label class="check"><input type="checkbox" data-effect="char" value="char-shake"> Rung</label>
@@ -83,14 +87,32 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="check"><input type="checkbox" data-effect="char" value="char-breathe"> Thở nhẹ</label>
 <label class="check"><input type="checkbox" data-effect="char" value="char-enter"> Đi vào cảnh</label>
 <label class="check"><input type="checkbox" data-effect="char" value="char-fade"> Mờ dần xuất hiện</label>
-</div></div>
-<div class="effect-panel"><strong>Hiệu ứng camera (chọn nhiều)</strong><div class="effect-options">
+</div>
+</div>
+<div class="effect-panel">
+<strong>🌄 Bối cảnh & nền</strong>
+<label class="field">Ảnh nền<select id="background"></select></label>
+<div class="effect-options">
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-zoom"> Zoom chậm</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-left"> Lia trái</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-right"> Lia phải</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-float"> Trôi nhẹ</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-blur"> Mờ điện ảnh</label>
+<label class="check"><input type="checkbox" data-effect="bg" value="bg-pulse"> Ánh sáng nhịp</label>
+</div>
+</div>
+<div class="effect-panel">
+<strong>📷 Camera</strong>
+<div class="effect-options">
 <label class="check"><input type="checkbox" data-effect="camera" value="camera-shake"> Rung camera</label>
 <label class="check"><input type="checkbox" data-effect="camera" value="camera-zoom"> Zoom gần</label>
 <label class="check"><input type="checkbox" data-effect="camera" value="camera-pull"> Zoom xa</label>
 <label class="check"><input type="checkbox" data-effect="camera" value="camera-drift"> Lia máy nhẹ</label>
-</div></div>
-<div class="effect-panel"><strong>Hiệu ứng môi trường (chọn nhiều)</strong><div class="effect-options">
+</div>
+</div>
+<div class="effect-panel">
+<strong>✨ Môi trường</strong>
+<div class="effect-options">
 <label class="check"><input type="checkbox" data-effect="atm" value="snow"> Tuyết rơi</label>
 <label class="check"><input type="checkbox" data-effect="atm" value="rain"> Mưa</label>
 <label class="check"><input type="checkbox" data-effect="atm" value="petals"> Cánh hoa bay</label>
@@ -101,11 +123,11 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <label class="check"><input type="checkbox" data-effect="atm" value="lightning"> Chớp sáng</label>
 <label class="check"><input type="checkbox" data-effect="atm" value="vignette"> Tối góc</label>
 <label class="check"><input type="checkbox" data-effect="atm" value="flash"> Flash trắng</label>
-</div></div>
+</div>
+</div>
 </div>
 <label class="field">Cường độ hiệu ứng <span id="effect-strength-value">50%</span>
 <input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
-</div>
 </section>
 
 <section class="panel">
@@ -160,8 +182,6 @@ h1{font-size:1.25rem;color:#c4b5fd;text-align:center}
 <select id="fps"><option value="24">24 FPS</option><option value="30" selected>30 FPS</option><option value="60">60 FPS</option></select></label>
 </div>
 <div class="row">
-<button class="btn" id="play-preview">▶ Xem trước cảnh</button>
-<button class="btn secondary" id="stop-scene">■ Dừng cảnh</button>
 <button class="btn" id="export-video">🎬 Xuất video MP4 (timeline)</button>
 </div>
 <div id="progress"><div id="progress-fill"></div></div>
