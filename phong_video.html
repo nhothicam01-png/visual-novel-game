@@ -108,7 +108,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .browser-tts-control{display:none!important}
 
 /* Compact dialogue editor; keep legacy TTS state controls hidden but functional. */
-.audio-picker-panel{gap:0}.audio-picker-row{display:flex;flex-direction:column;gap:8px;padding:12px;border-bottom:1px solid #ffffff18}.audio-picker-row:last-of-type{border-bottom:0}.audio-picker-copy{display:flex;flex-direction:column;gap:3px;min-width:0}.audio-picker-copy strong{font-size:.82rem;color:#e2e8f0}.audio-picker-copy span{font-size:.72rem;color:#94a3b8;overflow-wrap:anywhere}.audio-picker-actions{gap:6px}.audio-picker-actions .btn{padding:7px 9px;font-size:.72rem}.audio-picker-overlay{position:fixed;inset:0;z-index:1000;background:#020617ef;display:flex;align-items:center;justify-content:center;padding:16px}.audio-picker-overlay[hidden]{display:none}.audio-picker-dialog{width:min(100%,440px);padding:16px;background:#111c30;border:1px solid #a855f766;border-radius:12px;display:flex;flex-direction:column;gap:12px}.audio-picker-dialog h3{font-size:.95rem;color:#c4b5fd}.audio-picker-dialog select{width:100%;min-height:42px;padding:8px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:8px}.audio-picker-dialog .note{overflow-wrap:anywhere}
+.line-audio-github-select{width:100%;min-height:42px;padding:8px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:8px}.audio-picker-panel{gap:0}.audio-picker-row{display:flex;flex-direction:column;gap:8px;padding:12px;border-bottom:1px solid #ffffff18}.audio-picker-row:last-of-type{border-bottom:0}.audio-picker-copy{display:flex;flex-direction:column;gap:3px;min-width:0}.audio-picker-copy strong{font-size:.82rem;color:#e2e8f0}.audio-picker-copy span{font-size:.72rem;color:#94a3b8;overflow-wrap:anywhere}.audio-picker-actions{gap:6px}.audio-picker-actions .btn{padding:7px 9px;font-size:.72rem}.audio-picker-overlay{position:fixed;inset:0;z-index:1000;background:#020617ef;display:flex;align-items:center;justify-content:center;padding:16px}.audio-picker-overlay[hidden]{display:none}.audio-picker-dialog{width:min(100%,440px);padding:16px;background:#111c30;border:1px solid #a855f766;border-radius:12px;display:flex;flex-direction:column;gap:12px}.audio-picker-dialog h3{font-size:.95rem;color:#c4b5fd}.audio-picker-dialog select{width:100%;min-height:42px;padding:8px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:8px}.audio-picker-dialog .note{overflow-wrap:anywhere}
 @media(max-width:600px){.audio-picker-actions .btn{flex:1 1 calc(50% - 6px)}.audio-picker-row{padding:10px}}
 </style>
 <script src="./github-progress.js"></script></head>
@@ -174,8 +174,8 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
 <details class="effect-panel audio-picker-panel"><summary>🔊 Âm thanh tùy chỉnh cho thoại này</summary>
-<div class="audio-picker-row"><div class="audio-picker-copy"><strong>🎵 Nhạc nền</strong><span id="line-bgm-selected">Theo âm thanh trong JSON</span></div><div class="row audio-picker-actions"><button class="btn secondary" id="pick-line-bgm" type="button">📁 Chọn từ GitHub</button><button class="btn secondary" id="upload-line-bgm" type="button">⬆ Từ máy</button><button class="btn secondary" id="inherit-line-bgm" type="button">Theo JSON</button><button class="btn danger" id="clear-line-bgm" type="button">Để trống</button><input id="line-bgm-local" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" hidden></div></div>
-<div class="audio-picker-row"><div class="audio-picker-copy"><strong>🔔 Hiệu ứng âm thanh</strong><span id="line-sfx-selected">Theo âm thanh trong JSON</span></div><div class="row audio-picker-actions"><button class="btn secondary" id="pick-line-sfx" type="button">📁 Chọn từ GitHub</button><button class="btn secondary" id="upload-line-sfx" type="button">⬆ Từ máy</button><button class="btn secondary" id="inherit-line-sfx" type="button">Theo JSON</button><button class="btn danger" id="clear-line-sfx" type="button">Để trống</button><input id="line-sfx-local" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" hidden></div></div>
+<div class="audio-picker-row"><div class="audio-picker-copy"><strong>🎵 Nhạc nền</strong><span id="line-bgm-selected">Theo âm thanh trong JSON</span></div><select class="line-audio-github-select" id="line-bgm-github" aria-label="Chọn nhạc nền từ assets/AmThanh/Nen"><option value="">Đang tải danh sách GitHub…</option></select><div class="row audio-picker-actions"><button class="btn secondary" id="upload-line-bgm" type="button">⬆ Từ máy</button><button class="btn secondary" id="inherit-line-bgm" type="button">Theo JSON</button><button class="btn danger" id="clear-line-bgm" type="button">Để trống</button><input id="line-bgm-local" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" hidden></div></div>
+<div class="audio-picker-row"><div class="audio-picker-copy"><strong>🔔 Hiệu ứng âm thanh</strong><span id="line-sfx-selected">Theo âm thanh trong JSON</span></div><select class="line-audio-github-select" id="line-sfx-github" aria-label="Chọn hiệu ứng từ assets/AmThanh/HieuUng"><option value="">Đang tải danh sách GitHub…</option></select><div class="row audio-picker-actions"><button class="btn secondary" id="upload-line-sfx" type="button">⬆ Từ máy</button><button class="btn secondary" id="inherit-line-sfx" type="button">Theo JSON</button><button class="btn danger" id="clear-line-sfx" type="button">Để trống</button><input id="line-sfx-local" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" hidden></div></div>
 
 </details><details class="effect-panel line-effects"><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
 <div class="scene-groups">
@@ -1606,7 +1606,7 @@ async function loadStory(index){
 $('story-select').addEventListener('change',e=>{if(e.target.value!=='')loadStory(Number(e.target.value))});
 
 const AUDIO_PICKER_DIRS={bgm:'assets/AmThanh/Nen',sfx:'assets/AmThanh/HieuUng'};
-let activeAudioPickerKind='';
+const audioPickerFiles={bgm:[],sfx:[]};
 async function fetchAudioPickerFiles(kind){
  const dir=AUDIO_PICKER_DIRS[kind];if(!dir)throw new Error('Loại âm thanh không hợp lệ.');
  const url='https://api.github.com/repos/nhothicam01-png/visual-novel-game/contents/'+dir.split('/').map(encodeURIComponent).join('/')+'?ref=main';
@@ -1620,16 +1620,20 @@ function updateLineAudioPickerLabels(){
   const mode=$('line-'+kind+'-mode')?.value||'inherit',file=$('line-'+kind+'-file')?.value.trim()||'',line=getCurrentLine(),source=String(line?.sourceAudio?.[kind]||'').trim();
   const label=$('line-'+kind+'-selected');if(!label)continue;
   label.textContent=mode==='off'?'Để trống · không phát âm thanh':mode==='override'?(file||'Chưa chọn tệp'):(source?'Theo JSON · '+source:'Theo JSON · chưa có tệp');
+  const picker=$('line-'+kind+'-github');if(picker)picker.value=mode==='override'?file:'';
  }
 }
-async function openAudioPicker(kind){
- activeAudioPickerKind=kind;const overlay=$('audio-picker-overlay'),select=$('audio-picker-select'),status=$('audio-picker-status');
- $('audio-picker-title').textContent=kind==='bgm'?'Chọn nhạc nền từ GitHub':'Chọn hiệu ứng âm thanh từ GitHub';
- overlay.hidden=false;select.disabled=true;select.innerHTML='<option value="">Đang tải danh sách GitHub…</option>';status.textContent='Đang đọc thư mục '+AUDIO_PICKER_DIRS[kind]+'…';
- try{const files=await fetchAudioPickerFiles(kind);select.innerHTML='<option value="">'+(files.length?'— Chọn một tệp —':'Thư mục chưa có tệp âm thanh')+'</option>'+files.map(f=>'<option value="'+String(f.name).replace(/[&<>"]/g,'')+'">'+String(f.name).replace(/[&<>"]/g,'')+'</option>').join('');select.disabled=!files.length;status.textContent=files.length+' tệp có sẵn trên GitHub.'}
- catch(err){select.innerHTML='<option value="">Không tải được danh sách</option>';status.textContent=err.message||String(err)}
+async function refreshLineAudioGitHubList(kind){
+ const select=$('line-'+kind+'-github');if(!select)return;
+ select.disabled=true;select.innerHTML='<option value="">Đang tải danh sách GitHub…</option>';
+ try{
+  audioPickerFiles[kind]=await fetchAudioPickerFiles(kind);
+  select.innerHTML='<option value="">— Chọn tệp từ '+AUDIO_PICKER_DIRS[kind]+' —</option>'+audioPickerFiles[kind].map(f=>'<option value="'+String(f.name).replace(/[&<>"]/g,'')+'">'+String(f.name).replace(/[&<>"]/g,'')+'</option>').join('');
+  select.disabled=!audioPickerFiles[kind].length;
+  if(!audioPickerFiles[kind].length)select.innerHTML='<option value="">Chưa có tệp âm thanh trong thư mục</option>';
+  updateLineAudioPickerLabels();
+ }catch(err){select.innerHTML='<option value="">Không tải được danh sách GitHub</option>';setTtsStatus('Không tải được danh sách '+AUDIO_PICKER_DIRS[kind]+': '+(err.message||err));}
 }
-function closeAudioPicker(){$('audio-picker-overlay').hidden=true;activeAudioPickerKind=''}
 function applyPickedAudio(kind,fileName){
  $('line-'+kind+'-file').value=fileName||'';$('line-'+kind+'-mode').value=fileName?'override':'off';
  saveCurrentLine();updateLineAudioPickerLabels();closeAudioPicker();renderLineList();
@@ -1645,20 +1649,18 @@ async function uploadLineAudio(kind,file){
   if(existing.some(x=>x.name===file.name)&&!confirm('Tệp '+file.name+' đã có trên GitHub. Bạn muốn ghi đè tệp này?'))return;
   const path=AUDIO_PICKER_DIRS[kind]+'/'+file.name;
   const result=await GitHubManager.pushFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path,file,message:'Upload '+(kind==='bgm'?'background music: ':'sound effect: ')+file.name});
-  applyPickedAudio(kind,file.name);setTtsStatus('Đã đồng bộ '+file.name+' lên GitHub. Commit: '+result.commitSha);
+  await refreshLineAudioGitHubList(kind);applyPickedAudio(kind,file.name);setTtsStatus('Đã đồng bộ '+file.name+' lên GitHub. Commit: '+result.commitSha);
  }catch(err){setTtsStatus('Không tải được tệp âm thanh: '+(err.message||err));console.error(err)}
  finally{button.disabled=false;button.textContent='⬆ Từ máy';$('line-'+kind+'-local').value=''}
 }
 ['bgm','sfx'].forEach(kind=>{
- $('pick-line-'+kind).addEventListener('click',()=>openAudioPicker(kind));
+  $('line-'+kind+'-github').addEventListener('change',e=>{if(e.target.value)applyPickedAudio(kind,e.target.value)});
  $('upload-line-'+kind).addEventListener('click',()=>$('line-'+kind+'-local').click());
  $('line-'+kind+'-local').addEventListener('change',e=>uploadLineAudio(kind,e.target.files?.[0]));
  $('inherit-line-'+kind).addEventListener('click',()=>{$('line-'+kind+'-file').value='';$('line-'+kind+'-mode').value='inherit';saveCurrentLine();updateLineAudioPickerLabels()});
  $('clear-line-'+kind).addEventListener('click',()=>{$('line-'+kind+'-file').value='';$('line-'+kind+'-mode').value='off';saveCurrentLine();updateLineAudioPickerLabels()});
 });
-$('audio-picker-apply').addEventListener('click',()=>{const file=$('audio-picker-select').value;if(!file){$('audio-picker-status').textContent='Hãy chọn một tệp hoặc hủy.';return}applyPickedAudio(activeAudioPickerKind,file)});
-$('audio-picker-cancel').addEventListener('click',closeAudioPicker);
-$('audio-picker-overlay').addEventListener('click',e=>{if(e.target===$('audio-picker-overlay'))closeAudioPicker()});
+
 
 $('seek-prev').addEventListener('click',()=>seekSourceLine(currentSourceIndex()-1));
 $('seek-next').addEventListener('click',()=>seekSourceLine(currentSourceIndex()+1));
@@ -1902,13 +1904,5 @@ drawFrame(0);
 <script src="./github-manager.js?v=20261110sha1"></script>
 <script src="./studio-shell.js"></script>
 
-<div id="audio-picker-overlay" class="audio-picker-overlay" hidden>
- <div class="audio-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="audio-picker-title">
-  <h3 id="audio-picker-title">Chọn âm thanh từ GitHub</h3>
-  <select id="audio-picker-select"><option value="">Đang tải danh sách…</option></select>
-  <div class="note" id="audio-picker-status">Tệp được lấy trực tiếp từ thư mục âm thanh của dự án.</div>
-  <div class="row"><button class="btn" id="audio-picker-apply" type="button">Chọn tệp này</button><button class="btn secondary" id="audio-picker-cancel" type="button">Hủy</button></div>
- </div>
-</div>
 </body>
 </html>
