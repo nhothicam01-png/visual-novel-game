@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "kind": "visual-novel-audio-manifest",
+  "story": "EmBietAnhRatNgau",
+  "story_path": "assets/KichBan/EmBietAnhRatNgau/EmBietAnhRatNgau.json",
+  "created_at": "2026-11-10T12:34:20.848Z",
+  "source_language": "Vietnamese",
+  "duration": 7.3651,
+  "audio_mix": {
+    "bgm_volume": 0.25,
+    "sfx_volume": 0.8,
+    "tts_volume": 1
+  },
+  "audio_policy": {
+    "translated_versions": "replace_dialogue_keep_bgm_sfx",
+    "upload_audio_to_github": false
+  },
+  "events": [
+    {
+      "type": "dialogue",
+      "start": 0.0393,
+      "end": 6.8343,
+      "duration": 6.795,
+      "pause_after": 0.5,
+      "speaker": "Nesta",
+      "speaker_id": "5",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Ánh sáng trên lưng tôi... Nó lại bùng phát rồi! Kaelen, chuyện gì đang xảy ra vậy?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "bgm",
+      "start": 0.0393,
+      "end": 7.3343,
+      "duration": 7.295,
+      "audio_id": "afternoon_between_leaves.mp3",
+      "source": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
+      "loop": true,
+      "volume": 0.25
+    }
+  ]
+}
