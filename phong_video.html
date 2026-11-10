@@ -1018,44 +1018,49 @@ async function getPiperSession(voiceId){
  piperSession=new mod.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});piperSessionVoice=voiceId;return piperSession;
 }
 async function generatePiperAudio(){
- const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
+ const text=$('dialogue').value.trim(),line=getCurrentLine();
  if(!text)throw new Error('Bạn chưa nhập lời thoại.');
- const useEdge=$('tts-engine').value==='edge'&&!edgeDead;
- if(!voiceId&&!useEdge)throw new Error('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');
- const btn=$('generate-piper'),key=ttsRequestKey(),line=getCurrentLine();
- if(line){line.text=text;line.speaker=$('speaker').value.trim()||'Nhân vật';line.profileId=profile?.id||'';line.lang=$('tts-lang').value;line.voiceId=voiceId}
+ const resolved=resolveVoiceForLine(line),profile=resolved?.profile||selectedVoiceProfile();
+ const engine=voiceEngine(profile),voiceId=profile?.voiceId||$('piper-voice').value;
+ const spec={text,lang:$('tts-lang').value||'vi-VN',profile};
+ const btn=$('generate-piper'),key=ttsRequestKey();
+ if(line){line.text=text;line.speaker=$('speaker').value.trim()||'Nhân vật';if(profile?.id)line.profileId=profile.id;if(voiceId)line.voiceId=voiceId}
  btn.disabled=true;
- try{
-  if(useEdge){
-  try{
-   setTtsStatus('Đang tạo giọng Edge Neural…');setTaskProgress('Đang tạo giọng Edge Neural…');
-   const spec={text,lang:$('tts-lang').value,profile},blob=await edgeSynthCached(spec);
-   if(line){line.wavBlob=blob;line.cacheKey=key;line.gain=edgeGain(spec)}
-   generatedTtsBlob=blob;generatedTtsKey=key;
-   const url=URL.createObjectURL(blob),audio=new Audio(url);
-   audio.onloadedmetadata=()=>{if(line)line.duration=audio.duration;setTtsStatus('Đã tạo giọng Edge · '+audio.duration.toFixed(2)+' giây.');URL.revokeObjectURL(url);renderLineList()};
-   audio.onerror=()=>{setTtsStatus('Đã tạo giọng nhưng không đọc được metadata.');URL.revokeObjectURL(url)};
-   setTaskProgress('Đã tạo xong giọng',100);renderLineList();return blob;
-  }catch(e){
-   console.warn('Edge TTS trực tiếp lỗi, chuyển sang Piper',e);
-   if(!voiceId)throw new Error('Edge TTS lỗi ('+(e.message||e)+') và chưa chọn giọng Piper dự phòng.');
-   setTtsStatus('Edge TTS lỗi, chuyển sang Piper…');
-  }
- }
- setTtsStatus('Đang tải Piper và mô hình giọng…');setTaskProgress('Đang tải thư viện và mô hình giọng Piper…');
-  
+ const saveBlob=async(blob,usedEngine,gain=1)=>{
+  if(!blob||!blob.size)throw new Error('Engine TTS không trả về âm thanh.');
+  if(line){line.wavBlob=blob;line.cacheKey=key;line.gain=gain;line.ttsEngineUsed=usedEngine}
+  generatedTtsBlob=blob;generatedTtsKey=key;
+  const url=URL.createObjectURL(blob),audio=new Audio(url);
+  audio.onloadedmetadata=()=>{if(line)line.duration=audio.duration;setTtsStatus('Đã tạo giọng '+(usedEngine==='edge'?'Edge Neural':'Piper')+' · '+audio.duration.toFixed(2)+' giây.');URL.revokeObjectURL(url);renderLineList()};
+  audio.onerror=()=>{setTtsStatus('Đã tạo giọng nhưng không đọc được metadata.');URL.revokeObjectURL(url)};
+  setTaskProgress('Đã tạo xong giọng',100);renderLineList();return blob;
+ };
+ const tryEdge=async()=>{
+  if(edgeDead)throw new Error('Edge TTS hiện không khả dụng.');
+  setTtsStatus('JSON chọn Edge · đang tạo Edge Neural…');setTaskProgress('Đang tạo giọng Edge Neural…');
+  const blob=await edgeSynthCached(spec);return saveBlob(blob,'edge',edgeGain(spec));
+ };
+ const tryPiper=async()=>{
+  if(!voiceId)throw new Error('JSON không có voiceId Piper dự phòng.');
+  setTtsStatus('JSON chọn Piper · đang tải model Piper…');setTaskProgress('Đang tải thư viện và model Piper…');
   piperSession=await getPiperSession(voiceId);
-  setTtsStatus('Đang tạo WAV cho câu thoại…');setTaskProgress('Đang tạo WAV: '+(line?line.speaker:'nhân vật')+'…');
+  setTtsStatus('Đang tạo WAV bằng Piper…');setTaskProgress('Đang tạo WAV: '+(line?line.speaker:'nhân vật')+'…');
   const wav=await piperSession.predict(text);
   if(!wav||!wav.size)throw new Error('Piper không trả về file âm thanh.');
   let blob=new Blob([await wav.arrayBuffer()],{type:'audio/wav'});
-  if(profile){setTtsStatus('Đang áp dụng hồ sơ giọng '+profile.name+'…');setTaskProgress('Đang xử lý hồ sơ giọng…');blob=await applyVoiceProfile(blob,profile)}
-  if(line){line.wavBlob=blob;line.cacheKey=key;line.gain=1}
-  generatedTtsBlob=blob;generatedTtsKey=key;
-  const url=URL.createObjectURL(blob),audio=new Audio(url);
-  audio.onloadedmetadata=()=>{if(line)line.duration=audio.duration;setTtsStatus('Đã tạo WAV · '+audio.duration.toFixed(2)+' giây.');URL.revokeObjectURL(url);renderLineList()};
-  audio.onerror=()=>{setTtsStatus('Đã tạo WAV nhưng không thể đọc metadata.');URL.revokeObjectURL(url)};
-  setTaskProgress('Đã tạo xong WAV',100);renderLineList();return blob;
+  if(profile)blob=await applyVoiceProfile(blob,profile);
+  return saveBlob(blob,'piper',1);
+ };
+ try{
+  try{
+   return engine==='piper'?await tryPiper():await tryEdge();
+  }catch(primaryError){
+   console.warn('Engine TTS theo JSON lỗi, thử engine dự phòng:',primaryError);
+   const fallback=engine==='piper'?'edge':'piper';
+   setTtsStatus((engine==='piper'?'Piper':'Edge')+' lỗi, đang chuyển sang '+(fallback==='edge'?'Edge Neural':'Piper')+'…');
+   try{return fallback==='edge'?await tryEdge():await tryPiper()}
+   catch(fallbackError){throw new Error('Giọng gốc JSON ('+engine+') lỗi: '+(primaryError.message||primaryError)+'; giọng dự phòng ('+fallback+') cũng lỗi: '+(fallbackError.message||fallbackError))}
+  }
  }catch(err){setTaskProgress('Tạo WAV thất bại');setTimeout(()=>{$('task-progress').hidden=true},1800);throw err}
  finally{btn.disabled=false}
 }
