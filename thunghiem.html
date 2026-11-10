@@ -248,12 +248,27 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <select id="fps"><option value="24">24 FPS</option><option value="30" selected>30 FPS</option><option value="60">60 FPS</option></select></label>
 <label class="field">Chất lượng xuất
 <select id="export-quality"><option value="720" selected>⚡ Nhanh · 720p</option><option value="1080">Chuẩn · 1080p (chậm hơn ~2×)</option></select></label>
+<label class="field">Ngôn ngữ gốc của phụ đề
+<select id="subtitle-source-language">
+<option value="Vietnamese">Tiếng Việt</option>
+<option value="English">English</option>
+<option value="Japanese">日本語</option>
+<option value="Korean">한국어</option>
+<option value="Chinese">中文</option>
+<option value="French">Français</option>
+<option value="Spanish">Español</option>
+<option value="German">Deutsch</option>
+<option value="Portuguese">Português</option>
+<option value="Indonesian">Bahasa Indonesia</option>
+<option value="Thai">ภาษาไทย</option>
+</select></label>
 </div>
+<p class="note">Sau khi MP4 xuất thành công, hệ thống tạo phụ đề SRT từ lời thoại và tự lưu vào GitHub: assets/KichBan/[Tên truyện]/PhuDe/. Nhạc nền và hiệu ứng âm thanh không được đưa vào phụ đề.</p>
 <div class="row">
 <button class="btn" id="export-video">🎬 Xuất video MP4 (timeline)</button>
 </div>
 
-<div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
+<div class="status" id="export-status">Sẵn sàng. Chọn ngôn ngữ gốc trước khi xuất video.</div>
 </details>
 
 <script src="./effects.js"></script>
@@ -304,6 +319,41 @@ function renderEffectCatalogs(){
  if(env)env.innerHTML=(window.VNEnvironmentEffects?.list()||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="atm" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
 }
 function setStatus(s){$('export-status').textContent=s}
+function srtTimestamp(seconds){
+ const ms=Math.max(0,Math.round(Number(seconds||0)*1000));
+ const hh=Math.floor(ms/3600000),mm=Math.floor(ms%3600000/60000),ss=Math.floor(ms%60000/1000),mmm=ms%1000;
+ return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0')+','+String(mmm).padStart(3,'0');
+}
+function buildSourceSubtitle(prepared){
+ const blocks=[];let number=1;
+ for(const pack of prepared)for(const entry of pack.lines){
+  const spoken=String(entry.line?.text||'').trim();
+  if(!spoken||!(entry.duration>0))continue;
+  const speaker=String(entry.line?.speaker||'').trim();
+  const text=(speaker?speaker+': ':'')+spoken;
+  const start=Math.max(0,entry.start),end=Math.max(start+0.05,entry.start+entry.duration);
+  blocks.push(number+++'\\n'+srtTimestamp(start)+' --> '+srtTimestamp(end)+'\\n'+text);
+ }
+ if(!blocks.length)throw new Error('Không có lời thoại hợp lệ để tạo phụ đề.');
+ return blocks.join('\\n\\n')+'\\n';
+}
+function safeSubtitleFilename(value){
+ return String(value||'KichBan').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan';
+}
+async function saveSourceSubtitle(prepared){
+ const language=$('subtitle-source-language')?.value||'Vietnamese';
+ const story=safeSubtitleFilename(activeStoryName||'KichBan');
+ const filename=story+'_'+language+'.srt';
+ const path='assets/KichBan/'+(activeStoryName||'KichBan')+'/PhuDe/'+filename;
+ const content=buildSourceSubtitle(prepared);
+ if(!window.GitHubManager?.getToken()){
+  const blob=new Blob([content],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+  throw new Error('Video đã xuất nhưng chưa có GitHub Token. Đã tải SRT về máy để không mất phụ đề.');
+ }
+ const result=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path,content,message:'Add source subtitles: '+filename});
+ return {filename,path,commitSha:result.commitSha};
+}
 function setTtsStatus(s){$('tts-status').textContent=s}
 function setTaskProgress(label,percent=null){
  const box=$('task-progress'),fill=$('progress-fill');
@@ -1179,7 +1229,13 @@ async function exportVideo(){
   setTaskProgress('Đang đóng gói MP4…',96);await audioSource.add(mixedAudio);await output.finalize();
   const blob=new Blob([target.buffer],{type:'video/mp4'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='visual-novel-'+Date.now()+'.mp4';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-  setStatus('Đã xuất MP4 gồm '+prepared.length+' cảnh và '+allAudio.length+' câu thoại · '+(blob.size/1024/1024).toFixed(1)+' MB.');finishTaskProgress('Xuất video hoàn tất');
+  setTaskProgress('Đang tạo và lưu phụ đề gốc lên GitHub…',98);
+  let subtitleResult=null,subtitleError=null;
+  try{subtitleResult=await saveSourceSubtitle(prepared)}catch(err){subtitleError=err;console.error('Không thể lưu phụ đề gốc:',err)}
+  const videoSummary='Đã xuất MP4 gồm '+prepared.length+' cảnh và '+allAudio.length+' câu thoại · '+(blob.size/1024/1024).toFixed(1)+' MB.';
+  if(subtitleResult)setStatus(videoSummary+' Đã tự động lưu phụ đề '+subtitleResult.filename+' lên GitHub ('+subtitleResult.path+').');
+  else setStatus(videoSummary+' LƯU PHỤ ĐỀ: '+(subtitleError?.message||'Không thể lưu phụ đề.'));
+  finishTaskProgress(subtitleResult?'Xuất video & lưu phụ đề hoàn tất':'Xuất video hoàn tất · phụ đề cần xử lý');
  }catch(err){console.error(err);setStatus('Không thể xuất video: '+(err.message||err));setTaskProgress('Xuất video thất bại',100);setTimeout(()=>{$('task-progress').hidden=true},2200)}
  finally{
   try{await audioContext?.close()}catch(_){}
