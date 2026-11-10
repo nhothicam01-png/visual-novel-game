@@ -20,24 +20,33 @@
     if(!response.ok){const message=data.message||('GitHub API HTTP '+response.status);if(response.status===401)throw new Error('Token không hợp lệ hoặc đã hết hạn.');if(response.status===403)throw new Error('GitHub từ chối quyền. Kiểm tra quyền Contents: Read and write và quyền truy cập repository.');throw new Error(message)}
     return data;
   }
+  async function putContentWithRetry({url,path,bytes,message,branch}){
+    let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+    for(let attempt=0;attempt<3;attempt++){
+      let sha;
+      try{const existing=await request(url+'?ref='+encodeURIComponent(branch)+'&_='+Date.now());sha=existing.sha}
+      catch(e){if(!String(e.message).includes('Not Found'))throw e}
+      const body={message:message||('Update '+path),content:btoa(binary),branch};if(sha)body.sha=sha;
+      try{
+        const result=await request(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        return {commitSha:result.commit?.sha||'',htmlUrl:result.content?.html_url||'',path:result.content?.path||path,created:!sha};
+      }catch(e){
+        if(attempt<2&&/does not match/i.test(String(e.message)))continue;
+        throw e;
+      }
+    }
+    throw new Error('File liên tục thay đổi trên GitHub. Hãy thử cập nhật lại sau.');
+  }
   async function pushTextFile({owner,repo,path,content,message,branch='main'}){
     if(!owner||!repo||!path||typeof content!=='string')throw new Error('Thiếu owner, repository, đường dẫn hoặc nội dung file.');
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/'+path.split('/').map(encodeURIComponent).join('/');
-    let sha;
-    try{const existing=await request(url+'?ref='+encodeURIComponent(branch));sha=existing.sha}catch(e){if(!String(e.message).includes('Not Found'))throw e}
-    const bytes=new TextEncoder().encode(content);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
-    const body={message:message||('Update '+path),content:btoa(binary),branch};if(sha)body.sha=sha;
-    const result=await request(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    return {commitSha:result.commit?.sha||'',htmlUrl:result.content?.html_url||'',path:result.content?.path||path,created:!sha};
+    return putContentWithRetry({url,path,bytes:new TextEncoder().encode(content),message,branch});
   }
   async function pushFile({owner,repo,path,file,message,branch='main'}){
     if(!(file instanceof File))throw new Error('File không hợp lệ.');
-    const buffer=await file.arrayBuffer(),bytes=new Uint8Array(buffer);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+    const buffer=await file.arrayBuffer(),bytes=new Uint8Array(buffer);
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/'+path.split('/').map(encodeURIComponent).join('/');
-    let sha;try{const existing=await request(url+'?ref='+encodeURIComponent(branch));sha=existing.sha}catch(e){if(!String(e.message).includes('Not Found'))throw e}
-    const body={message:message||('Upload '+path),content:btoa(binary),branch};if(sha)body.sha=sha;
-    const result=await request(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    return {commitSha:result.commit?.sha||'',htmlUrl:result.content?.html_url||'',path:result.content?.path||path,created:!sha};
+    return putContentWithRetry({url,path,bytes,message,branch});
   }
 
   async function listCharacterFolders({owner,repo,branch='main'}){
