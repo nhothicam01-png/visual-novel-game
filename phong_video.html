@@ -275,14 +275,14 @@ function legacyControl(id){
   let value=legacyControlDefaults[id],html='',text='';
   const control={addEventListener(){},removeEventListener(){},options:[],disabled:false,checked:false,readOnly:false,
    get value(){return value},set value(v){value=String(v??'')},
-   get innerHTML(){return html},set innerHTML(v){html=String(v??'');control.options=[...html.matchAll(/<option\\b([^>]*)>([\\s\\S]*?)<\\/option>/gi)].map(m=>({value:(m[1].match(/\\bvalue=["']([^"']*)["']/i)||[])[1]??m[2].replace(/<[^>]*>/g,'').trim(),textContent:m[2].replace(/<[^>]*>/g,'').trim()}))},
+   get innerHTML(){return html},set innerHTML(v){html=String(v??'');control.options=[...html.matchAll(/<option\b([^>]*)>([\s\S]*?)<\/option>/gi)].map(m=>({value:(m[1].match(/\bvalue=["']([^"']*)["']/i)||[])[1]??m[2].replace(/<[^>]*>/g,'').trim(),textContent:m[2].replace(/<[^>]*>/g,'').trim()}))},
    get textContent(){return text},set textContent(v){text=String(v??'')}
   };
   legacyControls.set(id,control);
  }
  return legacyControls.get(id);
 }
-$=id=>document.getElementById(id)||legacyControl(id);
+const $=id=>document.getElementById(id)||legacyControl(id);
 let canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
 const previewCanvas=canvas,previewCtx=ctx;
 let renderCanvas=null,renderCtx=null;
