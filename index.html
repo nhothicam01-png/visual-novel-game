@@ -113,6 +113,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <a class="nav-link" href="./rbg.html">🎬 Xóa phông video</a>
 <a class="nav-link" href="./subtitle_voice_player.html">💬 Đọc phụ đề</a>
 <a class="nav-link" href="./tao_giong.html">🎙️ Phòng tạo giọng</a>
+<a class="nav-link" href="./tao_phu_de.html">🌐 Tạo phụ đề & lồng tiếng</a>
 <a class="nav-link" href="./github_manager.html">⬆ GitHub Manager</a>
 </nav>
 <div id="game-container">
@@ -249,11 +250,16 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <select id="fps"><option value="24">24 FPS</option><option value="30" selected>30 FPS</option><option value="60">60 FPS</option></select></label>
 <label class="field">Chất lượng xuất
 <select id="export-quality"><option value="720" selected>⚡ Nhanh · 720p</option><option value="1080">Chuẩn · 1080p (chậm hơn ~2×)</option></select></label>
+<label class="field">Ngôn ngữ gốc của thoại
+<select id="subtitle-source-language">
+<option value="Vietnamese">Tiếng Việt</option><option value="English">English</option><option value="Japanese">日本語</option><option value="Korean">한국어</option><option value="Chinese">中文</option><option value="French">Français</option><option value="Spanish">Español</option><option value="German">Deutsch</option><option value="Portuguese">Português</option><option value="Indonesian">Bahasa Indonesia</option><option value="Thai">ภาษาไทย</option>
+</select></label>
 </div>
 <div class="row">
 <button class="btn" id="export-video">🎬 Xuất video MP4 (timeline)</button>
 </div>
 
+<p class="note">Sau khi xuất MP4, hệ thống tự tạo phụ đề gốc (.srt) và AudioManifest.json, chỉ push hai file dữ liệu này lên GitHub. Không push âm thanh.</p>
 <div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
 </details>
 
@@ -305,6 +311,42 @@ function renderEffectCatalogs(){
  if(env)env.innerHTML=(window.VNEnvironmentEffects?.list()||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="atm" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
 }
 function setStatus(s){$('export-status').textContent=s}
+
+function safeAudioDataName(value){return String(value||'KichBan').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan'}
+function manifestVoiceForLine(line){
+ const resolved=resolveVoiceForLine(line),p=resolved?.profile||getVoiceProfiles().find(x=>x.id===line?.profileId)||null;
+ const raw=line?.sourceFrame?.giong_noi||{};
+ return {profile_id:String(p?.id||raw.profileId||raw.profile_id||line?.profileId||''),profile_name:String(p?.name||raw.name||''),source_voice_id:String(p?.edgeVoice||p?.voiceId||raw.voiceId||raw.voice_id||line?.voiceId||''),piper_voice_id:String(p?.voiceId||raw.voiceId||raw.voice_id||line?.voiceId||''),edge_voice_id:String(p?.edgeVoice||''),gender:String(p?.gender||''),settings:{speed:Number(p?.speed??1),pitch:Number(p?.pitch??0),rough:Number(p?.rough??0),volume:Number(p?.volume??100)},source_language:String(p?.lang||line?.lang||'vi'),engine:String(p?.engine||'edge')};
+}
+function buildAudioManifest(prepared,allAudio,bgmSegments,totalDuration){
+ const events=[];
+ for(const entry of allAudio){
+  const line=entry.line||{},voice=manifestVoiceForLine(line);
+  events.push({type:'dialogue',start:Number(entry.start.toFixed(4)),duration:Number(entry.duration.toFixed(4)),pause_after:Number(entry.pause||0),speaker:String(line.speaker||''),speaker_id:String(line.speakerId||''),voice_id:voice.profile_id,voice,text:String(line.text||''),gain:Number(entry.gain??1),scene_index:Number(entry.sceneIndex||0)});
+  const sfx=resolvedLineAudio(line,'sfx');
+  if(sfx)events.push({type:'sfx',start:Number(entry.start.toFixed(4)),duration:null,audio_id:sfx,source:'assets/AmThanh/HieuUng/'+sfx,loop:false,volume:Number($('sfx-volume').value),scene_index:Number(entry.sceneIndex||0)});
+ }
+ for(const segment of bgmSegments)events.push({type:'bgm',start:Number(segment.start.toFixed(4)),end:Number(segment.end.toFixed(4)),duration:Number((segment.end-segment.start).toFixed(4)),audio_id:segment.name,source:'assets/AmThanh/Nen/'+segment.name,loop:true,volume:Number($('bgm-volume').value)});
+ events.sort((a,b)=>a.start-b.start);
+ return {schema_version:1,kind:'visual-novel-audio-manifest',story:String(activeStoryName||'KichBan'),story_path:String(activeStoryPath||''),created_at:new Date().toISOString(),source_language:String($('subtitle-source-language')?.value||'Vietnamese'),duration:Number(totalDuration.toFixed(4)),audio_policy:{translated_versions:'replace_dialogue_keep_bgm_sfx',upload_audio_to_github:false},events};
+}
+function buildSourceSubtitleFromTimeline(allAudio){
+ const stamp=n=>{const ms=Math.max(0,Math.round(Number(n||0)*1000)),hh=Math.floor(ms/3600000),mm=Math.floor(ms%3600000/60000),ss=Math.floor(ms%60000/1000),mmm=ms%1000;return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0')+','+String(mmm).padStart(3,'0')};
+ const blocks=[];let i=1;
+ for(const e of allAudio){const txt=String(e.line?.text||'').trim();if(!txt||!(e.duration>0))continue;const who=String(e.line?.speaker||'').trim();blocks.push(i+++'\\n'+stamp(e.start)+' --> '+stamp(e.start+e.duration)+'\\n'+(who?who+': ':'')+txt)}
+ if(!blocks.length)throw new Error('Không có thoại hợp lệ để tạo phụ đề gốc.');
+ return blocks.join('\\n\\n')+'\\n';
+}
+async function pushExportMetadata(allAudio,manifest){
+ const story=String(activeStoryName||'KichBan'),safe=safeAudioDataName(story),base='assets/KichBan/'+story;
+ if(!window.GitHubManager?.getToken())throw new Error('Chưa có GitHub Token; không thể push SRT và AudioManifest.');
+ const language=$('subtitle-source-language')?.value||'Vietnamese',srtName=safe+'_'+language+'.srt';
+ const srt=buildSourceSubtitleFromTimeline(allAudio);
+ const srtResult=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:base+'/PhuDe/'+srtName,content:srt,message:'Add source subtitles: '+srtName});
+ const manifestResult=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:base+'/AudioManifest.json',content:JSON.stringify(manifest,null,2),message:'Add audio manifest: '+story});
+ return {srtName,srtCommit:srtResult.commitSha,manifestCommit:manifestResult.commitSha};
+}
+
 function setTtsStatus(s){$('tts-status').textContent=s}
 function setTaskProgress(label,percent=null){
  const box=$('task-progress'),fill=$('progress-fill');
@@ -1064,7 +1106,7 @@ async function exportVideo(){
  saveCurrentLine();saveCurrentScene();
  if(!scenes.length||!scenes.some(sc=>sc.lines.some(line=>line.text.trim()))){setStatus('Hãy thêm ít nhất một câu thoại.');return}
  const originalScene=activeSceneIndex,originalLine=activeLineIndex;
- const prepared=[],allAudio=[];let totalDuration=0;
+ const prepared=[],allAudio=[];let totalDuration=0,audioManifest=null;
  recording=true;$('export-video').disabled=true;setTaskProgress('Đang chuẩn bị các cảnh và tạo giọng…',0);
  edgeDead=false;edgeFails=0;try{await prefetchEdgeTts()}catch(e){console.warn(e)}
  let audioContext=null,output=null;
@@ -1123,6 +1165,7 @@ async function exportVideo(){
    const bg=await getLineAudioBuffer({sourceAudio:{bgm:segment.name}},'bgm');
    if(bg)addAudio(bg,Number($('bgm-volume').value),segment.start,true,segment.end);
   }
+  audioManifest=buildAudioManifest(prepared,allAudio,bgmSegments,finalDuration);
   setTaskProgress('Đang trộn âm thanh các câu thoại…',5);
   const mixedAudio=await offline.startRendering();
   // Tạo canvas xuất riêng; preview tiếp tục dùng canvas và context gốc.
@@ -1180,7 +1223,9 @@ async function exportVideo(){
   setTaskProgress('Đang đóng gói MP4…',96);await audioSource.add(mixedAudio);await output.finalize();
   const blob=new Blob([target.buffer],{type:'video/mp4'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='visual-novel-'+Date.now()+'.mp4';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-  setStatus('Đã xuất MP4 gồm '+prepared.length+' cảnh và '+allAudio.length+' câu thoại · '+(blob.size/1024/1024).toFixed(1)+' MB.');finishTaskProgress('Xuất video hoàn tất');
+  const summary='Đã xuất MP4 gồm '+prepared.length+' cảnh và '+allAudio.length+' câu thoại · '+(blob.size/1024/1024).toFixed(1)+' MB.';
+  try{const meta=await pushExportMetadata(allAudio,audioManifest);setStatus(summary+' Đã push '+meta.srtName+' và AudioManifest.json lên GitHub. Không tải âm thanh lên GitHub.');finishTaskProgress('Xuất video & Audio Manifest hoàn tất')}
+  catch(metaErr){console.error(metaErr);const manifestBlob=new Blob([JSON.stringify(audioManifest,null,2)],{type:'application/json'}),srtBlob=new Blob([buildSourceSubtitleFromTimeline(allAudio)],{type:'text/plain;charset=utf-8'});for(const [blob,name] of [[manifestBlob,safeAudioDataName(activeStoryName)+'_AudioManifest.json'],[srtBlob,safeAudioDataName(activeStoryName)+'_source.srt']]){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),30000)}setStatus(summary+' Không push được metadata ('+metaErr.message+'). Đã tải JSON Manifest và SRT dự phòng về máy.');finishTaskProgress('Video hoàn tất · metadata tải về máy')}
  }catch(err){console.error(err);setStatus('Không thể xuất video: '+(err.message||err));setTaskProgress('Xuất video thất bại',100);setTimeout(()=>{$('task-progress').hidden=true},2200)}
  finally{
   try{await audioContext?.close()}catch(_){}
