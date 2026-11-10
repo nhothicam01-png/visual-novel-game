@@ -10,6 +10,7 @@
       char_walk_bob: { label:'Nhân vật nhún nhẹ khi bước nhưng giữ chân chạm đất', transform:[{transform:'scaleY(1)'},{transform:'scaleY(1.018)'},{transform:'scaleY(1)'}], duration:520 },
       char_sway: { label:'Nhân vật nghiêng nhẹ quanh điểm tiếp đất', transform:[{transform:'rotate(-2.5deg)'},{transform:'rotate(2.5deg)'},{transform:'rotate(-2.5deg)'}], duration:1500 },
       char_fear_shake: { label:'Nhân vật run rẩy tại chỗ, neo chân ở đáy', transform:[{transform:'translateX(-3px) rotate(-1deg)'},{transform:'translateX(3px) rotate(1deg)'},{transform:'translateX(-2px) rotate(-0.5deg)'}], duration:105 },
+      char_shake: { label:'Nhân vật rung lắc nhanh tại chỗ (bí danh tương thích)', transform:[{transform:'translateX(-3px) rotate(-1deg)'},{transform:'translateX(3px) rotate(1deg)'},{transform:'translateX(-2px) rotate(-0.5deg)'},{transform:'translateX(2px) rotate(0.5deg)'}], duration:110, once:true },
       char_move_left: { label:'Nhân vật di chuyển sang trái, không nhấc khỏi mặt đất', transform:[{transform:'translateX(0)'},{transform:'translateX(-17px)'},{transform:'translateX(-34px)'}], duration:900, once:true },
       char_move_right: { label:'Nhân vật di chuyển sang phải, không nhấc khỏi mặt đất', transform:[{transform:'translateX(0)'},{transform:'translateX(17px)'},{transform:'translateX(34px)'}], duration:900, once:true },
       char_fade_out: { label:'Nhân vật mờ dần biến mất', opacity:[{opacity:1},{opacity:0}], duration:1100, once:true },
