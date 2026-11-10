@@ -323,7 +323,7 @@ function buildAudioManifest(prepared,allAudio,bgmSegments,totalDuration){
  const events=[];
  for(const entry of allAudio){
   const line=entry.line||{},voice=manifestVoiceForLine(line);
-  events.push({type:'dialogue',start:Number(entry.start.toFixed(4)),duration:Number(entry.duration.toFixed(4)),pause_after:Number(entry.pause||0),speaker:String(line.speaker||''),speaker_id:String(line.speakerId||''),voice_id:voice.profile_id,voice,text:String(line.text||''),gain:Number(entry.gain??1),scene_index:Number(entry.sceneIndex||0)});
+  events.push({type:'dialogue',start:Number(entry.start.toFixed(4)),end:Number((entry.start+entry.duration).toFixed(4)),duration:Number(entry.duration.toFixed(4)),pause_after:Number(entry.pause||0),speaker:String(line.speaker||''),speaker_id:String(line.speakerId||''),voice_id:voice.profile_id,voice,text:String(line.text||''),gain:Number(entry.gain??1),scene_index:Number(entry.sceneIndex||0),timing_policy:'fixed_source_window'});
   const sfx=resolvedLineAudio(line,'sfx');
   if(sfx)events.push({type:'sfx',start:Number(entry.start.toFixed(4)),duration:null,audio_id:sfx,source:'assets/AmThanh/HieuUng/'+sfx,loop:false,volume:Number($('sfx-volume').value),scene_index:Number(entry.sceneIndex||0)});
  }
