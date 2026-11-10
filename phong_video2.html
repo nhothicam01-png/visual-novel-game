@@ -847,7 +847,7 @@ async function playPreview({record=false}={}){
  const useBrowser=$('preview-tts-mode').value==='browser';
  if(!useBrowser){
   try{for(const item of items){await loadSourceLineForPlayback(item);if($('dialogue').value.trim())await ensureTtsReady()}}
-  catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));return}
+  catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));if(record)throw err;return}
  }
  stopPreview();if(record)await beginRealtimeCapture();previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
