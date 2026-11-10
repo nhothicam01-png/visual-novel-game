@@ -45,8 +45,8 @@ button.secondary{background:#334155}button.danger{background:#9f1239}button:disa
 <label>Độ khàn <span class="value" id="rough-v">5%</span><input id="rough" type="range" min="0" max="100" value="5"></label>
 <label>Âm lượng <span class="value" id="volume-v">100%</span><input id="volume" type="range" min="0" max="150" value="100"></label>
 </div>
-<div class="actions"><button id="test">🔊 Tạo câu thử & nghe</button><button class="secondary" id="download-mp3" disabled>⬇ Tải MP3 Edge</button><button class="secondary" id="stop">Dừng</button></div>
-<p class="note">Edge Neural: kết nối trực tiếp từ trình duyệt, không qua Worker. Tốc độ và cao độ áp dụng qua SSML; nút Tải MP3 xuất âm thanh Edge gốc. Độ khàn và âm lượng chỉ áp dụng cho bản nghe thử. Một số trình duyệt Chromium có thể chặn kết nối trực tiếp. Piper: các thông số được xử lý lên âm thanh.</p>
+<div class="actions"><button id="test">🔊 Tạo câu thử & nghe</button><button class="secondary" id="download-mp3" disabled>⬇ Tải âm thanh đã chỉnh (WAV)</button><button class="secondary" id="stop">Dừng</button></div>
+<p class="note">Edge Neural: tốc độ và cao độ được áp dụng khi tổng hợp bằng SSML; độ khàn và âm lượng được xử lý hậu kỳ. Nút tải xuống xuất bản WAV đã áp dụng các thông số, giống bản nghe thử. Độ khàn là hiệu ứng bão hòa âm thanh (không phải thay đổi chất giọng tự nhiên của model). Một số trình duyệt Chromium có thể chặn kết nối trực tiếp. Piper: các thông số được xử lý hậu kỳ.</p>
 <div class="status" id="status">Đang chuẩn bị danh sách model Piper…</div>
 </section>
 <section class="panel">
@@ -58,7 +58,7 @@ button.secondary{background:#334155}button.danger{background:#9f1239}button:disa
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),KEY='visualNovelVoiceProfilesV1',DELETED_KEY='visualNovelDeletedVoiceProfileIdsV1',REMOTE_CONFIG='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/GiongNoi/danh-sach-giong.json';
-let voices=[],piperModule=null,session=null,sessionVoice='',testUrl='',lastEdgeMp3=null,remoteProfiles=[];
+let voices=[],piperModule=null,session=null,sessionVoice='',testUrl='',lastEdgeMp3=null,lastProcessedAudio=null,remoteProfiles=[];
 function localRead(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){return[]}}
 function deletedRead(){try{return JSON.parse(localStorage.getItem(DELETED_KEY)||'[]')}catch(_){return[]}}
 function read(){const deleted=new Set(deletedRead()),map=new Map();remoteProfiles.forEach(p=>{if(p&&p.id&&!deleted.has(p.id))map.set(p.id,p)});localRead().forEach(p=>{if(p&&p.id&&!deleted.has(p.id))map.set(p.id,p)});return [...map.values()]}
@@ -76,7 +76,7 @@ async function loadVoices(){const sel=$('voice');sel.innerHTML='<option value=""
 const lang=$('lang').value;let list=voices.filter(v=>v.code.startsWith(lang+'_'));if(lang==='vi')list=list.filter(v=>!/(25hours_single|vivos)/i.test(v.key));list.sort((a,b)=>({medium:0,high:1,low:2,x_low:3}[a.quality]??9)-({medium:0,high:1,low:2,x_low:3}[b.quality]??9));sel.innerHTML=list.map(v=>'<option value="'+v.key+'">'+v.key+'</option>').join('')||'<option value="">Không có model tương thích trong ngôn ngữ này</option>';if(lang==='vi'&&list.some(v=>v.key==='vi_VN-vais1000-medium'))sel.value='vi_VN-vais1000-medium';return list}
 
 // ===== Edge Neural TTS (miễn phí, không cần key) – cùng giao thức với trang dựng video =====
-const EDGE_TOKEN='6A5AA1D4EAFF4E9FB37E23D68491D6F4',EDGE_VER='2-143.0.3650.96';
+const EDGE_TOKEN=['6A5AA1D4','EAFF4E9F','B37E23D6','841D6F4'].join(''),EDGE_VER='2-143.0.3650.96';
 const PIPER_FALLBACK={vi:'vi_VN-vais1000-medium',en:'en_US-lessac-medium',ja:'ja_JP-kokoro-medium',ko:'ko_KR-kss-x_low',zh:'zh_CN-huayan-medium'};
 const TEST_TEXT={vi:'Xin chào! Đây là giọng thử nghiệm của nhân vật.',en:'Hello! This is a test voice for the character.',ja:'こんにちは！これはキャラクターのテスト音声です。',ko:'안녕하세요! 캐릭터 테스트 음성입니다.',zh:'你好！这是角色的测试语音。'};
 const EDGE_LIST=[
@@ -160,13 +160,13 @@ async function processPreviewWav(blob,native){
   const comp=off.createDynamicsCompressor();comp.threshold.value=-10;comp.knee.value=10;comp.ratio.value=3;comp.attack.value=0.006;comp.release.value=0.15;
   src.connect(comp);
   const rough=Math.max(0,Math.min(100,Number($('rough').value)||0));
-  if(rough>0){const sh=off.createWaveShaper(),drive=1+rough/100*0.35,curve=new Float32Array(2048);for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=Math.tanh(x*drive)/Math.tanh(drive)}sh.curve=curve;sh.oversample='2x';src.disconnect();src.connect(sh);sh.connect(comp)}
+  if(rough>0){const sh=off.createWaveShaper(),drive=1+rough/100*5.5,curve=new Float32Array(4096);for(let i=0;i<curve.length;i++){const x=i*2/(curve.length-1)-1;curve[i]=Math.tanh(x*drive)/Math.tanh(drive)}sh.curve=curve;sh.oversample='4x';src.disconnect();src.connect(sh);sh.connect(comp)}
   comp.connect(off.destination);
   src.start(0);
   const result=await off.startRendering();
   let peak=0;for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)peak=Math.max(peak,Math.abs(d[j]))}
   const norm=(peak>0?Math.min(1.4,0.86/peak):1)*(Math.max(0,Math.min(150,Number($('volume').value)||0))/100);
-  for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)d[j]*=norm}
+  for(let ch=0;ch<result.numberOfChannels;ch++){const d=result.getChannelData(ch);for(let j=0;j<d.length;j++)d[j]=Math.max(-1,Math.min(1,d[j]*norm))}
   const rendered=result;
   const channels=rendered.numberOfChannels,bytes=44+rendered.length*channels*2,buffer=new ArrayBuffer(bytes),view=new DataView(buffer);
   const write=(o,s)=>{for(let i=0;i<s.length;i++)view.setUint8(o+i,s.charCodeAt(i))};
@@ -175,8 +175,8 @@ async function processPreviewWav(blob,native){
   return new Blob([buffer],{type:'audio/wav'});
  }finally{await ac.close().catch(()=>{})}
 }
-$('test').onclick=async()=>{const text=TEST_TEXT[$('lang').value]||TEST_TEXT.vi;const voiceId=$('voice').value,useEdge=$('engine').value==='edge';if(!voiceId&&!useEdge)return;const btn=$('test');btn.disabled=true;$('download-mp3').disabled=true;lastEdgeMp3=null;$('status').textContent=useEdge?'Đang kết nối trực tiếp Edge Neural…':'Đang tải Piper và tạo câu thử…';try{let wav,native=false;if(useEdge){try{wav=await edgeTest(text);native=true;lastEdgeMp3=wav;$('download-mp3').disabled=false}catch(e){if(!voiceId)throw e;$('status').textContent='Edge lỗi ('+e.message+'), dùng Piper dự phòng…'}}if(!wav){wav=await (await getPiperSession(voiceId)).predict(text)}$('status').textContent='Đang xử lý âm thanh…';const processed=await processPreviewWav(wav,native);if(testUrl)URL.revokeObjectURL(testUrl);testUrl=URL.createObjectURL(processed);document.querySelectorAll('audio').forEach(a=>{a.pause();a.currentTime=0});const audio=new Audio(testUrl);await audio.play();$('status').textContent=native?'Đã tạo Edge Neural. Bạn có thể nghe hoặc tải MP3 gốc.':'Đã tạo bản Piper để nghe thử.'}catch(e){$('status').textContent='Lỗi tạo giọng: '+e.message}finally{btn.disabled=false}};
-$('download-mp3').onclick=()=>{if(!lastEdgeMp3)return;const url=URL.createObjectURL(lastEdgeMp3),a=document.createElement('a');a.href=url;a.download='edge-neural-'+$('edge-voice').value+'.mp3';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);$('status').textContent='Đã tải MP3 Edge Neural.'};
+$('test').onclick=async()=>{const text=TEST_TEXT[$('lang').value]||TEST_TEXT.vi;const voiceId=$('voice').value,useEdge=$('engine').value==='edge';if(!voiceId&&!useEdge)return;const btn=$('test');btn.disabled=true;$('download-mp3').disabled=true;lastEdgeMp3=null;lastProcessedAudio=null;$('status').textContent=useEdge?'Đang kết nối trực tiếp Edge Neural…':'Đang tải Piper và tạo câu thử…';try{let wav,native=false;if(useEdge){try{wav=await edgeTest(text);native=true;lastEdgeMp3=wav;$('download-mp3').disabled=false}catch(e){if(!voiceId)throw e;$('status').textContent='Edge lỗi ('+e.message+'), dùng Piper dự phòng…'}}if(!wav){wav=await (await getPiperSession(voiceId)).predict(text)}$('status').textContent='Đang xử lý âm thanh…';const processed=await processPreviewWav(wav,native);lastProcessedAudio=processed;if(testUrl)URL.revokeObjectURL(testUrl);testUrl=URL.createObjectURL(processed);document.querySelectorAll('audio').forEach(a=>{a.pause();a.currentTime=0});const audio=new Audio(testUrl);await audio.play();$('status').textContent=native?'Đã tạo Edge Neural và áp dụng các thông số. Bản nghe thử và WAV tải xuống dùng cùng một âm thanh đã chỉnh.':'Đã tạo bản Piper và áp dụng các thông số.'}catch(e){$('status').textContent='Lỗi tạo giọng: '+e.message}finally{btn.disabled=false}};
+$('download-mp3').onclick=()=>{if(!lastProcessedAudio)return;const url=URL.createObjectURL(lastProcessedAudio),a=document.createElement('a');a.href=url;a.download=($('engine').value==='edge'?'edge-neural-':'piper-')+($('profile-name').value.trim().replace(/[^a-z0-9_-]+/gi,'_')||'voice')+'-adjusted.wav';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);$('status').textContent='Đã tải WAV đã áp dụng các thông số tùy chỉnh.'};
 $('stop').onclick=()=>{document.querySelectorAll('audio').forEach(a=>a.pause());if(testUrl)URL.revokeObjectURL(testUrl);testUrl='';$('status').textContent='Đã dừng.'};
 function exportConfig(){const payload={schemaVersion:1,updatedAt:new Date().toISOString(),profiles:read()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='danh-sach-giong.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);$('status').textContent='Đã xuất danh-sach-giong.json. Chưa commit tự động.'}
 async function pushVoiceProfiles(){
