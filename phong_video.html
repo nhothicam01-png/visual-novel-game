@@ -300,6 +300,18 @@ const charSelect=$('character');
 characters.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent='Nhân vật '+n;charSelect.appendChild(o)});
 backgrounds.forEach(([file,label])=>{const o=document.createElement('option');o.value=file;o.textContent=label;$('background').appendChild(o)});
 $('background').value='san_truong_ban_ngay.png';
+async function loadBackgroundLibrary(){
+ try{
+  const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1');
+  const data=await response.json();if(!response.ok)throw new Error(data.message||'GitHub API error');
+  const files=(data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith('assets/Nen/')&&/\.(png|jpe?g|webp|mp4|webm)$/i.test(x.path)).map(x=>x.path.split('/').pop());
+  const select=$('background'),current=select.value,seen=new Set(Array.from(select.options).map(o=>o.value));
+  files.forEach(file=>{if(seen.has(file))return;const o=document.createElement('option');o.value=file;o.textContent=file+' · GitHub';select.appendChild(o);seen.add(file)});
+  if(current&&seen.has(current))select.value=current;
+ }catch(e){console.warn('Không tải được thư viện nền GitHub:',e)}
+}
+loadBackgroundLibrary();
+
 
 function renderEffectCatalogs(){
  const groups=[['character','char'],['background','bg'],['camera','camera']];
@@ -405,12 +417,12 @@ async function updateAssets(){
  $('preview-loading').classList.add('active');$('preview-loading-status').textContent='Đang nạp nền và nhân vật…';
  try{
   const [nextBg,nextChar]=await Promise.all([
-   bgPath?(/\.mp4$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
+   bgPath?(/\.(mp4|webm)$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
    charPath?cachedVideo(charPath):Promise.resolve(null)
   ]);
   if(token!==assetLoadToken)return;
   if(bgVideo&&bgVideo!==nextBg)bgVideo.pause();if(charVideo&&charVideo!==nextChar)charVideo.pause();
-  bgVideo=/\.mp4$/i.test(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
+  bgVideo=/\.(mp4|webm)$/i.test(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{})]);drawFrame(0);
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
@@ -424,7 +436,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
  const rows=activeStoryData?.danh_sach||[];
  for(let i=Math.max(0,sourceIndex);i<Math.min(rows.length,sourceIndex+count);i++){
   const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=normalizeExpression(row.bieu_cam);
-  if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
+  if(bg){const url=BASE+'Nen/'+bg;if(/\.(mp4|webm)$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
  }
 }
