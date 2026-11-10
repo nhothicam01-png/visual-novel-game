@@ -17,6 +17,7 @@ main{max-width:1400px;margin:22px auto;padding:0 16px 40px}.panel{background:lin
 </head>
 <body>
 <header><div class="head"><div class="logo">✂</div><div><h1>RemoveBG Anime Pro <span style="color:#71a8ff;font-size:11px">ULTIMATE · ORIGINAL SPEED EXPORT</span></h1><p>Local-first video matting · Adaptive Chroma · AI fallback · PNG / WebM</p></div></div></header>
+<nav style="max-width:1400px;margin:10px auto 0;padding:0 16px;display:flex;gap:8px;flex-wrap:wrap"><a href="./index.html" style="color:#dbeafe;text-decoration:none;background:#1c2b43;border:1px solid #3b5275;border-radius:9px;padding:8px 12px;font-size:13px">🏠 Trang chủ</a><a href="./github_manager.html" style="color:#fff;text-decoration:none;background:linear-gradient(110deg,#2869e8,#168fae);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700">⬆ GitHub Manager</a></nav>
 <main>
 <section id="uploadPanel" class="panel upload">
   <div style="font-size:42px">🎞️</div><h2>Chọn video cần tách nền</h2>
@@ -75,6 +76,16 @@ main{max-width:1400px;margin:22px auto;padding:0 16px 40px}.panel{background:lin
       <div class="field"><label>Xuất video</label><button id="webmBtn">⬇ Xuất WebM theo cài đặt</button></div>
       <div class="field"><label>Xuất ảnh</label><div class="actions"><button id="pngBtn">⬇ PNG hiện tại</button><button id="sequenceBtn">⬇ PNG Sequence (ZIP)</button></div></div>
       <p class="hint">Chỉ cần nhấn Xuất WebM hoặc PNG Sequence: ứng dụng tự xử lý đoạn frame đã chọn. WebM dùng timestamp cố định theo FPS (không phụ thuộc thời gian AI xử lý), hỗ trợ alpha khi trình duyệt/codec cho phép. Âm thanh gốc chưa được ghép vào file xuất.</p>
+    </div>
+
+    <div class="group">
+      <h3>7 · Nhân vật & tải PNG lên GitHub</h3>
+      <p class="hint">Chọn nhân vật có sẵn hoặc nhập tên để tạo thư mục mới. PNG Sequence sẽ được tải thành từng ảnh vào assets/NhanVat/{tên nhân vật}/.</p>
+      <div class="field"><label>Nhân vật đã có trên GitHub</label><select id="githubCharacterSelect"><option value="">Đang tải danh sách nhân vật…</option></select></div>
+      <div class="actions"><button id="refreshCharactersBtn" type="button">↻ Tải lại nhân vật</button></div>
+      <div class="field"><label>Tên nhân vật mới (không bắt buộc)</label><input id="newCharacterName" type="text" maxlength="60" placeholder="Ví dụ: Aki hoặc Yui"></div>
+      <button id="pushSequenceGitHubBtn" class="primary" type="button">⬆ Xử lý & push PNG Sequence lên GitHub</button>
+      <p class="hint" id="githubUploadStatus">Cần kết nối token tại GitHub Manager trước. Ảnh được commit thành một commit cho cả chuỗi.</p>
     </div>
     <div class="group"><div class="hint" id="engineStatus">Đang chờ video…</div><div class="status"><span id="fps">0 FPS</span><span id="progress">0%</span></div></div>
   </aside>
@@ -327,6 +338,57 @@ async function processCurrentFrame(){
   else if(['ai','hybrid'].includes($('mode').value)){await initAI();await ai.send({image:video})}
   renderComposite();
 }
+
+async function loadGitHubCharacters(){
+ const sel=$('githubCharacterSelect');sel.innerHTML='<option value="">Đang tải…</option>';
+ try{
+  if(!window.GitHubManager?.getToken())throw new Error('Chưa có token. Mở GitHub Manager để kết nối.');
+  const names=await GitHubManager.listCharacterFolders({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main'});
+  sel.innerHTML='<option value="">— Chọn nhân vật —</option>'+names.map(n=>'<option value="'+n.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+n.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</option>').join('');
+  $('githubUploadStatus').textContent=names.length?'Đã tải '+names.length+' thư mục nhân vật.':'Chưa có thư mục nhân vật; nhập tên mới để tạo.';
+ }catch(e){sel.innerHTML='<option value="">Không tải được danh sách</option>';$('githubUploadStatus').textContent=e.message||String(e)}
+}
+$('refreshCharactersBtn').onclick=loadGitHubCharacters;
+loadGitHubCharacters();
+$('pushSequenceGitHubBtn').onclick=async()=>{
+ const button=$('pushSequenceGitHubBtn'),status=$('githubUploadStatus');
+ if(!video.duration||!video.videoWidth||!out.width){status.textContent='Hãy chọn video trước.';return}
+ if(!window.GitHubManager?.getToken()){status.textContent='Chưa có GitHub Token. Hãy kết nối tại GitHub Manager.';return}
+ const typed=$('newCharacterName').value.trim(),selected=$('githubCharacterSelect').value;
+ const character=(typed||selected).trim().replace(/[\\/]+/g,'-').replace(/[<>:"|?*]/g,'_').replace(/^\.+|\.+$/g,'').trim();
+ if(!character){status.textContent='Hãy chọn nhân vật hoặc nhập tên nhân vật mới.';return}
+ if(character.length>60){status.textContent='Tên nhân vật tối đa 60 ký tự.';return}
+ if(processing||recording){status.textContent='Đang có tác vụ xử lý. Hãy đợi hoàn tất.';return}
+ const rg=rangeFrames(),sampleFps=refFps(),step=1/sampleFps,total=Math.max(1,rg.end-rg.start+1),oldTime=video.currentTime,wasPlaying=!video.paused;
+ if(total>1200&&!confirm('Chuỗi có '+total+' ảnh. Push nhiều file có thể mất thời gian và dùng nhiều lượt API. Bạn vẫn muốn tiếp tục?'))return;
+ if(!confirm('Xử lý '+total+' ảnh PNG rồi commit vào assets/NhanVat/'+character+'/? Nếu thư mục đã có ảnh trùng tên frame, các ảnh đó sẽ được cập nhật.'))return;
+ const files=[];
+ button.disabled=true;$('sequenceBtn').disabled=true;$('webmBtn').disabled=true;$('startBtn').disabled=true;
+ try{
+  video.pause();
+  if($('mode').value==='toonout')await loadToonout();else if(['ai','hybrid'].includes($('mode').value))await initAI();
+  for(let n=0;n<total;n++){
+   const t=Math.min(rg.startTime+n*step,Math.max(rg.startTime,rg.endTime-0.001));
+   await seekToTime(t);await processCurrentFrame();
+   const blob=await new Promise((resolve,reject)=>out.toBlob(b=>b?resolve(b):reject(new Error('Canvas không tạo được PNG')),'image/png'));
+   files.push({path:'assets/NhanVat/'+character+'/frame_'+String(n+1).padStart(6,'0')+'.png',blob});
+   $('progress').textContent=Math.round((n+1)/total*100)+'%';
+   if(n%3===0){status.textContent='Đang xử lý PNG '+(n+1)+'/'+total+' · '+sampleFps+' FPS';setStatus('Đang chuẩn bị ảnh để push GitHub…');await new Promise(r=>setTimeout(r,0))}
+  }
+  const info='Character: '+character+'\nFPS: '+sampleFps+' frame/second\nFrames: '+total+'\nStart frame: '+rg.start+'\nEnd frame: '+rg.end+'\nDuration: '+(total/sampleFps).toFixed(3)+' seconds\nTransparent PNG sequence.';
+  files.push({path:'assets/NhanVat/'+character+'/sequence_info.txt',blob:new Blob([info],{type:'text/plain;charset=utf-8'})});
+  status.textContent='Đã xử lý xong '+total+' ảnh. Đang commit một lần lên GitHub…';
+  const result=await GitHubManager.pushFiles({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',files,message:'Upload character PNG sequence: '+character+' ('+total+' frames)'});
+  status.innerHTML='Đã push thành công '+total+' ảnh vào <strong>assets/NhanVat/'+character+'/</strong>. <a target="_blank" rel="noopener" href="'+result.htmlUrl+'">Xem commit GitHub</a>';
+  setStatus('Push PNG Sequence của '+character+' thành công.');
+  if(typed)await loadGitHubCharacters();
+ }catch(e){status.textContent='Push thất bại: '+(e.message||String(e));setStatus('Không thể push PNG lên GitHub.')}
+ finally{
+  button.disabled=false;$('sequenceBtn').disabled=false;$('webmBtn').disabled=false;$('startBtn').disabled=false;
+  try{await seekToTime(Math.min(oldTime,video.duration));await renderStill();if(wasPlaying)video.play()}catch(_){}
+ }
+};
+
 $('sequenceBtn').onclick=async()=>{
  if(!video.duration||!video.videoWidth)return;
  if(!window.JSZip){setStatus('Không tải được thư viện ZIP. Kiểm tra Internet.');return}
