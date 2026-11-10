@@ -1437,7 +1437,7 @@ function exportEditedStoryJson(){
  try{
   const output=buildEditedStoryOutput(),rows=output.danh_sach;
   const blob=new Blob([JSON.stringify(output,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-  const base=(activeStoryName||'kich_ban').replace(/[^\\w-]+/g,'_');a.href=url;a.download=base+'_edited.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  const base=(activeStoryName||'kich_ban').replace(/[^A-Za-z0-9_-]+/g,'_');a.href=url;a.download=base+'_edited.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
   $('story-status').textContent='Đã xuất '+rows.length+' câu thoại. File đã tải về; chưa commit lên GitHub.';setStatus('Xuất JSON thành công.');
  }catch(err){$('story-status').textContent='Không thể xuất JSON: '+(err.message||err);setStatus('Xuất JSON thất bại.');console.error(err)}
 }
