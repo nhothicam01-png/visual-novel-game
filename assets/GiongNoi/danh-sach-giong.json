@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-10T09:42:38.267Z",
+  "updatedAt": "2026-11-10T09:45:57.758Z",
   "profiles": [
     {
       "id": "voice_1794192970852",
@@ -55,6 +55,34 @@
       "rough": 0,
       "volume": 100,
       "updatedAt": "2026-11-10T09:42:22.118Z"
+    },
+    {
+      "id": "voice_1794303792721",
+      "name": "Thiếu nữ",
+      "lang": "vi",
+      "voiceId": "vi_VN-vais1000-medium",
+      "gender": "female",
+      "engine": "edge",
+      "edgeVoice": "vi-VN-HoaiMyNeural",
+      "speed": 1,
+      "pitch": 0,
+      "rough": 5,
+      "volume": 100,
+      "updatedAt": "2026-11-10T09:43:12.721Z"
+    },
+    {
+      "id": "voice_1794303817586",
+      "name": "Thanh niên",
+      "lang": "vi",
+      "voiceId": "vi_VN-vais1000-medium",
+      "gender": "male",
+      "engine": "edge",
+      "edgeVoice": "vi-VN-NamMinhNeural",
+      "speed": 1,
+      "pitch": 0,
+      "rough": 5,
+      "volume": 100,
+      "updatedAt": "2026-11-10T09:43:37.586Z"
     }
   ]
 }
