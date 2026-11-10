@@ -27,8 +27,8 @@ GW.generateList=async(k,replace)=>{
   const used=new Set(replace?[]:GW.W.characters.map(c=>c.assetFolder).filter(Boolean));
   const available=k==='characters'?GW.A.characters.filter(a=>!used.has(a.folder)).map(a=>a.folder):[];
   if(k==='characters'&&!available.length)throw Error(replace?'Thư viện chưa có thư mục nhân vật thật.':'Đã dùng hết thư mục nhân vật trong thư viện. Hãy thêm thư mục nhân vật trước.');
-  const count=k==='characters'?Math.min(meta.count,available.length):meta.count,current=replace?[]:GW.W[k],world=GW.worldData();
-  const context={world,other_components:{places:GW.W.places,characters:GW.W.characters,rules:GW.W.rules,events:GW.W.events,ideas:GW.W.ideas},existing:current,available_character_folders:available};
+  const count=k==='characters'?Math.min(meta.count,available.length):meta.count,previous=GW.W[k],current=replace?[]:previous,world=GW.worldData();
+  const context={world,other_components:{places:GW.W.places,characters:GW.W.characters,rules:GW.W.rules,events:GW.W.events,ideas:GW.W.ideas},existing:previous,available_character_folders:available};
   const prompt='Bạn là chuyên gia thiết kế thế giới truyện dài tập. Hãy tạo đúng '+count+' mục '+meta.label+'. '+(replace?'TẠO LẠI: danh sách mới thay thế danh sách hiện tại, không lặp lại hoặc chỉ đổi tên mục cũ.':'TẠO THÊM: chỉ tạo mục mới, không trùng lặp hoặc gần giống bất kỳ mục hiện có nào.')+' Nội dung cụ thể, có giá trị dùng trong nhiều tập, phù hợp thế giới và liên kết logic với các thành phần khác. Trả về JSON duy nhất dạng {"items":['+JSON.stringify(meta.schema)+']}. Không Markdown. Với nhân vật, assetFolder để chuỗi rỗng; hệ thống tự gán thư mục thật.\nDỮ LIỆU:\n'+JSON.stringify(context);
   GW.say('select-status','Gemini đang '+(replace?'tạo lại ':'bổ sung ')+meta.label+'…');
   const data=GW.parse(await GW.ask(prompt,true));if(!Array.isArray(data.items)||!data.items.length)throw Error('Gemini không trả về danh sách hợp lệ.');
