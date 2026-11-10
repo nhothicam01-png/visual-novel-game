@@ -215,23 +215,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 </details>
 
 
-<details class="panel main-panel"><summary class="panel-heading">4. Âm thanh nền & hiệu ứng</summary>
-<div class="grid">
-<label class="field">Nhạc nền có sẵn
-<select id="bgm">
-<option value="">Không dùng nhạc nền</option>
-<option value="afternoon_between_leaves.mp3">afternoon_between_leaves.mp3</option>
-</select></label>
-<label class="field">Âm lượng nhạc nền <span id="bgm-volume-value">25%</span>
-<input id="bgm-volume" type="range" min="0" max="1" step="0.05" value="0.25"></label>
-<label class="field">Âm lượng TTS <span id="tts-volume-value">100%</span>
-<input id="tts-volume" type="range" min="0" max="1" step="0.05" value="1"></label>
-<label class="field">File âm thanh hiệu ứng (tuỳ chọn)
-<input type="file" id="sfx-file" accept="audio/*"></label>
-<label class="field">Âm lượng hiệu ứng <span id="sfx-volume-value">80%</span>
-<input id="sfx-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label>
-</div>
-</details>
+<details class="panel main-panel"><summary class="panel-heading">4. Âm thanh nền & hiệu ứng</summary><div class="grid"><label class="field">Âm lượng nhạc nền <span id="bgm-volume-value">25%</span><input id="bgm-volume" type="range" min="0" max="1" step="0.05" value="0.25"></label><label class="field">Âm lượng TTS <span id="tts-volume-value">100%</span><input id="tts-volume" type="range" min="0" max="1" step="0.05" value="1"></label><label class="field">Âm lượng hiệu ứng <span id="sfx-volume-value">80%</span><input id="sfx-volume" type="range" min="0" max="1" step="0.05" value="0.8"></label></div></details>
 
 <details class="panel main-panel"><summary class="panel-heading">5. Xem trước & xuất video</summary>
 <div class="grid">
@@ -659,7 +643,7 @@ function resolvedLineAudio(line,kind){
  const override=line?.audioOverride?.[kind];
  if(override?.mode==='off')return '';
  if(override?.mode==='override')return String(override.file||'').trim();
- return String(line?.sourceAudio?.[kind]??(kind==='bgm'&&!activeStoryData?$('bgm').value:'')).trim();
+ return String(line?.sourceAudio?.[kind]||'').trim();
 }
 let previewLineBgmName='',previewLineSfxName='';
 async function playLineAudio(line){
@@ -672,9 +656,7 @@ async function playLineAudio(line){
  const sfx=resolvedLineAudio(line,'sfx');
  if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}
  if(sfx){previewLineSfxName=sfx;previewAudio.sfx=audioElement(BASE+'AmThanh/HieuUng/'+sfx,false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
- else if(!activeStoryData&&!line?.sourceAudio?.sfx&&$('sfx-file').files[0]){
-  previewAudio.sfx=audioElement(URL.createObjectURL($('sfx-file').files[0]),false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})
- }
+ 
 }
 let browserSpeechState=null;
 function buildBrowserUtterance(state){
@@ -1227,7 +1209,6 @@ async function exportVideo(){
   const audioBuffers={bgm:new Map(),sfx:new Map()};
   const getLineAudioBuffer=async(line,kind)=>{
    const name=resolvedLineAudio(line,kind);
-   if(!name&&kind==='sfx'&&!activeStoryData&&$('sfx-file').files[0])return audioContext.decodeAudioData(await $('sfx-file').files[0].arrayBuffer());
    if(!name)return null;
    const cache=audioBuffers[kind];if(cache.has(name))return cache.get(name);
    const folder=kind==='bgm'?'Nen/':'HieuUng/';
