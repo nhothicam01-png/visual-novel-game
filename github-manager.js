@@ -45,6 +45,14 @@
     try{const rows=await request(url);return rows.filter(x=>x.type==='dir').map(x=>x.name).sort((a,b)=>a.localeCompare(b,'vi'))}
     catch(e){if(String(e.message).includes('Not Found'))return [];throw e}
   }
+  async function listCharacterWebm({owner,repo,character,branch='main'}){
+    const safe=String(character||'').trim();
+    if(!safe) return [];
+    const path='assets/NhanVat/'+safe;
+    const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/'+path.split('/').map(encodeURIComponent).join('/')+'?ref='+encodeURIComponent(branch);
+    const rows=await request(url);
+    return rows.filter(x=>x.type==='file'&&/\\.webm$/i.test(x.name)).map(x=>({name:x.name,path:x.path,size:x.size||0,downloadUrl:x.download_url||'',htmlUrl:x.html_url||''})).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+  }
   async function pushFiles({owner,repo,files,message,branch='main'}){
     if(!Array.isArray(files)||!files.length)throw new Error('Không có file để push.');
     const base=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo);
@@ -66,5 +74,5 @@
   }
 
   async function checkConnection(){const user=await request(API+'/user');return {login:user.login,name:user.name||user.login}}
-  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,pushTextFile,pushFile,listCharacterFolders,pushFiles,checkConnection};
+  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,checkConnection};
 })();
