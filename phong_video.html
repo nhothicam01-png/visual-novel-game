@@ -1573,12 +1573,11 @@ async function seekSourceLine(sourceIndex){
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(line.sourceIndex+1);
 }
 function captureVisual(){
- return {character:$('character').value,expression:$('expression').value,background:$('background').value,showDialogue:$('show-dialogue').checked,showSpeaker:$('show-speaker').checked,dialogueMode:$('dialogue-width-mode').value,dialogueWidth:$('dialogue-width').value,portrait:stage.classList.contains('portrait')};
+ return {character:$('character').value,expression:$('expression').value,background:$('background').value,dialogueMode:$('dialogue-width-mode').value,dialogueWidth:$('dialogue-width').value,portrait:stage.classList.contains('portrait')};
 }
 function applyVisual(v){
  if(!v)return;
  $('character').value=v.character;$('expression').value=v.expression;$('background').value=v.background;
- $('show-dialogue').checked=v.showDialogue;$('show-speaker').checked=v.showSpeaker;
  $('dialogue-width-mode').value=v.dialogueMode||'percent';$('dialogue-width').value=v.dialogueWidth||75;
  $('dialogue-width-control').style.display=v.dialogueMode==='fit'?'none':'flex';
  $('dialogue-width-value').textContent=$('dialogue-width').value+'%';
@@ -1664,7 +1663,18 @@ $('dialogue-line-list').addEventListener('click',e=>{const item=e.target.closest
  $(id).addEventListener('input',()=>{saveCurrentLine();renderLineList()});
  $(id).addEventListener('change',()=>{saveCurrentLine();renderLineList()});
 });
-document.querySelectorAll('#character,#expression,#background,#show-dialogue,#show-speaker,#dialogue-width-mode,#dialogue-width').forEach(el=>el.addEventListener('change',()=>saveCurrentScene()));
+document.querySelectorAll('#character,#expression,#background,#dialogue-width-mode,#dialogue-width').forEach(el=>el.addEventListener('change',()=>saveCurrentScene()));
+const GLOBAL_DIALOGUE_PREFS_KEY='visualNovelGlobalDialoguePrefsV1';
+function loadGlobalDialoguePrefs(){
+ try{const p=JSON.parse(localStorage.getItem(GLOBAL_DIALOGUE_PREFS_KEY)||'null');if(p&&typeof p==='object'){$('show-dialogue').checked=p.showDialogue!==false;$('show-speaker').checked=p.showSpeaker!==false}}catch(e){console.warn('Không đọc được thiết lập hiển thị thoại',e)}
+}
+function saveGlobalDialoguePrefs(){
+ try{localStorage.setItem(GLOBAL_DIALOGUE_PREFS_KEY,JSON.stringify({showDialogue:$('show-dialogue').checked,showSpeaker:$('show-speaker').checked}))}catch(e){console.warn('Không lưu được thiết lập hiển thị thoại',e)}
+ drawFrame(0);
+}
+loadGlobalDialoguePrefs();
+$('show-dialogue').addEventListener('change',saveGlobalDialoguePrefs);
+$('show-speaker').addEventListener('change',saveGlobalDialoguePrefs);
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
 renderEffectCatalogs();
