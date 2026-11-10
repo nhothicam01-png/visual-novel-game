@@ -145,6 +145,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <input id="import-json-file" type="file" accept=".json,application/json" hidden>
 <button class="btn secondary" id="reload-story-list" type="button">↻ Tải lại danh sách GitHub</button>
 <button class="btn" id="export-json-button" type="button">💾 Xuất JSON đã chỉnh sửa</button>
+<button class="btn" id="push-story-button" type="button">⬆ Cập nhật kịch bản lên GitHub</button>
 
 </div>
 <div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 2.</div>
@@ -1194,7 +1195,7 @@ $('export-video').addEventListener('click',exportVideo);
 
 
 let scenes=[],activeSceneIndex=0,activeLineIndex=0;
-let activeStoryData=null,activeStoryName='',characterVoiceMap={},characterDirectory=[],defaultVoiceProfileId='';
+let activeStoryData=null,activeStoryName='',activeStoryPath='',characterVoiceMap={},characterDirectory=[],defaultVoiceProfileId='';
 let sourceLineCount=0,assetLoadToken=0,isPortrait=false;
 const imageAssetCache=new Map(),videoAssetCache=new Map();
 function clone(obj){return JSON.parse(JSON.stringify(obj))}
@@ -1352,11 +1353,11 @@ function buildScenesFromJson(data){
  });
  if(current)out.push(current);return out;
 }
-async function applyStoryData(data,name){
+async function applyStoryData(data,name,path){
  stopPreview();const rows=data?.danh_sach;
  if(!Array.isArray(rows)||!rows.length)throw new Error('File JSON không có danh_sach hợp lệ.');
  if(Number(data.phien_ban)!==2)throw new Error('File JSON phải dùng phien_ban: 2.');
- activeStoryData=data;activeStoryName=String(name||'Kịch bản import').replace(/\.json$/i,'');sourceLineCount=rows.length;
+ activeStoryData=data;activeStoryName=String(name||'Kịch bản import').replace(/\.json$/i,'');activeStoryPath=String(path||('assets/KichBan/'+activeStoryName+'/'+activeStoryName+'.json'));sourceLineCount=rows.length;
  characterDirectory=uniqueCharacters(data);
  let saved={};try{saved=JSON.parse(localStorage.getItem(storySettingsKey())||'{}')}catch(e){}
  characterVoiceMap=saved.characterVoiceMap||{};defaultVoiceProfileId=saved.defaultVoiceProfileId||'';
@@ -1373,7 +1374,7 @@ async function loadStory(index){
  try{
   let data=storyCache.get(entry.path);
   if(!data){const encodedPath=entry.path.split('/').map(part=>encodeURIComponent(part)).join('/'),url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+encodedPath,response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error('Không tải được file (HTTP '+response.status+')');data=await response.json();storyCache.set(entry.path,data)}
-  await applyStoryData(data,entry.name);
+  await applyStoryData(data,entry.name,entry.path);
  }catch(err){$('story-status').textContent='Lỗi nạp truyện: '+(err.message||err);console.error(err)}
  finally{$('story-select').disabled=false}
 }
@@ -1392,8 +1393,9 @@ document.addEventListener('webkitfullscreenchange',()=>{$('toggle-fullscreen').t
 
 $('reload-story-list').addEventListener('click',loadStoryCatalog);
 $('export-json-button').addEventListener('click',exportEditedStoryJson);
+$('push-story-button').addEventListener('click',pushEditedStoryJson);
 $('import-json-button').addEventListener('click',()=>$('import-json-file').click());
-$('import-json-file').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());await applyStoryData(data,file.name)}catch(err){$('story-status').textContent='Import thất bại: '+(err.message||err);setStatus('Không thể import JSON.')}finally{e.target.value=''}});
+$('import-json-file').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());await applyStoryData(data,file.name.replace(/\.json$/i,''))}catch(err){$('story-status').textContent='Import thất bại: '+(err.message||err);setStatus('Không thể import JSON.')}finally{e.target.value=''}});
 
 $('character-voice-list').addEventListener('change',e=>{
  const sel=e.target.closest('[data-character-voice]');if(!sel)return;
@@ -1402,38 +1404,56 @@ $('character-voice-list').addEventListener('change',e=>{
 });
 $('default-voice-profile').addEventListener('change',e=>{defaultVoiceProfileId=e.target.value;saveStorySettings();if(getCurrentLine())applyVoiceForCurrentLine()});
 
+function buildEditedStoryOutput(){
+ saveCurrentLine();saveCurrentScene();
+ if(!activeStoryData)throw new Error('Hãy chọn hoặc import kịch bản JSON trước.');
+ const output=JSON.parse(JSON.stringify(activeStoryData)),rows=[],profiles=getVoiceProfiles();
+ const characterMap=output.nhan_vat&&typeof output.nhan_vat==='object'?output.nhan_vat:(output.nhan_vat={});
+ let lastBackground='';
+ scenes.forEach(scene=>scene.lines.forEach(line=>{
+  const frame=line.sourceFrame&&typeof line.sourceFrame==='object'?JSON.parse(JSON.stringify(line.sourceFrame)):{};
+  const asset=String(line.characterAsset||'').trim();
+  const matched=characterDirectory.find(ch=>ch.id===asset||characterAssetFolder(ch.id)===asset);
+  const characterId=matched?.id||line.speakerId||asset;
+  if(characterId)frame.nhan_vat=characterId;
+  frame.noi_dung=String(line.text??'');
+  const expression=String(line.expression||'').trim();if(expression)frame.bieu_cam=expression;
+  const bg=String(line.background||scene.visual?.background||'').trim();
+  if(bg){if(bg!==lastBackground)frame.anh_nen=bg;else if(Object.prototype.hasOwnProperty.call(frame,'anh_nen'))frame.anh_nen=bg;lastBackground=bg}
+  if(line.speaker?.trim())frame.ten_hien_thi=line.speaker.trim();
+  const profile=profiles.find(p=>p.id===line.profileId)||profiles.find(p=>p.voiceId===line.voiceId);
+  const voiceId=String(profile?.voiceId||line.voiceId||'').trim();
+  if(voiceId)frame.giong_noi={...(frame.giong_noi&&typeof frame.giong_noi==='object'?frame.giong_noi:{}),profileId:profile?.id||line.profileId||'',voiceId,name:profile?.name||'',lang:line.lang||profile?.lang||'vi'};
+  if(characterId&&line.speaker?.trim()){
+   const prior=characterMap[characterId]&&typeof characterMap[characterId]==='object'?characterMap[characterId]:{};
+   characterMap[characterId]={...prior,ten_hien_thi:line.speaker.trim()};
+  }
+  rows.push(frame);
+ }));
+ output.danh_sach=rows;
+ return output;
+}
 function exportEditedStoryJson(){
  try{
-  saveCurrentLine();saveCurrentScene();
-  if(!activeStoryData)throw new Error('Hãy chọn hoặc import kịch bản JSON trước khi xuất.');
-  const output=JSON.parse(JSON.stringify(activeStoryData)),rows=[],profiles=getVoiceProfiles();
-  const characterMap=output.nhan_vat&&typeof output.nhan_vat==='object'?output.nhan_vat:(output.nhan_vat={});
-  let lastBackground='';
-  scenes.forEach(scene=>scene.lines.forEach(line=>{
-   const frame=line.sourceFrame&&typeof line.sourceFrame==='object'?JSON.parse(JSON.stringify(line.sourceFrame)):{};
-   const asset=String(line.characterAsset||'').trim();
-   const matched=characterDirectory.find(ch=>ch.id===asset||characterAssetFolder(ch.id)===asset);
-   const characterId=matched?.id||line.speakerId||asset;
-   if(characterId)frame.nhan_vat=characterId;
-   frame.noi_dung=String(line.text??'');
-   const expression=String(line.expression||'').trim();if(expression)frame.bieu_cam=expression;
-   const bg=String(line.background||scene.visual?.background||'').trim();
-   if(bg){if(bg!==lastBackground)frame.anh_nen=bg;else if(Object.prototype.hasOwnProperty.call(frame,'anh_nen'))frame.anh_nen=bg;lastBackground=bg}
-   if(line.speaker?.trim())frame.ten_hien_thi=line.speaker.trim();
-   const profile=profiles.find(p=>p.id===line.profileId)||profiles.find(p=>p.voiceId===line.voiceId);
-   const voiceId=String(profile?.voiceId||line.voiceId||'').trim();
-   if(voiceId)frame.giong_noi={...(frame.giong_noi&&typeof frame.giong_noi==='object'?frame.giong_noi:{}),profileId:profile?.id||line.profileId||'',voiceId,name:profile?.name||'',lang:line.lang||profile?.lang||'vi'};
-   if(characterId&&line.speaker?.trim()){
-    const prior=characterMap[characterId]&&typeof characterMap[characterId]==='object'?characterMap[characterId]:{};
-    characterMap[characterId]={...prior,ten_hien_thi:line.speaker.trim()};
-   }
-   rows.push(frame);
-  }));
-  output.danh_sach=rows;
+  const output=buildEditedStoryOutput(),rows=output.danh_sach;
   const blob=new Blob([JSON.stringify(output,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
-  const base=(activeStoryName||'kich_ban').replace(/[^\w-]+/g,'_');a.href=url;a.download=base+'_edited.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
-  $('story-status').textContent='Đã xuất '+rows.length+' câu thoại. File đã tải về; hãy kiểm tra rồi tự commit lên GitHub.';setStatus('Xuất JSON thành công. Chưa commit tự động.');
+  const base=(activeStoryName||'kich_ban').replace(/[^\\w-]+/g,'_');a.href=url;a.download=base+'_edited.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+  $('story-status').textContent='Đã xuất '+rows.length+' câu thoại. File đã tải về; chưa commit lên GitHub.';setStatus('Xuất JSON thành công.');
  }catch(err){$('story-status').textContent='Không thể xuất JSON: '+(err.message||err);setStatus('Xuất JSON thất bại.');console.error(err)}
+}
+async function pushEditedStoryJson(){
+ const button=$('push-story-button');
+ try{
+  if(!window.GitHubManager?.getToken())throw new Error('Chưa có GitHub Token. Hãy kết nối tại GitHub Manager trước.');
+  const output=buildEditedStoryOutput(),path=activeStoryPath||('assets/KichBan/'+activeStoryName+'/'+activeStoryName+'.json');
+  if(!confirm('Commit kịch bản "'+activeStoryName+'" lên '+path+'? Nội dung file trên GitHub sẽ được cập nhật.'))return;
+  button.disabled=true;$('story-status').textContent='Đang cập nhật kịch bản lên GitHub…';
+  const result=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path,content:JSON.stringify(output,null,2),message:'Update script: '+activeStoryName});
+  activeStoryData=output;storyCache.set(path,output);
+  $('story-status').textContent='Đã cập nhật '+output.danh_sach.length+' câu thoại lên GitHub. Commit: '+result.commitSha+' · '+result.path;
+  setStatus('Cập nhật kịch bản lên GitHub thành công.');
+ }catch(err){$('story-status').textContent='Không thể cập nhật kịch bản: '+(err.message||err);setStatus('Push kịch bản thất bại.');console.error(err)}
+ finally{button.disabled=false}
 }
 function allSourceLines(){return scenes.flatMap((scene,sceneIndex)=>scene.lines.map((line,lineIndex)=>({sceneIndex,lineIndex,sourceIndex:line.sourceIndex??0}))).sort((a,b)=>a.sourceIndex-b.sourceIndex)}
 function currentSourceIndex(){return getCurrentLine()?.sourceIndex??0}
