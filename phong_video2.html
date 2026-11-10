@@ -122,6 +122,9 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <div id="preview-loading"><strong>⏳ Đang tải tài nguyên…</strong><span id="preview-loading-status">Đang chuẩn bị cảnh</span></div>
 </div>
 <div class="preview-toolbar">
+<button class="btn secondary" id="preload-edge-preview">⚡ Nạp trước giọng Edge</button>
+<button class="btn" id="record-preview">⏺ Ghi khung hình + phát</button>
+<button class="btn danger" id="stop-record-preview" disabled>■ Dừng ghi</button>
 <button class="btn" id="play-preview">▶ Chạy</button>
 <button class="btn secondary" id="stop-scene">■ Dừng chạy</button>
 <button class="btn secondary" id="ratio-toggle">📐 Tỉ lệ: 16:9</button>
@@ -296,6 +299,7 @@ let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewPaused=fals
 let piperVoices=[],piperCatalogPromise=null;
 let previewAudio={bgm:null,tts:null,sfx:null};
 let recordingTimer=null;
+let captureAudioContext=null,captureAudioDestination=null,canvasCaptureState=null;
 const charSelect=$('character');
 characters.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent='Nhân vật '+n;charSelect.appendChild(o)});
 backgrounds.forEach(([file,label])=>{const o=document.createElement('option');o.value=file;o.textContent=label;$('background').appendChild(o)});
@@ -627,7 +631,16 @@ async function stopAndResetPreview(){
  setTtsStatus('Đã dừng và đặt lại tiến trình về thoại đầu tiên.');
 }
 function audioElement(url,loop,volume){
- const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
+ const a=new Audio();a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;a.src=url;
+ // Khi ghi, đưa âm thanh TTS/BGM/SFX vào track riêng; vẫn phát ra loa bình thường.
+ if(captureAudioContext&&captureAudioDestination){
+  try{
+   const source=captureAudioContext.createMediaElementSource(a);
+   source.connect(captureAudioDestination);
+   source.connect(captureAudioContext.destination);
+  }catch(err){console.warn('Không thể đưa một nguồn âm thanh vào bản ghi:',err)}
+ }
+ return a;
 }
 function resolvedLineAudio(line,kind){
  const override=line?.audioOverride?.[kind];
@@ -742,13 +755,19 @@ async function playPreview(){
  for(const item of items){
   if(!await waitWhilePaused(run))break;
   await loadSourceLineForPlayback(item);if(!await waitWhilePaused(run))break;
-  const line=getCurrentLine();await playLineAudio(line);
+  const line=getCurrentLine();
+  const lineStartedAt=performance.now();
+  await playLineAudio(line);
   const text=$('dialogue').value.trim();
   if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
   else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
    await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
   }
   const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
+  if(canvasCaptureState&&text){
+   const endAt=performance.now();
+   canvasCaptureState.entries.push({line,start:Math.max(0,(lineStartedAt-canvasCaptureState.startedAt)/1000),duration:Math.max(.05,(endAt-lineStartedAt)/1000),pause,gain:Number(line.gain??1),sceneIndex:item.sceneIndex});
+  }
   let remaining=pause*1000;
   while(previewing&&run===previewRunId&&remaining>0){
    if(!await waitWhilePaused(run))break;
@@ -756,9 +775,113 @@ async function playPreview(){
   }
  }
  if(previewing&&run===previewRunId)stopPreview();
+ if(canvasCaptureState&&!previewing)finishCanvasCapture();
 }
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
+
+async function preloadEdgeForCapture(){
+ if(!scenes.length)throw new Error('Hãy tải hoặc import kịch bản trước.');
+ saveCurrentLine();saveCurrentScene();
+ $('tts-engine').value='edge';
+ $('preview-tts-mode').value='render';
+ edgeDead=false;edgeFails=0;
+ const btn=$('preload-edge-preview');btn.disabled=true;
+ try{
+  setTaskProgress('Đang tải trước toàn bộ thoại Edge Neural…',0);
+  await prefetchEdgeTts();
+  const total=scenes.reduce((n,sc)=>n+sc.lines.filter(l=>String(l.text||'').trim()).length,0);
+  const cached=Array.from(edgePrefetched?[]:[]);
+  if(edgeDead)throw new Error('Edge TTS đang mất kết nối. Hãy kiểm tra Edge TTS relay hoặc thử lại.');
+  setTtsStatus('Đã nạp trước giọng Edge cho '+total+' câu thoại. Bấm “Ghi khung hình + phát”.');
+  finishTaskProgress('Đã nạp trước giọng Edge');
+ }finally{btn.disabled=false}
+}
+async function startCanvasCapture(){
+ if(canvasCaptureState)return;
+ if(!scenes.length)throw new Error('Hãy tải hoặc import kịch bản trước.');
+ if($('tts-engine').value!=='edge')throw new Error('Hãy chọn Edge Neural và nạp trước giọng Edge.');
+ if($('preview-tts-mode').value!=='render')$('preview-tts-mode').value='render';
+ if(!canvas.captureStream||!window.MediaRecorder)throw new Error('Trình duyệt Android này chưa hỗ trợ ghi Canvas bằng MediaRecorder.');
+ const AC=window.AudioContext||window.webkitAudioContext;
+ if(!AC)throw new Error('Trình duyệt không hỗ trợ Web Audio để thu thoại.');
+ const fps=Math.max(15,Math.min(60,Number($('fps').value)||30));
+ captureAudioContext=new AC();
+ await captureAudioContext.resume();
+ captureAudioDestination=captureAudioContext.createMediaStreamDestination();
+ const stream=canvas.captureStream(fps);
+ captureAudioDestination.stream.getAudioTracks().forEach(track=>stream.addTrack(track));
+ const mimeCandidates=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+ const mimeType=mimeCandidates.find(type=>MediaRecorder.isTypeSupported?.(type))||'';
+ const recorder=new MediaRecorder(stream,mimeType?{mimeType}:undefined);
+ const state={recorder,stream,chunks:[],entries:[],startedAt:performance.now(),finishing:false};
+ canvasCaptureState=state;
+ recorder.ondataavailable=e=>{if(e.data&&e.data.size)state.chunks.push(e.data)};
+ recorder.onerror=e=>{console.error('Canvas MediaRecorder:',e);setStatus('Lỗi ghi hình: '+(e.error?.message||'MediaRecorder'))};
+ recorder.onstop=async()=>{
+  const elapsed=Math.max(.1,(performance.now()-state.startedAt)/1000);
+  const blob=new Blob(state.chunks,{type:recorder.mimeType||'video/webm'});
+  try{
+   if(blob.size){
+    const a=document.createElement('a'),url=URL.createObjectURL(blob);
+    a.href=url;a.download=safeAudioDataName(activeStoryName||'visual-novel')+'_preview.webm';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+   }
+   const entries=state.entries;
+   if(entries.length){
+    const bgmSegments=[];
+    for(const entry of entries){
+     const name=resolvedLineAudio(entry.line,'bgm');
+     const start=entry.start,end=entry.start+entry.duration+entry.pause,last=bgmSegments[bgmSegments.length-1];
+     if(last&&last.name===name&&name)last.end=end;
+     else{if(last)last.end=start;if(name)bgmSegments.push({name,start,end})}
+    }
+    const manifest=buildAudioManifest([],entries,bgmSegments,elapsed);
+    try{
+     const meta=await pushExportMetadata(entries,manifest);
+     setStatus('Đã ghi '+(blob.size/1048576).toFixed(1)+' MB WebM · đã push '+meta.srtName+' và AudioManifest.json lên GitHub. Không push file âm thanh.');
+    }catch(err){
+     const files=[
+      [new Blob([JSON.stringify(manifest,null,2)],{type:'application/json'}),safeAudioDataName(activeStoryName)+'_AudioManifest.json'],
+      [new Blob([buildSourceSubtitleFromTimeline(entries)],{type:'text/plain;charset=utf-8'}),safeAudioDataName(activeStoryName)+'_source.srt']
+     ];
+     for(const [file,name] of files){const u=URL.createObjectURL(file),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),30000)}
+     setStatus('Đã ghi WebM. Không push được metadata ('+(err.message||err)+'), đã tải AudioManifest và SRT về máy.');
+    }
+   }else setStatus('Đã ghi WebM nhưng không có dữ liệu thoại để tạo manifest.');
+  }finally{
+   state.stream.getTracks().forEach(track=>track.stop());
+   captureAudioContext=null;captureAudioDestination=null;
+   try{await state.context?.close()}catch(_){}
+   try{await captureAudioContext?.close()}catch(_){}
+   canvasCaptureState=null;
+   $('record-preview').disabled=false;$('stop-record-preview').disabled=true;
+  }
+ };
+ state.context=captureAudioContext;
+ recorder.start(1000);
+ $('record-preview').disabled=true;$('stop-record-preview').disabled=false;
+ setStatus('Đang ghi riêng khung video và âm thanh Edge. Đang bắt đầu phát…');
+ // Chế độ render dùng Blob Edge/Piper; Browser Speech không thể thu ổn định qua Web Audio.
+ $('preview-tts-mode').value='render';
+ playPreview();
+}
+function finishCanvasCapture(){
+ const state=canvasCaptureState;
+ if(!state||state.finishing)return;
+ state.finishing=true;
+ try{if(state.recorder.state!=='inactive')state.recorder.stop()}catch(err){console.warn('Không thể dừng bản ghi:',err)}
+}
+$('preload-edge-preview').addEventListener('click',async()=>{
+ try{await preloadEdgeForCapture()}catch(err){setTtsStatus('Không nạp được Edge: '+(err.message||err));setStatus('Không nạp được giọng Edge: '+(err.message||err))}
+});
+$('record-preview').addEventListener('click',async()=>{
+ try{await startCanvasCapture()}catch(err){console.error(err);setStatus('Không thể bắt đầu ghi: '+(err.message||err));$('record-preview').disabled=false;$('stop-record-preview').disabled=true}
+});
+$('stop-record-preview').addEventListener('click',()=>{
+ stopPreview();finishCanvasCapture();
+});
+
 $('play-preview').addEventListener('click',()=>{if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
 $('stop-scene').addEventListener('click',stopAndResetPreview);
