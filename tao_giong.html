@@ -197,6 +197,6 @@ $('push-voices').onclick=pushVoiceProfiles;$('import-config').onclick=()=>$('con
 $('config-file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text()),incoming=Array.isArray(data)?data:data.profiles;if(!Array.isArray(incoming))throw Error('Không có profiles');const map=new Map(read().map(p=>[p.id,p]));incoming.forEach(p=>{if(p&&p.id&&p.name&&(p.voiceId||p.edgeVoice)){map.set(p.id,{...p,speed:Number(p.speed??1),pitch:Number(p.pitch??0),rough:Number(p.rough??0),volume:Number(p.volume??100)});const gone=new Set(deletedRead());gone.delete(p.id);localStorage.setItem(DELETED_KEY,JSON.stringify([...gone]))}});write([...map.values()]);$('status').textContent='Đã nhập '+incoming.length+' hồ sơ.'}catch(err){$('status').textContent='Lỗi JSON: '+err.message}e.target.value=''};
 render();updateValues();loadVoices();loadEdgeVoices();syncEngine();loadRemoteProfiles();
 })();
-</script><script src="./github-manager.js"></script>
+</script><script src="./github-manager.js?v=20261110sha1"></script>
 <script src="./studio-shell.js"></script>
 </body></html>
