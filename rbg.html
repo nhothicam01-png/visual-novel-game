@@ -84,8 +84,10 @@ main{max-width:1400px;margin:22px auto;padding:0 16px 40px}.panel{background:lin
       <div class="field"><label>Nhân vật đã có trên GitHub</label><select id="githubCharacterSelect"><option value="">Đang tải danh sách nhân vật…</option></select></div>
       <div class="actions"><button id="refreshCharactersBtn" type="button">↻ Tải lại nhân vật</button></div>
       <div class="field"><label>Tên nhân vật mới (không bắt buộc)</label><input id="newCharacterName" type="text" maxlength="60" placeholder="Ví dụ: Aki hoặc Yui"></div>
+      <div class="field"><label>Tên file WebM muốn lưu (không cần đuôi .webm)</label><input id="webmFileName" type="text" maxlength="100" placeholder="Ví dụ: Aki_Neutral hoặc Aki_Talking"></div>
       <button id="pushWebmGitHubBtn" class="primary" type="button">⬆ Xuất WebM & push lên GitHub</button>
-      <p class="hint" id="githubUploadStatus">Cần kết nối token tại GitHub Manager trước. Mỗi lần tải lên sẽ tạo một file .webm trong thư mục nhân vật.</p>
+      <p class="hint" id="githubUploadStatus">Cần kết nối token tại GitHub Manager trước. Chọn nhân vật để xem các WebM đã có.</p>
+      <div class="field"><label>WebM đã lưu của nhân vật</label><div id="characterWebmList" class="hint">Chọn nhân vật để tải danh sách WebM.</div></div>
     </div>
     <div class="group"><div class="hint" id="engineStatus">Đang chờ video…</div><div class="status"><span id="fps">0 FPS</span><span id="progress">0%</span></div></div>
   </aside>
@@ -348,8 +350,22 @@ async function loadGitHubCharacters(){
   $('githubUploadStatus').textContent=names.length?'Đã tải '+names.length+' thư mục nhân vật.':'Chưa có thư mục nhân vật; nhập tên mới để tạo.';
  }catch(e){sel.innerHTML='<option value="">Không tải được danh sách</option>';$('githubUploadStatus').textContent=e.message||String(e)}
 }
-$('refreshCharactersBtn').onclick=loadGitHubCharacters;
-loadGitHubCharacters();
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function loadCharacterWebm(){
+ const character=$('githubCharacterSelect').value;
+ const box=$('characterWebmList');
+ if(!character){box.textContent='Chọn một nhân vật để xem danh sách WebM.';return}
+ if(!window.GitHubManager?.getToken()){box.textContent='Hãy kết nối GitHub Manager để tải danh sách.';return}
+ box.textContent='Đang tải danh sách WebM của '+character+'…';
+ try{
+  const files=await GitHubManager.listCharacterWebm({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',character});
+  if(!files.length){box.textContent='Nhân vật '+character+' chưa có file WebM nào.';return}
+  box.innerHTML=files.map((f,i)=>'<div style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0"><div style="font-weight:650;overflow-wrap:anywhere">'+escapeHtml(f.name)+'</div><div style="font-size:11px;color:var(--muted);margin:4px 0">'+(f.size/1024/1024).toFixed(2)+' MB</div>'+(f.downloadUrl?'<video controls playsinline preload="metadata" src="'+escapeHtml(f.downloadUrl)+'" style="width:100%;max-height:220px;background:#05080e;border-radius:8px"></video>':'<span>Không có đường dẫn xem trước.</span>')+'<div style="margin-top:6px"><a href="'+escapeHtml(f.htmlUrl)+'" target="_blank" rel="noopener" style="color:#83b4ff">Mở trên GitHub</a></div></div>').join('');
+ }catch(e){box.textContent='Không tải được WebM: '+(e.message||String(e))}
+}
+$('githubCharacterSelect').addEventListener('change',loadCharacterWebm);
+$('refreshCharactersBtn').onclick=async()=>{await loadGitHubCharacters();await loadCharacterWebm()};
+loadGitHubCharacters().then(loadCharacterWebm);
 $('pushWebmGitHubBtn').onclick=async()=>{
  const button=$('pushWebmGitHubBtn'),status=$('githubUploadStatus');
  if(!video.duration||!video.videoWidth||!out.width){status.textContent='Hãy chọn video trước.';return}
@@ -362,7 +378,9 @@ $('pushWebmGitHubBtn').onclick=async()=>{
  if(!('VideoEncoder' in window)||!('VideoFrame' in window)){status.textContent='Trình duyệt chưa hỗ trợ WebCodecs. Hãy mở bằng Chrome mới.';return}
  const rg=rangeFrames(),sampleFps=refFps(),total=Math.max(1,rg.end-rg.start+1),clipDuration=total/sampleFps;
  const oldTime=video.currentTime,wasPlaying=!video.paused;
- const filename=character+'-'+sampleFps+'fps-'+Date.now()+'.webm';
+ const requestedName=$('webmFileName').value.trim();
+ const filename=(requestedName||character+'-'+sampleFps+'fps-'+Date.now()).replace(/\\.webm$/i,'').replace(/[\\/:*?"<>|]+/g,'_').replace(/^\\.+|\\.+$/g,'').trim()+'.webm';
+ if(filename.length>105){status.textContent='Tên file quá dài. Hãy rút gọn tên (tối đa khoảng 100 ký tự).';return}
  const path='assets/NhanVat/'+character+'/'+filename;
  if(!confirm('Xuất một file WebM '+sampleFps+' FPS ('+clipDuration.toFixed(2)+' giây) rồi tải lên '+path+'? Không tải PNG Sequence.'))return;
  let media=null,output=null,videoSource=null;
@@ -396,7 +414,8 @@ $('pushWebmGitHubBtn').onclick=async()=>{
   const result=await GitHubManager.pushFiles({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',files:[{path,blob}],message:'Upload character WebM: '+character+' ('+sampleFps+' FPS)'});
   status.innerHTML='Đã push WebM thành công vào <strong>'+path+'</strong>. <a target="_blank" rel="noopener" href="'+result.htmlUrl+'">Xem commit GitHub</a>';
   setStatus('Đã tải WebM của '+character+' lên GitHub thành công.');
-  if(typed)await loadGitHubCharacters();
+  if(typed){await loadGitHubCharacters();$('githubCharacterSelect').value=character}
+  await loadCharacterWebm();
  }catch(e){status.textContent='Xuất hoặc push WebM thất bại: '+(e.message||String(e));setStatus('Không thể tải WebM lên GitHub.')}
  finally{
   try{if(videoSource)videoSource.close()}catch(_){}
