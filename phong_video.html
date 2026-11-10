@@ -1840,23 +1840,39 @@ function renderLineList(){
 function moveCurrentLine(direction){
  const list=getCurrentScene()?.lines;if(!list)return;saveCurrentLine();saveCurrentScene();const from=activeLineIndex,to=from+direction;if(to<0||to>=list.length)return;[list[from],list[to]]=[list[to],list[from]];activeLineIndex=to;loadLineToEditor(getCurrentLine());renderLineList();updateSeekUI(currentSourceIndex());
 }
-function selectLine(i){
- saveCurrentLine();activeLineIndex=Math.max(0,Math.min(i,getCurrentScene().lines.length-1));
- loadLineToEditor(getCurrentLine());renderLineList();updateSeekUI(getCurrentLine()?.sourceIndex??0);
- if(getCurrentLine()?.speakerId){
-  const line=getCurrentLine(),frame=line.sourceFrame||{};
-  $('character').value=characterAssetFolder(frame.nhan_vat??line.characterAsset);
-  $('expression').value=normalizeExpression(frame.bieu_cam||line.expression);
-  $('background').value=backgroundAtSourceIndex(line.sourceIndex)||getCurrentScene().visual.background;
-  applyLineEffects(line);updateAssets();applyVoiceForCurrentLine();preloadAdjacentAssets(line.sourceIndex+1);
- }
+async function selectLine(i){
+ const scene=getCurrentScene();if(!scene||!scene.lines.length)return;
+ saveCurrentLine();
+ activeLineIndex=Math.max(0,Math.min(Number(i)||0,scene.lines.length-1));
+ const line=getCurrentLine(),frame=line?.sourceFrame||{};
+ if(!line)return;
+ loadLineToEditor(line);
+ $('character').value=characterAssetFolder(frame.nhan_vat??line.characterAsset??scene.visual?.character??'');
+ $('expression').value=normalizeExpression(frame.bieu_cam||line.expression||scene.visual?.expression);
+ $('background').value=backgroundAtSourceIndex(line.sourceIndex)||
+  line.background||scene.visual?.background||'';
+ applyLineEffects(line);
+ renderLineList();updateSeekUI(line.sourceIndex??0);
+ await updateAssets();
+ await applyVoiceForCurrentLine();
+ if(line.sourceIndex!==undefined)preloadAdjacentAssets(line.sourceIndex+1);
 }
 async function selectScene(i){
- saveCurrentLine();saveCurrentScene();activeSceneIndex=Math.max(0,Math.min(i,scenes.length-1));activeLineIndex=0;
- applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());renderSceneList();renderLineList();
- updateSeekUI(getCurrentLine()?.sourceIndex??0);
- await updateAssets();if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
- if(getCurrentLine()?.sourceIndex!==undefined)preloadAdjacentAssets(getCurrentLine().sourceIndex+1);
+ if(!Array.isArray(scenes)||!scenes.length)return;
+ const target=Math.max(0,Math.min(Number(i)||0,scenes.length-1));
+ if(target!==activeSceneIndex){saveCurrentLine();saveCurrentScene()}
+ activeSceneIndex=target;activeLineIndex=0;
+ const scene=getCurrentScene();
+ if(!scene)return;
+ applyVisual(scene.visual);
+ renderSceneList();
+ renderLineList();
+ const line=getCurrentLine();
+ if(line)loadLineToEditor(line);
+ updateSeekUI(line?.sourceIndex??0);
+ await updateAssets();
+ await applyVoiceForCurrentLine();
+ if(line?.sourceIndex!==undefined)preloadAdjacentAssets(line.sourceIndex+1);
 }
 function newLine(){return {speaker:'Nhân vật 1',text:'',effectSettings:[],effectStrength:50,profileId:'',lang:$('tts-lang').value||'vi-VN',voiceId:$('piper-voice').value||'',pauseAfter:.3,wavBlob:null,cacheKey:''}}
 $('scene-select').addEventListener('change',e=>selectScene(Number(e.target.value)));
