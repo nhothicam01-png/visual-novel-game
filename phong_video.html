@@ -201,7 +201,6 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <details class="panel main-panel"><summary class="panel-heading">3. Khung hình & bố cục</summary>
 <div class="row">
-<button class="btn secondary" id="ratio-toggle-settings">📐 Tỉ lệ: 16:9</button>
 <label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
 <label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
 <label class="field">Kiểu khung thoại
@@ -386,7 +385,7 @@ function finishTaskProgress(label){
 
 function updateRatioButtons(){
  const label='📐 Tỉ lệ: '+(isPortrait?'9:16':'16:9');
- ['ratio-toggle','ratio-toggle-settings'].forEach(id=>{const el=$(id);if(el)el.textContent=label;});
+ const el=$('ratio-toggle');if(el)el.textContent=label;
 }
 function toggleAspectRatio(){resizeCanvas(!isPortrait)}
 function resizeCanvas(portrait){
