@@ -293,7 +293,7 @@ const backgrounds=[
  ['render.mp4','Video nền render.mp4']
 ];
 let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewPaused=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
-let piperVoices=[];
+let piperVoices=[],piperCatalogPromise=null;
 let previewAudio={bgm:null,tts:null,sfx:null};
 let recordingTimer=null;
 const charSelect=$('character');
@@ -782,14 +782,18 @@ $('speak-preview').addEventListener('click',async()=>{
 function currentTtsBlob(){return generatedTtsBlob&&generatedTtsKey===ttsRequestKey()?generatedTtsBlob:null}
 async function loadPiperVoices(){
  const sel=$('piper-voice');sel.innerHTML='<option value="">Đang tải giọng…</option>';
- try{
-  const response=await fetch('https://huggingface.co/rhasspy/piper-voices/resolve/main/voices.json');
-  if(!response.ok)throw new Error('Không tải được danh sách giọng');
-  const catalog=await response.json();
-  piperVoices=Object.entries(catalog).map(([key,v])=>({key,code:v.language?.code||key.split('-')[0],quality:v.quality||key.split('-').pop()}));
- }catch(err){
-  piperVoices=['vi_VN-vais1000-medium','en_US-lessac-medium','en_GB-alan-medium','ja_JP-kokoro-medium','ko_KR-kss-x_low','zh_CN-huayan-medium'].map(key=>({key,code:key.split('-')[0],quality:key.split('-').pop()}));
- }
+ if(!piperCatalogPromise)piperCatalogPromise=(async()=>{
+  try{
+   const response=await fetch('https://huggingface.co/rhasspy/piper-voices/resolve/main/voices.json');
+   if(!response.ok)throw new Error('Không tải được danh sách giọng');
+   const catalog=await response.json();
+   return Object.entries(catalog).map(([key,v])=>({key,code:v.language?.code||key.split('-')[0],quality:v.quality||key.split('-').pop()}));
+  }catch(err){
+   console.warn('Không tải được catalog Piper, dùng danh sách dự phòng.',err);
+   return ['vi_VN-vais1000-medium','en_US-lessac-medium','en_GB-alan-medium','ja_JP-kokoro-medium','ko_KR-kss-x_low','zh_CN-huayan-medium'].map(key=>({key,code:key.split('-')[0],quality:key.split('-').pop()}));
+  }
+ })();
+ piperVoices=await piperCatalogPromise;
  const lang=$('tts-lang').value.split('-')[0].toLowerCase();
  let matches=piperVoices.filter(v=>v.code.toLowerCase().startsWith(lang+'_')||v.key.toLowerCase().startsWith(lang+'_'));
  if(lang==='vi')matches=matches.filter(v=>!/(25hours_single|vivos)/i.test(v.key));
@@ -1128,7 +1132,8 @@ async function exportVideo(){
  const scope=$('preview-scope')?.value||'full',sceneIndexes=scope==='scene'?[originalScene]:scenes.map((_,i)=>i);
  const prepared=[],allAudio=[];let totalDuration=0,audioManifest=null;
  recording=true;$('export-video').disabled=true;setTaskProgress(scope==='scene'?'Đang chuẩn bị cảnh được chọn…':'Đang chuẩn bị toàn bộ kịch bản…',0);
- edgeDead=false;edgeFails=0;try{await prefetchEdgeTts()}catch(e){console.warn(e)}
+ edgeDead=false;edgeFails=0;
+ try{await loadPiperVoices();await prefetchEdgeTts()}catch(e){console.warn('Không thể nạp trước danh sách giọng/TTS:',e)}
  let audioContext=null,output=null,renderLabel='Chuẩn bị timeline';
  try{
   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw new Error('Trình duyệt không hỗ trợ Web Audio.');
@@ -1368,8 +1373,20 @@ function resolveVoiceForLine(line){
 async function applyVoiceForCurrentLine(){
  const line=getCurrentLine();if(!line)return;
  const resolved=resolveVoiceForLine(line);
- if(!resolved){$('voice-profile').value='';$('piper-voice').value='';$('voice-fallback-status').textContent='Chưa có giọng Piper hợp lệ. Hãy chọn giọng mặc định hoặc gán giọng cho nhân vật.';return}
- const p=resolved.profile,langMap={vi:'vi-VN',en:'en-US',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
+ if(!resolved){
+   const lang=String(line.lang||'vi-VN').slice(0,2).toLowerCase();
+   const candidate=piperVoices.find(v=>v.code.toLowerCase().startsWith(lang+'_')&&v.quality==='medium')
+    ||piperVoices.find(v=>v.code.toLowerCase().startsWith(lang+'_'))
+    ||piperVoices.find(v=>v.key==='vi_VN-vais1000-medium')
+    ||piperVoices[0];
+   if(!candidate){$('voice-profile').value='';$('piper-voice').value='';$('voice-fallback-status').textContent='Không tìm thấy model Piper dự phòng.';return}
+   const langMap={vi:'vi-VN',en:'en-US',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
+   $('voice-profile').value='';$('tts-lang').value=langMap[lang]||'vi-VN';
+   await loadPiperVoices();$('piper-voice').value=candidate.key;
+   $('voice-fallback-status').textContent='Chưa có hồ sơ giọng riêng; tự dùng model Piper dự phòng: '+candidate.key+'.';
+   return;
+  }
+  const p=resolved.profile,langMap={vi:'vi-VN',en:'en-US',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
  $('voice-profile').value=p.id||'';
  $('tts-lang').value=langMap[String(p.lang||'vi').slice(0,2)]||'vi-VN';
  if(!Array.from($('piper-voice').options).some(o=>o.value===p.voiceId))await loadPiperVoices();
