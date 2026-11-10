@@ -97,5 +97,5 @@
   }
 
   async function checkConnection(){const user=await request(API+'/user');return {login:user.login,name:user.name||user.login}}
-  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,checkConnection};
+  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,createBlob,applyTreeChanges,checkConnection};
 })();
