@@ -106,6 +106,11 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 #site-navigation .nav-link.current{background:linear-gradient(135deg,#6366f1,#a855f7);border-color:transparent}
 @media(max-width:600px){#site-navigation{gap:6px;padding:8px}#site-navigation .nav-link{flex:1 1 calc(50% - 6px);padding:8px 6px;font-size:.76rem}}
 .browser-tts-control{display:none!important}
+
+/* Compact dialogue editor; keep legacy TTS state controls hidden but functional. */
+.line-tts-options,.legacy-line-pause,.legacy-voice-fallback,.audio-hidden-state{display:none!important}
+.audio-picker-panel{gap:0}.audio-picker-row{display:flex;flex-direction:column;gap:8px;padding:12px;border-bottom:1px solid #ffffff18}.audio-picker-row:last-of-type{border-bottom:0}.audio-picker-copy{display:flex;flex-direction:column;gap:3px;min-width:0}.audio-picker-copy strong{font-size:.82rem;color:#e2e8f0}.audio-picker-copy span{font-size:.72rem;color:#94a3b8;overflow-wrap:anywhere}.audio-picker-actions{gap:6px}.audio-picker-actions .btn{padding:7px 9px;font-size:.72rem}.audio-picker-overlay{position:fixed;inset:0;z-index:1000;background:#020617ef;display:flex;align-items:center;justify-content:center;padding:16px}.audio-picker-overlay[hidden]{display:none}.audio-picker-dialog{width:min(100%,440px);padding:16px;background:#111c30;border:1px solid #a855f766;border-radius:12px;display:flex;flex-direction:column;gap:12px}.audio-picker-dialog h3{font-size:.95rem;color:#c4b5fd}.audio-picker-dialog select{width:100%;min-height:42px;padding:8px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:8px}.audio-picker-dialog .note{overflow-wrap:anywhere}
+@media(max-width:600px){.audio-picker-actions .btn{flex:1 1 calc(50% - 6px)}.audio-picker-row{padding:10px}}
 </style>
 <script src="./github-progress.js"></script></head>
 <body>
@@ -155,7 +160,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 </div>
 <div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 2.</div>
 <div id="character-voice-list" class="grid"></div>
-<label class="field">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
+<label class="field legacy-voice-fallback">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
 <div class="status" id="voice-fallback-status">Giọng mặc định được dùng khi nhân vật chưa có giọng riêng hoặc giọng trong JSON không hợp lệ.</div>
 </details>
 <details class="panel main-panel" open><summary class="panel-heading">2. Cảnh & danh sách lời thoại</summary>
@@ -170,7 +175,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <div class="row" style="justify-content:space-between"><strong id="line-editor-title" style="color:#c4b5fd">Chỉnh sửa câu thoại</strong><div class="row"><button class="btn secondary" id="move-line-up" type="button">↑ Lên</button><button class="btn secondary" id="move-line-down" type="button">↓ Xuống</button><button class="btn danger" id="delete-line">Xóa câu thoại</button></div></div>
 <label class="field">Tên nhân vật nói<input id="speaker" value="Nhân vật 1" maxlength="40"></label>
 
-<div class="grid">
+<div class="grid line-tts-options">
 <label class="field">Nguồn giọng (TTS)<select id="tts-engine"><option value="edge">⚡ Edge Neural · miễn phí · rất nhanh (khuyên dùng)</option><option value="piper">Piper offline · chậm (dự phòng)</option></select></label>
 
 <label class="field">Giọng Edge mặc định<select id="edge-gender"><option value="F">Nữ</option><option value="M">Nam</option></select></label>
@@ -179,12 +184,11 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <label class="field">Giọng Piper<select id="piper-voice"><option value="">Đang tải danh sách giọng…</option></select></label>
 </div>
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
-<label class="field">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
-<details class="effect-panel"><summary>🔊 Âm thanh tùy chỉnh cho thoại này</summary>
-<label class="field">Nhạc nền<select id="line-bgm-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
-<label class="field">Tên tệp nhạc nền (trong AmThanh/Nen)<input id="line-bgm-file" placeholder="vd: afternoon_between_leaves.mp3"></label>
-<label class="field">Nhạc hiệu ứng<select id="line-sfx-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
-<label class="field">Tên tệp hiệu ứng (trong AmThanh/HieuUng)<input id="line-sfx-file" placeholder="vd: door_open.mp3"></label>
+<label class="field legacy-line-pause">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
+<details class="effect-panel audio-picker-panel"><summary>🔊 Âm thanh tùy chỉnh cho thoại này</summary>
+<div class="audio-picker-row"><div class="audio-picker-copy"><strong>🎵 Nhạc nền</strong><span id="line-bgm-selected">Theo âm thanh trong JSON</span></div><div class="row audio-picker-actions"><button class="btn secondary" id="pick-line-bgm" type="button">📁 Chọn từ GitHub</button><button class="btn secondary" id="upload-line-bgm" type="button">⬆ Từ máy</button><button class="btn secondary" id="inherit-line-bgm" type="button">Theo JSON</button><button class="btn danger" id="clear-line-bgm" type="button">Để trống</button><input id="line-bgm-local" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" hidden></div></div>
+<div class="audio-picker-row"><div class="audio-picker-copy"><strong>🔔 Hiệu ứng âm thanh</strong><span id="line-sfx-selected">Theo âm thanh trong JSON</span></div><div class="row audio-picker-actions"><button class="btn secondary" id="pick-line-sfx" type="button">📁 Chọn từ GitHub</button><button class="btn secondary" id="upload-line-sfx" type="button">⬆ Từ máy</button><button class="btn secondary" id="inherit-line-sfx" type="button">Theo JSON</button><button class="btn danger" id="clear-line-sfx" type="button">Để trống</button><input id="line-sfx-local" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" hidden></div></div>
+<div class="audio-hidden-state" aria-hidden="true"><select id="line-bgm-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select><input id="line-bgm-file"><select id="line-sfx-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select><input id="line-sfx-file"></div>
 </details><details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
 <div class="scene-groups">
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
@@ -1581,8 +1585,9 @@ function buildScenesFromJson(data){
   const rawBg=String(frame.anh_nen||'').trim();if(rawBg)lastBackground=rawBg;
   const characterId=String(frame.nhan_vat??''),charInfo=characterMap[characterId]||{};
   const characterFolder=characterAssetFolder(characterId),expression=normalizeExpression(frame.bieu_cam);
+  if(frame.am_thanh?.nhac_nen?.tat===true)activeBgm='';
   const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;
-  const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim();
+  const sfx=frame.am_thanh?.hieu_ung_am_thanh?.tat===true?'':String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim();
   const starts=!current||(!!rawBg&&rawBg!==current.visual.background);
   if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;
@@ -1617,6 +1622,62 @@ async function loadStory(index){
  finally{$('story-select').disabled=false}
 }
 $('story-select').addEventListener('change',e=>{if(e.target.value!=='')loadStory(Number(e.target.value))});
+
+const AUDIO_PICKER_DIRS={bgm:'assets/AmThanh/Nen',sfx:'assets/AmThanh/HieuUng'};
+let activeAudioPickerKind='';
+async function fetchAudioPickerFiles(kind){
+ const dir=AUDIO_PICKER_DIRS[kind];if(!dir)throw new Error('Loại âm thanh không hợp lệ.');
+ const url='https://api.github.com/repos/nhothicam01-png/visual-novel-game/contents/'+dir.split('/').map(encodeURIComponent).join('/')+'?ref=main';
+ const response=await fetch(url,{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});
+ if(!response.ok){if(response.status===404)return [];throw new Error('Không tải được danh sách GitHub (HTTP '+response.status+').')}
+ const rows=await response.json();
+ return (Array.isArray(rows)?rows:[]).filter(x=>x.type==='file'&&/\.(mp3|wav|ogg|m4a|aac|flac|webm)$/i.test(x.name)).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+}
+function updateLineAudioPickerLabels(){
+ for(const kind of ['bgm','sfx']){
+  const mode=$('line-'+kind+'-mode')?.value||'inherit',file=$('line-'+kind+'-file')?.value.trim()||'',line=getCurrentLine(),source=String(line?.sourceAudio?.[kind]||'').trim();
+  const label=$('line-'+kind+'-selected');if(!label)continue;
+  label.textContent=mode==='off'?'Để trống · không phát âm thanh':mode==='override'?(file||'Chưa chọn tệp'):(source?'Theo JSON · '+source:'Theo JSON · chưa có tệp');
+ }
+}
+async function openAudioPicker(kind){
+ activeAudioPickerKind=kind;const overlay=$('audio-picker-overlay'),select=$('audio-picker-select'),status=$('audio-picker-status');
+ $('audio-picker-title').textContent=kind==='bgm'?'Chọn nhạc nền từ GitHub':'Chọn hiệu ứng âm thanh từ GitHub';
+ overlay.hidden=false;select.disabled=true;select.innerHTML='<option value="">Đang tải danh sách GitHub…</option>';status.textContent='Đang đọc thư mục '+AUDIO_PICKER_DIRS[kind]+'…';
+ try{const files=await fetchAudioPickerFiles(kind);select.innerHTML='<option value="">'+(files.length?'— Chọn một tệp —':'Thư mục chưa có tệp âm thanh')+'</option>'+files.map(f=>'<option value="'+String(f.name).replace(/[&<>"]/g,'')+'">'+String(f.name).replace(/[&<>"]/g,'')+'</option>').join('');select.disabled=!files.length;status.textContent=files.length+' tệp có sẵn trên GitHub.'}
+ catch(err){select.innerHTML='<option value="">Không tải được danh sách</option>';status.textContent=err.message||String(err)}
+}
+function closeAudioPicker(){$('audio-picker-overlay').hidden=true;activeAudioPickerKind=''}
+function applyPickedAudio(kind,fileName){
+ $('line-'+kind+'-file').value=fileName||'';$('line-'+kind+'-mode').value=fileName?'override':'off';
+ saveCurrentLine();updateLineAudioPickerLabels();closeAudioPicker();renderLineList();
+}
+async function uploadLineAudio(kind,file){
+ if(!file)return;const button=$('upload-line-'+kind);
+ try{
+  if(!window.GitHubManager?.getToken())throw new Error('Cần kết nối GitHub tại GitHub Manager trước khi tải tệp từ máy lên.');
+  if(!/^audio\//i.test(file.type)&&!/\.(mp3|wav|ogg|m4a|aac|flac|webm)$/i.test(file.name))throw new Error('Chỉ nhận tệp âm thanh MP3, WAV, OGG, M4A, AAC, FLAC hoặc WebM.');
+  if(file.size>90*1024*1024)throw new Error('Tệp vượt giới hạn 90 MB.');
+  button.disabled=true;button.textContent='Đang tải…';
+  const existing=await fetchAudioPickerFiles(kind);
+  if(existing.some(x=>x.name===file.name)&&!confirm('Tệp '+file.name+' đã có trên GitHub. Bạn muốn ghi đè tệp này?'))return;
+  const path=AUDIO_PICKER_DIRS[kind]+'/'+file.name;
+  const result=await GitHubManager.pushFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path,file,message:'Upload '+(kind==='bgm'?'background music: ':'sound effect: ')+file.name});
+  applyPickedAudio(kind,file.name);setTtsStatus('Đã đồng bộ '+file.name+' lên GitHub. Commit: '+result.commitSha);
+ }catch(err){setTtsStatus('Không tải được tệp âm thanh: '+(err.message||err));console.error(err)}
+ finally{button.disabled=false;button.textContent='⬆ Từ máy';$('line-'+kind+'-local').value=''}
+}
+['bgm','sfx'].forEach(kind=>{
+ $('pick-line-'+kind).addEventListener('click',()=>openAudioPicker(kind));
+ $('upload-line-'+kind).addEventListener('click',()=>$('line-'+kind+'-local').click());
+ $('line-'+kind+'-local').addEventListener('change',e=>uploadLineAudio(kind,e.target.files?.[0]));
+ $('inherit-line-'+kind).addEventListener('click',()=>{$('line-'+kind+'-file').value='';$('line-'+kind+'-mode').value='inherit';saveCurrentLine();updateLineAudioPickerLabels()});
+ $('clear-line-'+kind).addEventListener('click',()=>{$('line-'+kind+'-file').value='';$('line-'+kind+'-mode').value='off';saveCurrentLine();updateLineAudioPickerLabels()});
+});
+$('audio-picker-apply').addEventListener('click',()=>{const file=$('audio-picker-select').value;if(!file){$('audio-picker-status').textContent='Hãy chọn một tệp hoặc hủy.';return}applyPickedAudio(activeAudioPickerKind,file)});
+$('audio-picker-cancel').addEventListener('click',closeAudioPicker);
+$('audio-picker-overlay').addEventListener('click',e=>{if(e.target===$('audio-picker-overlay'))closeAudioPicker()});
+
 $('seek-prev').addEventListener('click',()=>seekSourceLine(currentSourceIndex()-1));
 $('seek-next').addEventListener('click',()=>seekSourceLine(currentSourceIndex()+1));
 $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)));
@@ -1659,6 +1720,16 @@ function buildEditedStoryOutput(){
   const bg=String(line.background||scene.visual?.background||'').trim();
   if(bg){if(bg!==lastBackground)frame.anh_nen=bg;else if(Object.prototype.hasOwnProperty.call(frame,'anh_nen'))frame.anh_nen=bg;lastBackground=bg}
   if(line.speaker?.trim())frame.ten_hien_thi=line.speaker.trim();
+  const audioOverride=line.audioOverride||{};
+  const applyAudioOverride=(kind,key)=>{
+   const setting=audioOverride[kind]||{},mode=setting.mode||'inherit',file=String(setting.file||'').trim();
+   if(mode==='inherit')return;
+   frame.am_thanh=frame.am_thanh&&typeof frame.am_thanh==='object'?frame.am_thanh:{};
+   const field=key==='bgm'?'nhac_nen':'hieu_ung_am_thanh',prior=frame.am_thanh[field]&&typeof frame.am_thanh[field]==='object'?frame.am_thanh[field]:{};
+   frame.am_thanh[field]={...prior,tat:mode==='off'||!file};
+   if(mode==='override'&&file)frame.am_thanh[field].tep=file;else delete frame.am_thanh[field].tep;
+  };
+  applyAudioOverride('bgm','bgm');applyAudioOverride('sfx','sfx');
   const profile=profiles.find(p=>p.id===line.profileId)||profiles.find(p=>p.voiceId===line.voiceId);
   const voiceId=String(profile?.voiceId||line.voiceId||'').trim();
   if(voiceId)frame.giong_noi={...(frame.giong_noi&&typeof frame.giong_noi==='object'?frame.giong_noi:{}),profileId:profile?.id||line.profileId||'',voiceId,name:profile?.name||'',lang:line.lang||profile?.lang||'vi'};
@@ -1749,6 +1820,7 @@ function loadLineToEditor(line){
  $('voice-profile').value=line.profileId||'';
  $('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
  const ao=line.audioOverride||{};$('line-bgm-mode').value=ao.bgm?.mode||'inherit';$('line-bgm-file').value=ao.bgm?.file||'';$('line-sfx-mode').value=ao.sfx?.mode||'inherit';$('line-sfx-file').value=ao.sfx?.file||'';
+ updateLineAudioPickerLabels();
  const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};
  fillVoice();
  generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';
@@ -1831,5 +1903,14 @@ drawFrame(0);
 </script>
 <script src="./github-manager.js?v=20261110sha1"></script>
 <script src="./studio-shell.js"></script>
+
+<div id="audio-picker-overlay" class="audio-picker-overlay" hidden>
+ <div class="audio-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="audio-picker-title">
+  <h3 id="audio-picker-title">Chọn âm thanh từ GitHub</h3>
+  <select id="audio-picker-select"><option value="">Đang tải danh sách…</option></select>
+  <div class="note" id="audio-picker-status">Tệp được lấy trực tiếp từ thư mục âm thanh của dự án.</div>
+  <div class="row"><button class="btn" id="audio-picker-apply" type="button">Chọn tệp này</button><button class="btn secondary" id="audio-picker-cancel" type="button">Hủy</button></div>
+ </div>
+</div>
 </body>
 </html>
