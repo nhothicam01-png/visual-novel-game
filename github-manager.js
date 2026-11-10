@@ -39,6 +39,32 @@
     const result=await request(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     return {commitSha:result.commit?.sha||'',htmlUrl:result.content?.html_url||'',path:result.content?.path||path,created:!sha};
   }
+
+  async function listCharacterFolders({owner,repo,branch='main'}){
+    const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/assets/NhanVat?ref='+encodeURIComponent(branch);
+    try{const rows=await request(url);return rows.filter(x=>x.type==='dir').map(x=>x.name).sort((a,b)=>a.localeCompare(b,'vi'))}
+    catch(e){if(String(e.message).includes('Not Found'))return [];throw e}
+  }
+  async function pushFiles({owner,repo,files,message,branch='main'}){
+    if(!Array.isArray(files)||!files.length)throw new Error('Không có file để push.');
+    const base=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo);
+    const ref=await request(base+'/git/ref/heads/'+encodeURIComponent(branch));
+    const parentSha=ref.object.sha;
+    const parent=await request(base+'/git/commits/'+parentSha);
+    const tree=[];
+    for(let i=0;i<files.length;i++){
+      const item=files[i];if(!item?.path||!(item.blob instanceof Blob))throw new Error('File thứ '+(i+1)+' không hợp lệ.');
+      if(item.blob.size>90*1024*1024)throw new Error('File '+item.path+' vượt giới hạn an toàn 90 MB.');
+      const bytes=new Uint8Array(await item.blob.arrayBuffer());let binary='';for(let j=0;j<bytes.length;j+=0x8000)binary+=String.fromCharCode(...bytes.subarray(j,j+0x8000));
+      const blob=await request(base+'/git/blobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:btoa(binary),encoding:'base64'})});
+      tree.push({path:item.path,mode:'100644',type:'blob',sha:blob.sha});
+    }
+    const newTree=await request(base+'/git/trees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base_tree:parent.tree.sha,tree})});
+    const commit=await request(base+'/git/commits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:message||'Upload files',tree:newTree.sha,parents:[parentSha]})});
+    await request(base+'/git/refs/heads/'+encodeURIComponent(branch),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({sha:commit.sha,force:false})});
+    return {commitSha:commit.sha,htmlUrl:'https://github.com/'+owner+'/'+repo+'/commit/'+commit.sha,fileCount:files.length};
+  }
+
   async function checkConnection(){const user=await request(API+'/user');return {login:user.login,name:user.name||user.login}}
-  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,pushTextFile,pushFile,checkConnection};
+  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,pushTextFile,pushFile,listCharacterFolders,pushFiles,checkConnection};
 })();
