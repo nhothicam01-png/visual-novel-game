@@ -984,11 +984,13 @@ async function generatePiperAudio(){
  const text=$('dialogue').value.trim(),line=getCurrentLine();
  if(!text)throw new Error('Bạn chưa nhập lời thoại.');
  const resolved=resolveVoiceForLine(line),profile=resolved?.profile||selectedVoiceProfile();
- const engine=voiceEngine(profile),voiceId=profile?.voiceId||$('piper-voice').value;
- const spec={text,lang:$('tts-lang').value||'vi-VN',profile};
+ const engine=voiceEngine(profile),voiceId=profile?.voiceId||line?.voiceId||'';
+ // Các ô chọn giọng/ngôn ngữ và nút tạo WAV đã được lược bỏ khỏi giao diện.
+ // TTS chạy tự động nên không được truy cập những phần tử UI không còn tồn tại.
+ const spec={text,lang:profile?.lang||line?.lang||'vi-VN',profile};
  const btn=$('generate-piper'),key=ttsRequestKey();
  if(line){line.text=text;line.speaker=$('speaker').value.trim()||'Nhân vật';if(profile?.id)line.profileId=profile.id;if(voiceId)line.voiceId=voiceId}
- btn.disabled=true;
+ if(btn)btn.disabled=true;
  const saveBlob=async(blob,usedEngine,gain=1)=>{
   if(!blob||!blob.size)throw new Error('Engine TTS không trả về âm thanh.');
   if(line){line.wavBlob=blob;line.cacheKey=key;line.gain=gain;line.ttsEngineUsed=usedEngine}
@@ -1025,7 +1027,7 @@ async function generatePiperAudio(){
    catch(fallbackError){throw new Error('Giọng gốc JSON ('+engine+') lỗi: '+(primaryError.message||primaryError)+'; giọng dự phòng ('+fallback+') cũng lỗi: '+(fallbackError.message||fallbackError))}
   }
  }catch(err){setTaskProgress('Tạo WAV thất bại');setTimeout(()=>{$('task-progress').hidden=true},1800);throw err}
- finally{btn.disabled=false}
+ finally{if(btn)btn.disabled=false}
 }
 async function ensureTtsReady(){
  const text=$('dialogue').value.trim(),line=getCurrentLine();
