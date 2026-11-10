@@ -379,7 +379,7 @@ $('pushWebmGitHubBtn').onclick=async()=>{
  const rg=rangeFrames(),sampleFps=refFps(),total=Math.max(1,rg.end-rg.start+1),clipDuration=total/sampleFps;
  const oldTime=video.currentTime,wasPlaying=!video.paused;
  const requestedName=$('webmFileName').value.trim();
- const filename=(requestedName||character+'-'+sampleFps+'fps-'+Date.now()).replace(/\\.webm$/i,'').replace(/[\\/:*?"<>|]+/g,'_').replace(/^\\.+|\\.+$/g,'').trim()+'.webm';
+ const filename=(requestedName||character+'-'+sampleFps+'fps-'+Date.now()).replace(/\.webm$/i,'').replace(/[\\/:*?"<>|]+/g,'_').replace(/^\.+|\.+$/g,'').trim()+'.webm';
  if(filename.length>105){status.textContent='Tên file quá dài. Hãy rút gọn tên (tối đa khoảng 100 ký tự).';return}
  const path='assets/NhanVat/'+character+'/'+filename;
  if(!confirm('Xuất một file WebM '+sampleFps+' FPS ('+clipDuration.toFixed(2)+' giây) rồi tải lên '+path+'? Không tải PNG Sequence.'))return;
