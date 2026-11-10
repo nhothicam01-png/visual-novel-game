@@ -351,8 +351,8 @@ async function saveSourceSubtitle(prepared){
   a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
   throw new Error('Video đã xuất nhưng chưa có GitHub Token. Đã tải SRT về máy để không mất phụ đề.');
  }
- const result=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path,content,message:'Add source subtitles: '+filename});
- return {filename,path,commitSha:result.commitSha};
+ const result=await GitHubManager.pushFiles({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',message:'Add source subtitles: '+filename,files:[{path,blob:new Blob([content],{type:'text/plain;charset=utf-8'})},{path:'assets/PhuDe/'+filename,blob:new Blob([content],{type:'text/plain;charset=utf-8'})}]});
+ return {filename,path,centralPath:'assets/PhuDe/'+filename,commitSha:result.commitSha};
 }
 function setTtsStatus(s){$('tts-status').textContent=s}
 function setTaskProgress(label,percent=null){
