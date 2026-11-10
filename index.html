@@ -328,14 +328,14 @@ function buildAudioManifest(prepared,allAudio,bgmSegments,totalDuration){
  }
  for(const segment of bgmSegments)events.push({type:'bgm',start:Number(segment.start.toFixed(4)),end:Number(segment.end.toFixed(4)),duration:Number((segment.end-segment.start).toFixed(4)),audio_id:segment.name,source:'assets/AmThanh/Nen/'+segment.name,loop:true,volume:Number($('bgm-volume').value)});
  events.sort((a,b)=>a.start-b.start);
- return {schema_version:1,kind:'visual-novel-audio-manifest',story:String(activeStoryName||'KichBan'),story_path:String(activeStoryPath||''),created_at:new Date().toISOString(),source_language:String($('subtitle-source-language')?.value||'Vietnamese'),duration:Number(totalDuration.toFixed(4)),audio_policy:{translated_versions:'replace_dialogue_keep_bgm_sfx',upload_audio_to_github:false},events};
+ return {schema_version:1,kind:'visual-novel-audio-manifest',story:String(activeStoryName||'KichBan'),story_path:String(activeStoryPath||''),created_at:new Date().toISOString(),source_language:String($('subtitle-source-language')?.value||'Vietnamese'),duration:Number(totalDuration.toFixed(4)),audio_mix:{bgm_volume:Number($('bgm-volume').value),sfx_volume:Number($('sfx-volume').value),tts_volume:Number($('tts-volume').value)},audio_policy:{translated_versions:'replace_dialogue_keep_bgm_sfx',upload_audio_to_github:false},events};
 }
 function buildSourceSubtitleFromTimeline(allAudio){
  const stamp=n=>{const ms=Math.max(0,Math.round(Number(n||0)*1000)),hh=Math.floor(ms/3600000),mm=Math.floor(ms%3600000/60000),ss=Math.floor(ms%60000/1000),mmm=ms%1000;return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0')+','+String(mmm).padStart(3,'0')};
  const blocks=[];let i=1;
- for(const e of allAudio){const txt=String(e.line?.text||'').trim();if(!txt||!(e.duration>0))continue;const who=String(e.line?.speaker||'').trim();blocks.push(i+++'\\n'+stamp(e.start)+' --> '+stamp(e.start+e.duration)+'\\n'+(who?who+': ':'')+txt)}
+ for(const e of allAudio){const txt=String(e.line?.text||'').trim();if(!txt||!(e.duration>0))continue;const who=String(e.line?.speaker||'').trim();blocks.push(i+++'\n'+stamp(e.start)+' --> '+stamp(e.start+e.duration)+'\n'+(who?who+': ':'')+txt)}
  if(!blocks.length)throw new Error('Không có thoại hợp lệ để tạo phụ đề gốc.');
- return blocks.join('\\n\\n')+'\\n';
+ return blocks.join('\n\n')+'\n';
 }
 async function pushExportMetadata(allAudio,manifest){
  const story=String(activeStoryName||'KichBan'),safe=safeAudioDataName(story),base='assets/KichBan/'+story;
