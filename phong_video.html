@@ -1235,6 +1235,7 @@ async function exportVideo(){
    if(bg)addAudio(bg,Number($('bgm-volume').value),segment.start,true,segment.end);
   }
   audioManifest=buildAudioManifest(prepared,allAudio,bgmSegments,finalDuration);
+  audioManifest.video={format:'mp4',fps,width:renderCanvas?.width||canvas.width,height:renderCanvas?.height||canvas.height,export_mode:'timeline'};
   setTaskProgress('Đang trộn âm thanh các câu thoại…',5);
   const mixedAudio=await offline.startRendering();
   // Tạo canvas xuất riêng; preview tiếp tục dùng canvas và context gốc.
@@ -1332,13 +1333,23 @@ async function recordDirect(){
  if(!items.length){setStatus('Không có thoại để ghi.');return}
  const originalScene=activeSceneIndex,originalLine=activeLineIndex,originalMode=$('preview-tts-mode').value;
  const startButton=$('record-direct'),stopButton=$('stop-direct-record');
+ let directTimeline=[],directManifest=null,directBgmSegments=[],directDuration=0,directFps=Number($('fps').value)||60;
  startButton.disabled=true;setTaskProgress('Đang chuẩn bị trước toàn bộ giọng thoại…',0);
  try{
-  for(let i=0;i<items.length;i++){
-   const item=items[i];await loadSourceLineForPlayback(item);
-   if($('dialogue').value.trim())await ensureTtsReady();
-   setTaskProgress('Đã chuẩn bị giọng '+(i+1)+'/'+items.length,Math.round((i+1)/items.length*20));
-  }
+  const measureContext=new (window.AudioContext||window.webkitAudioContext)();
+  try{
+   for(let i=0;i<items.length;i++){
+    const item=items[i];await loadSourceLineForPlayback(item);
+    const line=getCurrentLine();let blob=null;
+    if($('dialogue').value.trim())blob=await ensureTtsReady();
+    if(blob){const decoded=await measureContext.decodeAudioData(await blob.arrayBuffer());const entry={line,blob,gain:line.gain??1,sceneIndex:item.sceneIndex,duration:decoded.duration,start:directDuration,pause:Math.max(0,Math.min(10,Number(line.pauseAfter)||0))};directTimeline.push(entry);directDuration+=entry.duration+entry.pause;}
+    setTaskProgress('Đã chuẩn bị giọng '+(i+1)+'/'+items.length,Math.round((i+1)/items.length*20));
+   }
+  }finally{await measureContext.close()}
+  if(!directTimeline.length)throw new Error('Không tạo được âm thanh thoại để ghi.');
+  for(const entry of directTimeline){const name=resolvedLineAudio(entry.line,'bgm'),start=entry.start,end=entry.start+entry.duration+entry.pause,last=directBgmSegments[directBgmSegments.length-1];if(last&&last.name===name)last.end=end;else{if(last)last.end=start;if(name)directBgmSegments.push({name,start,end})}}
+  directManifest=buildAudioManifest([],directTimeline,directBgmSegments,directDuration);
+  directManifest.video={format:'webm',fps:directFps,width:previewCanvas.width,height:previewCanvas.height,export_mode:'direct_media_recorder'};
   // Khôi phục đúng thoại bắt đầu trước khi gọi playPreview (nếu không, nó sẽ bắt đầu từ thoại cuối đã prewarm).
   activeSceneIndex=originalScene;activeLineIndex=originalLine;
   applyVisual(scenes[originalScene].visual);loadLineToEditor(scenes[originalScene].lines[originalLine]);
@@ -1348,7 +1359,7 @@ async function recordDirect(){
   if(!AC)throw new Error('Thiết bị không hỗ trợ Web Audio.');
   directCaptureContext=new AC();await directCaptureContext.resume();
   directCaptureDestination=directCaptureContext.createMediaStreamDestination();
-  const videoStream=previewCanvas.captureStream(Number($('fps').value)||60);
+  const videoStream=previewCanvas.captureStream(directFps);
   directCaptureStream=new MediaStream([...videoStream.getVideoTracks(),...directCaptureDestination.stream.getAudioTracks()]);
   const types=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
   const mimeType=types.find(type=>MediaRecorder.isTypeSupported(type))||'';
@@ -1369,6 +1380,8 @@ async function recordDirect(){
   await playPreview();
   if(directRecorder&&directRecorder.state!=='inactive')directRecorder.stop();
   await finished;
+  try{const meta=await pushExportMetadata(directTimeline,directManifest);setStatus('Đã lưu video WebM, '+meta.srtName+' và AudioManifest.json lên GitHub.');finishTaskProgress('Video + phụ đề + AudioManifest hoàn tất')}
+  catch(metaErr){console.error('Không push được metadata ghi trực tiếp:',metaErr);const manifestBlob=new Blob([JSON.stringify(directManifest,null,2)],{type:'application/json'}),srtBlob=new Blob([buildSourceSubtitleFromTimeline(directTimeline)],{type:'text/plain;charset=utf-8'});for(const [blob,name] of [[manifestBlob,safeAudioDataName(activeStoryName)+'_AudioManifest.json'],[srtBlob,safeAudioDataName(activeStoryName)+'_source.srt']]){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}setStatus('Đã ghi WebM. Không push được metadata ('+(metaErr.message||metaErr)+'); đã tải SRT và AudioManifest về máy.')}
  }catch(err){console.error(err);setStatus('Không thể ghi trực tiếp: '+(err.message||err));if(directRecorder&&directRecorder.state!=='inactive')directRecorder.stop()}
  finally{
   stopButton.disabled=true;startButton.disabled=false;
