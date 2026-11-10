@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "kind": "visual-novel-audio-manifest",
+  "story": "DuoiBongTuThan",
+  "story_path": "assets/KichBan/DuoiBongTuThan/DuoiBongTuThan.json",
+  "created_at": "2026-11-10T14:12:26.971Z",
+  "source_language": "Vietnamese",
+  "duration": 8.42,
+  "audio_mix": {
+    "bgm_volume": 0.25,
+    "sfx_volume": 0.8,
+    "tts_volume": 1
+  },
+  "audio_policy": {
+    "translated_versions": "replace_dialogue_keep_bgm_sfx",
+    "upload_audio_to_github": false
+  },
+  "events": [
+    {
+      "type": "dialogue",
+      "start": 0,
+      "end": 7.92,
+      "duration": 7.92,
+      "pause_after": 0.5,
+      "speaker": "Lirien",
+      "speaker_id": "1",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Lại thêm một chiếc lá rơi. Vô số lần ta chứng kiến cảnh tượng này, nhưng sự bất an trong lòng chưa bao giờ vơi đi.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "bgm",
+      "start": 0,
+      "end": 8.42,
+      "duration": 8.42,
+      "audio_id": "afternoon_between_leaves.mp3",
+      "source": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
+      "loop": true,
+      "volume": 0.25
+    }
+  ],
+  "video": {
+    "format": "webm",
+    "fps": 60,
+    "width": 1920,
+    "height": 1080,
+    "export_mode": "direct_media_recorder"
+  }
+}
