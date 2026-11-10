@@ -128,7 +128,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <button class="btn secondary" id="stop-scene">■ Dừng chạy</button>
 <button class="btn secondary" id="ratio-toggle">📐 Tỉ lệ: 16:9</button>
 <button class="btn secondary" id="toggle-fullscreen">⛶ Toàn màn hình</button>
-<label class="field preview-tts-control">Phạm vi chạy<select id="preview-scope"><option value="scene">Chỉ cảnh đang chọn</option><option value="full">Toàn bộ kịch bản</option></select></label>
+<label class="field preview-tts-control">Phạm vi chạy<select id="preview-scope"><option value="full" selected>Toàn bộ kịch bản</option><option value="scene">Chỉ cảnh đang chọn</option></select></label>
 <label class="field preview-tts-control">Giọng xem trước<select id="preview-tts-mode"><option value="browser">TTS trình duyệt · nhanh</option><option value="render">Giọng render · giống video</option></select></label>
 <label class="field preview-tts-control">Giọng trình duyệt<select id="browser-tts-voice"><option value="">Tự chọn theo ngôn ngữ</option></select></label>
 </div>
@@ -814,7 +814,7 @@ async function startRealtimeRecording(){
  const btn=$('record-preview');
  if(realtimeCaptureStarting||realtimeRecorder)return;
  saveCurrentLine();saveCurrentScene();
- const scope=$('preview-scope').value,startIndex=currentSourceIndex();
+ const scope=$('preview-scope').value,startIndex=scope==='full'?0:currentSourceIndex();
  const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
  if(!items.length)throw new Error('Không có câu thoại để ghi.');
  if(!canvas.captureStream||!window.MediaRecorder)throw new Error('Chrome Android chưa hỗ trợ MediaRecorder/canvas capture.');
@@ -841,7 +841,7 @@ async function playPreview({record=false}={}){
  // Lưu vị trí đang chọn trước khi tạo danh sách phát, để luôn bắt đầu từ thoại hiện tại.
  saveCurrentLine();saveCurrentScene();
  const scope=$('preview-scope').value;
- const startIndex=currentSourceIndex();
+ const startIndex=scope==='full'?0:currentSourceIndex();
  const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
  if(!items.length)return;
  const useBrowser=$('preview-tts-mode').value==='browser';
