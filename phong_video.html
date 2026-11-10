@@ -108,7 +108,6 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .browser-tts-control{display:none!important}
 
 /* Compact dialogue editor; keep legacy TTS state controls hidden but functional. */
-.line-tts-options,.legacy-line-pause,.legacy-voice-fallback,.audio-hidden-state,#voice-fallback-status{display:none!important}
 .audio-picker-panel{gap:0}.audio-picker-row{display:flex;flex-direction:column;gap:8px;padding:12px;border-bottom:1px solid #ffffff18}.audio-picker-row:last-of-type{border-bottom:0}.audio-picker-copy{display:flex;flex-direction:column;gap:3px;min-width:0}.audio-picker-copy strong{font-size:.82rem;color:#e2e8f0}.audio-picker-copy span{font-size:.72rem;color:#94a3b8;overflow-wrap:anywhere}.audio-picker-actions{gap:6px}.audio-picker-actions .btn{padding:7px 9px;font-size:.72rem}.audio-picker-overlay{position:fixed;inset:0;z-index:1000;background:#020617ef;display:flex;align-items:center;justify-content:center;padding:16px}.audio-picker-overlay[hidden]{display:none}.audio-picker-dialog{width:min(100%,440px);padding:16px;background:#111c30;border:1px solid #a855f766;border-radius:12px;display:flex;flex-direction:column;gap:12px}.audio-picker-dialog h3{font-size:.95rem;color:#c4b5fd}.audio-picker-dialog select{width:100%;min-height:42px;padding:8px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:8px}.audio-picker-dialog .note{overflow-wrap:anywhere}
 @media(max-width:600px){.audio-picker-actions .btn{flex:1 1 calc(50% - 6px)}.audio-picker-row{padding:10px}}
 </style>
@@ -160,8 +159,6 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 </div>
 <div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 2.</div>
 <div id="character-voice-list" class="grid"></div>
-<label class="field legacy-voice-fallback">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
-<div class="status" id="voice-fallback-status">Giọng mặc định được dùng khi nhân vật chưa có giọng riêng hoặc giọng trong JSON không hợp lệ.</div>
 </details>
 <details class="panel main-panel" open><summary class="panel-heading">2. Cảnh & danh sách lời thoại</summary>
 <div class="row scene-toolbar">
@@ -175,20 +172,11 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <div class="row" style="justify-content:space-between"><strong id="line-editor-title" style="color:#c4b5fd">Chỉnh sửa câu thoại</strong><div class="row"><button class="btn secondary" id="move-line-up" type="button">↑ Lên</button><button class="btn secondary" id="move-line-down" type="button">↓ Xuống</button><button class="btn danger" id="delete-line">Xóa câu thoại</button></div></div>
 <label class="field">Tên nhân vật nói<input id="speaker" value="Nhân vật 1" maxlength="40"></label>
 
-<div class="grid line-tts-options">
-<label class="field">Nguồn giọng (TTS)<select id="tts-engine"><option value="edge">⚡ Edge Neural · miễn phí · rất nhanh (khuyên dùng)</option><option value="piper">Piper offline · chậm (dự phòng)</option></select></label>
-
-<label class="field">Giọng Edge mặc định<select id="edge-gender"><option value="F">Nữ</option><option value="M">Nam</option></select></label>
-<label class="field">Hồ sơ giọng đã lưu<select id="voice-profile"><option value="">Dùng giọng Piper bên dưới</option></select></label>
-<label class="field">Ngôn ngữ<select id="tts-lang"><option value="vi-VN">Tiếng Việt</option><option value="en-US">English</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="zh-CN">中文</option></select></label>
-<label class="field">Giọng Piper<select id="piper-voice"><option value="">Đang tải danh sách giọng…</option></select></label>
-</div>
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
-<label class="field legacy-line-pause">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
 <details class="effect-panel audio-picker-panel"><summary>🔊 Âm thanh tùy chỉnh cho thoại này</summary>
 <div class="audio-picker-row"><div class="audio-picker-copy"><strong>🎵 Nhạc nền</strong><span id="line-bgm-selected">Theo âm thanh trong JSON</span></div><div class="row audio-picker-actions"><button class="btn secondary" id="pick-line-bgm" type="button">📁 Chọn từ GitHub</button><button class="btn secondary" id="upload-line-bgm" type="button">⬆ Từ máy</button><button class="btn secondary" id="inherit-line-bgm" type="button">Theo JSON</button><button class="btn danger" id="clear-line-bgm" type="button">Để trống</button><input id="line-bgm-local" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" hidden></div></div>
 <div class="audio-picker-row"><div class="audio-picker-copy"><strong>🔔 Hiệu ứng âm thanh</strong><span id="line-sfx-selected">Theo âm thanh trong JSON</span></div><div class="row audio-picker-actions"><button class="btn secondary" id="pick-line-sfx" type="button">📁 Chọn từ GitHub</button><button class="btn secondary" id="upload-line-sfx" type="button">⬆ Từ máy</button><button class="btn secondary" id="inherit-line-sfx" type="button">Theo JSON</button><button class="btn danger" id="clear-line-sfx" type="button">Để trống</button><input id="line-sfx-local" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac" hidden></div></div>
-<div class="audio-hidden-state" aria-hidden="true"><select id="line-bgm-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select><input id="line-bgm-file"><select id="line-sfx-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select><input id="line-sfx-file"></div>
+
 </details><details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
 <div class="scene-groups">
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
@@ -279,7 +267,22 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 (function(){
 'use strict';
 const BASE='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/';
-const $=id=>document.getElementById(id);
+const const legacyControlDefaults={ 'tts-engine':'edge','edge-gender':'F','voice-profile':'','tts-lang':'vi-VN','piper-voice':'','line-pause':'0.3','default-voice-profile':'','voice-fallback-status':'','line-bgm-mode':'inherit','line-bgm-file':'','line-sfx-mode':'inherit','line-sfx-file':'' };
+const legacyControls=new Map();
+function legacyControl(id){
+ if(!Object.prototype.hasOwnProperty.call(legacyControlDefaults,id))return null;
+ if(!legacyControls.has(id)){
+  let value=legacyControlDefaults[id],html='',text='';
+  const control={addEventListener(){},removeEventListener(){},options:[],disabled:false,checked:false,readOnly:false,
+   get value(){return value},set value(v){value=String(v??'')},
+   get innerHTML(){return html},set innerHTML(v){html=String(v??'');control.options=[...html.matchAll(/<option\\b([^>]*)>([\\s\\S]*?)<\\/option>/gi)].map(m=>({value:(m[1].match(/\\bvalue=["']([^"']*)["']/i)||[])[1]??m[2].replace(/<[^>]*>/g,'').trim(),textContent:m[2].replace(/<[^>]*>/g,'').trim()}))},
+   get textContent(){return text},set textContent(v){text=String(v??'')}
+  };
+  legacyControls.set(id,control);
+ }
+ return legacyControls.get(id);
+}
+$=id=>document.getElementById(id)||legacyControl(id);
 let canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
 const previewCanvas=canvas,previewCtx=ctx;
 let renderCanvas=null,renderCtx=null;
