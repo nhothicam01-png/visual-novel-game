@@ -985,26 +985,25 @@ async function edgeSynthCached(spec){
 }
 function lineTtsSpec(line){
  const langMap={vi:'vi-VN',en:'en-US',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
- let profile=null,lang=line.lang||'vi-VN';
- if(line.speakerId){const r=resolveVoiceForLine(line);if(r){profile=r.profile;lang=langMap[String(r.profile.lang||'vi').slice(0,2)]||'vi-VN'}}
- else profile=getVoiceProfiles().find(p=>p.id===line.profileId)||null;
- return {text:String(line.text||'').trim(),lang,profile};
+ const resolved=resolveVoiceForLine(line);
+ let profile=resolved?.profile||getVoiceProfiles().find(p=>p.id===line.profileId)||null;
+ const raw=line?.sourceFrame?.giong_noi||{};
+ const lang=langMap[String(profile?.lang||raw.lang||line.lang||'vi').slice(0,2)]||'vi-VN';
+ return {text:String(line.text||'').trim(),lang,profile,engine:voiceEngine(profile)};
 }
 async function prefetchEdgeTts(){
  edgePrefetched=new WeakMap();
- if($('tts-engine').value!=='edge')return;
- const jobs=[];scenes.forEach(sc=>sc.lines.forEach(l=>{if(String(l.text||'').trim())jobs.push(l)}));
+ const jobs=[];scenes.forEach(sc=>sc.lines.forEach(l=>{const spec=lineTtsSpec(l);if(spec.engine==='edge'&&spec.text)jobs.push({line:l,spec})}));
  let idx=0,done=0;const total=jobs.length;
  const worker=async()=>{
   while(idx<jobs.length&&!edgeDead){
-   const line=jobs[idx++];
-   try{const spec=lineTtsSpec(line),blob=await edgeSynthCached(spec);edgePrefetched.set(line,{blob,gain:edgeGain(spec)})}
-   catch(e){console.warn('Edge TTS lỗi ở 1 câu',e)}
-   done++;setTaskProgress('Đang tạo giọng nói song song '+done+'/'+total+'…',Math.round(done/total*5));
+   const job=jobs[idx++],{line,spec}=job;
+   try{const blob=await edgeSynthCached(spec);edgePrefetched.set(line,{blob,gain:edgeGain(spec),engine:'edge'})}
+   catch(e){console.warn('Edge TTS lỗi ở 1 câu; sẽ thử Piper khi dựng timeline.',e)}
+   done++;setTaskProgress('Đang tạo trước giọng Edge '+done+'/'+total+'…',Math.round(done/Math.max(1,total)*5));
   }
  };
  await Promise.all(Array.from({length:Math.min(EDGE_CONCURRENCY,jobs.length)},worker));
- if(edgeDead)setStatus('Edge Neural không kết nối được từ trình duyệt; tự động dùng Piper (chậm hơn).');
 }
 function ttsRequestKey(){
  const profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
@@ -1500,24 +1499,37 @@ function renderCharacterVoiceSetup(){
 function profileFromJsonVoice(value){
  if(!value)return null;
  const profiles=getVoiceProfiles();
- if(typeof value==='string')return profiles.find(p=>p.id===value||p.voiceId===value)||{id:'',name:'',voiceId:value,lang:value.slice(0,2)};
+ if(typeof value==='string'){
+  const found=profiles.find(p=>p.id===value||p.voiceId===value||p.edgeVoice===value);
+  return found||{id:'',name:'',voiceId:/^[a-z]{2}_[A-Z]{2}-/i.test(value)?value:'',edgeVoice:/Neural$/i.test(value)?value:'',engine:/Neural$/i.test(value)?'edge':'piper',lang:value.slice(0,2)};
+ }
  if(typeof value==='object'){
-  const id=value.profileId||value.profile_id||value.id,voiceId=value.voiceId||value.voice_id||value.voice||value.model;
-  return profiles.find(p=>p.id===id)||(voiceId?{id:id||'',name:value.name||'',voiceId,lang:value.lang||value.language||voiceId.slice(0,2)}:null);
+  const id=value.profileId||value.profile_id||value.id;
+  const voiceId=value.voiceId||value.voice_id||value.voice||value.model||'';
+  const edgeVoice=value.edgeVoice||value.edge_voice||value.edgeVoiceId||'';
+  const found=profiles.find(p=>p.id===id);
+  return {...(found||{}),id:id||found?.id||'',name:value.name||found?.name||'',voiceId:voiceId||found?.voiceId||'',edgeVoice:edgeVoice||found?.edgeVoice||'',engine:value.engine||value.tts_engine||value.provider||found?.engine||(edgeVoice?'edge':(/^([a-z]{2}_[A-Z]{2}-)/i.test(voiceId)?'piper':'')),lang:value.lang||value.language||found?.lang||voiceId.slice(0,2)||'vi'};
  }
  return null;
 }
+function voiceEngine(profile){
+ const e=String(profile?.engine||'').toLowerCase();
+ if(e.includes('piper'))return 'piper';
+ if(e.includes('edge')||e.includes('neural'))return 'edge';
+ return profile?.edgeVoice&&!profile?.voiceId?'edge':(/^([a-z]{2}_[A-Z]{2}-)/i.test(String(profile?.voiceId||''))?'piper':'edge');
+}
 function resolveVoiceForLine(line){
  const frame=line?.sourceFrame||{};
- const lineVoice=profileFromJsonVoice(frame.giong_noi??frame.giong??frame.voice??frame.voice_id??frame.voiceId??frame.tts_voice);
- if(lineVoice?.voiceId&&piperVoices.some(v=>v.key===lineVoice.voiceId))return {profile:lineVoice,source:'JSON của mục thoại'};
+ const raw=frame.giong_noi??frame.giong??frame.voice??frame.voice_id??frame.voiceId??frame.tts_voice;
+ const lineVoice=profileFromJsonVoice(raw);
+ if(lineVoice&&(lineVoice.voiceId||lineVoice.edgeVoice))return {profile:lineVoice,source:'JSON của mục thoại'};
  const ch=characterDirectory.find(x=>x.id===String(line?.speakerId??''))||characterDirectory.find(x=>x.name===line?.speaker);
  const jsonVoice=profileFromJsonVoice(ch?.jsonVoice);
- if(jsonVoice?.voiceId&&piperVoices.some(v=>v.key===jsonVoice.voiceId))return {profile:jsonVoice,source:'JSON nhân vật'};
+ if(jsonVoice&&(jsonVoice.voiceId||jsonVoice.edgeVoice))return {profile:jsonVoice,source:'JSON nhân vật'};
  const assigned=getVoiceProfiles().find(p=>p.id===(characterVoiceMap[ch?.id||'']||''));
- if(assigned?.voiceId&&piperVoices.some(v=>v.key===assigned.voiceId))return {profile:assigned,source:'Thiết lập cảnh'};
+ if(assigned&&(assigned.voiceId||assigned.edgeVoice))return {profile:assigned,source:'Thiết lập cảnh'};
  const fallback=getVoiceProfiles().find(p=>p.id===defaultVoiceProfileId);
- if(fallback?.voiceId&&piperVoices.some(v=>v.key===fallback.voiceId))return {profile:fallback,source:'Giọng mặc định'};
+ if(fallback&&(fallback.voiceId||fallback.edgeVoice))return {profile:fallback,source:'Giọng mặc định'};
  return null;
 }
 async function applyVoiceForCurrentLine(){
