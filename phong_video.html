@@ -195,12 +195,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <input id="effect-strength" type="range" min="10" max="100" step="5" value="50"></label>
 </details>
 
-<div class="row">
-<button class="btn" id="generate-piper">✨ Tạo WAV cho câu này</button>
-<button class="btn secondary" id="speak-preview">🔊 Nghe thử</button>
-<button class="btn secondary" id="stop-preview">Dừng nghe</button>
-</div>
-<div class="status" id="tts-status">Mỗi câu thoại có một file WAV riêng. Giọng sẽ tự tạo khi xem trước hoặc xuất video.</div>
+<div class="status" id="tts-status">Giọng thoại sẽ tự động được tạo khi phát hoặc xuất video.</div>
 </div>
 </details>
 
@@ -798,22 +793,9 @@ async function playPreview(){
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
 $('play-preview').addEventListener('click',()=>{if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
-$('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
+
 $('stop-scene').addEventListener('click',stopAndResetPreview);
-$('speak-preview').addEventListener('click',async()=>{
- if($('preview-tts-mode').value==='browser'){
-  if(previewAudio.tts){previewAudio.tts.pause();previewAudio.tts=null}
-  setTtsStatus('Đang nghe thử bằng TTS trình duyệt…');await speakBrowserText($('dialogue').value.trim());return;
- }
- const ready=currentTtsBlob();
- if(!ready){setTtsStatus('Câu thoại này chưa có WAV phù hợp. Hãy tạo giọng trước khi nghe thử.');return}
- if(previewAudio.tts){previewAudio.tts.pause();previewAudio.tts=null}
- const url=URL.createObjectURL(ready),audio=new Audio(url);
- previewAudio.tts=audio;
- audio.onended=()=>{URL.revokeObjectURL(url);previewAudio.tts=null};
- audio.onerror=()=>setTtsStatus('Không phát được file WAV vừa tạo.');
- audio.play().then(()=>setTtsStatus('Đang nghe thử giọng Piper…')).catch(()=>setTtsStatus('Không thể phát âm thanh trên thiết bị.'));
-});
+
 [['bgm-volume','bgm-volume-value'],['tts-volume','tts-volume-value'],['sfx-volume','sfx-volume-value']].forEach(([input,out])=>{
  $(input).addEventListener('input',()=>{$(out).textContent=Math.round(Number($(input).value)*100)+'%'});
 });
@@ -1852,7 +1834,7 @@ function renderSceneList(){
  $('scene-select').value=String(activeSceneIndex);
 }
 function renderLineList(){
- $('dialogue-line-list').innerHTML=getCurrentScene().lines.map((line,i)=>'<div class="dialogue-line-item '+(i===activeLineIndex?'active':'')+'" data-line-index="'+i+'"><div class="line-copy"><strong>Thoại '+(i+1)+' · '+String(line.speaker||'Nhân vật').replace(/[&<>"]/g,'')+'</strong><span>'+String(line.text||'Chưa nhập nội dung').replace(/[&<>"]/g,'')+'</span></div><span class="line-state">'+(line.wavBlob&&line.cacheKey?'✓ WAV':'Chưa tạo WAV')+'</span></div>').join('');
+ $('dialogue-line-list').innerHTML=getCurrentScene().lines.map((line,i)=>'<div class="dialogue-line-item '+(i===activeLineIndex?'active':'')+'" data-line-index="'+i+'"><div class="line-copy"><strong>Thoại '+(i+1)+' · '+String(line.speaker||'Nhân vật').replace(/[&<>"]/g,'')+'</strong><span>'+String(line.text||'Chưa nhập nội dung').replace(/[&<>"]/g,'')+'</span></div><span class="line-state">'+(line.wavBlob&&line.cacheKey?'✓ Đã có giọng':'Tự tạo khi phát/xuất')+'</span></div>').join('');
 }
 function moveCurrentLine(direction){
  const list=getCurrentScene()?.lines;if(!list)return;saveCurrentLine();saveCurrentScene();const from=activeLineIndex,to=from+direction;if(to<0||to>=list.length)return;[list[from],list[to]]=[list[to],list[from]];activeLineIndex=to;loadLineToEditor(getCurrentLine());renderLineList();updateSeekUI(currentSourceIndex());
