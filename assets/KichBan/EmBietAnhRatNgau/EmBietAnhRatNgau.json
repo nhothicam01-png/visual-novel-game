@@ -64,7 +64,7 @@
       "noi_dung": "Ánh sáng trên lưng tôi... Nó lại bùng phát rồi! Kaelen, chuyện gì đang xảy ra vậy?",
       "anh_nen": "phong_ngu_dem.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_fear_shake"
@@ -86,14 +86,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Nesta"
     },
     {
       "nhan_vat": "3",
       "noi_dung": "Đừng sợ, Nesta. Hãy bám chặt vào tôi! Đợt rụng lá đỏ đã bắt đầu, lính canh hoàng gia đang đến rất gần rồi.",
       "anh_nen": "hanh_lang_toi.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_walk_bob"
@@ -111,14 +112,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Kaelen"
     },
     {
       "nhan_vat": "1",
       "noi_dung": "Cổ Thụ Sinh Mệnh đang cựa mình. Một chiếc lá đỏ vừa rơi xuống, và thêm một sinh mạng nữa đã vĩnh viễn tàn lụi.",
       "anh_nen": "san_thuong_hoang_hon.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_sway"
@@ -138,14 +140,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Lirien"
     },
     {
       "nhan_vat": "2",
       "noi_dung": "Lirien nói đúng. Dược liệu tôi điều chế có thể kìm hãm ấn ký trên lưng Nesta, nhưng chỉ có thể duy trì khi rời khỏi kinh thành này.",
       "anh_nen": "thu_vien.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -161,14 +164,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Elandra"
     },
     {
       "nhan_vat": "3",
       "noi_dung": "Tôi sẽ đưa cô ấy đến Hẻm Núi Sương Mờ. Dù phải đối đầu với cả triều đình, tôi cũng không để họ biến Nesta thành vật tế thần.",
       "anh_nen": "con_duong_dem.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_move_right"
@@ -186,14 +190,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Kaelen"
     },
     {
       "nhan_vat": "6",
       "noi_dung": "Các ngươi đã đến đúng hẹn. Hẻm Núi Sương Mờ chưa bao giờ từ chối những kẻ dám thách thức quy luật của Cổ Thụ.",
       "anh_nen": "hanhlangtruong.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [
@@ -213,14 +218,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Soran"
     },
     {
       "nhan_vat": "4",
       "noi_dung": "Cảm ơn ngươi đã dẫn đường đến tận đây, pháp sư già. Chiếc trâm bạc và ấn ký trên người con bé này chính là thứ ta cần để lật đổ ngai vàng!",
       "anh_nen": "san_truong_ban_ngay.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_giant"
@@ -242,14 +248,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Thủ Lĩnh Vael"
     },
     {
       "nhan_vat": "3",
       "noi_dung": "Thủ lĩnh Vael! Ngươi đừng hòng chạm vào Nesta khi ta còn sống!",
       "anh_nen": "san_truong_ban_ngay.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_shake"
@@ -267,14 +274,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Kaelen"
     },
     {
       "nhan_vat": "5",
       "noi_dung": "Kaelen! Cẩn thận phía sau anh!",
       "anh_nen": "san_truong_ban_ngay.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_fear_shake"
@@ -290,14 +298,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Nesta"
     },
     {
       "nhan_vat": "3",
       "noi_dung": "Hét lớn và lao lên dồn hết sức mạnh, phóng chiếc trâm bạc vào thẳng nguồn năng lượng hắc ám của Vael!",
       "anh_nen": "san_truong_ban_ngay.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_move_left"
@@ -319,14 +328,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Kaelen"
     },
     {
       "nhan_vat": "5",
       "noi_dung": "Ấn ký... nó đang mờ dần rồi! Cơn bão lá đỏ đã dừng lại hoàn toàn!",
       "anh_nen": "cong_vien_truong.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [
           "char_sway"
@@ -348,14 +358,15 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "ten_hien_thi": "Nesta"
     },
     {
       "nhan_vat": "3",
       "noi_dung": "Mọi chuyện kết thúc rồi, Nesta. Từ nay chúng ta không còn phải chạy trốn định mệnh nữa.",
       "anh_nen": "cong_vien_truong.png",
       "anh_hieu_ung": "",
-      "bieu_cam": "say_hello_bieu_cam_binh_thuong.webm",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -369,6 +380,13 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
+      },
+      "ten_hien_thi": "Kaelen",
+      "giong_noi": {
+        "profileId": "voice_1794205520158",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Hoà",
+        "lang": "vi-VN"
       }
     }
   ]
