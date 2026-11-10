@@ -1423,20 +1423,40 @@ async function loadStoryCatalog(){
  if(!sel||!status)return;
  sel.disabled=true;status.textContent='Đang cập nhật danh sách truyện từ GitHub…';
  try{
-  const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
-  if(!response.ok)throw new Error('GitHub trả về lỗi HTTP '+response.status);
-  const treeData=await response.json();
+  // Ưu tiên token đã lưu trong GitHub Manager để tránh giới hạn API ẩn danh.
+  let token='';
+  try{token=localStorage.getItem('vnGitHubTokenV1')||''}catch(e){}
+  const headers={Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
+  if(token)headers.Authorization='Bearer '+token;
+  let response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{headers,cache:'no-store'});
+  // Nếu token cũ/hết hạn, vẫn thử đọc repository công khai theo chế độ ẩn danh.
+  if((response.status===401||response.status===403)&&token){
+   const fallback=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{headers:{Accept:'application/vnd.github+json'},cache:'no-store'});
+   if(fallback.ok)response=fallback;
+  }
+  const treeData=await response.json().catch(()=>({}));
+  if(!response.ok){
+   const detail=treeData.message||('HTTP '+response.status);
+   if(response.status===403)throw new Error('GitHub giới hạn lượt gọi API (403). Hãy kết nối token tại GitHub Manager rồi tải lại. '+detail);
+   throw new Error('GitHub trả về lỗi '+response.status+': '+detail);
+  }
   if(treeData.truncated)throw new Error('Danh sách tệp GitHub quá lớn, không thể quét đầy đủ.');
-  const files=(treeData.tree||[]).filter(item=>item.type==='blob'&&item.path.toLowerCase().endsWith('.json')&&(/^assets\/KichBan\/[^/]+\/[^/]+\.json$/i.test(item.path)&&item.path.split('/').at(-1).replace(/\.json$/i,'')===item.path.split('/')[2])).sort((a,b)=>a.path.localeCompare(b.path,'vi'));
+  const files=(Array.isArray(treeData.tree)?treeData.tree:[])
+   .filter(item=>item.type==='blob'&&typeof item.path==='string'&&/^assets\/KichBan\/[^/]+\/[^/]+\.json$/i.test(item.path))
+   .filter(item=>{
+    const parts=item.path.split('/');
+    return parts.length===4&&parts[3].replace(/\.json$/i,'').toLowerCase()===parts[2].toLowerCase();
+   })
+   .sort((a,b)=>a.path.localeCompare(b.path,'vi'));
   const entries=files.map(file=>({name:file.path.split('/')[2],path:file.path,url:null}));
   sel.innerHTML='';
   const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=entries.length?'-- Chọn truyện --':'Chưa có kịch bản JSON';sel.appendChild(placeholder);
   entries.forEach((entry,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=entry.name+' / '+entry.path.split('/').at(-1);sel.appendChild(option)});
   sel._stories=entries;
-  status.textContent='Tìm thấy '+entries.length+' truyện trong assets/KichBan. Danh sách được lấy theo cùng cách với index.html.';
+  status.textContent='Tìm thấy '+entries.length+' truyện trong assets/KichBan.';
  }catch(err){
   sel.innerHTML='<option value="">Không tải được danh sách</option>';sel._stories=[];
-  status.textContent='Lỗi tải danh sách: '+err.message;
+  status.textContent='Lỗi tải danh sách: '+(err.message||err);
   console.warn('Không thể lấy danh sách kịch bản GitHub:',err);
  }finally{sel.disabled=false}
 }
