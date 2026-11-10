@@ -298,6 +298,7 @@ let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewPaused=fals
 let piperVoices=[],piperCatalogPromise=null;
 let previewAudio={bgm:null,tts:null,sfx:null};
 let realtimeCaptureContext=null,realtimeCaptureDestination=null,realtimeRecorder=null,realtimeChunks=[],realtimeMediaNodes=new WeakMap(),realtimeCaptureStarting=false;
+let realtimeCaptureFps=30,lastRealtimeDrawAt=0,dialogueLayerCache={key:'',canvas:null};
 let recordingTimer=null;
 const charSelect=$('character');
 characters.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent='Nhân vật '+n;charSelect.appendChild(o)});
@@ -530,7 +531,8 @@ function drawFrame(elapsed,st){
   ctx.restore();
  }
  ctx.restore();
- if(st.dialogueLayer)ctx.drawImage(st.dialogueLayer,0,0);else drawDialogue(w,h);
+ const dialogueLayer=st.dialogueLayer||getCachedDialogueLayer(w,h);
+  if(dialogueLayer)ctx.drawImage(dialogueLayer,0,0);
 }
 function drawDialogue(w,h){
  if($('show-dialogue').checked&&$('dialogue').value.trim()){
@@ -563,11 +565,22 @@ function buildDialogueLayer(w,h){
  try{drawDialogue(w,h)}finally{ctx=saved}
  return layer;
 }
-function animate(){
+function getCachedDialogueLayer(w,h){
+  const key=JSON.stringify([w,h,$('show-dialogue')?.checked,$('show-speaker')?.checked,$('dialogue')?.value||'', $('speaker')?.value||'', $('dialogue-width-mode')?.value||'percent',$('dialogue-width')?.value||75]);
+  if(dialogueLayerCache.key!==key||!dialogueLayerCache.canvas)dialogueLayerCache={key,canvas:buildDialogueLayer(w,h)};
+  return dialogueLayerCache.canvas;
+ }
+ function animate(){
  if(!raf) return;
  // [TỐI ƯU] Đang xuất video thì không vẽ preview để khỏi tranh CPU/GPU và không đụng vào video đang seek.
  if(recording){raf=requestAnimationFrame(animate);return}
- // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
+  // Khi ghi trực tiếp, chỉ vẽ theo FPS ghi hình, tránh vẽ thừa 60 lần/giây.
+  if(realtimeRecorder&&realtimeRecorder.state==='recording'){
+   const now=performance.now(),interval=1000/Math.max(15,realtimeCaptureFps||30);
+   if(lastRealtimeDrawAt&&now-lastRealtimeDrawAt<interval-1){raf=requestAnimationFrame(animate);return}
+   lastRealtimeDrawAt=now;
+  }
+  // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
  const t=previewing?Math.max(0,((previewPaused?previewPauseStartedAt:performance.now())-previewStartedAt)/1000):0;
  // Luôn vẽ preview lên canvas xem trước, không ghi đè canvas xuất video.
  const activeCanvas=canvas,activeCtx=ctx;canvas=previewCanvas;ctx=previewCtx;
@@ -775,6 +788,7 @@ async function preloadRealtimeResources(items){
 async function beginRealtimeCapture(){
  if(!canvas.captureStream||!window.MediaRecorder)throw new Error('Trình duyệt này chưa hỗ trợ ghi canvas trực tiếp. Hãy dùng Chrome hoặc Edge mới.');
  const fps=Math.max(15,Math.min(60,Number($('fps')?.value)||30));
+  realtimeCaptureFps=fps;lastRealtimeDrawAt=0;
  const videoStream=canvas.captureStream(fps);
  if(realtimeCaptureDestination)for(const track of realtimeCaptureDestination.stream.getAudioTracks())videoStream.addTrack(track);
  const candidates=['video/webm;codecs=vp8,opus','video/webm'];
