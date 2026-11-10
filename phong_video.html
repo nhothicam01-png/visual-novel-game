@@ -1339,6 +1339,10 @@ async function recordDirect(){
    if($('dialogue').value.trim())await ensureTtsReady();
    setTaskProgress('Đã chuẩn bị giọng '+(i+1)+'/'+items.length,Math.round((i+1)/items.length*20));
   }
+  // Khôi phục đúng thoại bắt đầu trước khi gọi playPreview (nếu không, nó sẽ bắt đầu từ thoại cuối đã prewarm).
+  activeSceneIndex=originalScene;activeLineIndex=originalLine;
+  applyVisual(scenes[originalScene].visual);loadLineToEditor(scenes[originalScene].lines[originalLine]);
+  renderSceneList();renderLineList();await updateAssets();
   $('preview-tts-mode').value='render';
   const AC=window.AudioContext||window.webkitAudioContext;
   if(!AC)throw new Error('Thiết bị không hỗ trợ Web Audio.');
