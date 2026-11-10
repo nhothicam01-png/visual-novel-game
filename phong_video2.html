@@ -366,6 +366,7 @@ async function pushExportMetadata(allAudio,manifest){
 
 function setTtsStatus(s){$('tts-status').textContent=s}
 function setTaskProgress(label,percent=null){
+ if(realtimeCaptureStarting||(realtimeRecorder&&realtimeRecorder.state!=='inactive'))return;
  const box=$('task-progress'),fill=$('progress-fill');
  if(!box||!fill)return;
  box.hidden=false;
@@ -907,9 +908,7 @@ async function startRealtimeRecording(){
  $('tts-engine').value='edge';$('preview-tts-mode').value='render';
  edgeDead=false;edgeFails=0;
  try{
-  setTaskProgress('Chuẩn bị giọng Edge…',0);
-  await prefetchEdgeTts();
-  if(edgeDead)throw new Error('Edge TTS không kết nối được. Hãy kiểm tra relay rồi thử lại.');
+  $('task-progress').hidden=true;
   const result=await preloadRealtimeResources(items);
   if(result.failed)setTtsStatus('Một số tài nguyên không nạp trước được; sẽ thử tải khi cần.');
   await playPreview({record:true});
@@ -925,21 +924,35 @@ async function playPreview({record=false}={}){
  const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
  if(!items.length)return;
  const useBrowser=$('preview-tts-mode').value==='browser';
- if(!useBrowser){
+ if(!useBrowser&&!record){
   try{for(const item of items){await loadSourceLineForPlayback(item);if($('dialogue').value.trim())await ensureTtsReady()}}
-  catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));if(record)throw err;return}
+  catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));return}
  }
+ const pendingLineLoads=new Map();let rollingQueueActive=true;
+ const prepareLineAudio=item=>{
+  const line=scenes[item.sceneIndex]?.lines[item.lineIndex];
+  if(!line||!String(line.text||'').trim()||edgeDead||edgePrefetched.has(line))return Promise.resolve();
+  if(pendingLineLoads.has(line))return pendingLineLoads.get(line);
+  const task=(async()=>{try{const spec=lineTtsSpec(line),blob=await edgeSynthCached(spec);if(rollingQueueActive)edgePrefetched.set(line,{blob,gain:edgeGain(spec)});}
+   catch(err){console.warn('Không nạp trước được thoại kế tiếp:',err);}})().finally(()=>pendingLineLoads.delete(line));
+  pendingLineLoads.set(line,task);return task;
+ };
+ if(record&&!useBrowser)await Promise.all(items.slice(0,2).map(prepareLineAudio));
  stopPreview();if(record)await beginRealtimeCapture();previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  previewLineBgmName='';startRenderLoop();updatePlaybackButtons();
- for(const item of items){
+ for(let itemIndex=0;itemIndex<items.length;itemIndex++){
+  const item=items[itemIndex];
   if(!await waitWhilePaused(run))break;
+  if(record&&!useBrowser)await prepareLineAudio(item);
+  if(record&&!useBrowser)items.slice(itemIndex+1,itemIndex+3).forEach(next=>prepareLineAudio(next));
   await loadSourceLineForPlayback(item);if(!await waitWhilePaused(run))break;
   const line=getCurrentLine();await playLineAudio(line);
   const text=$('dialogue').value.trim();
   if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
-  else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
+  else if(line.wavBlob){const playedBlob=line.wavBlob,queued=edgePrefetched.get(line),url=URL.createObjectURL(playedBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
    await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
+   if(record&&queued?.blob===playedBlob){line.wavBlob=null;line.cacheKey='';edgePrefetched.delete(line);if(generatedTtsBlob===playedBlob){generatedTtsBlob=null;generatedTtsKey='';}}
   }
   const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
   let remaining=pause*1000;
@@ -948,6 +961,8 @@ async function playPreview({record=false}={}){
    const step=Math.min(80,remaining);await new Promise(resolve=>setTimeout(resolve,step));remaining-=step;
   }
  }
+ rollingQueueActive=false;
+ if(record){edgePrefetched.clear();pendingLineLoads.clear();$('task-progress').hidden=true;}
  if(previewing&&run===previewRunId)stopPreview();
 }
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
@@ -1087,7 +1102,7 @@ let generatedTtsKey='',ttsGenerationPromise=null;
 // có cache IndexedDB (xuất lại lần 2 gần như không phải tạo giọng). Lỗi mạng -> tự động quay về Piper.
 const EDGE_TOKEN='6A5AA1D4EAFF4E9FB37E23D68491D6F4',EDGE_VER='2-143.0.3650.96',EDGE_CONCURRENCY=6;
 const EDGE_VOICES={'vi-VN':['vi-VN-HoaiMyNeural','vi-VN-NamMinhNeural'],'en-US':['en-US-AriaNeural','en-US-GuyNeural'],'ja-JP':['ja-JP-NanamiNeural','ja-JP-KeitaNeural'],'ko-KR':['ko-KR-SunHiNeural','ko-KR-InJoonNeural'],'zh-CN':['zh-CN-XiaoxiaoNeural','zh-CN-YunxiNeural']};
-let edgeDead=false,edgeFails=0,edgePrefetched=new WeakMap();
+let edgeDead=false,edgeFails=0,edgePrefetched=new Map();
 const edgeDb=new Promise(res=>{try{const r=indexedDB.open('vnEdgeTtsCache',1);r.onupgradeneeded=()=>r.result.createObjectStore('a');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null)}catch(_){res(null)}});
 async function edgeCacheGet(k){const db=await edgeDb;if(!db)return null;return new Promise(res=>{try{const q=db.transaction('a').objectStore('a').get(k);q.onsuccess=()=>res(q.result?new Blob([q.result],{type:'audio/mpeg'}):null);q.onerror=()=>res(null)}catch(_){res(null)}})}
 async function edgeCachePut(k,blob){const db=await edgeDb;if(!db)return;try{db.transaction('a','readwrite').objectStore('a').put(await blob.arrayBuffer(),k)}catch(_){}}
@@ -1170,7 +1185,7 @@ function lineTtsSpec(line){
  return {text:String(line.text||'').trim(),lang,profile};
 }
 async function prefetchEdgeTts(){
- edgePrefetched=new WeakMap();
+ edgePrefetched=new Map();
  if($('tts-engine').value!=='edge')return;
  const jobs=[];scenes.forEach(sc=>sc.lines.forEach(l=>{if(String(l.text||'').trim())jobs.push(l)}));
  let idx=0,done=0;const total=jobs.length;
