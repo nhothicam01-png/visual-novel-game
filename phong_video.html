@@ -258,8 +258,11 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 </div>
 <div class="row">
 <button class="btn" id="export-video">🎬 Xuất video MP4 (timeline)</button>
+<button class="btn secondary" id="record-direct">⏺ Ghi trực tiếp (WebM)</button>
+<button class="btn danger" id="stop-direct-record" disabled>■ Dừng ghi</button>
 </div>
 
+<p class="note">Ghi trực tiếp dùng MediaRecorder, phát lại theo timeline và thu cả hình + âm thanh (Edge TTS, nhạc nền, hiệu ứng). Trên Chrome Android thường xuất WebM; dùng nút MP4 để xuất MP4 kèm phụ đề và AudioManifest.</p>
 <p class="note">Sau khi xuất MP4, hệ thống tự tạo phụ đề gốc (.srt) và AudioManifest.json, chỉ push hai file dữ liệu này lên GitHub. Không push âm thanh.</p>
 <div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
 </details>
@@ -296,6 +299,8 @@ let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewPaused=fals
 let piperVoices=[],piperCatalogPromise=null;
 let previewAudio={bgm:null,tts:null,sfx:null};
 let recordingTimer=null;
+let directRecorder=null,directCaptureContext=null,directCaptureDestination=null,directCaptureStream=null,directCaptureStopRequested=false;
+const mediaElementSources=new WeakMap();
 const charSelect=$('character');
 characters.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent='Nhân vật '+n;charSelect.appendChild(o)});
 backgrounds.forEach(([file,label])=>{const o=document.createElement('option');o.value=file;o.textContent=label;$('background').appendChild(o)});
@@ -627,7 +632,11 @@ async function stopAndResetPreview(){
  setTtsStatus('Đã dừng và đặt lại tiến trình về thoại đầu tiên.');
 }
 function audioElement(url,loop,volume){
- const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
+ const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;
+ if(directCaptureContext&&directCaptureDestination){
+  try{const source=directCaptureContext.createMediaElementSource(a);source.connect(directCaptureContext.destination);source.connect(directCaptureDestination);mediaElementSources.set(a,source)}catch(err){console.warn('Không thể nối âm thanh vào luồng ghi:',err)}
+ }
+ return a;
 }
 function resolvedLineAudio(line,kind){
  const override=line?.audioOverride?.[kind];
@@ -1309,6 +1318,67 @@ async function exportVideo(){
  }
 }
 $('export-video').addEventListener('click',exportVideo);
+
+function stopDirectRecorder(){
+ if(directRecorder&&directRecorder.state!=='inactive')directRecorder.stop();
+ stopPreview();
+}
+async function recordDirect(){
+ if(recording||directRecorder&&directRecorder.state!=='inactive')return;
+ if(!previewCanvas.captureStream||!window.MediaRecorder){setStatus('Trình duyệt chưa hỗ trợ ghi trực tiếp. Hãy dùng Chrome Android mới.');return}
+ saveCurrentLine();saveCurrentScene();
+ const scope=$('preview-scope').value,startIndex=currentSourceIndex();
+ const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
+ if(!items.length){setStatus('Không có thoại để ghi.');return}
+ const originalScene=activeSceneIndex,originalLine=activeLineIndex,originalMode=$('preview-tts-mode').value;
+ const startButton=$('record-direct'),stopButton=$('stop-direct-record');
+ startButton.disabled=true;setTaskProgress('Đang chuẩn bị trước toàn bộ giọng thoại…',0);
+ try{
+  for(let i=0;i<items.length;i++){
+   const item=items[i];await loadSourceLineForPlayback(item);
+   if($('dialogue').value.trim())await ensureTtsReady();
+   setTaskProgress('Đã chuẩn bị giọng '+(i+1)+'/'+items.length,Math.round((i+1)/items.length*20));
+  }
+  $('preview-tts-mode').value='render';
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)throw new Error('Thiết bị không hỗ trợ Web Audio.');
+  directCaptureContext=new AC();await directCaptureContext.resume();
+  directCaptureDestination=directCaptureContext.createMediaStreamDestination();
+  const videoStream=previewCanvas.captureStream(Number($('fps').value)||60);
+  directCaptureStream=new MediaStream([...videoStream.getVideoTracks(),...directCaptureDestination.stream.getAudioTracks()]);
+  const types=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+  const mimeType=types.find(type=>MediaRecorder.isTypeSupported(type))||'';
+  if(!mimeType)throw new Error('Trình duyệt không hỗ trợ ghi WebM bằng MediaRecorder.');
+  const chunks=[];
+  directRecorder=new MediaRecorder(directCaptureStream,{mimeType,videoBitsPerSecond:Number($('export-quality').value)===1080?6500000:3500000,audioBitsPerSecond:160000});
+  directRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  directRecorder.onerror=e=>{console.error('MediaRecorder:',e.error||e);setStatus('Lỗi khi ghi trực tiếp: '+(e.error?.message||'MediaRecorder'))};
+  const finished=new Promise(resolve=>{
+   directRecorder.onstop=()=>{
+    const blob=new Blob(chunks,{type:directRecorder.mimeType||'video/webm'});
+    if(blob.size){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='visual-novel-direct-'+Date.now()+'.webm';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);setStatus((directCaptureStopRequested?'Đã dừng và lưu':'Đã ghi trực tiếp')+' '+(blob.size/1024/1024).toFixed(1)+' MB · WebM.');finishTaskProgress('Ghi trực tiếp hoàn tất')}
+    resolve();
+   };
+  });
+  directCaptureStopRequested=false;directRecorder.start(1000);stopButton.disabled=false;
+  setTaskProgress('Đang ghi trực tiếp · '+(Number($('fps').value)||60)+' FPS',20);
+  await playPreview();
+  if(directRecorder&&directRecorder.state!=='inactive')directRecorder.stop();
+  await finished;
+ }catch(err){console.error(err);setStatus('Không thể ghi trực tiếp: '+(err.message||err));if(directRecorder&&directRecorder.state!=='inactive')directRecorder.stop()}
+ finally{
+  stopButton.disabled=true;startButton.disabled=false;
+  try{directCaptureStream?.getTracks().forEach(t=>t.stop())}catch(_){}
+  try{await directCaptureContext?.close()}catch(_){}
+  directRecorder=null;directCaptureStream=null;directCaptureDestination=null;directCaptureContext=null;directCaptureStopRequested=false;
+  $('preview-tts-mode').value=originalMode;
+  activeSceneIndex=originalScene;activeLineIndex=originalLine;
+  if(scenes[activeSceneIndex]){applyVisual(scenes[activeSceneIndex].visual);loadLineToEditor(scenes[activeSceneIndex].lines[activeLineIndex]);await updateAssets()}
+  renderSceneList();renderLineList();
+ }
+}
+$('record-direct').addEventListener('click',recordDirect);
+$('stop-direct-record').addEventListener('click',()=>{directCaptureStopRequested=true;stopDirectRecorder()});
 
 
 let scenes=[],activeSceneIndex=0,activeLineIndex=0;
