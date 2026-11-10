@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "kind": "visual-novel-audio-manifest",
+  "story": "TestHieuUng",
+  "story_path": "assets/KichBan/TestHieuUng/TestHieuUng.json",
+  "created_at": "2026-11-10T01:34:20.367Z",
+  "source_language": "Vietnamese",
+  "duration": 46.2333,
+  "audio_mix": {
+    "bgm_volume": 0.25,
+    "sfx_volume": 0.8,
+    "tts_volume": 1
+  },
+  "audio_policy": {
+    "translated_versions": "replace_dialogue_keep_bgm_sfx",
+    "upload_audio_to_github": false
+  },
+  "events": [
+    {
+      "type": "dialogue",
+      "start": 0,
+      "duration": 8.088,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật 1",
+      "speaker_id": "nhan_vat_1",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cuối buổi chiều, hành lang trường đã vắng tanh. Mình chỉ định quay lại lớp lấy cuốn sổ bỏ quên, vậy mà nơi này tối hơn mình tưởng.",
+      "gain": 1,
+      "scene_index": 0
+    },
+    {
+      "type": "bgm",
+      "start": 0,
+      "end": 46.204,
+      "duration": 46.204,
+      "audio_id": "afternoon_between_leaves.mp3",
+      "source": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
+      "loop": true,
+      "volume": 0.25
+    },
+    {
+      "type": "dialogue",
+      "start": 8.588,
+      "duration": 9.096,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật 1",
+      "speaker_id": "nhan_vat_1",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "A, cuốn sổ ở ngay bàn cuối! May quá, mình cứ tưởng đã làm mất nó rồi. Ánh nắng cuối ngày vẫn còn len qua cửa sổ lớp học.",
+      "gain": 1,
+      "scene_index": 1
+    },
+    {
+      "type": "dialogue",
+      "start": 18.184,
+      "duration": 7.536,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật 1",
+      "speaker_id": "nhan_vat_1",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Khoan đã... cửa lớp vừa tự đóng sao? Có ai ở ngoài đó không? Đừng nói là mình đang ở đây một mình nhé!",
+      "gain": 1,
+      "scene_index": 1
+    },
+    {
+      "type": "dialogue",
+      "start": 26.22,
+      "duration": 8.928,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật 1",
+      "speaker_id": "nhan_vat_1",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Phù... chỉ là cành cây quệt vào cửa kính thôi. Mình tự dọa mình mất rồi. Bình tĩnh nào, ra sân thượng hít thở một chút là ổn.",
+      "gain": 1,
+      "scene_index": 2
+    },
+    {
+      "type": "dialogue",
+      "start": 35.648,
+      "duration": 10.056,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật 1",
+      "speaker_id": "nhan_vat_1",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Hoàng hôn đẹp thật. Cuối cùng thì cuốn sổ cũng tìm lại được, còn nỗi sợ ban nãy chắc chỉ là do mình tưởng tượng quá nhiều. Ngày mai nhất định phải về nhà sớm hơn!",
+      "gain": 1,
+      "scene_index": 2
+    }
+  ]
+}
