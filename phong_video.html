@@ -1006,8 +1006,8 @@ async function prefetchEdgeTts(){
  await Promise.all(Array.from({length:Math.min(EDGE_CONCURRENCY,jobs.length)},worker));
 }
 function ttsRequestKey(){
- const profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
- return JSON.stringify({text:$('dialogue').value.trim(),voiceId,profile:profile||null,lang:$('tts-lang').value,engine:$('tts-engine').value+(edgeDead?'-x':''),eg:$('edge-gender').value});
+ const line=getCurrentLine(),resolved=resolveVoiceForLine(line),profile=resolved?.profile||selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
+ return JSON.stringify({text:$('dialogue').value.trim(),voiceId,edgeVoice:profile?.edgeVoice||'',profile:profile||null,sourceVoice:line?.sourceFrame?.giong_noi||null,preferredEngine:voiceEngine(profile),lang:$('tts-lang').value,edgeUnavailable:edgeDead,eg:$('edge-gender').value});
 }
 const piperMods=new Map();
 async function getPiperSession(voiceId){
