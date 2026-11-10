@@ -73,6 +73,29 @@
     return {commitSha:commit.sha,htmlUrl:'https://github.com/'+owner+'/'+repo+'/commit/'+commit.sha,fileCount:files.length};
   }
 
+  async function createBlob({owner,repo,content}){
+    if(typeof content!=='string')throw new Error('Nội dung blob không hợp lệ.');
+    const bytes=new TextEncoder().encode(content);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+    return request(API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/blobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:btoa(binary),encoding:'base64'})});
+  }
+  async function applyTreeChanges({owner,repo,branch='main',changes,message}){
+    if(!Array.isArray(changes)||!changes.length)throw new Error('Không có thay đổi GitHub.');
+    const base=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo);
+    const ref=await request(base+'/git/ref/heads/'+encodeURIComponent(branch));
+    const parentSha=ref.object.sha;
+    const parent=await request(base+'/git/commits/'+parentSha);
+    const seen=new Set();
+    const tree=changes.map(item=>{
+      if(!item?.path||seen.has(item.path))throw new Error('Đường dẫn thay đổi bị trùng hoặc không hợp lệ: '+(item?.path||''));
+      seen.add(item.path);
+      return {path:item.path,mode:item.mode||'100644',type:'blob',sha:item.sha===null?null:item.sha};
+    });
+    const nextTree=await request(base+'/git/trees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base_tree:parent.tree.sha,tree})});
+    const commit=await request(base+'/git/commits',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:message||'Manage story world',tree:nextTree.sha,parents:[parentSha]})});
+    await request(base+'/git/refs/heads/'+encodeURIComponent(branch),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({sha:commit.sha,force:false})});
+    return {commitSha:commit.sha,fileCount:changes.length};
+  }
+
   async function checkConnection(){const user=await request(API+'/user');return {login:user.login,name:user.name||user.login}}
   window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,checkConnection};
 })();
