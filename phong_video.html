@@ -733,10 +733,10 @@ async function loadSourceLineForPlayback(item,options={}){
  if(line.speakerId)await applyVoiceForCurrentLine();
 }
 async function playPreview(){
- // Lưu vị trí đang chọn trước khi tạo danh sách phát, để luôn bắt đầu từ thoại hiện tại.
+ // Lưu dữ liệu đang sửa; phạm vi toàn bộ luôn phát từ thoại đầu tiên.
  saveCurrentLine();saveCurrentScene();
  const scope=$('preview-scope').value;
- const startIndex=currentSourceIndex();
+ const startIndex=scope==='full'?0:currentSourceIndex();
  const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
  if(!items.length)return;
  const useBrowser=$('preview-tts-mode').value==='browser';
@@ -1325,7 +1325,9 @@ async function recordDirect(){
  if(recording||directRecorder&&directRecorder.state!=='inactive')return;
  if(!previewCanvas.captureStream||!window.MediaRecorder){setStatus('Trình duyệt chưa hỗ trợ ghi trực tiếp. Hãy dùng Chrome Android mới.');return}
  saveCurrentLine();saveCurrentScene();
- const scope=$('preview-scope').value,startIndex=currentSourceIndex();
+ const scope=$('preview-scope').value;
+ // Ghi WebM toàn bộ kịch bản phải lấy từ thoại đầu tiên, không phụ thuộc cảnh đang chọn.
+ const startIndex=scope==='full'?0:currentSourceIndex();
  const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
  if(!items.length){setStatus('Không có thoại để ghi.');return}
  const originalScene=activeSceneIndex,originalLine=activeLineIndex,originalMode=$('preview-tts-mode').value;
