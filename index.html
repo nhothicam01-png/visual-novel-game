@@ -314,8 +314,9 @@ function setStatus(s){$('export-status').textContent=s}
 
 function safeAudioDataName(value){return String(value||'KichBan').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan'}
 function manifestVoiceForLine(line){
- const resolved=resolveVoiceForLine(line),p=resolved?.profile||getVoiceProfiles().find(x=>x.id===line?.profileId)||null;
  const raw=line?.sourceFrame?.giong_noi||{};
+ const profileId=line?.profileId||raw.profileId||raw.profile_id||'';
+ const resolved=resolveVoiceForLine(line),p=resolved?.profile||getVoiceProfiles().find(x=>x.id===profileId)||profileFromJsonVoice(raw)||null;
  return {profile_id:String(p?.id||raw.profileId||raw.profile_id||line?.profileId||''),profile_name:String(p?.name||raw.name||''),source_voice_id:String(p?.edgeVoice||p?.voiceId||raw.voiceId||raw.voice_id||line?.voiceId||''),piper_voice_id:String(p?.voiceId||raw.voiceId||raw.voice_id||line?.voiceId||''),edge_voice_id:String(p?.edgeVoice||''),gender:String(p?.gender||''),settings:{speed:Number(p?.speed??1),pitch:Number(p?.pitch??0),rough:Number(p?.rough??0),volume:Number(p?.volume??100)},source_language:String(p?.lang||line?.lang||'vi'),engine:String(p?.engine||'edge')};
 }
 function buildAudioManifest(prepared,allAudio,bgmSegments,totalDuration){
