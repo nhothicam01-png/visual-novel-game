@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-09T07:09:22.180Z",
+  "updatedAt": "2026-11-10T09:42:38.267Z",
   "profiles": [
     {
       "id": "voice_1794192970852",
@@ -27,6 +27,34 @@
       "rough": 5,
       "volume": 100,
       "updatedAt": "2026-11-09T06:25:20.158Z"
+    },
+    {
+      "id": "voice_1794267836392",
+      "name": "Bé trai",
+      "lang": "vi",
+      "voiceId": "vi_VN-vais1000-medium",
+      "gender": "male",
+      "engine": "edge",
+      "edgeVoice": "vi-VN-NamMinhNeural",
+      "speed": 1,
+      "pitch": 8,
+      "rough": 11,
+      "volume": 100,
+      "updatedAt": "2026-11-09T23:44:18.570Z"
+    },
+    {
+      "id": "voice_1794303742118",
+      "name": "Giọng bé",
+      "lang": "vi",
+      "voiceId": "vi_VN-vais1000-medium",
+      "gender": "female",
+      "engine": "edge",
+      "edgeVoice": "vi-VN-HoaiMyNeural",
+      "speed": 1,
+      "pitch": 2,
+      "rough": 0,
+      "volume": 100,
+      "updatedAt": "2026-11-10T09:42:22.118Z"
     }
   ]
 }
