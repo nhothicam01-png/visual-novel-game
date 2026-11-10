@@ -16,7 +16,10 @@
 <div class="grid"><label class="field">Ngôn ngữ gốc<select id="source-lang"><option value="Vietnamese">Tiếng Việt</option><option value="English">English</option><option value="Japanese">日本語</option><option value="Korean">한국어</option><option value="Chinese">中文</option><option value="French">Français</option><option value="Spanish">Español</option><option value="German">Deutsch</option><option value="Portuguese">Português</option><option value="Indonesian">Bahasa Indonesia</option><option value="Thai">ภาษาไทย</option></select></label>
 <label class="field">Ngôn ngữ muốn dịch<select id="target-lang"><option value="English">English</option><option value="Japanese">日本語</option><option value="Korean">한국어</option><option value="Chinese">中文</option><option value="French">Français</option><option value="Spanish">Español</option><option value="German">Deutsch</option><option value="Portuguese">Português</option><option value="Indonesian">Bahasa Indonesia</option><option value="Thai">ภาษาไทย</option><option value="Vietnamese">Tiếng Việt</option></select></label></div>
 <p class="note">Mỗi lần tạo một ngôn ngữ đích. Dịch tự động dùng dịch vụ miễn phí MyMemory và có thể bị giới hạn lượt; bạn có thể sửa từng câu trước khi tạo TTS.</p>
-<div class="row"><button class="btn" id="translate">✨ Dịch thoại</button><button class="btn secondary" id="clear-translation">Xóa bản dịch</button></div></section>
+<div class="row"><button class="btn" id="translate">✨ Dịch thoại</button><button class="btn secondary" id="clear-translation">Xóa bản dịch</button></div>
+<div class="field"><label for="gemini-key">Gemini API Key (chỉ lưu trên thiết bị này)</label><input id="gemini-key" type="password" autocomplete="off" placeholder="Dán API key từ Google AI Studio"><span class="note">Dùng Gemini 2.5 Flash-Lite qua gói API miễn phí. Key chỉ lưu trong localStorage của trình duyệt, không ghi vào GitHub và không gửi lên máy chủ của trang này. Không chia sẻ key cho người khác.</span></div>
+<label class="check"><input type="checkbox" id="auto-shorten" checked> Tự động nhờ AI rút gọn và tạo lại TTS nếu câu vượt khung thời gian</label>
+</section>
 <section class="panel"><h2>3. Kiểm tra & chỉnh sửa thoại đã dịch</h2><div id="dialogue-list" class="list"><p class="note">Hãy chọn truyện và tải Audio Manifest.</p></div></section>
 <section class="panel"><h2>4. Tạo giọng & nghe thử</h2>
 <p class="note">Ưu tiên Edge Neural đúng ngôn ngữ đích, chọn biến thể cùng giới tính với hồ sơ gốc. Nếu Edge lỗi hoặc không có giọng phù hợp, tự chuyển Piper theo ngôn ngữ đích; giữ tốc độ, cao độ, độ khàn và âm lượng trong khả năng xử lý của Piper.</p>
@@ -108,16 +111,56 @@ async function fitSpeechToWindow(buffer,event){
  const fitted=await out.startRendering();
  return {buffer:fitted,rate,windowDuration};
 }
+function getGeminiKey(){return String($('gemini-key')?.value||localStorage.getItem('subtitleGeminiApiKey')||'').trim()}
+$('gemini-key').value=localStorage.getItem('subtitleGeminiApiKey')||'';
+$('gemini-key').addEventListener('input',()=>{const k=$('gemini-key').value.trim();if(k)localStorage.setItem('subtitleGeminiApiKey',k);else localStorage.removeItem('subtitleGeminiApiKey')});
+async function rewriteForWindow(item,target){
+ const key=getGeminiKey();if(!key)throw Error('Câu thoại vượt thời lượng và chưa có Gemini API Key. Hãy nhập key ở mục Ngôn ngữ để bật AI rút gọn tự động.');
+ const duration=Number(item.event.duration)||Math.max(0,Number(item.event.end)-Number(item.event.start));
+ if(!(duration>0))throw Error('Manifest không có thời lượng khung thoại hợp lệ để AI tối ưu.');
+ const prompt=[
+  'You are a professional audiovisual subtitle adapter and dubbing dialogue editor.',
+  'Rewrite the translated dialogue so it can be spoken naturally within the exact available duration of '+duration.toFixed(2)+' seconds in '+target+'.',
+  'Preserve the original meaning, plot-critical information, names, relationships, intent, and emotional tone. Do not invent facts or remove essential information.',
+  'Make it concise and natural for spoken dialogue, not a literal word-for-word translation. Prefer a shorter equivalent phrase when possible.',
+  'Return ONLY the rewritten dialogue text. No quotation marks, labels, explanations, alternatives, or markdown.',
+  'Original dialogue ('+($('source-lang').value)+'): '+item.event.text,
+  'Current translation ('+target+'): '+item.text
+ ].join('\n');
+ const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key='+encodeURIComponent(key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.2,maxOutputTokens:256}})});
+ const data=await res.json();if(!res.ok)throw Error(data?.error?.message||('Gemini API HTTP '+res.status));
+ const textOut=(data.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('').trim();
+ if(!textOut)throw Error('Gemini không trả về bản dịch rút gọn.');
+ return textOut.replace(/^["'“”]+|["'“”]+$/g,'').trim();
+}
 async function makeSpeech(item,target){
  const profile=findProfile(item.event),code=LANG[target]?.code||'en',voice=targetEdgeVoice(code,profile);
- let buffer,engine,gain;
- if(voice){try{const raw=await edgeTTS(item.text,voice,profile);buffer=await applySettings(raw,{...(profile||{}),speed:1,pitch:0});engine='Edge '+voice;gain=Number(item.event.gain??1)}catch(e){console.warn('Edge lỗi, fallback Piper',e)}}
- if(!buffer){
-  const voiceId=choosePiper(target);if(!voiceId)throw Error('Không tìm thấy Piper cho '+target);
-  const session=await getPiper(voiceId),wav=await session.predict(item.text);buffer=await applySettings(new Blob([await wav.arrayBuffer()],{type:'audio/wav'}),profile);engine='Piper '+voiceId;gain=Math.max(0,Math.min(1.5,Number(profile?.volume??100)/100));
+ const voiceId=choosePiper(target);
+ let engine='',gain=1,buffer=null;
+ async function synthesize(){
+  buffer=null;
+  if(voice){try{const raw=await edgeTTS(item.text,voice,profile);buffer=await applySettings(raw,{...(profile||{}),speed:1,pitch:0});engine='Edge '+voice;gain=Number(item.event.gain??1)}catch(e){console.warn('Edge lỗi, fallback Piper',e)}}
+  if(!buffer){
+   if(!voiceId)throw Error('Không tìm thấy Piper cho '+target);
+   const session=await getPiper(voiceId),wav=await session.predict(item.text);buffer=await applySettings(new Blob([await wav.arrayBuffer()],{type:'audio/wav'}),profile);engine='Piper '+voiceId;gain=Math.max(0,Math.min(1.5,Number(profile?.volume??100)/100));
+  }
  }
- const originalTtsDuration=buffer.duration,fitted=await fitSpeechToWindow(buffer,item.event);
- item.engine=engine;item.fitRate=fitted.rate;item.windowDuration=fitted.windowDuration;item.originalTtsDuration=originalTtsDuration;
+ let fitted=null,originalTtsDuration=0,rewrites=0;
+ for(let attempt=0;attempt<3;attempt++){
+  await synthesize();originalTtsDuration=buffer.duration;
+  try{fitted=await fitSpeechToWindow(buffer,item.event);break}
+  catch(err){
+   const tooLong=/dài hơn khung thoại|vượt khung/i.test(err.message);
+   if(!tooLong||!$('auto-shorten').checked||attempt>=2)throw err;
+   const previous=item.text,shorter=await rewriteForWindow(item,target);
+   if(!shorter||shorter===previous)throw Error('AI không rút gọn được câu thoại. Hãy sửa ngắn hơn bằng tay.');
+   item.text=shorter;rewrites++;
+   const textarea=$('dialogue-list').querySelector('textarea[data-index="'+translated.indexOf(item)+'"]');
+   if(textarea)textarea.value=shorter;
+  }
+ }
+ if(!fitted)throw Error('Không thể điều chỉnh câu thoại vừa khung sau 2 lần AI rút gọn.');
+ item.engine=engine;item.fitRate=fitted.rate;item.windowDuration=fitted.windowDuration;item.originalTtsDuration=originalTtsDuration;item.ai_rewrites=rewrites;
  return {buffer:fitted.buffer,gain};
 }
 function srtTime(sec){const ms=Math.max(0,Math.round(sec*1000)),h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),s=Math.floor(ms%60000/1000),z=ms%1000;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+','+String(z).padStart(3,'0')}
@@ -144,9 +187,9 @@ async function mixFullAudio(items,manifestData){
 function wavBlob(buffer){const ch=buffer.numberOfChannels,n=buffer.length,rate=buffer.sampleRate,bytes=44+n*ch*2,ab=new ArrayBuffer(bytes),v=new DataView(ab),write=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i))};write(0,'RIFF');v.setUint32(4,bytes-8,true);write(8,'WAVE');write(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,ch,true);v.setUint32(24,rate,true);v.setUint32(28,rate*ch*2,true);v.setUint16(32,ch*2,true);v.setUint16(34,16,true);write(36,'data');v.setUint32(40,bytes-44,true);let o=44;for(let i=0;i<n;i++)for(let c=0;c<ch;c++){const x=Math.max(-1,Math.min(1,buffer.getChannelData(c)[i]));v.setInt16(o,x<0?x*32768:x*32767,true);o+=2}return new Blob([ab],{type:'audio/wav'})}
 function renderPreview(items){const host=$('audio-preview');host.innerHTML='';items.forEach((x,i)=>{const div=document.createElement('div');div.className='line';const t=document.createElement('div');t.className='line-head';t.innerHTML='<b></b><span></span>';t.firstChild.textContent=(i+1)+'. '+(x.event.speaker||'Nhân vật');t.lastChild.textContent=x.engine||'Đã tạo';const a=document.createElement('audio');a.controls=true;a.src=URL.createObjectURL(x.blob||wavBlobFromBuffer(x.buffer));div.append(t,a);host.append(div)})}
 function wavBlobFromBuffer(b){return wavBlob(b)}
-$('generate').onclick=async()=>{if(!translated.length||translated.some(x=>!x.text.trim())){status('voice-status','Còn câu chưa được dịch. Hãy dịch hoặc điền đầy đủ trước.');return}const btn=$('generate');btn.disabled=true;generated=[];$('audio-preview').innerHTML='';$('build-package').disabled=true;try{for(let i=0;i<translated.length;i++){const item=translated[i];status('voice-status','Đang tạo giọng '+(i+1)+'/'+translated.length+' · '+(item.event.speaker||'Nhân vật'));const made=await makeSpeech(item,$('target-lang').value);generated.push({...item,...made});$('progress').style.width=Math.round((i+1)/translated.length*100)+'%';}renderPreview(generated);languagePackages[$('target-lang').value]=generated.map(x=>({...x}));$('preview-all').disabled=false;$('build-package').disabled=false;status('voice-status','Đã tạo '+generated.length+' câu thoại cho '+$('target-lang').value+'. Có '+Object.keys(languagePackages).length+' ngôn ngữ trong gói hiện tại. Bạn có thể chọn ngôn ngữ khác, dịch và tạo tiếp trước khi tải ZIP.')}catch(e){status('voice-status','Tạo giọng dừng: '+e.message);console.error(e)}finally{btn.disabled=false}};
+$('generate').onclick=async()=>{if(!translated.length||translated.some(x=>!x.text.trim())){status('voice-status','Còn câu chưa được dịch. Hãy dịch hoặc điền đầy đủ trước.');return}const btn=$('generate');btn.disabled=true;generated=[];$('audio-preview').innerHTML='';$('build-package').disabled=true;try{for(let i=0;i<translated.length;i++){const item=translated[i];status('voice-status','Đang tạo giọng '+(i+1)+'/'+translated.length+' · '+(item.event.speaker||'Nhân vật'));const made=await makeSpeech(item,$('target-lang').value);generated.push({...item,...made});$('progress').style.width=Math.round((i+1)/translated.length*100)+'%';}renderPreview(generated);languagePackages[$('target-lang').value]=generated.map(x=>({...x}));$('preview-all').disabled=false;$('build-package').disabled=false;status('voice-status','Đã tạo '+generated.length+' câu thoại cho '+$('target-lang').value+'. AI đã tự rút gọn '+generated.reduce((n,x)=>n+(x.ai_rewrites||0),0)+' câu. Có '+Object.keys(languagePackages).length+' ngôn ngữ trong gói hiện tại. Bạn có thể chọn ngôn ngữ khác, dịch và tạo tiếp trước khi tải ZIP.')}catch(e){status('voice-status','Tạo giọng dừng: '+e.message);console.error(e)}finally{btn.disabled=false}};
 $('preview-all').onclick=()=>{const audios=[...$('audio-preview').querySelectorAll('audio')];if(!audios.length)return;let i=0;const play=()=>{if(i>=audios.length)return;audios[i].onended=()=>{i++;play()};audios[i].play().catch(()=>{})};play()};
-$('build-package').onclick=async()=>{const btn=$('build-package');btn.disabled=true;try{const languages=Object.keys(languagePackages);if(!languages.length)throw Error('Hãy tạo ít nhất một ngôn ngữ trước.');const zip=new JSZip(),safe=safeName(storyName);for(let n=0;n<languages.length;n++){const target=languages[n],items=languagePackages[target];status('export-status','Đang ghép âm thanh '+target+' ('+(n+1)+'/'+languages.length+')…');const mix=await mixFullAudio(items,manifest),srtItems=mix.items.map(x=>({event:x.event,text:x.text,start:x.start,end:x.end})),srt=makeSrt(srtItems),folder=zip.folder(target);folder.file(safe+'_'+target+'.srt',srt);folder.file(safe+'_'+target+'_FullAudio.wav',wavBlob(mix.buffer));folder.file('voice-report.json',JSON.stringify(items.map(x=>({speaker:x.event.speaker,voice_profile_id:x.event.voice_id,engine:x.engine,start:Number(x.event.start)||0,source_window:Number(x.event.duration)||0,original_tts_duration:Number(x.originalTtsDuration??x.duration??0),final_tts_duration:Number(x.duration??x.buffer?.duration??0),fit_rate:Number(x.fitRate??1),status:'success'})),null,2));if($('push-srt').checked){if(!GitHubManager.getToken())throw Error('Chưa có GitHub Token để push SRT. Bỏ chọn push SRT nếu chỉ muốn tải ZIP.');const path='assets/KichBan/'+storyName+'/PhuDe/'+safe+'_'+target+'.srt';await GitHubManager.pushTextFile({owner:OWNER,repo:REPO,branch:'main',path,content:srt,message:'Add translated subtitles: '+target})}}status('export-status','Đang nén '+languages.length+' thư mục ngôn ngữ…');const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:3}});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=safe+'_Subtitle_Dubbing_Package.zip';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);status('export-status','Hoàn tất! ZIP có '+languages.length+' thư mục ngôn ngữ. GitHub chỉ nhận các file SRT; âm thanh WAV không được upload.')}catch(e){status('export-status','Không thể xuất ZIP: '+e.message);console.error(e)}finally{btn.disabled=false}};
+$('build-package').onclick=async()=>{const btn=$('build-package');btn.disabled=true;try{const languages=Object.keys(languagePackages);if(!languages.length)throw Error('Hãy tạo ít nhất một ngôn ngữ trước.');const zip=new JSZip(),safe=safeName(storyName);for(let n=0;n<languages.length;n++){const target=languages[n],items=languagePackages[target];status('export-status','Đang ghép âm thanh '+target+' ('+(n+1)+'/'+languages.length+')…');const mix=await mixFullAudio(items,manifest),srtItems=mix.items.map(x=>({event:x.event,text:x.text,start:x.start,end:x.end})),srt=makeSrt(srtItems),folder=zip.folder(target);folder.file(safe+'_'+target+'.srt',srt);folder.file(safe+'_'+target+'_FullAudio.wav',wavBlob(mix.buffer));folder.file('voice-report.json',JSON.stringify(items.map(x=>({speaker:x.event.speaker,voice_profile_id:x.event.voice_id,engine:x.engine,start:Number(x.event.start)||0,source_window:Number(x.event.duration)||0,original_tts_duration:Number(x.originalTtsDuration??x.duration??0),final_tts_duration:Number(x.duration??x.buffer?.duration??0),fit_rate:Number(x.fitRate??1),ai_rewrites:Number(x.ai_rewrites??0),final_text:x.text,status:'success'})),null,2));if($('push-srt').checked){if(!GitHubManager.getToken())throw Error('Chưa có GitHub Token để push SRT. Bỏ chọn push SRT nếu chỉ muốn tải ZIP.');const path='assets/KichBan/'+storyName+'/PhuDe/'+safe+'_'+target+'.srt';await GitHubManager.pushTextFile({owner:OWNER,repo:REPO,branch:'main',path,content:srt,message:'Add translated subtitles: '+target})}}status('export-status','Đang nén '+languages.length+' thư mục ngôn ngữ…');const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:3}});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=safe+'_Subtitle_Dubbing_Package.zip';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);status('export-status','Hoàn tất! ZIP có '+languages.length+' thư mục ngôn ngữ. GitHub chỉ nhận các file SRT; âm thanh WAV không được upload.')}catch(e){status('export-status','Không thể xuất ZIP: '+e.message);console.error(e)}finally{btn.disabled=false}};
 $('target-lang').onchange=()=>{translated=events.map(e=>({event:e,text:'',blob:null,duration:0,start:0,engine:'',profile:e.voice||{}}));generated=[];$('audio-preview').innerHTML='';$('preview-all').disabled=true;renderLines();status('voice-status','Đã chuyển ngôn ngữ đích. Hãy dịch và tạo giọng cho ngôn ngữ mới. Các ngôn ngữ đã tạo trước đó vẫn được giữ trong gói ZIP.')};
 $('story').onchange=selectStory;$('reload').onclick=loadCatalog;
 (async()=>{await loadProfiles();await loadPiperCatalog();await loadCatalog()})();
