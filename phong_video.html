@@ -816,7 +816,7 @@ async function loadSavedVoiceProfiles(){
  const list=getVoiceProfiles();sel.innerHTML='<option value="">Dùng giọng Piper bên dưới</option>'+list.map(p=>'<option value="'+String(p.id).replace(/["&<>]/g,'')+'">'+String(p.name).replace(/[&<>"]/g,'')+' · '+String(p.edgeVoice||p.voiceId)+'</option>').join('');
 }
 function selectedVoiceProfile(){return getVoiceProfiles().find(p=>p.id===$('voice-profile').value)||null}
-$('voice-profile').addEventListener('change',()=>{
+$('voice-profile')?.addEventListener('change',()=>{
  const p=selectedVoiceProfile();if(!p)return;
  const langMap={vi:'vi-VN',en:'en-US',ja:'ja-JP',ko:'ko-KR',zh:'zh-CN'};
  $('tts-lang').value=langMap[p.lang]||'vi-VN';
@@ -859,7 +859,7 @@ async function applyVoiceProfile(blob,p){
  finally{await ac.close().catch(()=>{})}
 }
 
-$('tts-lang').addEventListener('change',async()=>{
+$('tts-lang')?.addEventListener('change',async()=>{
  await loadPiperVoices();
  const line=getCurrentLine();if(line){line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;saveCurrentLine();renderLineList()}
 });
@@ -1036,7 +1036,7 @@ async function ensureTtsReady(){
  if(!ttsGenerationPromise)ttsGenerationPromise=generatePiperAudio().catch(err=>{generatedTtsBlob=null;generatedTtsKey='';throw err}).finally(()=>{ttsGenerationPromise=null});
  return await ttsGenerationPromise;
 }
-$('generate-piper').addEventListener('click',async()=>{
+$('generate-piper')?.addEventListener('click',async()=>{
  try{await ensureTtsReady()}catch(err){setTtsStatus('Không tạo được giọng: '+(err.message||err))}
 });
 loadPiperVoices().then(()=>{const line=getCurrentLine();if(line&&!line.voiceId){line.voiceId=$('piper-voice').value;renderLineList()}});
@@ -1687,7 +1687,7 @@ $('seek-next').addEventListener('click',()=>seekSourceLine(currentSourceIndex()+
 $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)));
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
 $('ratio-toggle').addEventListener('click',toggleAspectRatio);
-$('ratio-toggle-settings').addEventListener('click',toggleAspectRatio);
+$('ratio-toggle-settings')?.addEventListener('click',toggleAspectRatio);
 $('stop-scene').addEventListener('click',stopAndResetPreview);
 
 $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
@@ -1705,7 +1705,7 @@ $('character-voice-list').addEventListener('change',e=>{
  characterVoiceMap[sel.dataset.characterVoice]=sel.value;saveStorySettings();
  if(getCurrentLine()?.speakerId===sel.dataset.characterVoice)applyVoiceForCurrentLine();
 });
-$('default-voice-profile').addEventListener('change',e=>{defaultVoiceProfileId=e.target.value;saveStorySettings();if(getCurrentLine())applyVoiceForCurrentLine()});
+$('default-voice-profile')?.addEventListener('change',e=>{defaultVoiceProfileId=e.target.value;saveStorySettings();if(getCurrentLine())applyVoiceForCurrentLine()});
 
 function buildEditedStoryOutput(){
  saveCurrentLine();saveCurrentScene();
