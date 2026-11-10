@@ -248,7 +248,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <details class="panel main-panel"><summary class="panel-heading">5. Xem trước & xuất video</summary>
 <div class="grid">
 <label class="field">FPS
-<select id="fps"><option value="24">24 FPS</option><option value="30" selected>30 FPS</option><option value="60">60 FPS</option></select></label>
+<select id="fps"><option value="24">24 FPS</option><option value="30">30 FPS</option><option value="60" selected>60 FPS</option></select></label>
 <label class="field">Chất lượng xuất
 <select id="export-quality"><option value="720" selected>⚡ Nhanh · 720p</option><option value="1080">Chuẩn · 1080p (chậm hơn ~2×)</option></select></label>
 <label class="field">Ngôn ngữ gốc của thoại
@@ -1188,7 +1188,7 @@ async function exportVideo(){
    }
    if(!pack.lines.length){pack.silentStart=totalDuration;pack.silentDuration=3;totalDuration+=pack.silentDuration;}
   }
-  const fps=Number($('fps').value)||30,sampleRate=audioContext.sampleRate;
+  const fps=Number($('fps').value)||60,sampleRate=audioContext.sampleRate;
   const finalDuration=Math.max(.5,Math.ceil(totalDuration*fps)/fps);
   const Offline=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const offline=new Offline(2,Math.ceil(finalDuration*sampleRate),sampleRate);
