@@ -1024,7 +1024,7 @@ async function generatePiperAudio(){
 }
 async function ensureTtsReady(){
  const text=$('dialogue').value.trim(),line=getCurrentLine();
- if(line?.speakerId)await applyVoiceForCurrentLine();
+ await applyVoiceForCurrentLine();
  if(!text)return null;
  const key=ttsRequestKey();
  if(line?.wavBlob&&line.cacheKey===key){generatedTtsBlob=line.wavBlob;generatedTtsKey=key;return line.wavBlob}
