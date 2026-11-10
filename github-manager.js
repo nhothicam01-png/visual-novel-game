@@ -51,7 +51,7 @@
     const path='assets/NhanVat/'+safe;
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/'+path.split('/').map(encodeURIComponent).join('/')+'?ref='+encodeURIComponent(branch);
     const rows=await request(url);
-    return rows.filter(x=>x.type==='file'&&/\\.webm$/i.test(x.name)).map(x=>({name:x.name,path:x.path,size:x.size||0,downloadUrl:x.download_url||'',htmlUrl:x.html_url||''})).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+    return rows.filter(x=>x.type==='file'&&/\.webm$/i.test(x.name)).map(x=>({name:x.name,path:x.path,size:x.size||0,downloadUrl:x.download_url||'',htmlUrl:x.html_url||''})).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
   }
   async function pushFiles({owner,repo,files,message,branch='main'}){
     if(!Array.isArray(files)||!files.length)throw new Error('Không có file để push.');
