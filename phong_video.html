@@ -18,6 +18,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .preview-toolbar{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.preview-tts-control{min-width:190px;max-width:250px}
 .seek-panel{width:100%;max-width:1000px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 12px;background:#0f172acc;border:1px solid #a855f744;border-radius:10px}
 .seek-panel input[type=range]{flex:1;min-width:140px;accent-color:#a855f7}
+.seek-panel .seek-step-btn{flex:0 0 36px;width:36px;min-width:36px;height:36px;padding:5px;display:inline-flex;align-items:center;justify-content:center;font-size:1rem;line-height:1}
 #seek-position{min-width:78px;text-align:center;color:#c4b5fd;font-variant-numeric:tabular-nums}
 @media(max-width:600px){.seek-panel{gap:6px;padding:8px}.seek-panel .btn{padding:7px 9px}#seek-position{min-width:65px}}
 .panel{width:100%;max-width:1000px;background:rgba(15,23,42,.88);border:1px solid rgba(168,85,247,.28);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px}
@@ -131,10 +132,10 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <label class="field preview-tts-control">Giọng trình duyệt<select id="browser-tts-voice"><option value="">Tự chọn theo ngôn ngữ</option></select></label>
 </div>
 <div class="seek-panel" aria-label="Điều khiển thoại">
-<button class="btn secondary" id="seek-prev">⏮ Lùi 1 thoại</button>
+<button class="btn secondary seek-step-btn" id="seek-prev" type="button" title="Lùi 1 thoại" aria-label="Lùi 1 thoại">⏮</button>
 <input id="seek-slider" type="range" min="0" max="0" value="0" step="1" aria-label="Tua đến thoại">
 <span id="seek-position">0 / 0</span>
-<button class="btn secondary" id="seek-next">Tiến 1 thoại ⏭</button>
+<button class="btn secondary seek-step-btn" id="seek-next" type="button" title="Tiến 1 thoại" aria-label="Tiến 1 thoại">⏭</button>
 </div>
 <div id="task-progress" class="task-progress" hidden>
 <div class="task-progress-head"><span id="task-progress-label">Đang xử lý…</span><strong id="task-progress-percent"></strong></div>
