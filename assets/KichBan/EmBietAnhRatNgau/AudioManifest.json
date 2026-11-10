@@ -3,9 +3,9 @@
   "kind": "visual-novel-audio-manifest",
   "story": "EmBietAnhRatNgau",
   "story_path": "assets/KichBan/EmBietAnhRatNgau/EmBietAnhRatNgau.json",
-  "created_at": "2026-11-10T23:51:55.084Z",
+  "created_at": "2026-11-10T23:54:05.783Z",
   "source_language": "Vietnamese",
-  "duration": 4.6215,
+  "duration": 69.0296,
   "audio_mix": {
     "bgm_volume": 0.25,
     "sfx_volume": 0.8,
@@ -19,8 +19,348 @@
     {
       "type": "dialogue",
       "start": 0,
-      "end": 4.1215,
-      "duration": 4.1215,
+      "end": 2.9644,
+      "duration": 2.9644,
+      "pause_after": 0.5,
+      "speaker": "Nesta",
+      "speaker_id": "5",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "piper"
+      },
+      "text": "Ánh sáng trên lưng tôi... Nó lại bùng phát rồi! Kaelen, chuyện gì đang xảy ra vậy?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "bgm",
+      "start": 0,
+      "end": 69.0296,
+      "duration": 69.0296,
+      "audio_id": "afternoon_between_leaves.mp3",
+      "source": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
+      "loop": true,
+      "volume": 0.25
+    },
+    {
+      "type": "dialogue",
+      "start": 3.4644,
+      "end": 9.2345,
+      "duration": 5.7701,
+      "pause_after": 0.5,
+      "speaker": "Kaelen",
+      "speaker_id": "3",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "piper"
+      },
+      "text": "Đừng sợ, Nesta. Hãy bám chặt vào tôi! Đợt rụng lá đỏ đã bắt đầu, lính canh hoàng gia đang đến rất gần rồi.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 9.7345,
+      "end": 17.5345,
+      "duration": 7.8,
+      "pause_after": 0.5,
+      "speaker": "Lirien",
+      "speaker_id": "1",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cổ Thụ Sinh Mệnh đang cựa mình. Một chiếc lá đỏ vừa rơi xuống, và thêm một sinh mạng nữa đã vĩnh viễn tàn lụi.",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 18.0345,
+      "end": 26.6025,
+      "duration": 8.568,
+      "pause_after": 0.5,
+      "speaker": "Elandra",
+      "speaker_id": "2",
+      "voice_id": "voice_1794267836392",
+      "voice": {
+        "profile_id": "voice_1794267836392",
+        "profile_name": "Bé trai",
+        "source_voice_id": "vi-VN-NamMinhNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
+        "gender": "male",
+        "settings": {
+          "speed": 1,
+          "pitch": 8,
+          "rough": 11,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Lirien nói đúng. Dược liệu tôi điều chế có thể kìm hãm ấn ký trên lưng Nesta, nhưng chỉ có thể duy trì khi rời khỏi kinh thành này.",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 27.1025,
+      "end": 33.2209,
+      "duration": 6.1184,
+      "pause_after": 0.5,
+      "speaker": "Kaelen",
+      "speaker_id": "3",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "piper"
+      },
+      "text": "Tôi sẽ đưa cô ấy đến Hẻm Núi Sương Mờ. Dù phải đối đầu với cả triều đình, tôi cũng không để họ biến Nesta thành vật tế thần.",
+      "gain": 1,
+      "scene_index": 4,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 33.7209,
+      "end": 41.0889,
+      "duration": 7.368,
+      "pause_after": 0.5,
+      "speaker": "Soran",
+      "speaker_id": "6",
+      "voice_id": "voice_1794303742118",
+      "voice": {
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 2,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Các ngươi đã đến đúng hẹn. Hẻm Núi Sương Mờ chưa bao giờ từ chối những kẻ dám thách thức quy luật của Cổ Thụ.",
+      "gain": 1,
+      "scene_index": 5,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 41.5889,
+      "end": 50.4209,
+      "duration": 8.832,
+      "pause_after": 0.5,
+      "speaker": "Thủ Lĩnh Vael",
+      "speaker_id": "4",
+      "voice_id": "voice_1794303817586",
+      "voice": {
+        "profile_id": "voice_1794303817586",
+        "profile_name": "Thanh niên",
+        "source_voice_id": "vi-VN-NamMinhNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
+        "gender": "male",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cảm ơn ngươi đã dẫn đường đến tận đây, pháp sư già. Chiếc trâm bạc và ấn ký trên người con bé này chính là thứ ta cần để lật đổ ngai vàng!",
+      "gain": 1,
+      "scene_index": 6,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 50.9209,
+      "end": 53.9627,
+      "duration": 3.0418,
+      "pause_after": 0.5,
+      "speaker": "Kaelen",
+      "speaker_id": "3",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "piper"
+      },
+      "text": "Thủ lĩnh Vael! Ngươi đừng hòng chạm vào Nesta khi ta còn sống!",
+      "gain": 1,
+      "scene_index": 6,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 54.4627,
+      "end": 55.581,
+      "duration": 1.1183,
+      "pause_after": 0.5,
+      "speaker": "Nesta",
+      "speaker_id": "5",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "piper"
+      },
+      "text": "Kaelen! Cẩn thận phía sau anh!",
+      "gain": 1,
+      "scene_index": 6,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 56.081,
+      "end": 60.9224,
+      "duration": 4.8414,
+      "pause_after": 0.5,
+      "speaker": "Kaelen",
+      "speaker_id": "3",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "piper"
+      },
+      "text": "Hét lớn và lao lên dồn hết sức mạnh, phóng chiếc trâm bạc vào thẳng nguồn năng lượng hắc ám của Vael!",
+      "gain": 1,
+      "scene_index": 6,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 61.4224,
+      "end": 64.0939,
+      "duration": 2.6715,
+      "pause_after": 0.5,
+      "speaker": "Nesta",
+      "speaker_id": "5",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "piper"
+      },
+      "text": "Ấn ký... nó đang mờ dần rồi! Cơn bão lá đỏ đã dừng lại hoàn toàn!",
+      "gain": 1,
+      "scene_index": 7,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 64.5939,
+      "end": 68.5296,
+      "duration": 3.9358,
       "pause_after": 0.5,
       "speaker": "Kaelen",
       "speaker_id": "3",
@@ -45,23 +385,13 @@
       "gain": 1,
       "scene_index": 7,
       "timing_policy": "fixed_source_window"
-    },
-    {
-      "type": "bgm",
-      "start": 0,
-      "end": 4.6215,
-      "duration": 4.6215,
-      "audio_id": "afternoon_between_leaves.mp3",
-      "source": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
-      "loop": true,
-      "volume": 0.25
     }
   ],
   "video": {
     "format": "webm",
     "fps": 60,
-    "width": 1080,
-    "height": 1920,
+    "width": 1920,
+    "height": 1080,
     "export_mode": "direct_media_recorder"
   }
 }
