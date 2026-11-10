@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "world_name": "Liên Quân",
+  "slug": "LienQuan",
+  "genre": "Bí ẩn",
+  "premise": "Một thế giới cứ một chiếc lá rơi xuống sẽ có một người chết\nVà họ không biết người tiếp theo là ai",
+  "setting": "Cổ đại",
+  "tone": "",
+  "extra": "",
+  "mode": "guided",
+  "places": [
+    {
+      "name": "Đền Thờ Nguyệt Diệp",
+      "description": "Nơi lưu giữ Cổ Thụ Sinh Mệnh, trung tâm của vương quốc, nơi các linh mục theo dõi từng chiếc lá rụng.",
+      "selected": true
+    },
+    {
+      "name": "Hẻm Núi Sương Mờ",
+      "description": "Khu vực biên giới hoang vu, nơi người dân thường trốn tránh khi mùa lá rụng đến gần.",
+      "selected": true
+    }
+  ],
+  "characters": [
+    {
+      "name": "Lirien",
+      "role": "Người gác đền",
+      "personality": "Trầm mặc, cảnh giác, mang nặng ân hận vì không cứu được người thân.",
+      "relationships": "Bảo vệ bí mật của Cổ Thụ, nghi ngờ mọi kẻ lạ mặt.",
+      "assetFolder": "1",
+      "selected": true
+    },
+    {
+      "name": "Elandra",
+      "role": "Nhà nghiên cứu thảo dược",
+      "personality": "Tò mò, dũng cảm, luôn tìm cách phá giải quy luật sinh tử.",
+      "relationships": "Hợp tác ngầm với Lirien để tìm nguyên nhân chiếc lá rơi.",
+      "assetFolder": "2",
+      "selected": true
+    },
+    {
+      "name": "Kaelen",
+      "role": "Lính canh hoàng gia",
+      "personality": "Kỷ luật, trung thành nhưng đang dao động trước sự bất công của định mệnh.",
+      "relationships": "Tuân lệnh nhà vua nhưng che chở cho Elandra.",
+      "assetFolder": "3",
+      "selected": true
+    },
+    {
+      "name": "Thủ Lĩnh Vael",
+      "role": "Kẻ đứng đầu phe nổi dậy",
+      "personality": "Cực đoan, bất chấp thủ đoạn để lật đổ trật tự hiện tại.",
+      "relationships": "Coih Elandra là mối đe dọa lẫn công cụ.",
+      "assetFolder": "4",
+      "selected": true
+    },
+    {
+      "name": "Nesta",
+      "role": "Thiếu nữ mang ấn ký",
+      "personality": "Sợ hãi, cô độc, biết trước mình là người tiếp theo nhưng giữ kín.",
+      "relationships": "Được Kaelen bảo vệ bí mật.",
+      "assetFolder": "5",
+      "selected": true
+    },
+    {
+      "name": "Soran",
+      "role": "Pháp sư lưu vong",
+      "personality": "Xảo quyệt, thông thái, biết cách thao túng quy luật của lá cây.",
+      "relationships": "Cung cấp thông tin mập mờ cho Lirien.",
+      "assetFolder": "6",
+      "selected": true
+    },
+    {
+      "name": "Tiểu thư Hasine",
+      "role": "Quý tộc bí ẩn",
+      "personality": "Kiêu kỳ, thâm trầm, che giấu thân phận thực sự đằng sau vẻ ngoài xa hoa.",
+      "relationships": "Có liên hệ mật thiết với nguồn gốc của Cổ Thụ.",
+      "assetFolder": "Furina",
+      "selected": true
+    }
+  ],
+  "rules": [
+    {
+      "name": "Quy Luật Chiếc Lá Tử Vong",
+      "description": "Mỗi khi một chiếc lá từ Cổ Thụ rơi xuống đất, một cư dân trong vương quốc sẽ ngã xuống ngay lập tức không rõ nguyên nhân.",
+      "selected": true
+    },
+    {
+      "name": "Cấm Kỵ Chặt Cây",
+      "description": "Bất kỳ hành vi tổn hại nào đến Cổ Thụ đều sẽ kích hoạt cái chết hàng loạt cho toàn bộ lãnh thổ.",
+      "selected": true
+    }
+  ],
+  "events": [
+    {
+      "name": "Đợt Rụng Lá Đỏ",
+      "description": "Một cơn gió lạ thổi bay hàng loạt chiếc lá vào giữa mùa hè, khiến hàng trăm người ngã xuống cùng lúc và gây hoảng loạn toàn vương quốc.",
+      "importance": "Cao",
+      "selected": true
+    }
+  ],
+  "story_ideas": [
+    {
+      "title": "Bí Ẩn Chiếc Lá Cuối Cùng",
+      "logline": "Khi một nhà nghiên cứu phát hiện ra cách điều khiển chiếc lá, cô phải lựa chọn giữa việc cứu người mình yêu hay duy trì sự cân bằng của thế giới.",
+      "arc": "Hành trình từ việc tìm kiếm hy vọng sinh tồn đến việc đối mặt với sự thật tàn nhẫn về cái giá của sự sống.",
+      "selected": true
+    }
+  ],
+  "story_folders": [],
+  "updated_at": "2026-11-10T05:17:50.159Z"
+}
