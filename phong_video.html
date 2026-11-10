@@ -344,9 +344,8 @@ async function pushExportMetadata(allAudio,manifest){
  if(!window.GitHubManager?.getToken())throw new Error('Chưa có GitHub Token; không thể push SRT và AudioManifest.');
  const language=$('subtitle-source-language')?.value||'Vietnamese',srtName=safe+'_'+language+'.srt';
  const srt=buildSourceSubtitleFromTimeline(allAudio);
- const srtResult=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:base+'/PhuDe/'+srtName,content:srt,message:'Add source subtitles: '+srtName});
- const manifestResult=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:base+'/AudioManifest.json',content:JSON.stringify(manifest,null,2),message:'Add audio manifest: '+story});
- return {srtName,srtCommit:srtResult.commitSha,manifestCommit:manifestResult.commitSha};
+ const result=await GitHubManager.pushFiles({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',message:'Save video metadata: '+story,files:[{path:base+'/PhuDe/'+srtName,blob:new Blob([srt],{type:'text/plain;charset=utf-8'})},{path:base+'/AudioManifest.json',blob:new Blob([JSON.stringify(manifest,null,2)],{type:'application/json'})}]});
+ return {srtName,commitSha:result.commitSha,manifestPath:base+'/AudioManifest.json'};
 }
 
 function setTtsStatus(s){$('tts-status').textContent=s}
