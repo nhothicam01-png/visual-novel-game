@@ -1079,45 +1079,79 @@ async function seekVideoFrame(video,time){
 // Video nền/nhân vật là clip ngắn lặp vô hạn. Trước đây mỗi khung hình xuất ra đều seek lại video (chậm nhất).
 // Giờ mỗi khung của clip chỉ seek MỘT lần, lưu thành ImageBitmap, các vòng lặp sau lấy từ cache.
 const CLIP_CACHE_BUDGET=256*1024*1024;
-const clipFrameCache=new Map(); // video -> {fps,n,frames:Map,bytes,noCache}
-let clipCacheBytes=0;
+const CLIP_BLOB_CACHE_BUDGET=128*1024*1024;
+const clipFrameCache=new Map(); // video -> {fps,n,frames:Map,blobs:Map,bytes,blobBytes}
+let clipCacheBytes=0,clipBlobCacheBytes=0;
 function clipKeyOf(video,t,fps){
  const d=video.duration,src=((t%d)+d)%d;
  return Math.min(Math.round(src*fps),Math.ceil(d*fps));
 }
-function dropClipCache(video){
+function dropClipCache(video,keepBlobs=false){
  const c=clipFrameCache.get(video);if(!c)return;
  for(const b of c.frames.values())try{b.close()}catch(_){}
- clipCacheBytes-=c.bytes;clipFrameCache.delete(video);
+ clipCacheBytes-=c.bytes;
+ if(!keepBlobs){clipBlobCacheBytes-=c.blobBytes||0;c.blobs.clear()}
+ c.frames.clear();c.bytes=0;c.blobBytes=keepBlobs?(c.blobBytes||0):0;
+ if(!keepBlobs)clipFrameCache.delete(video);
 }
-function clearClipFrameCache(){for(const v of Array.from(clipFrameCache.keys()))dropClipCache(v);clipCacheBytes=0}
+function clearClipFrameCache(){
+ // Giữ bản nén WebP trong bộ nhớ để lần xuất sau không phải seek/giải mã lại clip.
+ for(const c of clipFrameCache.values()){
+  for(const b of c.frames.values())try{b.close()}catch(_){}
+  c.frames.clear();clipCacheBytes-=c.bytes;c.bytes=0;
+ }
+ clipCacheBytes=0;
+}
 function getClipEntry(video,fps){
  let c=clipFrameCache.get(video);
  if(c&&c.fps!==fps){dropClipCache(video);c=null}
  if(!c){
   const w=video.videoWidth||1,h=video.videoHeight||1,n=Math.ceil(video.duration*fps)+1;
-  c={fps,n,frames:new Map(),bytes:0,noCache:n*w*h*4>CLIP_CACHE_BUDGET};
+  c={fps,n,frames:new Map(),blobs:new Map(),bytes:0,blobBytes:0};
   clipFrameCache.set(video,c);
- }else{clipFrameCache.delete(video);clipFrameCache.set(video,c)} // LRU
+ }else{clipFrameCache.delete(video);clipFrameCache.set(video,c)}
  return c;
+}
+async function clipBlobFromBitmap(bitmap){
+ let surface=null;
+ try{
+  if(typeof OffscreenCanvas!=='undefined'){
+   surface=new OffscreenCanvas(bitmap.width,bitmap.height);
+   surface.getContext('2d',{alpha:false}).drawImage(bitmap,0,0);
+   return await surface.convertToBlob({type:'image/webp',quality:.78});
+  }
+  surface=document.createElement('canvas');surface.width=bitmap.width;surface.height=bitmap.height;
+  surface.getContext('2d',{alpha:false}).drawImage(bitmap,0,0);
+  return await new Promise(resolve=>surface.toBlob(resolve,'image/webp',.78));
+ }catch(_){return null}
 }
 function clipFrame(video,t,fps){
  if(!video||!Number.isFinite(video.duration)||video.duration<=0)return video;
  const c=getClipEntry(video,fps),k=clipKeyOf(video,t,fps),hit=c.frames.get(k);
  if(hit)return hit;
+ const packed=c.blobs.get(k);
+ if(packed){c.blobs.delete(k);c.blobs.set(k,packed);return createImageBitmap(packed)}
  return clipFrameSlow(video,c,k,t,fps);
 }
 async function clipFrameSlow(video,c,k,t,fps){
  await seekVideoFrame(video,Math.min(k/fps,video.duration-0.001));
- if(c.noCache)return video;
- const bmp=await createImageBitmap(video),size=bmp.width*bmp.height*4;
- // Vượt ngân sách bộ nhớ: bỏ cache của các clip dùng lâu nhất.
- while(clipCacheBytes+size>CLIP_CACHE_BUDGET){
-  const oldest=clipFrameCache.keys().next().value;
-  if(oldest===undefined||oldest===video)break;
-  dropClipCache(oldest);
+ const bmp=await createImageBitmap(video);
+ // Lưu frame dạng WebP nén: clip 10–20 giây không còn bị bỏ cache chỉ vì vượt 256 MB RAM.
+ const packed=await clipBlobFromBitmap(bmp);
+ if(packed&&packed.size<=CLIP_BLOB_CACHE_BUDGET){
+  while(clipBlobCacheBytes+packed.size>CLIP_BLOB_CACHE_BUDGET){
+   let oldestVideo=null,oldestKey=null;
+   for(const [v,entry] of clipFrameCache){
+    if(entry.blobs.size){oldestVideo=v;oldestKey=entry.blobs.keys().next().value;break}
+   }
+   if(!oldestVideo)break;
+   const old=clipFrameCache.get(oldestVideo),oldBlob=old.blobs.get(oldestKey);
+   old.blobs.delete(oldestKey);old.blobBytes-=oldBlob.size;clipBlobCacheBytes-=oldBlob.size;
+  }
+  if(clipBlobCacheBytes+packed.size<=CLIP_BLOB_CACHE_BUDGET){
+   c.blobs.set(k,packed);c.blobBytes+=packed.size;clipBlobCacheBytes+=packed.size;
+  }
  }
- c.frames.set(k,bmp);c.bytes+=size;clipCacheBytes+=size;
  return bmp;
 }
 // Nhường luồng chính cho UI mà không bị trình duyệt giãn thời gian khi tab ẩn (setTimeout bị throttle, MessageChannel thì không).
