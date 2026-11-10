@@ -58,7 +58,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .check{display:flex;align-items:center;gap:7px;font-size:.78rem;color:#cbd5e1}
 .check input{accent-color:#a855f7}
 #progress{height:8px;background:#334155;border-radius:20px;overflow:hidden}
-#progress-fill{height:100%;width:0;background:linear-gradient(90deg,#6366f1,#c084fc)}
+
 #game-container.portrait #preview-canvas{object-fit:contain}
 @media(max-width:600px){body{padding:8px}.panel{padding:10px}.grid{grid-template-columns:1fr 1fr}.field{font-size:.74rem}.btn{padding:8px 10px;font-size:.76rem}}
 
@@ -107,8 +107,8 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 @media(max-width:600px){#site-navigation{gap:6px;padding:8px}#site-navigation .nav-link{flex:1 1 calc(50% - 6px);padding:8px 6px;font-size:.76rem}}
 .browser-tts-control{display:none!important}
 
-/* Compact dialogue editor; keep legacy TTS state controls hidden but functional. */
-.line-audio-github-select{width:100%;min-height:42px;padding:8px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:8px}.audio-picker-panel{gap:0}.audio-picker-row{display:flex;flex-direction:column;gap:8px;padding:12px;border-bottom:1px solid #ffffff18}.audio-picker-row:last-of-type{border-bottom:0}.audio-picker-copy{display:flex;flex-direction:column;gap:3px;min-width:0}.audio-picker-copy strong{font-size:.82rem;color:#e2e8f0}.audio-picker-copy span{font-size:.72rem;color:#94a3b8;overflow-wrap:anywhere}.audio-picker-actions{gap:6px}.audio-picker-actions .btn{padding:7px 9px;font-size:.72rem}.audio-picker-overlay{position:fixed;inset:0;z-index:1000;background:#020617ef;display:flex;align-items:center;justify-content:center;padding:16px}.audio-picker-overlay[hidden]{display:none}.audio-picker-dialog{width:min(100%,440px);padding:16px;background:#111c30;border:1px solid #a855f766;border-radius:12px;display:flex;flex-direction:column;gap:12px}.audio-picker-dialog h3{font-size:.95rem;color:#c4b5fd}.audio-picker-dialog select{width:100%;min-height:42px;padding:8px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:8px}.audio-picker-dialog .note{overflow-wrap:anywhere}
+/* Compact dialogue editor and per-line audio pickers. */
+.line-audio-github-select{width:100%;min-height:42px;padding:8px;color:#fff;background:#1e293b;border:1px solid #475569;border-radius:8px}.audio-picker-panel{gap:0}.audio-picker-row{display:flex;flex-direction:column;gap:8px;padding:12px;border-bottom:1px solid #ffffff18}.audio-picker-row:last-of-type{border-bottom:0}.audio-picker-copy{display:flex;flex-direction:column;gap:3px;min-width:0}.audio-picker-copy strong{font-size:.82rem;color:#e2e8f0}.audio-picker-copy span{font-size:.72rem;color:#94a3b8;overflow-wrap:anywhere}.audio-picker-actions{gap:6px}.audio-picker-actions .btn{padding:7px 9px;font-size:.72rem}
 @media(max-width:600px){.audio-picker-actions .btn{flex:1 1 calc(50% - 6px)}.audio-picker-row{padding:10px}}
 </style>
 <script src="./github-progress.js"></script></head>
@@ -1660,7 +1660,7 @@ async function refreshLineAudioGitHubList(kind){
 }
 function applyPickedAudio(kind,fileName){
  $('line-'+kind+'-file').value=fileName||'';$('line-'+kind+'-mode').value=fileName?'override':'off';
- saveCurrentLine();updateLineAudioPickerLabels();closeAudioPicker();renderLineList();
+ saveCurrentLine();updateLineAudioPickerLabels();renderLineList();
 }
 async function uploadLineAudio(kind,file){
  if(!file)return;const button=$('upload-line-'+kind);
@@ -1692,8 +1692,6 @@ $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
 $('ratio-toggle').addEventListener('click',toggleAspectRatio);
 $('ratio-toggle-settings')?.addEventListener('click',toggleAspectRatio);
-$('stop-scene').addEventListener('click',stopAndResetPreview);
-
 $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
 document.addEventListener('fullscreenchange',()=>{$('toggle-fullscreen').textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
 document.addEventListener('webkitfullscreenchange',()=>{$('toggle-fullscreen').textContent=(document.fullscreenElement||document.webkitFullscreenElement)?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';});
@@ -1809,14 +1807,12 @@ function getCurrentScene(){return scenes[activeSceneIndex]}
 function getCurrentLine(){return getCurrentScene()?.lines[activeLineIndex]||null}
 function saveCurrentLine(){
  const line=getCurrentLine();if(!line)return;
- const oldKey=line.cacheKey;
  line.speaker=$('speaker').value.trim()||'Nhân vật';
  line.text=$('dialogue').value;
  line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
  line.audioOverride={bgm:{mode:$('line-bgm-mode').value,file:$('line-bgm-file').value.trim()},sfx:{mode:$('line-sfx-mode').value,file:$('line-sfx-file').value.trim()}};
- if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
 }
 function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual();const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
