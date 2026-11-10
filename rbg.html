@@ -79,13 +79,13 @@ main{max-width:1400px;margin:22px auto;padding:0 16px 40px}.panel{background:lin
     </div>
 
     <div class="group">
-      <h3>7 · Nhân vật & tải PNG lên GitHub</h3>
-      <p class="hint">Chọn nhân vật có sẵn hoặc nhập tên để tạo thư mục mới. PNG Sequence sẽ được tải thành từng ảnh vào assets/NhanVat/{tên nhân vật}/.</p>
+      <h3>7 · Nhân vật & tải WebM lên GitHub</h3>
+      <p class="hint">Chọn nhân vật có sẵn hoặc nhập tên mới. Chỉ tải một file WebM đã tách nền vào assets/NhanVat/{tên nhân vật}/ (không tải PNG Sequence).</p>
       <div class="field"><label>Nhân vật đã có trên GitHub</label><select id="githubCharacterSelect"><option value="">Đang tải danh sách nhân vật…</option></select></div>
       <div class="actions"><button id="refreshCharactersBtn" type="button">↻ Tải lại nhân vật</button></div>
       <div class="field"><label>Tên nhân vật mới (không bắt buộc)</label><input id="newCharacterName" type="text" maxlength="60" placeholder="Ví dụ: Aki hoặc Yui"></div>
-      <button id="pushSequenceGitHubBtn" class="primary" type="button">⬆ Xử lý & push PNG Sequence lên GitHub</button>
-      <p class="hint" id="githubUploadStatus">Cần kết nối token tại GitHub Manager trước. Ảnh được commit thành một commit cho cả chuỗi.</p>
+      <button id="pushWebmGitHubBtn" class="primary" type="button">⬆ Xuất WebM & push lên GitHub</button>
+      <p class="hint" id="githubUploadStatus">Cần kết nối token tại GitHub Manager trước. Mỗi lần tải lên sẽ tạo một file .webm trong thư mục nhân vật.</p>
     </div>
     <div class="group"><div class="hint" id="engineStatus">Đang chờ video…</div><div class="status"><span id="fps">0 FPS</span><span id="progress">0%</span></div></div>
   </aside>
@@ -350,8 +350,8 @@ async function loadGitHubCharacters(){
 }
 $('refreshCharactersBtn').onclick=loadGitHubCharacters;
 loadGitHubCharacters();
-$('pushSequenceGitHubBtn').onclick=async()=>{
- const button=$('pushSequenceGitHubBtn'),status=$('githubUploadStatus');
+$('pushWebmGitHubBtn').onclick=async()=>{
+ const button=$('pushWebmGitHubBtn'),status=$('githubUploadStatus');
  if(!video.duration||!video.videoWidth||!out.width){status.textContent='Hãy chọn video trước.';return}
  if(!window.GitHubManager?.getToken()){status.textContent='Chưa có GitHub Token. Hãy kết nối tại GitHub Manager.';return}
  const typed=$('newCharacterName').value.trim(),selected=$('githubCharacterSelect').value;
@@ -359,32 +359,48 @@ $('pushSequenceGitHubBtn').onclick=async()=>{
  if(!character){status.textContent='Hãy chọn nhân vật hoặc nhập tên nhân vật mới.';return}
  if(character.length>60){status.textContent='Tên nhân vật tối đa 60 ký tự.';return}
  if(processing||recording){status.textContent='Đang có tác vụ xử lý. Hãy đợi hoàn tất.';return}
- const rg=rangeFrames(),sampleFps=refFps(),step=1/sampleFps,total=Math.max(1,rg.end-rg.start+1),oldTime=video.currentTime,wasPlaying=!video.paused;
- if(total>1200&&!confirm('Chuỗi có '+total+' ảnh. Push nhiều file có thể mất thời gian và dùng nhiều lượt API. Bạn vẫn muốn tiếp tục?'))return;
- if(!confirm('Xử lý '+total+' ảnh PNG rồi commit vào assets/NhanVat/'+character+'/? Nếu thư mục đã có ảnh trùng tên frame, các ảnh đó sẽ được cập nhật.'))return;
- const files=[];
- button.disabled=true;$('sequenceBtn').disabled=true;$('webmBtn').disabled=true;$('startBtn').disabled=true;
+ if(!('VideoEncoder' in window)||!('VideoFrame' in window)){status.textContent='Trình duyệt chưa hỗ trợ WebCodecs. Hãy mở bằng Chrome mới.';return}
+ const rg=rangeFrames(),sampleFps=refFps(),total=Math.max(1,rg.end-rg.start+1),clipDuration=total/sampleFps;
+ const oldTime=video.currentTime,wasPlaying=!video.paused;
+ const filename=character+'-'+sampleFps+'fps-'+Date.now()+'.webm';
+ const path='assets/NhanVat/'+character+'/'+filename;
+ if(!confirm('Xuất một file WebM '+sampleFps+' FPS ('+clipDuration.toFixed(2)+' giây) rồi tải lên '+path+'? Không tải PNG Sequence.'))return;
+ let media=null,output=null,videoSource=null;
+ button.disabled=true;$('webmBtn').disabled=true;$('sequenceBtn').disabled=true;$('startBtn').disabled=true;$('stopBtn').disabled=false;
+ recording=true;
  try{
-  video.pause();
+  video.pause();await seekToTime(rg.startTime);
   if($('mode').value==='toonout')await loadToonout();else if(['ai','hybrid'].includes($('mode').value))await initAI();
+  status.textContent='Đang nạp bộ mã hóa WebM…';
+  media=await import('https://esm.sh/mediabunny');
+  const {Output,BufferTarget,CanvasSource,WebMOutputFormat,Quality}=media;
+  const target=new BufferTarget();
+  output=new Output({format:new WebMOutputFormat(),target});
+  videoSource=new CanvasSource(out,{codec:'vp9',quality:new Quality('high'),alpha:'keep'});
+  output.addVideoTrack(videoSource,{frameRate:sampleFps});
+  await output.start();
   for(let n=0;n<total;n++){
-   const t=Math.min(rg.startTime+n*step,Math.max(rg.startTime,rg.endTime-0.001));
+   const offset=n/sampleFps;
+   const t=Math.min(rg.startTime+offset,Math.max(rg.startTime,rg.endTime-0.001));
    await seekToTime(t);await processCurrentFrame();
-   const blob=await new Promise((resolve,reject)=>out.toBlob(b=>b?resolve(b):reject(new Error('Canvas không tạo được PNG')),'image/png'));
-   files.push({path:'assets/NhanVat/'+character+'/frame_'+String(n+1).padStart(6,'0')+'.png',blob});
+   await videoSource.add(offset,1/sampleFps);
    $('progress').textContent=Math.round((n+1)/total*100)+'%';
-   if(n%3===0){status.textContent='Đang xử lý PNG '+(n+1)+'/'+total+' · '+sampleFps+' FPS';setStatus('Đang chuẩn bị ảnh để push GitHub…');await new Promise(r=>setTimeout(r,0))}
+   if(n%3===0){status.textContent='Đang tạo WebM: '+(n+1)+'/'+total+' frame · '+sampleFps+' FPS';await new Promise(r=>setTimeout(r,0))}
   }
-  const info='Character: '+character+'\nFPS: '+sampleFps+' frame/second\nFrames: '+total+'\nStart frame: '+rg.start+'\nEnd frame: '+rg.end+'\nDuration: '+(total/sampleFps).toFixed(3)+' seconds\nTransparent PNG sequence.';
-  files.push({path:'assets/NhanVat/'+character+'/sequence_info.txt',blob:new Blob([info],{type:'text/plain;charset=utf-8'})});
-  status.textContent='Đã xử lý xong '+total+' ảnh. Đang commit một lần lên GitHub…';
-  const result=await GitHubManager.pushFiles({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',files,message:'Upload character PNG sequence: '+character+' ('+total+' frames)'});
-  status.innerHTML='Đã push thành công '+total+' ảnh vào <strong>assets/NhanVat/'+character+'/</strong>. <a target="_blank" rel="noopener" href="'+result.htmlUrl+'">Xem commit GitHub</a>';
-  setStatus('Push PNG Sequence của '+character+' thành công.');
+  await output.finalize();
+  const buffer=target.buffer;
+  if(!buffer)throw new Error('Không tạo được file WebM.');
+  const blob=new Blob([buffer],{type:'video/webm'});
+  if(blob.size>90*1024*1024)throw new Error('File WebM lớn hơn giới hạn 90 MB mỗi file của công cụ tải lên. Hãy giảm độ dài đoạn hoặc FPS.');
+  status.textContent='Đã tạo WebM ('+(blob.size/1024/1024).toFixed(2)+' MB). Đang tải lên GitHub…';
+  const result=await GitHubManager.pushFiles({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',files:[{path,blob}],message:'Upload character WebM: '+character+' ('+sampleFps+' FPS)'});
+  status.innerHTML='Đã push WebM thành công vào <strong>'+path+'</strong>. <a target="_blank" rel="noopener" href="'+result.htmlUrl+'">Xem commit GitHub</a>';
+  setStatus('Đã tải WebM của '+character+' lên GitHub thành công.');
   if(typed)await loadGitHubCharacters();
- }catch(e){status.textContent='Push thất bại: '+(e.message||String(e));setStatus('Không thể push PNG lên GitHub.')}
+ }catch(e){status.textContent='Xuất hoặc push WebM thất bại: '+(e.message||String(e));setStatus('Không thể tải WebM lên GitHub.')}
  finally{
-  button.disabled=false;$('sequenceBtn').disabled=false;$('webmBtn').disabled=false;$('startBtn').disabled=false;
+  try{if(videoSource)videoSource.close()}catch(_){}
+  recording=false;button.disabled=false;$('webmBtn').disabled=false;$('sequenceBtn').disabled=false;$('startBtn').disabled=false;$('stopBtn').disabled=true;
   try{await seekToTime(Math.min(oldTime,video.duration));await renderStill();if(wasPlaying)video.play()}catch(_){}
  }
 };
