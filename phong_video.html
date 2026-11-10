@@ -1055,17 +1055,20 @@ function makeGain(ac,value,dest){const g=ac.createGain();g.gain.value=value;g.co
 async function seekVideoFrame(video,time){
  if(!video||!Number.isFinite(video.duration)||video.duration<=0)return;
  const target=Math.max(0,Math.min(video.duration-0.04,((time%video.duration)+video.duration)%video.duration));
- if(Math.abs(video.currentTime-target)<0.015&&video.readyState>=2)return;
  const waitEvent=(names,timeout=15000)=>new Promise((resolve,reject)=>{
   let done=false;const clean=()=>{clearTimeout(timer);names.forEach(n=>video.removeEventListener(n,onEvent))};
-  const onEvent=e=>{if(done)return;if(e.type==='error'){done=true;clean();reject(new Error('Trình duyệt không giải mã được video nguồn.'));return}if(video.readyState>=2||e.type==='seeked'){done=true;clean();resolve()}};
+  const onEvent=e=>{if(done)return;if(e.type==='error'){done=true;clean();reject(new Error('Trình duyệt không giải mã được video nguồn.'));return}done=true;clean();resolve()};
   const timer=setTimeout(()=>{if(done)return;done=true;clean();reject(new Error('Hết thời gian chờ giải mã khung hình tại '+target.toFixed(2)+'s'))},timeout);
-  names.forEach(n=>video.addEventListener(n,onEvent));if(video.readyState>=2){done=true;clean();resolve()}
+  names.forEach(n=>video.addEventListener(n,onEvent));
  });
  try{
-  const seeked=waitEvent(['seeked','error']);video.currentTime=target;await seeked;
-  if(video.readyState<2)await waitEvent(['loadeddata','canplay','error'],8000);
-  if(typeof video.requestVideoFrameCallback==='function')await new Promise((resolve,reject)=>{let done=false;const timer=setTimeout(()=>{if(done)return;done=true;reject(new Error('Video chưa cung cấp khung hình đã giải mã tại '+target.toFixed(2)+'s'))},5000);video.requestVideoFrameCallback(()=>{if(done)return;done=true;clearTimeout(timer);resolve()})});
+  if(Math.abs(video.currentTime-target)<0.015){
+   if(video.readyState<2)await waitEvent(['loadeddata','canplay','error'],8000);
+  }else{
+   const seeked=waitEvent(['seeked','error']);video.currentTime=target;await seeked;
+   if(video.readyState<2)await waitEvent(['loadeddata','canplay','error'],8000);
+  }
+  if(typeof video.requestVideoFrameCallback==='function')await new Promise(resolve=>{let done=false;const timer=setTimeout(()=>{if(done)return;done=true;resolve()},1500);video.requestVideoFrameCallback(()=>{if(done)return;done=true;clearTimeout(timer);resolve()})});
  }catch(err){throw new Error('Không thể lấy khung hình video tại '+target.toFixed(2)+'s: '+(err.message||err))}
 }
 // ===== [TỐI ƯU] Cache khung hình của video nền/nhân vật =====
@@ -1138,7 +1141,7 @@ async function exportVideo(){
     setTaskProgress('Đang chuẩn bị WAV · Cảnh '+(si+1)+' · Thoại '+(li+1)+'/'+scene.lines.length);
     const pre=edgePrefetched.get(line),blob=pre?pre.blob:await ensureTtsReady();
     const entry={line,blob,gain:pre?pre.gain:(line.gain??1),sceneIndex:si,duration:0,start:totalDuration,pause:Math.max(0,Number(line.pauseAfter??.3))};
-    prepared[si].lines.push(entry);allAudio.push(entry);
+    pack.lines.push(entry);allAudio.push(entry);
     // Decode duration before assigning the next line's timeline position.
     const decoded=await audioContext.decodeAudioData(await blob.arrayBuffer());
     entry.buffer=decoded;entry.duration=decoded.duration;entry.start=totalDuration;
