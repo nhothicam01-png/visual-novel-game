@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#090d19">
+<title>Gemini Đi · Visual Novel Studio</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:12px;background:#070b16;color:#f8fafc;font-family:Segoe UI,Arial,sans-serif;display:flex;flex-direction:column;align-items:center;gap:12px}
+main{width:100%;max-width:1000px}.nav,.panel{background:#111c30;border:1px solid #334155;border-radius:12px;padding:13px;margin-bottom:12px}.nav{display:flex;gap:8px;flex-wrap:wrap}.nav a{color:#e9d5ff;background:#263449;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:13px}.nav a.current{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
+h1{font-size:24px;color:#c4b5fd;margin:8px 0}h2{font-size:16px;color:#c4b5fd;margin:0 0 12px}p,.note{font-size:13px;line-height:1.55;color:#aab8cc}
+.field{display:flex;flex-direction:column;gap:6px;margin:10px 0;color:#cbd5e1;font-size:13px;min-width:0}.field input,.field select,.field textarea{width:100%;min-height:42px;padding:10px;color:#fff;background:#0b1425;border:1px solid #475569;border-radius:8px;font:inherit}.field textarea{min-height:125px;resize:vertical;line-height:1.5}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.btn{border:0;border-radius:8px;padding:10px 14px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-weight:700;cursor:pointer}.btn.secondary{background:#263449;border:1px solid #64748b}.btn.danger{background:#9f1239}.btn:disabled{opacity:.5;cursor:wait}.status{font-size:13px;line-height:1.5;min-height:20px;color:#a5f3fc;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px}.success{color:#86efac}.warning{padding:10px;border:1px solid #92400e;background:#42200655;border-radius:8px;color:#fde68a;font-size:12px;line-height:1.5}.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.tab{background:#263449;border:1px solid #475569;color:#e2e8f0;border-radius:8px;padding:10px 13px;cursor:pointer;font-weight:650}.tab.active{background:linear-gradient(135deg,#6366f1,#a855f7);border-color:transparent;color:#fff}.pane[hidden]{display:none!important}.result{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6;color:#e2e8f0;background:#0b1425;border:1px solid #334155;border-radius:9px;padding:12px;min-height:54px;margin-top:10px}.result:empty{display:none}.image-result{display:block;max-width:100%;height:auto;max-height:75vh;object-fit:contain;border-radius:10px;margin-top:12px;border:1px solid #475569;background:#0b1425}.chat-log{display:flex;flex-direction:column;gap:10px;margin:12px 0}.bubble{white-space:pre-wrap;overflow-wrap:anywhere;padding:11px 13px;border-radius:10px;line-height:1.5;font-size:13px;max-width:95%}.bubble.user{align-self:flex-end;background:#312e81}.bubble.ai{align-self:flex-start;background:#1e293b;border:1px solid #475569}.small{font-size:11px;color:#94a3b8}
+@media(max-width:600px){body{padding:8px}.grid{grid-template-columns:1fr}.panel{padding:11px}.btn{padding:9px 11px;font-size:12px}.nav{gap:6px}.nav a{flex:1 1 calc(50% - 6px);text-align:center;padding:8px 5px}}
+</style>
+</head>
+<body><main>
+<nav class="nav" aria-label="Điều hướng chính">
+<a href="./index.html">🏠 Trang chủ</a><a href="./thunghiem.html">🧪 Trang thử nghiệm</a><a href="./rbg.html">🎬 Xóa phông video</a><a href="./tao_giong.html">🎙️ Phòng tạo giọng</a><a href="./tao_phu_de.html">🌐 Tạo phụ đề & lồng tiếng</a><a href="./github_manager.html">⬆ GitHub Manager</a><a class="current" href="./gemini.html" aria-current="page">✨ Gemini Đi</a>
+</nav>
+<h1>✨ Gemini Đi</h1>
+<p>Khu vực thử nhanh Gemini API: kiểm tra kết nối, dịch văn bản, hỏi đáp nhiều lượt và tạo ảnh. API key được lưu riêng trong trình duyệt, không ghi vào GitHub.</p>
+<section class="panel">
+<h2>🔑 Cấu hình Gemini API</h2>
+<label class="field">Gemini API Key<input id="api-key" type="password" autocomplete="off" placeholder="Dán API key từ Google AI Studio"></label>
+<div class="row"><button class="btn" id="save-key">Lưu key trên thiết bị</button><button class="btn secondary" id="toggle-key">Hiện / Ẩn</button><button class="btn danger" id="delete-key">Xóa key</button><button class="btn secondary" id="test-key">🧪 Kiểm tra Gemini</button></div>
+<div class="status" id="key-status">Chưa kiểm tra kết nối.</div>
+<div class="warning">Lưu ý bảo mật: key được lưu trong localStorage của trình duyệt trên cùng tên miền GitHub Pages để tiện dùng lại. JavaScript trên website này có thể đọc key. Chỉ dùng key cá nhân, không dùng trên thiết bị công cộng; có thể xóa key bất cứ lúc nào. Không gửi key vào GitHub hoặc cho người khác.</div>
+</section>
+<section class="panel">
+<div class="tabs" role="tablist">
+<button class="tab active" data-tab="translate" type="button">🌍 Dịch</button><button class="tab" data-tab="chat" type="button">💬 Hỏi đáp</button><button class="tab" data-tab="image" type="button">🎨 Tạo ảnh</button>
+</div>
+<div class="pane" id="pane-translate">
+<h2>🌍 Dịch văn bản</h2>
+<div class="grid"><label class="field">Ngôn ngữ nguồn<select id="from-lang"><option value="auto">Tự nhận diện</option><option value="Vietnamese">Tiếng Việt</option><option value="English">English</option><option value="Japanese">日本語</option><option value="Korean">한국어</option><option value="Chinese">中文</option><option value="French">Français</option><option value="Spanish">Español</option><option value="German">Deutsch</option><option value="Indonesian">Bahasa Indonesia</option></select></label><label class="field">Ngôn ngữ đích<select id="to-lang"><option>English</option><option>Vietnamese</option><option>Japanese</option><option>Korean</option><option>Chinese</option><option>French</option><option>Spanish</option><option>German</option><option>Indonesian</option><option>Thai</option></select></label></div>
+<label class="field">Văn bản cần dịch<textarea id="translate-input" placeholder="Nhập hoặc dán nội dung cần dịch..."></textarea></label>
+<div class="row"><button class="btn" id="translate-btn">Dịch bằng Gemini</button><button class="btn secondary" id="copy-translation">Sao chép bản dịch</button><button class="btn secondary" id="clear-translation">Xóa</button></div>
+<div class="result" id="translate-output"></div><div class="status" id="translate-status"></div>
+</div>
+<div class="pane" id="pane-chat" hidden>
+<h2>💬 Hỏi đáp với Gemini</h2>
+<label class="field">Mô hình chat<select id="chat-model"><option value="gemini-2.5-flash">Gemini 2.5 Flash</option><option value="gemini-2.5-flash-lite">Gemini 2.5 Flash-Lite</option><option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite</option></select></label>
+<div class="chat-log" id="chat-log"><div class="note">Bắt đầu cuộc trò chuyện bằng cách nhập câu hỏi bên dưới.</div></div>
+<label class="field">Tin nhắn<textarea id="chat-input" rows="3" placeholder="Bạn muốn hỏi Gemini điều gì?"></textarea></label>
+<div class="row"><button class="btn" id="send-chat">Gửi câu hỏi</button><button class="btn secondary" id="reset-chat">Cuộc trò chuyện mới</button></div><div class="status" id="chat-status"></div>
+</div>
+<div class="pane" id="pane-image" hidden>
+<h2>🎨 Tạo ảnh bằng Gemini</h2>
+<p class="note">Dùng mô hình Gemini Image (Nano Banana). Có thể chọn tỉ lệ và độ phân giải trước khi tạo ảnh.</p>
+<label class="field">Mô hình tạo ảnh<select id="image-model"><option value="gemini-3.1-flash-image">Gemini 3.1 Flash Image</option><option value="gemini-2.5-flash-image">Gemini 2.5 Flash Image</option><option value="gemini-3-pro-image">Gemini 3 Pro Image</option></select></label>
+<div class="grid"><label class="field">Tỉ lệ khung hình<select id="image-ratio"><option>1:1</option><option>9:16</option><option>16:9</option><option>4:3</option><option>3:4</option><option>3:2</option><option>2:3</option><option>4:5</option><option>5:4</option><option>21:9</option></select></label><label class="field">Độ phân giải<select id="image-size"><option>1K</option><option>512</option><option>2K</option><option>4K</option></select></label></div>
+<label class="field">Mô tả hình ảnh<textarea id="image-prompt" placeholder="Ví dụ: A cute original 3D chibi boy character in a pastel garden, soft cinematic lighting..."></textarea></label>
+<div class="row"><button class="btn" id="generate-image">✨ Tạo ảnh</button><button class="btn secondary" id="download-image" disabled>⬇ Tải ảnh</button></div>
+<div class="status" id="image-status"></div><div id="image-description" class="result"></div><img id="generated-image" class="image-result" alt="Ảnh Gemini tạo ra" hidden>
+</div>
+</section>
+<p class="small">Các yêu cầu được gửi trực tiếp từ trình duyệt tới Google Gemini API. Tính khả dụng, giới hạn và chi phí phụ thuộc model, khu vực và gói API của Google.</p>
+</main>
+<script>
+const $=id=>document.getElementById(id),KEY_NAME='subtitleGeminiApiKey';
+function key(){return String($('api-key').value||localStorage.getItem(KEY_NAME)||'').trim()}
+function setStatus(id,msg,ok=false){$(id).textContent=msg;$(id).className='status'+(ok?' success':'')}
+function apiError(data,status){const msg=data?.error?.message||data?.promptFeedback?.blockReason||('HTTP '+status);return new Error(msg)}
+async function gemini(model,contents,generationConfig={}){const k=key();if(!k)throw Error('Bạn chưa nhập Gemini API Key.');const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':k},body:JSON.stringify({contents,generationConfig})});const d=await r.json().catch(()=>({}));if(!r.ok)throw apiError(d,r.status);return d}
+function responseText(d){return (d.candidates||[]).flatMap(c=>c.content?.parts||[]).filter(p=>p.text&&!p.thought).map(p=>p.text).join('\n').trim()}
+function activateTab(name){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));document.querySelectorAll('.pane').forEach(p=>p.hidden=p.id!=='pane-'+name)}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>activateTab(b.dataset.tab)));
+$('api-key').value=localStorage.getItem(KEY_NAME)||'';
+$('api-key').addEventListener('change',()=>{if($('api-key').value.trim())localStorage.setItem(KEY_NAME,$('api-key').value.trim())});
+$('save-key').onclick=()=>{const k=$('api-key').value.trim();if(!k){setStatus('key-status','Hãy nhập API key trước.');return}localStorage.setItem(KEY_NAME,k);setStatus('key-status','Đã lưu key trên trình duyệt này. Key không được commit lên GitHub.',true)};
+$('toggle-key').onclick=()=>$('api-key').type=$('api-key').type==='password'?'text':'password';
+$('delete-key').onclick=()=>{localStorage.removeItem(KEY_NAME);$('api-key').value='';setStatus('key-status','Đã xóa key khỏi trình duyệt này.')};
+$('test-key').onclick=async()=>{const b=$('test-key');b.disabled=true;setStatus('key-status','Đang gửi yêu cầu kiểm tra tới Gemini…');try{const d=await gemini('gemini-2.5-flash-lite',[{role:'user',parts:[{text:'Reply with exactly: GEMINI_OK'}]}],{maxOutputTokens:20,temperature:0});const t=responseText(d);if(!t)throw Error('API phản hồi nhưng không có nội dung.');setStatus('key-status','Kết nối thành công! Gemini trả lời: '+t,true)}catch(e){setStatus('key-status','Kiểm tra thất bại: '+e.message)}finally{b.disabled=false}};
+$('translate-btn').onclick=async()=>{const input=$('translate-input').value.trim();if(!input){setStatus('translate-status','Hãy nhập văn bản cần dịch.');return}const b=$('translate-btn');b.disabled=true;setStatus('translate-status','Gemini đang dịch…');$('translate-output').textContent='';try{const from=$('from-lang').value,to=$('to-lang').value;const prompt='Translate the following text into '+to+'. Source language: '+(from==='auto'?'detect automatically':from)+'. Preserve the exact meaning, names, tone, formatting and paragraph breaks. Do not add explanations. Return only the translation.\n\nTEXT:\n'+input;const d=await gemini('gemini-2.5-flash-lite',[{role:'user',parts:[{text:prompt}]}],{temperature:0.2});const out=responseText(d);if(!out)throw Error('Gemini không trả về bản dịch.');$('translate-output').textContent=out;setStatus('translate-status','Dịch xong.',true)}catch(e){setStatus('translate-status','Lỗi dịch: '+e.message)}finally{b.disabled=false}};
+$('copy-translation').onclick=async()=>{const t=$('translate-output').textContent;if(!t){setStatus('translate-status','Chưa có bản dịch để sao chép.');return}try{await navigator.clipboard.writeText(t);setStatus('translate-status','Đã sao chép bản dịch.',true)}catch(e){setStatus('translate-status','Trình duyệt không cho phép sao chép tự động.')}};
+$('clear-translation').onclick=()=>{$('translate-input').value='';$('translate-output').textContent='';setStatus('translate-status','')};
+let history=[];
+function renderChat(){const host=$('chat-log');host.innerHTML='';if(!history.length){host.innerHTML='<div class="note">Bắt đầu cuộc trò chuyện bằng cách nhập câu hỏi bên dưới.</div>';return}history.forEach(m=>{const el=document.createElement('div');el.className='bubble '+(m.role==='user'?'user':'ai');el.textContent=m.parts.map(p=>p.text||'').join('');host.append(el)});host.scrollTop=host.scrollHeight}
+$('send-chat').onclick=async()=>{const text=$('chat-input').value.trim();if(!text)return;const b=$('send-chat');history.push({role:'user',parts:[{text}]});$('chat-input').value='';renderChat();b.disabled=true;setStatus('chat-status','Gemini đang suy nghĩ…');try{const d=await gemini($('chat-model').value,history,{temperature:.7});const answer=responseText(d);if(!answer)throw Error('Gemini không trả về nội dung.');history.push({role:'model',parts:[{text:answer}]});renderChat();setStatus('chat-status','Đã nhận phản hồi.',true)}catch(e){history.pop();renderChat();setStatus('chat-status','Lỗi hỏi đáp: '+e.message)}finally{b.disabled=false}};
+$('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('send-chat').click()}});
+$('reset-chat').onclick=()=>{history=[];renderChat();setStatus('chat-status','Đã bắt đầu cuộc trò chuyện mới.')};
+let imageUrl='';
+$('generate-image').onclick=async()=>{const prompt=$('image-prompt').value.trim();if(!prompt){setStatus('image-status','Hãy nhập mô tả ảnh.');return}const b=$('generate-image');b.disabled=true;$('generated-image').hidden=true;$('image-description').textContent='';$('download-image').disabled=true;setStatus('image-status','Gemini đang tạo ảnh. Quá trình có thể mất một lúc…');try{const model=$('image-model').value,ratio=$('image-ratio').value,size=$('image-size').value;const d=await gemini(model,[{role:'user',parts:[{text:prompt}]}],{responseModalities:['TEXT','IMAGE'],responseFormat:{image:{aspectRatio:ratio,imageSize:size}}});const parts=(d.candidates||[]).flatMap(c=>c.content?.parts||[]);const img=parts.find(p=>p.inlineData?.data);const desc=parts.filter(p=>p.text&&!p.thought).map(p=>p.text).join('\n');if(desc)$('image-description').textContent=desc;if(!img)throw Error(desc||'Gemini không trả về dữ liệu ảnh. Model có thể không hỗ trợ tạo ảnh hoặc bị giới hạn quyền truy cập.');const mime=img.inlineData.mimeType||'image/png';const bytes=Uint8Array.from(atob(img.inlineData.data),c=>c.charCodeAt(0));const blob=new Blob([bytes],{type:mime});imageUrl=URL.createObjectURL(blob);$('generated-image').src=imageUrl;$('generated-image').hidden=false;$('download-image').disabled=false;setStatus('image-status','Tạo ảnh thành công. Bạn có thể tải ảnh về máy.',true)}catch(e){setStatus('image-status','Tạo ảnh thất bại: '+e.message)}finally{b.disabled=false}};
+$('download-image').onclick=()=>{if(!imageUrl)return;const a=document.createElement('a');a.href=imageUrl;a.download='gemini-image-'+Date.now()+'.png';document.body.appendChild(a);a.click();a.remove()};
+</script></body></html>
