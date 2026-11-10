@@ -250,7 +250,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <details class="panel main-panel"><summary class="panel-heading">5. Xem trước & xuất video</summary>
 <div class="grid">
 <label class="field">FPS
-<select id="fps"><option value="24">24 FPS</option><option value="30" selected>30 FPS</option><option value="60">60 FPS</option></select></label>
+<select id="fps"><option value="24">24 FPS</option><option value="30">30 FPS</option><option value="60" selected>60 FPS</option></select></label>
 <label class="field">Chất lượng xuất
 <select id="export-quality"><option value="720" selected>⚡ Nhanh · 720p</option><option value="1080">Chuẩn · 1080p (chậm hơn ~2×)</option></select></label>
 <label class="field">Ngôn ngữ gốc của thoại
@@ -574,12 +574,11 @@ function getCachedDialogueLayer(w,h){
  if(!raf) return;
  // [TỐI ƯU] Đang xuất video thì không vẽ preview để khỏi tranh CPU/GPU và không đụng vào video đang seek.
  if(recording){raf=requestAnimationFrame(animate);return}
-  // Khi ghi trực tiếp, chỉ vẽ theo FPS ghi hình, tránh vẽ thừa 60 lần/giây.
-  if(realtimeRecorder&&realtimeRecorder.state==='recording'){
-   const now=performance.now(),interval=1000/Math.max(15,realtimeCaptureFps||30);
-   if(lastRealtimeDrawAt&&now-lastRealtimeDrawAt<interval-1){raf=requestAnimationFrame(animate);return}
-   lastRealtimeDrawAt=now;
-  }
+  // Đồng bộ nhịp vẽ preview/ghi hình theo FPS đã chọn (mặc định 60).
+  const targetFps=Math.max(15,Math.min(60,Number($('fps')?.value)||60));
+  const now=performance.now(),interval=1000/targetFps;
+  if(lastRealtimeDrawAt&&now-lastRealtimeDrawAt<interval-1){raf=requestAnimationFrame(animate);return}
+  lastRealtimeDrawAt=now;
   // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
  const t=previewing?Math.max(0,((previewPaused?previewPauseStartedAt:performance.now())-previewStartedAt)/1000):0;
  // Luôn vẽ preview lên canvas xem trước, không ghi đè canvas xuất video.
@@ -787,13 +786,14 @@ async function preloadRealtimeResources(items){
 }
 async function beginRealtimeCapture(){
  if(!canvas.captureStream||!window.MediaRecorder)throw new Error('Trình duyệt này chưa hỗ trợ ghi canvas trực tiếp. Hãy dùng Chrome hoặc Edge mới.');
- const fps=Math.max(15,Math.min(60,Number($('fps')?.value)||30));
+ const fps=Math.max(15,Math.min(60,Number($('fps')?.value)||60));
   realtimeCaptureFps=fps;lastRealtimeDrawAt=0;
  const videoStream=canvas.captureStream(fps);
  if(realtimeCaptureDestination)for(const track of realtimeCaptureDestination.stream.getAudioTracks())videoStream.addTrack(track);
  const candidates=['video/webm;codecs=vp8,opus','video/webm'];
  const mimeType=candidates.find(type=>MediaRecorder.isTypeSupported?.(type));
- const options={videoBitsPerSecond:(Number($('export-quality')?.value)||720)>=1080?5000000:2500000,audioBitsPerSecond:128000};
+ const isFullHd=canvas.width>=1920||canvas.height>=1080;
+  const options={videoBitsPerSecond:isFullHd?8000000:4000000,audioBitsPerSecond:192000};
  if(mimeType)options.mimeType=mimeType;
  realtimeChunks=[];
  realtimeRecorder=new MediaRecorder(videoStream,options);
