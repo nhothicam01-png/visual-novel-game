@@ -5,7 +5,7 @@
 </style></head><body><main>
 <nav class="nav"><a href="./index.html">🏠 Trang chủ</a><a href="./thunghiem.html">🧪 Trang thử nghiệm</a><a href="./tao_giong.html">🎙️ Phòng tạo giọng</a><a href="./github_manager.html">⬆ GitHub Manager</a></nav>
 <h1>🌐 Subtitle & Dubbing Studio</h1>
-<p>Tạo phụ đề đa ngôn ngữ và bản âm thanh hoàn chỉnh. GitHub chỉ lưu AudioManifest.json và SRT; âm thanh và ZIP luôn được tải về thiết bị.</p>
+<p>Tạo phụ đề đa ngôn ngữ và bản âm thanh hoàn chỉnh. Tạo từng ngôn ngữ một; các ngôn ngữ đã tạo được gom vào những thư mục riêng trong cùng ZIP. GitHub chỉ lưu AudioManifest.json và SRT; âm thanh luôn tải về thiết bị.</p>
 <section class="panel"><h2>1. Chọn truyện & dữ liệu mẫu</h2>
 <label class="field">Truyện<select id="story"><option value="">Đang tải danh sách truyện…</option></select></label>
 <div class="row"><button class="btn secondary" id="reload">↻ Tải lại danh sách</button><span id="manifest-state" class="badge"></span></div>
@@ -49,7 +49,7 @@ async function loadCatalog(){
  }catch(e){status('load-status','Không tải được danh sách truyện: '+e.message)}finally{$('story').disabled=false}
 }
 async function selectStory(){
- const item=stories[Number($('story').value)];if(!item){manifest=null;return}storyName=item.name;storyPath=item.path;const folder='assets/KichBan/'+storyName+'/';
+ const item=stories[Number($('story').value)];if(!item){manifest=null;return}languagePackages={};generated=[];storyName=item.name;storyPath=item.path;const folder='assets/KichBan/'+storyName+'/';
  status('load-status','Đang tải Audio Manifest và danh sách SRT…');$('manifest-state').textContent='Đang tải…';
  try{
   const tree=await fetch('https://api.github.com/repos/'+OWNER+'/'+REPO+'/git/trees/main?recursive=1',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('GitHub HTTP '+r.status);return r.json()});
