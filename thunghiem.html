@@ -332,13 +332,13 @@ function buildSourceSubtitle(prepared){
   const speaker=String(entry.line?.speaker||'').trim();
   const text=(speaker?speaker+': ':'')+spoken;
   const start=Math.max(0,entry.start),end=Math.max(start+0.05,entry.start+entry.duration);
-  blocks.push(number+++'\\n'+srtTimestamp(start)+' --> '+srtTimestamp(end)+'\\n'+text);
+  blocks.push(number+++'\n'+srtTimestamp(start)+' --> '+srtTimestamp(end)+'\n'+text);
  }
  if(!blocks.length)throw new Error('Không có lời thoại hợp lệ để tạo phụ đề.');
- return blocks.join('\\n\\n')+'\\n';
+ return blocks.join('\n\n')+'\n';
 }
 function safeSubtitleFilename(value){
- return String(value||'KichBan').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan';
+ return String(value||'KichBan').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan';
 }
 async function saveSourceSubtitle(prepared){
  const language=$('subtitle-source-language')?.value||'Vietnamese';
