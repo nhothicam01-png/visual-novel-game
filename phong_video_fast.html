@@ -284,7 +284,7 @@ const backgrounds=[
  ['thu_vien.png','Thư viện'],
  ['render.mp4','Video nền render.mp4']
 ];
-let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewPaused=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
+let bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
 let piperVoices=[];
 let previewAudio={bgm:null,tts:null,sfx:null};
 let recordingTimer=null;
@@ -395,16 +395,28 @@ function cachedVideo(src){
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,character=$('character').value,expr=normalizeExpression($('expression').value);
  const bgPath=bg?BASE+'Nen/'+bg:'',charPath=character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
- $('preview-loading').classList.add('active');$('preview-loading-status').textContent='Đang nạp nền và nhân vật…';
+ const frame=getCurrentLine()?.sourceFrame||{},displaySpecs=Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
+ $('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…';
  try{
-  const [nextBg,nextChar]=await Promise.all([
+  const layerJobs=displaySpecs.map(async(spec,index)=>{
+   const folder=characterAssetFolder(spec.id),files=expressionFilesByFolder[String(folder)]||[];
+   let expression=normalizeExpression(spec.bieu_cam||'');
+   if(!expression&&files.length)expression=files[0].split('/').pop().replace(/\.webm$/i,'');
+   const url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
+   const media=url?await cachedVideo(url):null;
+   return {spec:{...spec,bieu_cam:expression},folder,media,index};
+  });
+  const [nextBg,nextChar,nextLayers]=await Promise.all([
    bgPath?(/\.mp4$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
-   charPath?cachedVideo(charPath):Promise.resolve(null)
+   charPath?cachedVideo(charPath):Promise.resolve(null),
+   Promise.all(layerJobs)
   ]);
   if(token!==assetLoadToken)return;
   if(bgVideo&&bgVideo!==nextBg)bgVideo.pause();if(charVideo&&charVideo!==nextChar)charVideo.pause();
+  charLayerVideos.forEach(old=>{if(old.media&&!nextLayers.some(item=>item.media===old.media))old.media.pause()});
   bgVideo=/\.mp4$/i.test(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
-  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{})]);drawFrame(0);
+  charLayerVideos=nextLayers.filter(item=>item.media);
+  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
 }
@@ -419,6 +431,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
   const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=normalizeExpression(row.bieu_cam);
   if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
+  (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),files=expressionFilesByFolder[String(folder)]||[],expr=normalizeExpression(spec?.bieu_cam)||(files[0]?.split('/').pop().replace(/\.webm$/i,'')||'');if(folder&&expr)cachedVideo(BASE+'NhanVat/'+folder+'/'+expr+'.webm').catch(()=>{})});
  }
 }
 $('background').addEventListener('change',updateAssets);
@@ -477,19 +490,29 @@ function drawFrame(elapsed,st){
   if(bgFx.includes('bg-blur'))ctx.filter='blur('+Math.round(2*strength)+'px)';
   drawCover(frameOverride.bg||bgAsset||bgVideo,w,h);ctx.filter='none';ctx.restore();
  }
- // Nhân vật có lớp biến đổi độc lập với nền và camera.
- if(charVideo){
-  ctx.save();
-  let charAlpha=1;
+ // Nhiều nhân vật: nếu JSON có nhan_vat_hien_thi thì dựng từng lớp độc lập.
+ // Nếu không có trường này, giữ nguyên cách dựng một nhân vật của JSON cũ.
+ const drawOneCharacter=(media,spec)=>{
+  if(!media)return;
+  const x=w*(Number.isFinite(Number(spec?.x))?Math.max(0,Math.min(100,Number(spec.x))):50)/100;
+  const y=h*(Number.isFinite(Number(spec?.y))?Math.max(0,Math.min(110,Number(spec.y))):100)/100;
+  const scale=Math.max(.1,Math.min(2.5,Number(spec?.scale)||1));
+  ctx.save();let alpha=1;
   if(charFx.includes('char-bob'))ctx.translate(0,Math.sin(elapsed*5)*h*.008*strength);
-  if(charFx.includes('char-sway')){ctx.translate(w/2,h);ctx.rotate(Math.sin(elapsed*1.8)*.018*strength);ctx.translate(-w/2,-h)}
+  if(charFx.includes('char-sway')){ctx.translate(x,y);ctx.rotate(Math.sin(elapsed*1.8)*.018*strength);ctx.translate(-x,-y)}
   if(charFx.includes('char-shake')&&elapsed<2)ctx.translate(Math.sin(elapsed*42)*w*.009*strength,0);
-  if(charFx.includes('char-zoom')||charFx.includes('char-breathe')){const cz=1+Math.sin(elapsed*(charFx.includes('char-breathe')?1.6:2.2))*(charFx.includes('char-breathe')?.012:.018)*strength;ctx.translate(w/2,h);ctx.scale(cz,cz);ctx.translate(-w/2,-h)}
+  if(charFx.includes('char-zoom')||charFx.includes('char-breathe')){const cz=1+Math.sin(elapsed*(charFx.includes('char-breathe')?1.6:2.2))*(charFx.includes('char-breathe')?.012:.018)*strength;ctx.translate(x,y);ctx.scale(cz,cz);ctx.translate(-x,-y)}
   if(charFx.includes('char-float'))ctx.translate(Math.sin(elapsed*1.15)*w*.012*strength,Math.sin(elapsed*1.7)*h*.006*strength);
   if(charFx.includes('char-enter'))ctx.translate(0,(1-Math.min(1,elapsed/1.1))*h*.22);
-  if(charFx.includes('char-fade'))charAlpha=Math.min(1,elapsed/1.4);
-  ctx.globalAlpha=charAlpha;drawCharacter(frameOverride.char||charVideo,w,h);ctx.globalAlpha=1;ctx.restore();
- }
+  if(charFx.includes('char-fade'))alpha=Math.min(1,elapsed/1.4);
+  ctx.globalAlpha=alpha;
+  const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height;
+  if(sw&&sh){const base=isPortrait?h/sh:Math.min(w/sw,h/sh),factor=scale*(charLayerVideos.length>1?.72:1),dw=sw*base*factor,dh=sh*base*factor;ctx.drawImage(media,x-dw/2,y-dh,dw,dh)}
+  ctx.restore();
+ };
+ if(charLayerVideos.length){
+  charLayerVideos.slice().sort((a,b)=>(Number(a.spec?.z_index)||0)-(Number(b.spec?.z_index)||0)).forEach(layer=>drawOneCharacter(layer.media,layer.spec));
+ }else if(charVideo){drawOneCharacter(frameOverride.char||charVideo,{x:50,y:100,scale:1})}
  // Các lớp không khí được tính theo elapsed để preview và video xuất dùng cùng một timeline.
  if(atmFx.length){
   ctx.save();
@@ -566,7 +589,7 @@ function pausePreview(){
  previewPaused=true;previewPauseStartedAt=performance.now();
  Object.values(previewAudio).forEach(a=>{if(a&&!a.paused)a.pause()});
  pauseBrowserSpeech();
- if(charVideo)charVideo.pause();if(bgVideo)bgVideo.pause();
+ if(charVideo)charVideo.pause();charLayerVideos.forEach(x=>x.media?.pause());if(bgVideo)bgVideo.pause();
  updatePlaybackButtons();setTtsStatus('Đã tạm dừng. Nhấn Tiếp tục để chạy tiếp.');
 }
 function resumePreview(){
@@ -579,7 +602,7 @@ function resumePreview(){
   if(a&&a.paused&&!a.ended)a.play().catch(err=>console.warn('Khong the tiep tuc am thanh preview:',err));
  });
  resumeBrowserSpeech();
- if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
+ if(charVideo)charVideo.play().catch(()=>{});charLayerVideos.forEach(x=>x.media?.play().catch(()=>{}));if(bgVideo)bgVideo.play().catch(()=>{});
  updatePlaybackButtons();setTtsStatus('Đang tiếp tục chạy…');
 }
 async function waitWhilePaused(run){
