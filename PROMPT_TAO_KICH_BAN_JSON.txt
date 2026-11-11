@@ -626,6 +626,7 @@ Quy tắc cấu trúc:
 - `nhan_vat` trong từng mục thoại là ID nhân vật đang nói, đã khai báo ở object nhân vật.
 - `nhan_vat_hien_thi` là trường tùy chọn trong từng mục thoại, dùng khi một khung hình có nhiều nhân vật. Mỗi phần tử gồm `id` (ID trong object `nhan_vat`), `bieu_cam` (tên biểu cảm WebM riêng của nhân vật), `x` (tâm ngang theo phần trăm khung hình), `y` (điểm chân theo phần trăm chiều cao), `scale` (hệ số kích thước) và `z_index` (thứ tự lớp, số nhỏ ở phía sau).
 - Khi có từ hai nhân vật cùng xuất hiện, phải khai báo đầy đủ tất cả nhân vật nhìn thấy trong `nhan_vat_hien_thi`, kể cả người không nói. Nhân vật đang nói vẫn được xác định riêng bằng trường `nhan_vat`.
+- Chỉ thêm `nhan_vat_hien_thi` ở những lượt/cảnh thực sự có nhiều nhân vật cùng xuất hiện. Không sao chép hai nhân vật minh họa trong mẫu vào mọi lượt thoại; không tự thêm nhân vật chỉ vì họ có tên trong danh sách nhân vật.
 - Mặc định bố cục hai người: nhân vật thứ nhất ở x=30, nhân vật thứ hai ở x=70, y=100, scale=0.72; điều chỉnh khi bố cục cảnh cần thiết. Không khai báo nhân vật không thực sự có mặt trong cảnh.
 - Nếu chỉ có một nhân vật hoặc không khai báo `nhan_vat_hien_thi`, player dùng cách hiển thị cũ để bảo đảm tương thích JSON cũ.
 - `anh_nen` rỗng nghĩa là kế thừa nền trước.
