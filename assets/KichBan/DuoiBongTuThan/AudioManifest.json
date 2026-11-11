@@ -3,9 +3,9 @@
   "kind": "visual-novel-audio-manifest",
   "story": "DuoiBongTuThan",
   "story_path": "assets/KichBan/DuoiBongTuThan/DuoiBongTuThan.json",
-  "created_at": "2026-11-11T09:17:40.518Z",
+  "created_at": "2026-11-11T11:54:45.979Z",
   "source_language": "Vietnamese",
-  "duration": 6.2934,
+  "duration": 80.8333,
   "audio_mix": {
     "bgm_volume": 0.25,
     "sfx_volume": 0.8,
@@ -19,8 +19,8 @@
     {
       "type": "dialogue",
       "start": 0,
-      "end": 5.7934,
-      "duration": 5.7934,
+      "end": 7.92,
+      "duration": 7.92,
       "pause_after": 0.5,
       "speaker": "Lirien",
       "speaker_id": "1",
@@ -39,7 +39,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Lại thêm một chiếc lá rơi. Vô số lần ta chứng kiến cảnh tượng này, nhưng sự bất an trong lòng chưa bao giờ vơi đi.",
       "gain": 1,
@@ -49,19 +49,252 @@
     {
       "type": "bgm",
       "start": 0,
-      "end": 6.2934,
-      "duration": 6.2934,
+      "end": 80.82,
+      "duration": 80.82,
       "audio_id": "afternoon_between_leaves.mp3",
       "source": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
       "loop": true,
       "volume": 0.25
+    },
+    {
+      "type": "dialogue",
+      "start": 8.42,
+      "end": 15.068,
+      "duration": 6.648,
+      "pause_after": 0.5,
+      "speaker": "Elandra",
+      "speaker_id": "2",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Lirien! Anh có nghe thấy tiếng chuông từ quảng trường không? Lại có thêm người ngã xuống rồi!",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 15.568,
+      "end": 25.888,
+      "duration": 10.32,
+      "pause_after": 0.5,
+      "speaker": "Lirien",
+      "speaker_id": "1",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Elandra, đừng lớn tiếng ở đây. Cổ Thụ Sinh Mệnh đang quan sát tất cả chúng ta. Việc ai là người tiếp theo là định mệnh không thể thay đổi.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 26.388,
+      "end": 35.436,
+      "duration": 9.048,
+      "pause_after": 0.5,
+      "speaker": "Elandra",
+      "speaker_id": "2",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Định mệnh ư? Tôi đã tìm thấy những ghi chép cổ. Chiếc lá không tự nhiên rơi, nó bị thao túng bởi một thứ năng lượng lạ ở hẻm núi.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 35.936,
+      "end": 45.944,
+      "duration": 10.008,
+      "pause_after": 0.5,
+      "speaker": "Kaelen",
+      "speaker_id": "3",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Hai người đang bàn chuyện gì thế? Nhà vua vừa ban lệnh tăng cường tuần tra. Kẻ nào dám bén mảng đến gần Cổ Thụ sẽ bị bắt giam ngay lập tức.",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 46.444,
+      "end": 54.22,
+      "duration": 7.776,
+      "pause_after": 0.5,
+      "speaker": "Kaelen",
+      "speaker_id": "3",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Nhưng... tôi cũng nhìn thấy vết ấn ký trên tay Nesta. Con bé chỉ còn vài ngày nữa thôi, Lirien ạ.",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 54.72,
+      "end": 61.992,
+      "duration": 7.272,
+      "pause_after": 0.5,
+      "speaker": "Nesta",
+      "speaker_id": "5",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Em không muốn chết đâu... Chú Kaelen, anh Lirien, cứu em với. Tại sao lại là em?",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 62.492,
+      "end": 72.644,
+      "duration": 10.152,
+      "pause_after": 0.5,
+      "speaker": "Lirien",
+      "speaker_id": "1",
+      "voice_id": "voice_1794205520158",
+      "voice": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Nesta, bình tĩnh lại nào. Chúng ta sẽ tìm cách. Elandra nói đúng, ta không thể ngồi chờ cái chết giáng xuống đầu con bé được nữa.",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 73.144,
+      "end": 80.32,
+      "duration": 7.176,
+      "pause_after": 0.5,
+      "speaker": "Elandra",
+      "speaker_id": "2",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Đêm nay, chúng ta phải đến Hẻm Núi Sương Mờ. Nơi đó chứa câu trả lời cho mọi bí ẩn về chiếc lá cuối cùng.",
+      "gain": 1,
+      "scene_index": 4,
+      "timing_policy": "fixed_source_window"
     }
-  ],
-  "video": {
-    "format": "webm",
-    "fps": 60,
-    "width": 1280,
-    "height": 720,
-    "export_mode": "direct_media_recorder"
-  }
+  ]
 }
