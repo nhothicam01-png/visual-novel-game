@@ -53,6 +53,9 @@
         "lang": "vi",
         "voice_id": ""
       }
+    },
+    "world_Furina": {
+      "ten_hien_thi": "Tiểu thư Hasine"
     }
   },
   "am_thanh_mac_dinh": {
@@ -87,7 +90,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Nesta"
+      "ten_hien_thi": "5",
+      "giong_noi": {
+        "profileId": "voice_1794192970852",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Embe",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "3",
