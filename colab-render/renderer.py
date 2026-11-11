@@ -243,7 +243,13 @@ class VideoAsset:
         self.fps=float(self.stream.average_rate or 30)
         self.frames=int(self.stream.frames or 0)
         tb=float(self.stream.time_base)
-        self.duration=(float(self.stream.duration)*tb) if self.stream.duration else max(.001,self.frames/self.fps if self.frames else 1)
+        stream_duration=(float(self.stream.duration)*tb) if self.stream.duration else 0.0
+        container_duration=(float(self.container.duration)/float(av.time_base)) if self.container.duration else 0.0
+        frame_duration=(self.frames/self.fps) if self.frames and self.fps>0 else 0.0
+        # Prefer the longest valid duration: WebM stream metadata can be truncated
+        # or omit frame counts even when the container duration is correct.
+        candidates=[d for d in (stream_duration,container_duration,frame_duration) if 0.05<d<36000]
+        self.duration=max(candidates) if candidates else 1.0
         self.last_index=-1
         self.last_image=None
         self.iterator=None
@@ -288,9 +294,16 @@ def render_video(timeline, work: Path, output: Path):
     total_frames=int(np.ceil(duration*fps))
     urlmap=asset_url_map(timeline)
     image_cache={}; video_cache={}
+    def normalize_bg_path(rel):
+        rel=str(rel or "").replace("\\\\","/").lstrip("/")
+        if rel.startswith("assets/"): rel=rel[len("assets/"):]
+        if rel.startswith("Nen/"): rel=rel[len("Nen/"):]
+        return rel
+
     def get_bg(rel):
+        rel=normalize_bg_path(rel)
         if not rel:return None
-        path=resolve_asset("Nen/"+str(rel),urlmap,work)
+        path=resolve_asset("Nen/"+rel,urlmap,work)
         if not path:return None
         if str(rel).lower().endswith((".mp4",".webm")):
             if str(path) not in video_cache: video_cache[str(path)]=VideoAsset(path)
@@ -314,7 +327,7 @@ def render_video(timeline, work: Path, output: Path):
     preload=[]
     seen=set()
     for _,_,_,it in intervals:
-        bg=it.get("background")
+        bg=it.get("background") or (scene.get("visual") or {}).get("background")
         ch=it.get("character_asset")
         ex=it.get("expression")
         for key,kind in [(( "bg",str(bg)), "background") if bg else (None,None),
@@ -324,7 +337,7 @@ def render_video(timeline, work: Path, output: Path):
     print(f"📦 Chuẩn bị {len(preload)} tài nguyên hình ảnh/video…",flush=True)
     for idx,(kind,it) in enumerate(preload,1):
         print(f"  [{idx}/{len(preload)}] Đang tải/đọc {kind}…",flush=True)
-        if kind=="background": get_bg(it.get("background"))
+        if kind=="background": get_bg(it.get("background") or (it.get("scene_visual") or {}).get("background"))
         else: get_char(it.get("character_asset"),it.get("expression"))
     print("✅ Chuẩn bị tài nguyên xong.",flush=True)
     silent=[]
@@ -346,7 +359,7 @@ def render_video(timeline, work: Path, output: Path):
         if active:
             start,end,scene,it=active
             local=t-float(scene.get("start",start))
-            bgsrc=get_bg(it.get("background"))
+            bgsrc=get_bg(it.get("background") or (scene.get("visual") or {}).get("background") or (it.get("scene_visual") or {}).get("background"))
             if isinstance(bgsrc,VideoAsset):
                 bgframe=bgsrc.frame(local)
                 bg=cover_image(bgframe.convert("RGB"),(width,height)) if bgframe else None
@@ -354,7 +367,9 @@ def render_video(timeline, work: Path, output: Path):
             if bg: base=Image.alpha_composite(base,bg.convert("RGBA"))
             csrc=get_char(it.get("character_asset"),it.get("expression"))
             if csrc:
-                cf=csrc.frame(local)
+                # Start each dialogue's character clip at frame zero; loop only
+                # after the actual source clip duration has elapsed.
+                cf=csrc.frame(max(0.0,t-float(it.get("start",start))))
                 if cf:
                     ch=character_image(cf,(width,height),portrait)
                     base=Image.alpha_composite(base,ch)
