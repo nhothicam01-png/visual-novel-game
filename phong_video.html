@@ -237,6 +237,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <p class="note">Ghi trực tiếp dùng MediaRecorder, phát lại theo timeline và thu cả hình + âm thanh (Edge TTS, nhạc nền, hiệu ứng). Trên Chrome Android thường xuất WebM; dùng nút MP4 để xuất MP4 kèm phụ đề và AudioManifest.</p>
 <p class="note">Sau khi xuất MP4, hệ thống tự tạo phụ đề gốc (.srt) và AudioManifest.json, chỉ push hai file dữ liệu này lên GitHub. Không push âm thanh.</p>
+<p class="note">Nút “Chuẩn bị gói render Colab” tạo ZIP gồm timeline, WAV thoại và danh sách tài nguyên gốc trên GitHub. ZIP là dữ liệu đầu vào, chưa phải video MP4; bộ máy render Colab sẽ được bổ sung riêng.</p>
 <div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
 </details>
 
@@ -1170,7 +1171,7 @@ async function exportColabPackage(){
  if(recording)return;
  if(!window.JSZip){setStatus('Không tải được thư viện đóng gói ZIP. Hãy kiểm tra mạng rồi tải lại trang.');return}
  if(!scenes.length||!scenes.some(sc=>sc.lines.some(line=>String(line.text||'').trim()))){setStatus('Hãy thêm ít nhất một câu thoại trước.');return}
- saveCurrentLine();saveCurrentScene();
+ saveLineEffects();saveCurrentLine();saveCurrentScene();
  const originalScene=activeSceneIndex,originalLine=activeLineIndex;
  const scope=$('preview-scope')?.value||'full',sceneIndexes=scope==='scene'?[originalScene]:scenes.map((_,i)=>i);
  const fps=Number($('fps').value)||60,q=Number($('export-quality').value)||720;
