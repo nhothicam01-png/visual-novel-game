@@ -9,17 +9,25 @@
     "1": {
       "ten_hien_thi": "Lirien",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "voice_id": "vi_VN-vais1000-medium",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
         "lang": "vi",
-        "voice_id": ""
+        "gender": "female"
       }
     },
     "2": {
       "ten_hien_thi": "Elandra",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "voice_id": "vi_VN-vais1000-medium",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
         "lang": "vi",
-        "voice_id": ""
+        "gender": "female"
       }
     },
     "3": {
@@ -33,29 +41,53 @@
     "4": {
       "ten_hien_thi": "Thủ Lĩnh Vael",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794303817586",
+        "profile_name": "Thanh niên",
+        "voice_id": "vi_VN-vais1000-medium",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
         "lang": "vi",
-        "voice_id": ""
+        "gender": "male"
       }
     },
     "5": {
       "ten_hien_thi": "Nesta",
       "giong_noi": {
-        "profile_id": "voice_1794192970852",
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "voice_id": "vi_VN-vais1000-medium",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
         "lang": "vi",
-        "voice_id": "vi_VN-vais1000-medium"
+        "gender": "female"
       }
     },
     "6": {
       "ten_hien_thi": "Soran",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "voice_id": "vi_VN-vais1000-medium",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
         "lang": "vi",
-        "voice_id": ""
+        "gender": "female"
       }
     },
     "world_Furina": {
-      "ten_hien_thi": "Tiểu thư Hasine"
+      "ten_hien_thi": "Tiểu thư Hasine",
+      "giong_noi": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "voice_id": "vi_VN-vais1000-medium",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "lang": "vi",
+        "gender": "female"
+      }
+    },
+    "world_3": {
+      "ten_hien_thi": "world_3"
     }
   },
   "am_thanh_mac_dinh": {
@@ -99,7 +131,7 @@
       }
     },
     {
-      "nhan_vat": "3",
+      "nhan_vat": "world_3",
       "noi_dung": "Đừng sợ, Nesta. Hãy bám chặt vào tôi! Đợt rụng lá đỏ đã bắt đầu, lính canh hoàng gia đang đến rất gần rồi.",
       "anh_nen": "hanh_lang_toi.png",
       "anh_hieu_ung": "",
@@ -122,7 +154,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Kaelen"
+      "ten_hien_thi": "3"
     },
     {
       "nhan_vat": "1",
@@ -177,7 +209,7 @@
       "ten_hien_thi": "Elandra"
     },
     {
-      "nhan_vat": "3",
+      "nhan_vat": "world_3",
       "noi_dung": "Tôi sẽ đưa cô ấy đến Hẻm Núi Sương Mờ. Dù phải đối đầu với cả triều đình, tôi cũng không để họ biến Nesta thành vật tế thần.",
       "anh_nen": "con_duong_dem.png",
       "anh_hieu_ung": "",
@@ -200,7 +232,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Kaelen"
+      "ten_hien_thi": "3"
     },
     {
       "nhan_vat": "6",
@@ -261,7 +293,7 @@
       "ten_hien_thi": "Thủ Lĩnh Vael"
     },
     {
-      "nhan_vat": "3",
+      "nhan_vat": "world_3",
       "noi_dung": "Thủ lĩnh Vael! Ngươi đừng hòng chạm vào Nesta khi ta còn sống!",
       "anh_nen": "san_truong_ban_ngay.png",
       "anh_hieu_ung": "",
@@ -284,7 +316,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Kaelen"
+      "ten_hien_thi": "3"
     },
     {
       "nhan_vat": "5",
@@ -311,7 +343,7 @@
       "ten_hien_thi": "Nesta"
     },
     {
-      "nhan_vat": "3",
+      "nhan_vat": "world_3",
       "noi_dung": "Hét lớn và lao lên dồn hết sức mạnh, phóng chiếc trâm bạc vào thẳng nguồn năng lượng hắc ám của Vael!",
       "anh_nen": "san_truong_ban_ngay.png",
       "anh_hieu_ung": "",
@@ -338,7 +370,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Kaelen"
+      "ten_hien_thi": "3"
     },
     {
       "nhan_vat": "5",
@@ -371,7 +403,7 @@
       "ten_hien_thi": "Nesta"
     },
     {
-      "nhan_vat": "3",
+      "nhan_vat": "world_3",
       "noi_dung": "Mọi chuyện kết thúc rồi, Nesta. Từ nay chúng ta không còn phải chạy trốn định mệnh nữa.",
       "anh_nen": "cong_vien_truong.png",
       "anh_hieu_ung": "",
@@ -390,7 +422,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "3",
+      "ten_hien_thi": "world_3",
       "giong_noi": {
         "profileId": "voice_1794205520158",
         "voiceId": "vi_VN-vais1000-medium",
