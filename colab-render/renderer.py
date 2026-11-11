@@ -403,7 +403,7 @@ def write_sidecar_files(timeline, output):
     intervals.sort(key=lambda x:x[0])
     srt_lines=[]
     for idx,(start,end,speaker,text) in enumerate(intervals,1):
-        caption=(speaker+"\\n" if speaker and timeline.get("global",{}).get("show_speaker",True) else "")+text
+        caption=(speaker+"\n" if speaker and timeline.get("global",{}).get("show_speaker",True) else "")+text
         srt_lines.extend([str(idx),srt_time(start)+" --> "+srt_time(end),caption,""])
     srt_path=output.with_suffix(".srt")
     srt_path.write_text("\\n".join(srt_lines),encoding="utf-8")
