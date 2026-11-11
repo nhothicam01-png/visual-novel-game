@@ -1717,6 +1717,7 @@ function saveCurrentLine(){
 function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual();const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
  if(!line)return;
+ if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>({id:String(item.id),bieu_cam:String(item.bieu_cam||''),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}));
  const folder=String(line.characterAsset||characterAssetFolder(line.speakerId)||'').trim(),list=activeCharacterList(),ch=list.find(item=>item.folder===folder)||list.find(item=>item.id===String(line.speakerId||''))||list.find(item=>normalizeCharacterName(item.name)===normalizeCharacterName(line.speaker));
  if(ch){$('character').value=ch.folder;$('speaker').value=ch.id;line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.folder}
  line.expression=syncExpressionOptions($('character').value||folder,line.expression||line.sourceFrame?.bieu_cam);if(line.sourceFrame&&typeof line.sourceFrame==='object'&&line.expression)line.sourceFrame.bieu_cam=line.expression;
