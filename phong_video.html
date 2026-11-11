@@ -1220,9 +1220,9 @@ async function exportColabPackage(){
   timeline.assets=Array.from(assetMap.values());timeline.tts_assets=ttsFiles;
   timeline.audio={events:timeline.scenes.flatMap(sc=>sc.intervals.flatMap(it=>[{type:'dialogue',asset_id:it.tts_asset_id,start:it.start,duration:it.duration,gain:it.gain},{type:'bgm',file:it.audio.bgm,start:it.start,end:it.end,loop:true},{type:'sfx',file:it.audio.sfx,start:it.start}].filter(e=>e.asset_id||e.file))),mix:{bgm:Number($('bgm-volume').value),sfx:Number($('sfx-volume').value),tts:Number($('tts-volume').value)}};
   // Browser mode captures the editor canvas so browser-only visuals are preserved.
-  if(timeline.render_mode==='browser'){
+  if(['browser','hybrid'].includes(timeline.render_mode)){
    const frameCount=Math.ceil(timeline.duration*fps),frameDir='browser_frames/';
-   timeline.browser_frames={pattern:'browser_frames/{index}.jpg',count:frameCount,format:'jpeg',quality:.84};
+   timeline.browser_frames={pattern:'browser_frames/{index}.jpg',count:frameCount,format:'jpeg',quality:.84,complete:timeline.render_mode==='browser',hybrid_policy:'capture animated video background/character intervals; render remaining frames natively'};
    const frameItems=timeline.scenes.flatMap((sc,sceneIndex)=>sc.intervals.map(it=>({sc,sceneIndex,it}))).sort((a,b)=>a.it.start-b.it.start);
    let activeKey='',savedOverride=frameOverride,frameCursor=0;
    const blankDialogue=document.createElement('canvas');blankDialogue.width=width;blankDialogue.height=height;
@@ -1236,6 +1236,8 @@ async function exportColabPackage(){
      while(frameCursor<frameItems.length&&frameItems[frameCursor].it.end<=t)frameCursor++;
      const candidate=frameItems[frameCursor];if(candidate&&t>=candidate.it.start&&t<candidate.it.end)found=candidate;
      let elapsed=0;
+     const captureThisFrame=timeline.render_mode==='browser'||(timeline.render_mode==='hybrid'&&!!found&&(/\.(mp4|webm)$/i.test(found.it.background||'')||!!(found.it.character_asset&&found.it.expression)));
+     if(!captureThisFrame){if(fi%Math.max(1,fps*2)===0){setTaskProgress('Hybrid: dùng FFmpeg cho khung hình tĩnh '+(fi+1)+'/'+frameCount,Math.round((fi+1)/frameCount*75));await yieldToUI()}continue}
      if(found){
       const key=found.sceneIndex+':'+found.it.line_index;elapsed=t-found.sc.start;
       if(key!==activeKey){
@@ -1255,7 +1257,7 @@ async function exportColabPackage(){
    }finally{frameOverride=savedOverride}
   }
   zip.file('timeline.json',JSON.stringify(timeline,null,2));
-  zip.file('manifest.json',JSON.stringify({schema_version:1,kind:'visual-novel-colab-package',created_at:timeline.created_at,story:timeline.story,files:{timeline:'timeline.json',assets:'asset_manifest.json',tts_directory:'tts/'},asset_fetch:'assets are fetched by Colab from the repository raw URLs; TTS WAV files are embedded in this ZIP',requirements:['Preserve timeline timestamps exactly','Use scene-local elapsed time for looping source videos and animated effects',timeline.render_mode==='browser'?'Use captured browser_frames as the authoritative visual frames':'Render visuals natively in Colab','Mix TTS, BGM and SFX using timeline.json']},null,2));
+  zip.file('manifest.json',JSON.stringify({schema_version:1,kind:'visual-novel-colab-package',created_at:timeline.created_at,story:timeline.story,files:{timeline:'timeline.json',assets:'asset_manifest.json',tts_directory:'tts/'},asset_fetch:'assets are fetched by Colab from the repository raw URLs; TTS WAV files are embedded in this ZIP',requirements:['Preserve timeline timestamps exactly','Use scene-local elapsed time for looping source videos and animated effects',timeline.render_mode==='browser'?'Use captured browser_frames as the authoritative visual frames':timeline.render_mode==='hybrid'?'Use captured browser frames for animated video background/character intervals and render remaining frames natively':'Render visuals natively in Colab','Mix TTS, BGM and SFX using timeline.json']},null,2));
   zip.file('asset_manifest.json',JSON.stringify({repository:'nhothicam01-png/visual-novel-game',branch:'main',base_url:BASE,assets:timeline.assets},null,2));
   setTaskProgress('Đang nén gói Colab…',90);
   const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:4}});
