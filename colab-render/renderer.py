@@ -50,6 +50,7 @@ def resolve_asset(rel, urlmap, work):
     local = work / rel
     if local.exists(): return local
     url = urlmap.get(rel) or (BASE_FALLBACK + urllib.parse.quote(rel, safe="/"))
+    url = urllib.parse.quote(url, safe=":/%")
     try: return download(url, local)
     except Exception as e:
         print(f"⚠ Không tải được tài nguyên {rel}: {e}")
@@ -375,7 +376,7 @@ def mix_audio(timeline,work,video_path,output):
         else: cmd += ["-i",str(p)]
         label=f"a{input_index}"
         delay=max(0,round(start*1000))
-        chains.append(f"[{input_index}:a]aresample=48000,atrim=duration={dur:.4f},asetpts=PTS-STARTPTS,volume={vol:.4f},adelay={delay}|{delay}[{label}]")
+        chains.append(f"[{input_index}:a]aformat=channel_layouts=stereo,aresample=48000,atrim=duration={dur:.4f},asetpts=PTS-STARTPTS,volume={vol:.4f},adelay={delay}|{delay}[{label}]")
         labels.append(f"[{label}]"); input_index+=1
     if labels:
         chains.append("".join(labels)+f"amix=inputs={len(labels)}:duration=longest:dropout_transition=0,apad,atrim=duration={duration:.4f}[mix]")
