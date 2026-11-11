@@ -120,6 +120,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 </div>
 <div class="preview-toolbar">
 <button class="btn" id="play-preview">▶ Chạy</button>
+<button class="btn secondary" id="direct-record-button">⏺ Ghi trực tiếp</button>
 <button class="btn secondary" id="stop-scene">■ Dừng chạy</button>
 <button class="btn secondary" id="ratio-toggle">📐 Tỉ lệ: 16:9</button>
 <button class="btn secondary" id="toggle-fullscreen">⛶ Toàn màn hình</button>
@@ -288,6 +289,7 @@ let bgAsset=null,bgVideo=null,charVideo=null,previewing=false,previewPaused=fals
 let piperVoices=[];
 let previewAudio={bgm:null,tts:null,sfx:null};
 let recordingTimer=null;
+let directRecording=false,directRecordRequested=false,directRecorder=null,directRecordChunks=[],directRecordAudioContext=null,directRecordDestination=null,directRecordStartedAt=0,directRecordEntries=[];const directRecordSources=new WeakSet();
 const charSelect=$('character');
 characters.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent='Nhân vật '+n;charSelect.appendChild(o)});
 backgrounds.forEach(([file,label])=>{const o=document.createElement('option');o.value=file;o.textContent=label;$('background').appendChild(o)});
@@ -610,8 +612,43 @@ async function stopAndResetPreview(){
  setTtsStatus('Đã dừng và đặt lại tiến trình về thoại đầu tiên.');
 }
 function audioElement(url,loop,volume){
- const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
+ const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;
+ if(directRecording)connectDirectRecordAudio(a);
+ return a;
 }
+function connectDirectRecordAudio(audio){
+ if(!directRecording||!directRecordAudioContext||!directRecordDestination||directRecordSources.has(audio))return;
+ try{const source=directRecordAudioContext.createMediaElementSource(audio);source.connect(directRecordAudioContext.destination);source.connect(directRecordDestination);directRecordSources.add(audio)}catch(err){console.warn('Không thể lấy âm thanh preview vào bản ghi',err)}
+}
+async function startDirectRecorder(){
+ if(!previewCanvas.captureStream||!window.MediaRecorder)throw new Error('Trình duyệt không hỗ trợ ghi trực tiếp.');
+ const fps=Math.max(1,Number($('fps').value)||30),quality=Number($('export-quality').value)||720;
+ const oldWidth=previewCanvas.width,oldHeight=previewCanvas.height,longEdge=quality===1080?1920:quality===540?960:1280,shortEdge=quality===1080?1080:quality===540?540:720;
+ previewCanvas.width=isPortrait?shortEdge:longEdge;previewCanvas.height=isPortrait?longEdge:shortEdge;drawFrame(0);
+ const videoStream=previewCanvas.captureStream(fps);directRecordAudioContext=new (window.AudioContext||window.webkitAudioContext)();await directRecordAudioContext.resume();directRecordDestination=directRecordAudioContext.createMediaStreamDestination();
+ const tracks=[...videoStream.getVideoTracks(),...directRecordDestination.stream.getAudioTracks()],stream=new MediaStream(tracks);
+ const types=['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
+ directRecordChunks=[];directRecordEntries=[];directRecordStartedAt=performance.now();directRecorder=new MediaRecorder(stream,mimeType?{mimeType,videoBitsPerSecond:quality===1080?8000000:quality===540?2500000:5000000}:undefined);
+ directRecorder.ondataavailable=e=>{if(e.data?.size)directRecordChunks.push(e.data)};
+ directRecorder.start(1000);directRecording=true;$('direct-record-button').textContent='⏹ Dừng ghi';$('direct-record-button').classList.add('danger');
+ directRecordRecorderStreams={stream,oldWidth,oldHeight,fps,quality};
+ setStatus('Đang ghi trực tiếp · '+(isPortrait?'9:16':'16:9')+' · '+fps+' FPS · '+quality+'p');
+}
+let directRecordRecorderStreams=null;
+async function stopDirectRecorder(){
+ if(!directRecording&&!directRecorder)return;
+ const recorder=directRecorder;directRecording=false;
+ if(recorder&&recorder.state!=='inactive')await new Promise(resolve=>{recorder.addEventListener('stop',resolve,{once:true});recorder.stop()});
+ const state=directRecordRecorderStreams;directRecorder=null;
+ if(state){state.stream.getTracks().forEach(t=>t.stop());previewCanvas.width=state.oldWidth;previewCanvas.height=state.oldHeight;drawFrame(0)}
+ const mime=recorder?.mimeType||'video/webm',ext=mime.includes('mp4')?'mp4':'webm',blob=new Blob(directRecordChunks,{type:mime});directRecordChunks=[];
+ $('direct-record-button').textContent='⏺ Ghi trực tiếp';$('direct-record-button').classList.remove('danger');
+ try{await directRecordAudioContext?.close()}catch(_){}directRecordAudioContext=null;directRecordDestination=null;
+ if(blob.size){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='visual-novel-direct-'+Date.now()+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
+ if(directRecordEntries.length){try{const entries=directRecordEntries,prepared=scenes.map((scene,sceneIndex)=>({scene,visual:scene.visual,lines:entries.filter(e=>e.sceneIndex===sceneIndex)})),bgmSegments=[];for(const e of entries){const name=resolvedLineAudio(e.line,'bgm'),end=e.start+e.duration+e.pause,last=bgmSegments[bgmSegments.length-1];if(name){if(last&&last.name===name&&Math.abs(last.end-e.start)<.2)last.end=end;else bgmSegments.push({name,start:e.start,end})}}const total=Math.max(...entries.map(e=>e.start+e.duration+e.pause),0),manifest=buildAudioManifest(prepared,entries,bgmSegments,total);const meta=await pushExportMetadata(entries,manifest);setStatus('Đã ghi '+ext.toUpperCase()+' · '+(blob.size/1048576).toFixed(1)+' MB; đã push '+meta.srtName+' và AudioManifest.json lên GitHub.');finishTaskProgress('Ghi trực tiếp & metadata hoàn tất')}catch(err){setStatus('Đã ghi video nhưng không push được SRT/AudioManifest: '+(err.message||err))}}
+ directRecordEntries=[];directRecordRecorderStreams=null;
+}
+
 function resolvedLineAudio(line,kind){
  if(kind==='bgm')return String($('bgm')?.value||'').trim();
  if(kind==='sfx')return String($('sfx-file')?.files?.[0]?.name||'').trim();
@@ -722,19 +759,22 @@ async function playPreview(){
   try{for(const item of items){await loadSourceLineForPlayback(item);if($('dialogue').value.trim())await ensureTtsReady()}}
   catch(err){setTtsStatus('Không thể chuẩn bị giọng render: '+(err.message||err));return}
  }
- stopPreview();previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
+ stopPreview();
+ if(directRecordRequested){directRecordRequested=false;try{await startDirectRecorder()}catch(err){setStatus('Không thể bắt đầu ghi: '+(err.message||err));$('direct-record-button').textContent='⏺ Ghi trực tiếp';return}}
+ previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  previewLineBgmName='';startRenderLoop();updatePlaybackButtons();
  for(const item of items){
   if(!await waitWhilePaused(run))break;
   await loadSourceLineForPlayback(item);if(!await waitWhilePaused(run))break;
-  const line=getCurrentLine();await playLineAudio(line);
+  const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;await playLineAudio(line);
   const text=$('dialogue').value.trim();
   if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
   else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
    await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
   }
   const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
+  if(directRecording){const lineEnd=(performance.now()-directRecordStartedAt)/1000;directRecordEntries.push({line,blob:line.wavBlob||null,gain:line.gain??1,sceneIndex:item.sceneIndex,duration:Math.max(.01,lineEnd-lineStart),start:lineStart,pause})}
   let remaining=pause*1000;
   while(previewing&&run===previewRunId&&remaining>0){
    if(!await waitWhilePaused(run))break;
@@ -742,10 +782,12 @@ async function playPreview(){
   }
  }
  if(previewing&&run===previewRunId)stopPreview();
+ if(directRecording)await stopDirectRecorder();
 }
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
 $('play-preview').addEventListener('click',()=>{if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
+$('direct-record-button').addEventListener('click',async()=>{if(directRecording){stopPreview();await stopDirectRecorder();return}if(previewing){setStatus('Hãy dừng phát trước khi bắt đầu ghi trực tiếp.');return}if($('preview-tts-mode').value==='browser'){$('preview-tts-mode').value='render';setTtsStatus('Ghi trực tiếp dùng giọng render để thu được âm thanh đầy đủ.')}directRecordRequested=true;await playPreview()});
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
 $('stop-scene').addEventListener('click',stopAndResetPreview);
 $('speak-preview').addEventListener('click',async()=>{
