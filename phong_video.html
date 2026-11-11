@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Visual Novel Studio – Dựng cảnh & xuất video</title>
+<script src="./github-progress.js?v=20261111-2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-height:100vh;padding:12px;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -1266,7 +1267,7 @@ function restorePlaybackProgress(){
   activeSceneIndex=found.sceneIndex;activeLineIndex=found.lineIndex;return true;
  }catch(e){console.warn('Không đọc được tiến trình phát đã lưu',e);return false}
 }
-function saveStorySettings(){if(!activeStoryName)return;try{localStorage.setItem(storySettingsKey(),JSON.stringify({characterVoiceMap,defaultVoiceProfileId}))}catch(e){console.warn('Không lưu được thiết lập giọng',e)}}
+function saveStorySettings(){if(activeStoryName){try{localStorage.removeItem(storySettingsKey())}catch(e){}}}
 async function loadStoryCatalog(){
  const sel=$('story-select'),status=$('story-status');
  if(!sel||!status)return;
@@ -1329,13 +1330,13 @@ function profileFromJsonVoice(value){
 }
 function resolveVoiceForLine(line){
  const frame=line?.sourceFrame||{};
+ const ch=characterDirectory.find(x=>x.id===String(line?.speakerId??''))||characterDirectory.find(x=>x.name===line?.speaker);
+ const assigned=getVoiceProfiles().find(p=>p.id===(characterVoiceMap[ch?.id||'']||''));
+ if(assigned?.voiceId&&piperVoices.some(v=>v.key===assigned.voiceId))return {profile:assigned,source:'Thiết lập nhân vật'};
  const lineVoice=profileFromJsonVoice(frame.giong_noi??frame.giong??frame.voice??frame.voice_id??frame.voiceId??frame.tts_voice);
  if(lineVoice?.voiceId&&piperVoices.some(v=>v.key===lineVoice.voiceId))return {profile:lineVoice,source:'JSON của mục thoại'};
- const ch=characterDirectory.find(x=>x.id===String(line?.speakerId??''))||characterDirectory.find(x=>x.name===line?.speaker);
  const jsonVoice=profileFromJsonVoice(ch?.jsonVoice);
  if(jsonVoice?.voiceId&&piperVoices.some(v=>v.key===jsonVoice.voiceId))return {profile:jsonVoice,source:'JSON nhân vật'};
- const assigned=getVoiceProfiles().find(p=>p.id===(characterVoiceMap[ch?.id||'']||''));
- if(assigned?.voiceId&&piperVoices.some(v=>v.key===assigned.voiceId))return {profile:assigned,source:'Thiết lập cảnh'};
  const fallback=getVoiceProfiles().find(p=>p.id===defaultVoiceProfileId);
  if(fallback?.voiceId&&piperVoices.some(v=>v.key===fallback.voiceId))return {profile:fallback,source:'Giọng mặc định'};
  return null;
@@ -1436,8 +1437,10 @@ async function applyStoryData(data,name,path){
  activeStoryData=data;activeStoryName=String(name||'Kịch bản import').replace(/\.json$/i,'');activeStoryPath=String(path||('assets/KichBan/'+activeStoryName+'/'+activeStoryName+'.json'));sourceLineCount=rows.length;
  characterDirectory=uniqueCharacters(data);
  await loadWorldCharacterFolderMap(data,activeStoryPath);
- let saved={};try{saved=JSON.parse(localStorage.getItem(storySettingsKey())||'{}')}catch(e){}
- characterVoiceMap=saved.characterVoiceMap||{};defaultVoiceProfileId=saved.defaultVoiceProfileId||'';
+ characterVoiceMap={};
+ characterDirectory.forEach(ch=>{const savedVoice=profileFromJsonVoice(ch.jsonVoice);if(savedVoice?.id)characterVoiceMap[ch.id]=savedVoice.id;});
+ defaultVoiceProfileId='';
+ try{localStorage.removeItem(storySettingsKey())}catch(e){}
  scenes=buildScenesFromJson(data);activeSceneIndex=0;activeLineIndex=0;restorePlaybackProgress();
  renderCharacterVoiceSetup();renderStoryCharacterSelectors(getCurrentLine()?.speakerId,getCurrentLine()?.characterAsset);renderSceneList();renderLineList();applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());
  $('speaker').readOnly=false;$('dialogue').readOnly=false;updateSeekUI(0);
@@ -1485,7 +1488,7 @@ function buildEditedStoryOutput(){
  if(!activeStoryData)throw new Error('Hãy chọn hoặc import kịch bản JSON trước.');
  const output=JSON.parse(JSON.stringify(activeStoryData)),rows=[],profiles=getVoiceProfiles();
  const characterMap=output.nhan_vat&&typeof output.nhan_vat==='object'?output.nhan_vat:(output.nhan_vat={});
- activeCharacterList().forEach(ch=>{if(!characterMap[ch.id])characterMap[ch.id]={ten_hien_thi:ch.name}});
+ activeCharacterList().forEach(ch=>{if(!characterMap[ch.id])characterMap[ch.id]={ten_hien_thi:ch.name};const prior=characterMap[ch.id]&&typeof characterMap[ch.id]==='object'?characterMap[ch.id]:{ten_hien_thi:ch.name};const selectedId=characterVoiceMap[ch.id]||'';const selectedProfile=profiles.find(p=>p.id===selectedId);if(selectedProfile){characterMap[ch.id]={...prior,ten_hien_thi:prior.ten_hien_thi||ch.name,giong_noi:{profile_id:selectedProfile.id,profile_name:selectedProfile.name||'',voice_id:selectedProfile.voiceId||'',voiceId:selectedProfile.voiceId||'',edge_voice_id:selectedProfile.edgeVoice||'',lang:selectedProfile.lang||'vi',gender:selectedProfile.gender||''}}}else if(Object.prototype.hasOwnProperty.call(characterVoiceMap,ch.id)){const clean={...prior};delete clean.giong_noi;delete clean.voice;characterMap[ch.id]=clean}});
  let lastBackground='';
  scenes.forEach(scene=>scene.lines.forEach(line=>{
   const frame=line.sourceFrame&&typeof line.sourceFrame==='object'?JSON.parse(JSON.stringify(line.sourceFrame)):{};
@@ -1526,7 +1529,7 @@ async function pushEditedStoryJson(){
   if(!confirm('Commit kịch bản "'+activeStoryName+'" lên '+path+'? Nội dung file trên GitHub sẽ được cập nhật.'))return;
   button.disabled=true;$('story-status').textContent='Đang cập nhật kịch bản lên GitHub…';
   const result=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path,content:JSON.stringify(output,null,2),message:'Update script: '+activeStoryName});
-  activeStoryData=output;storyCache.set(path,output);
+  activeStoryData=output;storyCache.set(path,output);characterDirectory=uniqueCharacters(output);characterVoiceMap={};characterDirectory.forEach(ch=>{const v=profileFromJsonVoice(ch.jsonVoice);if(v?.id)characterVoiceMap[ch.id]=v.id});renderCharacterVoiceSetup();
   $('story-status').textContent='Đã cập nhật '+output.danh_sach.length+' câu thoại lên GitHub. Commit: '+result.commitSha+' · '+result.path;
   setStatus('Cập nhật kịch bản lên GitHub thành công.');
  }catch(err){$('story-status').textContent='Không thể cập nhật kịch bản: '+(err.message||err);setStatus('Push kịch bản thất bại.');console.error(err)}
