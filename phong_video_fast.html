@@ -1668,7 +1668,7 @@ function renderVisibleCharacters(line=getCurrentLine()){
  $('visible-character-count').textContent=items.length+' nhân vật';
  host.innerHTML=items.map((item,index)=>{
   const ch=list.find(value=>String(value.id)===String(item.id));
-  return '<div class="visible-character-item" data-visible-index="'+index+'"><div class="visible-character-head wide"><span>'+safeText(ch?.name||('Nhân vật '+item.id))+'</span><button class="btn danger" type="button" data-visible-remove="'+index+'">Xóa</button></div><label class="field wide">Nhân vật<select data-visible-field="id">'+visibleCharacterOptions(item.id)+'</select></label><label class="field wide">Biểu cảm<select data-visible-field="bieu_cam">'+expressionsForCharacter(item.id,item.bieu_cam)+'</select></label><label class="field">Vị trí ngang X (%)<input data-visible-field="x" type="number" min="0" max="100" step="1" value="'+Number(item.x??(index?70:30))+'"></label><label class="field">Vị trí chân Y (%)<input data-visible-field="y" type="number" min="0" max="110" step="1" value="'+Number(item.y??100)+'"></label><label class="field">Kích thước<input data-visible-field="scale" type="number" min="0.1" max="2.5" step="0.05" value="'+Number(item.scale??.72)+'"></label></div>';
+  return '<div class="visible-character-item" data-visible-index="'+index+'"><div class="visible-character-head wide"><span>'+safeText(ch?.name||('Nhân vật '+item.id))+'</span><button class="btn danger" type="button" data-visible-remove="'+index+'">Xóa</button></div><label class="field wide">Nhân vật<select data-visible-field="id">'+visibleCharacterOptions(item.id)+'</select></label><label class="field wide">Biểu cảm<select data-visible-field="bieu_cam">'+expressionsForCharacter(item.id,item.bieu_cam)+'</select></label><label class="field wide">Vị trí ngang X · <strong data-visible-value="x">'+Number(item.x??(index?70:30))+'%</strong><input data-visible-field="x" type="range" min="0" max="100" step="1" value="'+Number(item.x??(index?70:30))+'" style="width:100%"></label><label class="field wide">Vị trí chân Y · <strong data-visible-value="y">'+Number(item.y??100)+'%</strong><input data-visible-field="y" type="range" min="0" max="110" step="1" value="'+Number(item.y??100)+'" style="width:100%"></label><label class="field">Kích thước<input data-visible-field="scale" type="number" min="0.1" max="2.5" step="0.05" value="'+Number(item.scale??.72)+'"></label></div>';
  }).join('');
 }
 function readVisibleCharactersFromEditor(){
@@ -1687,6 +1687,17 @@ $('visible-character-add').addEventListener('click',()=>{
  const files=expressionFilesByFolder[String(ch.folder)]||[],first=files[0]?.split('/').pop().replace(/\\.webm$/i,'')||'';
  line.visibleCharacters.push({id:ch.id,bieu_cam:first,x:70,y:100,scale:.72,z_index:line.visibleCharacters.length+1});
  renderVisibleCharacters(line);updateAssets();
+});
+$('visible-character-list').addEventListener('input',e=>{
+ const field=e.target.dataset.visibleField;
+ if(!['x','y'].includes(field))return;
+ const card=e.target.closest('[data-visible-index]'),line=getCurrentLine();if(!card||!line)return;
+ const index=Number(card.dataset.visibleIndex);
+ if(!Array.isArray(line.visibleCharacters)||!line.visibleCharacters[index])return;
+ const value=Number(e.target.value);
+ line.visibleCharacters[index][field]=value;
+ const label=card.querySelector('[data-visible-value="'+field+'"]');if(label)label.textContent=value+'%';
+ updateAssets();
 });
 $('visible-character-list').addEventListener('change',e=>{
  const card=e.target.closest('[data-visible-index]');if(!card)return;
