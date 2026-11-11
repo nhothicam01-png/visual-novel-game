@@ -6,7 +6,7 @@ GW.ask=async(p,j,m)=>{if(!GW.key())throw Error('Chưa nhập Gemini API Key.');l
 GW.parse=t=>JSON.parse(String(t).replace(new RegExp(String.fromCharCode(96)+'{3}(?:json)?','gi'),'').trim());
 GW.raw=async p=>{let r=await fetch(RAW+p);if(!r.ok)throw Error('Không đọc được '+p);return r.text()};
 GW.loadTree=async()=>{let r=await fetch('https://api.github.com/repos/'+O+'/'+R+'/git/trees/'+B+'?recursive=1'),d=await r.json();if(!r.ok)throw Error(d.message||'GitHub tree lỗi');GW.T=d.tree||[];return GW.T};
-GW.tab=n=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===n));document.querySelectorAll('.pane').forEach(x=>x.hidden=x.id!=='pane-'+n)};
+GW.tab=n=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===n));document.querySelectorAll('.pane').forEach(x=>x.hidden=x.id!=='pane-'+n);if(n==='select'&&!GW.A.characters.length)GW.loadAssets()};
 document.querySelectorAll('.tab').forEach(x=>x.onclick=()=>GW.tab(x.dataset.tab));
 $('api-key').value=localStorage.getItem(K)||'';
 $('save-key').onclick=()=>{if(!GW.val('api-key'))return GW.say('connection-status','Nhập API key.','err');localStorage.setItem(K,GW.val('api-key'));GW.say('connection-status','Đã lưu API key trên thiết bị.','ok')};
