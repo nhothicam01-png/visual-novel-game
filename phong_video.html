@@ -223,6 +223,8 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <select id="fps"><option value="24">24 FPS</option><option value="30">30 FPS</option><option value="60" selected>60 FPS</option></select></label>
 <label class="field">Chất lượng xuất
 <select id="export-quality"><option value="720" selected>⚡ Nhanh · 720p</option><option value="1080">Chuẩn · 1080p (chậm hơn ~2×)</option></select></label>
+<label class="field">Chế độ render Colab
+<select id="colab-render-mode"><option value="ffmpeg">FFmpeg thuần · nhanh</option><option value="hybrid" selected>Kết hợp · cân bằng</option><option value="browser">Giống preview · ưu tiên chính xác</option></select></label>
 <label class="field">Ngôn ngữ gốc của thoại
 <select id="subtitle-source-language">
 <option value="Vietnamese">Tiếng Việt</option><option value="English">English</option><option value="Japanese">日本語</option><option value="Korean">한국어</option><option value="Chinese">中文</option><option value="French">Français</option><option value="Spanish">Español</option><option value="German">Deutsch</option><option value="Portuguese">Português</option><option value="Indonesian">Bahasa Indonesia</option><option value="Thai">ภาษาไทย</option>
@@ -238,6 +240,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <p class="note">Ghi trực tiếp dùng MediaRecorder, phát lại theo timeline và thu cả hình + âm thanh (Edge TTS, nhạc nền, hiệu ứng). Trên Chrome Android thường xuất WebM; dùng nút MP4 để xuất MP4 kèm phụ đề và AudioManifest.</p>
 <p class="note">Render Colab: bấm “Chuẩn bị gói render Colab” để tạo ZIP, mở notebook, bấm Kết nối rồi chọn Chạy tất cả (Run all). Colab sẽ hỏi file ZIP, tự tải engine và render MP4. Kết quả gồm MP4, SRT, Audio Manifest, metadata và ZIP tổng hợp trong Google Drive/VisualNovelRenders.</p>
+<p class="note">Chế độ Colab: FFmpeg thuần ưu tiên tốc độ; Kết hợp dùng render native cho phần chuẩn và khung hình trình duyệt cho hiệu ứng cần độ trung thực; Giống preview xuất khung hình từ chính canvas website để giữ CSS/JavaScript và animation. Chế độ nhiều khung hình có thể tạo ZIP lớn và render lâu hơn.</p>
 <p class="note">Gói ZIP chỉ chứa timeline, WAV thoại và tham chiếu tài nguyên. Colab tải tài nguyên gốc từ GitHub; render cloud là bộ dựng native, có thể khác một số chi tiết so với preview trình duyệt.</p>
 <div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
 </details>
@@ -1178,7 +1181,7 @@ async function exportColabPackage(){
  const fps=Number($('fps').value)||60,q=Number($('export-quality').value)||720;
  const portrait=!!captureVisual().portrait,width=portrait?(q===1080?1080:720):(q===1080?1920:1280),height=portrait?(q===1080?1920:1280):(q===1080?1080:720);
  const audioContext=new (window.AudioContext||window.webkitAudioContext)();
- const zip=new JSZip(),timeline={schema_version:1,kind:'visual-novel-colab-timeline',created_at:new Date().toISOString(),story:{name:String(activeStoryName||'KichBan'),path:String(activeStoryPath||'')},video:{format:'mp4',fps,width,height,portrait,quality:q,scope},global:{show_dialogue:$('show-dialogue').checked,show_speaker:$('show-speaker').checked,dialogue_font:'Segoe UI, Arial, sans-serif',bgm_volume:Number($('bgm-volume').value),sfx_volume:Number($('sfx-volume').value),tts_volume:Number($('tts-volume').value)},scenes:[],assets:[]};
+ const zip=new JSZip(),timeline={schema_version:1,kind:'visual-novel-colab-timeline',created_at:new Date().toISOString(),story:{name:String(activeStoryName||'KichBan'),path:String(activeStoryPath||'')},video:{format:'mp4',fps,width,height,portrait,quality:q,scope},render_mode:$('colab-render-mode')?.value||'hybrid',global:{show_dialogue:$('show-dialogue').checked,show_speaker:$('show-speaker').checked,dialogue_font:'Segoe UI, Arial, sans-serif',bgm_volume:Number($('bgm-volume').value),sfx_volume:Number($('sfx-volume').value),tts_volume:Number($('tts-volume').value)},scenes:[],assets:[]};
  const assetMap=new Map(),ttsFiles=[];
  const addAsset=(path,type)=>{if(!path)return;const clean=String(path).replace(/^\/+/,'');if(!assetMap.has(clean)){assetMap.set(clean,{path:clean,type,source_url:BASE+clean})}};
  let cursor=0;
