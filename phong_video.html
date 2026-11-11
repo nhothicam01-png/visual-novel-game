@@ -165,16 +165,21 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <label class="field">Tên nhân vật nói<input id="speaker" value="Nhân vật 1" maxlength="40"></label>
 
 <div class="grid">
-<label class="field" hidden>Nguồn giọng (TTS)<select id="tts-engine"><option value="edge">⚡ Edge Neural · miễn phí · rất nhanh (khuyên dùng)</option><option value="piper">Piper offline · chậm (dự phòng)</option></select></label>
+<label class="field">Nguồn giọng (TTS)<select id="tts-engine"><option value="edge">⚡ Edge Neural · miễn phí · rất nhanh (khuyên dùng)</option><option value="piper">Piper offline · chậm (dự phòng)</option></select></label>
 
-<label class="field" hidden>Giọng Edge mặc định<select id="edge-gender"><option value="F">Nữ</option><option value="M">Nam</option></select></label>
-<label class="field" hidden>Hồ sơ giọng đã lưu<select id="voice-profile"><option value="">Dùng giọng Piper bên dưới</option></select></label>
-<label class="field" hidden>Ngôn ngữ<select id="tts-lang"><option value="vi-VN">Tiếng Việt</option><option value="en-US">English</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="zh-CN">中文</option></select></label>
-<label class="field" hidden>Giọng Piper<select id="piper-voice"><option value="">Đang tải danh sách giọng…</option></select></label>
+<label class="field">Giọng Edge mặc định<select id="edge-gender"><option value="F">Nữ</option><option value="M">Nam</option></select></label>
+<label class="field">Hồ sơ giọng đã lưu<select id="voice-profile"><option value="">Dùng giọng Piper bên dưới</option></select></label>
+<label class="field">Ngôn ngữ<select id="tts-lang"><option value="vi-VN">Tiếng Việt</option><option value="en-US">English</option><option value="ja-JP">日本語</option><option value="ko-KR">한국어</option><option value="zh-CN">中文</option></select></label>
+<label class="field">Giọng Piper<select id="piper-voice"><option value="">Đang tải danh sách giọng…</option></select></label>
 </div>
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
-<label class="field" hidden>Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
-<details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
+<label class="field">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
+<details class="effect-panel"><summary>🔊 Âm thanh tùy chỉnh cho thoại này</summary>
+<label class="field">Nhạc nền<select id="line-bgm-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
+<label class="field">Tên tệp nhạc nền (trong AmThanh/Nen)<input id="line-bgm-file" placeholder="vd: afternoon_between_leaves.mp3"></label>
+<label class="field">Nhạc hiệu ứng<select id="line-sfx-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
+<label class="field">Tên tệp hiệu ứng (trong AmThanh/HieuUng)<input id="line-sfx-file" placeholder="vd: door_open.mp3"></label>
+</details><details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
 <div class="scene-groups">
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
 <label class="field">Chọn nhân vật<select id="character"></select></label>
@@ -203,7 +208,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <details class="panel main-panel"><summary class="panel-heading">3. Khung hình & bố cục</summary>
 <div class="row">
-
+<button class="btn secondary" id="ratio-toggle-settings">📐 Tỉ lệ: 16:9</button>
 <label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
 <label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
 <label class="field">Kiểu khung thoại
@@ -358,7 +363,7 @@ function finishTaskProgress(label){
 
 function updateRatioButtons(){
  const label='📐 Tỉ lệ: '+(isPortrait?'9:16':'16:9');
- const el=$('ratio-toggle');if(el)el.textContent=label;
+ ['ratio-toggle','ratio-toggle-settings'].forEach(id=>{const el=$(id);if(el)el.textContent=label;});
 }
 function toggleAspectRatio(){resizeCanvas(!isPortrait)}
 function resizeCanvas(portrait){
@@ -611,7 +616,18 @@ function audioElement(url,loop,volume){
  const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
 }
 function resolvedLineAudio(line,kind){
-  return String(line?.sourceAudio?.[kind]??(kind==='bgm'&&!activeStoryData?$('bgm').value:'')).trim();
+ const override=line?.audioOverride?.[kind];
+ if(override?.mode==='off')return '';
+ if(override?.mode==='override')return String(override.file||'').trim();
+ return String(line?.sourceAudio?.[kind]??(kind==='bgm'&&!activeStoryData?$('bgm').value:'')).trim();
+}
+let previewLineBgmName='',previewLineSfxName='';
+async function playLineAudio(line){
+ const bgm=resolvedLineAudio(line,'bgm');
+ if(bgm!==previewLineBgmName){
+  if(previewAudio.bgm){previewAudio.bgm.pause();previewAudio.bgm=null}
+  previewLineBgmName=bgm;
+  if(bgm){previewAudio.bgm=audioElement(BASE+'AmThanh/Nen/'+bgm,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
  }
  const sfx=resolvedLineAudio(line,'sfx');
  if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}
@@ -1250,53 +1266,22 @@ function saveStorySettings(){if(!activeStoryName)return;try{localStorage.setItem
 async function loadStoryCatalog(){
  const sel=$('story-select'),status=$('story-status');
  if(!sel||!status)return;
- sel.disabled=true;status.textContent='Đang tải danh sách truyện từ GitHub…';
- const apiBase='https://api.github.com/repos/nhothicam01-png/visual-novel-game';
- const isStoryJson=path=>{
-  const parts=String(path||'').split('/');
-  return parts.length===4&&parts[0]==='assets'&&parts[1]==='KichBan'&&/\.json$/i.test(parts[3])&&parts[3].replace(/\.json$/i,'').toLowerCase()===parts[2].toLowerCase();
- };
- const parseEntries=files=>(files||[]).filter(x=>x&&(x.type==='blob'||x.type==='file')&&isStoryJson(x.path))
-  .map(x=>({name:x.path.split('/')[2],path:x.path,url:null}))
-  .sort((a,b)=>a.name.localeCompare(b.name,'vi'));
- async function getJson(url){
-  const response=await fetch(url,{cache:'no-store',headers:{Accept:'application/vnd.github+json'}});
-  if(!response.ok)throw new Error('HTTP '+response.status+' khi tải '+url);
-  return await response.json();
- }
+ sel.disabled=true;status.textContent='Đang cập nhật danh sách truyện từ GitHub…';
  try{
-  let entries=[],primaryError='';
-  try{
-   const treeData=await getJson(apiBase+'/git/trees/main?recursive=1');
-   if(treeData.truncated)throw new Error('GitHub trả về danh sách thư mục bị cắt bớt.');
-   entries=parseEntries(treeData.tree);
-  }catch(err){
-   primaryError=err.message||String(err);
-   // Dự phòng: duyệt thư mục KichBan và từng thư mục truyện bằng Contents API.
-   const folders=await getJson(apiBase+'/contents/assets/KichBan?ref=main');
-   const dirs=(Array.isArray(folders)?folders:[]).filter(x=>x.type==='dir');
-   const nested=await Promise.all(dirs.map(async dir=>{
-    try{return await getJson(apiBase+'/contents/'+dir.path.split('/').map(encodeURIComponent).join('/')+'?ref=main')}
-    catch(err){console.warn('Không đọc được thư mục truyện '+dir.name,err);return []}
-   }));
-   entries=parseEntries(nested.flat());
-   if(!entries.length)throw new Error('Tree API lỗi ('+primaryError+'); Contents API không tìm thấy file JSON hợp lệ.');
-  }
+  const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
+  if(!response.ok)throw new Error('GitHub trả về lỗi HTTP '+response.status);
+  const treeData=await response.json();
+  if(treeData.truncated)throw new Error('Danh sách tệp GitHub quá lớn, không thể quét đầy đủ.');
+  const files=(treeData.tree||[]).filter(item=>item.type==='blob'&&item.path.toLowerCase().endsWith('.json')&&(/^assets\/KichBan\/[^/]+\/[^/]+\.json$/i.test(item.path)&&item.path.split('/').at(-1).replace(/\.json$/i,'')===item.path.split('/')[2])).sort((a,b)=>a.path.localeCompare(b.path,'vi'));
+  const entries=files.map(file=>({name:file.path.split('/')[2],path:file.path,url:null}));
   sel.innerHTML='';
-  const placeholder=document.createElement('option');placeholder.value='';
-  placeholder.textContent=entries.length?'-- Chọn truyện --':'Chưa có kịch bản JSON';
-  sel.appendChild(placeholder);
-  entries.forEach((entry,i)=>{
-   const option=document.createElement('option');option.value=String(i);
-   option.textContent=entry.name;sel.appendChild(option);
-  });
+  const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=entries.length?'-- Chọn truyện --':'Chưa có kịch bản JSON';sel.appendChild(placeholder);
+  entries.forEach((entry,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=entry.name+' / '+entry.path.split('/').at(-1);sel.appendChild(option)});
   sel._stories=entries;
-  status.textContent=entries.length
-   ?'Đã tải '+entries.length+' truyện từ assets/KichBan.'
-   :'Không tìm thấy file JSON truyện đúng cấu trúc trong assets/KichBan.';
+  status.textContent='Tìm thấy '+entries.length+' truyện trong assets/KichBan. Danh sách được lấy theo cùng cách với index.html.';
  }catch(err){
   sel.innerHTML='<option value="">Không tải được danh sách</option>';sel._stories=[];
-  status.textContent='Lỗi tải danh sách: '+(err.message||String(err));
+  status.textContent='Lỗi tải danh sách: '+err.message;
   console.warn('Không thể lấy danh sách kịch bản GitHub:',err);
  }finally{sel.disabled=false}
 }
@@ -1407,7 +1392,7 @@ function buildScenesFromJson(data){
   const starts=!current||(!!rawBg&&rawBg!==current.visual.background);
   if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;
-  current.lines.push({speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},sourceFrame:frame,characterAsset:characterFolder,expression});
+  current.lines.push({speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterFolder,expression});
   current.sourceAudio={bgm:activeBgm,sfx};
  });
  if(current)out.push(current);return out;
@@ -1443,6 +1428,7 @@ $('seek-next').addEventListener('click',()=>seekSourceLine(currentSourceIndex()+
 $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)));
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
 $('ratio-toggle').addEventListener('click',toggleAspectRatio);
+$('ratio-toggle-settings').addEventListener('click',toggleAspectRatio);
 $('stop-scene').addEventListener('click',stopAndResetPreview);
 
 $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
@@ -1536,14 +1522,16 @@ async function seekSourceLine(sourceIndex){
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(line.sourceIndex+1);
 }
 function captureVisual(){
- return {character:$('character').value,expression:$('expression').value,background:$('background').value,dialogueMode:$('dialogue-width-mode').value,dialogueWidth:$('dialogue-width').value};
+ return {character:$('character').value,expression:$('expression').value,background:$('background').value,showDialogue:$('show-dialogue').checked,showSpeaker:$('show-speaker').checked,dialogueMode:$('dialogue-width-mode').value,dialogueWidth:$('dialogue-width').value,portrait:stage.classList.contains('portrait')};
 }
 function applyVisual(v){
  if(!v)return;
  $('character').value=v.character;$('expression').value=v.expression;$('background').value=v.background;
-  $('dialogue-width-mode').value=v.dialogueMode||'percent';$('dialogue-width').value=v.dialogueWidth||75;
+ $('show-dialogue').checked=v.showDialogue;$('show-speaker').checked=v.showSpeaker;
+ $('dialogue-width-mode').value=v.dialogueMode||'percent';$('dialogue-width').value=v.dialogueWidth||75;
  $('dialogue-width-control').style.display=v.dialogueMode==='fit'?'none':'flex';
  $('dialogue-width-value').textContent=$('dialogue-width').value+'%';
+ resizeCanvas(!!v.portrait);
 }
 function getCurrentScene(){return scenes[activeSceneIndex]}
 function getCurrentLine(){return getCurrentScene()?.lines[activeLineIndex]||null}
@@ -1555,7 +1543,7 @@ function saveCurrentLine(){
  line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
-
+ line.audioOverride={bgm:{mode:$('line-bgm-mode').value,file:$('line-bgm-file').value.trim()},sfx:{mode:$('line-sfx-mode').value,file:$('line-sfx-file').value.trim()}};
  if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
 }
 function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual();const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
@@ -1567,7 +1555,7 @@ function loadLineToEditor(line){
  $('speaker').value=line.speaker||'Nhân vật 1';$('speaker').readOnly=!!activeStoryData;$('dialogue').value=line.text||'';
  $('voice-profile').value=line.profileId||'';
  $('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
-
+ const ao=line.audioOverride||{};$('line-bgm-mode').value=ao.bgm?.mode||'inherit';$('line-bgm-file').value=ao.bgm?.file||'';$('line-sfx-mode').value=ao.sfx?.mode||'inherit';$('line-sfx-file').value=ao.sfx?.file||'';
  const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};
  fillVoice();
  generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';
@@ -1621,7 +1609,7 @@ $('delete-line').addEventListener('click',()=>{
  list.splice(activeLineIndex,1);activeLineIndex=Math.max(0,activeLineIndex-1);loadLineToEditor(getCurrentLine());renderLineList();
 });
 $('dialogue-line-list').addEventListener('click',e=>{const item=e.target.closest('[data-line-index]');if(item)selectLine(Number(item.dataset.lineIndex))});
-['speaker','dialogue','voice-profile','tts-lang','piper-voice','line-pause'].forEach(id=>{
+['speaker','dialogue','voice-profile','tts-lang','piper-voice','line-pause','line-bgm-mode','line-bgm-file','line-sfx-mode','line-sfx-file'].forEach(id=>{
  $(id).addEventListener('input',()=>{saveCurrentLine();renderLineList()});
  $(id).addEventListener('change',()=>{saveCurrentLine();renderLineList()});
 });
@@ -1629,7 +1617,6 @@ document.querySelectorAll('#character,#expression,#background,#show-dialogue,#sh
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
 renderEffectCatalogs();
-loadStoryCatalog();
 scenes=[{name:'Cảnh 1',visual:captureVisual(),lines:[newLine()]}];
 updateSeekUI(0);
 renderSceneList();loadLineToEditor(getCurrentLine());renderLineList();
