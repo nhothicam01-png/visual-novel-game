@@ -3,7 +3,7 @@
 Renders frames in Colab from source assets; it does not consume browser-rendered PNG frames.
 """
 from __future__ import annotations
-import argparse, json, os, shutil, subprocess, sys, urllib.request, zipfile
+import argparse, json, os, shutil, subprocess, sys, urllib.request, urllib.parse, zipfile
 from pathlib import Path
 from typing import Any
 import cv2
@@ -241,11 +241,14 @@ def render_video(timeline, work: Path, output: Path):
         active=None
         if intervals and intervals[current_idx][0]<=t<intervals[current_idx][1]: active=intervals[current_idx]
         base=Image.new("RGBA",(width,height),(0,0,0,255))
+        ch=None
         if active:
             start,end,scene,it=active
             local=t-start
             bgsrc=get_bg(it.get("background"))
-            if isinstance(bgsrc,VideoAsset): bg=cover_image(bgsrc.frame(local).convert("RGB"),(width,height)) if bgsrc.frame(local) else None
+            if isinstance(bgsrc,VideoAsset):
+                bgframe=bgsrc.frame(local)
+                bg=cover_image(bgframe.convert("RGB"),(width,height)) if bgframe else None
             else: bg=bgsrc
             if bg: base=Image.alpha_composite(base,bg.convert("RGBA"))
             csrc=get_char(it.get("character_asset"),it.get("expression"))
@@ -255,7 +258,7 @@ def render_video(timeline, work: Path, output: Path):
                     ch=character_image(cf,(width,height),portrait)
                     base=Image.alpha_composite(base,ch)
             strength=float(it.get("effect_strength",50))/50
-            base=apply_visual_effects(Image.new("RGBA",(width,height),(0,0,0,255)),bg, ch if 'ch' in locals() else None,local,it,strength) if (bg is not None or 'ch' in locals()) else base.convert("RGB")
+            base=apply_visual_effects(Image.new("RGBA",(width,height),(0,0,0,255)),bg,ch,local,it,strength) if (bg is not None or ch is not None) else base.convert("RGB")
             base=dialogue_layer(base.convert("RGB"),it,timeline.get("global",{}),it.get("scene_visual") or {})
         frame=cv2.cvtColor(np.asarray(base.convert("RGB")),cv2.COLOR_RGB2BGR)
         writer.write(frame)
@@ -300,7 +303,7 @@ def mix_audio(timeline,work,video_path,output):
     if labels:
         chains.append("".join(labels)+f"amix=inputs={len(labels)}:duration=longest:dropout_transition=0,apad,atrim=duration={duration:.4f}[mix]")
         graph=";".join(chains)
-        cmd += ["-filter_complex",graph,"-map","0:v:0","-map","[mix]","-c:v","copy","-c:a","aac","-b:a","192k","-t",str(duration),str(output)]
+        cmd += ["-filter_complex",graph,"-map","0:v:0","-map","[mix]","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-t",str(duration),str(output)]
     else:
         cmd += ["-f","lavfi","-i",f"anullsrc=r=48000:cl=stereo","-map","0:v:0","-map",f"{input_index}:a:0","-c:v","copy","-c:a","aac","-t",str(duration),str(output)]
     run(cmd)
