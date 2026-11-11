@@ -237,9 +237,8 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 </div>
 
 <p class="note">Ghi trực tiếp dùng MediaRecorder, phát lại theo timeline và thu cả hình + âm thanh (Edge TTS, nhạc nền, hiệu ứng). Trên Chrome Android thường xuất WebM; dùng nút MP4 để xuất MP4 kèm phụ đề và AudioManifest.</p>
-<p class="note">Render Colab: bấm “Chuẩn bị gói render Colab” để tải ZIP dữ liệu, sau đó mở notebook Google Colab và tải ZIP lên. Colab tự dựng MP4 từ timeline và tài nguyên gốc; ZIP không phải video. Trình render MP4 trên trình duyệt vẫn giữ nguyên.</p>
-<p class="note">Sau khi xuất MP4, hệ thống tự tạo phụ đề gốc (.srt) và AudioManifest.json, chỉ push hai file dữ liệu này lên GitHub. Không push âm thanh.</p>
-<p class="note">Nút “Chuẩn bị gói render Colab” tạo ZIP gồm timeline, WAV thoại và danh sách tài nguyên gốc trên GitHub. ZIP là dữ liệu đầu vào, chưa phải video MP4; bộ máy render Colab sẽ được bổ sung riêng.</p>
+<p class="note">Render Colab: bấm “Chuẩn bị gói render Colab” để tạo ZIP, mở notebook, bấm Kết nối rồi chọn Chạy tất cả (Run all). Colab sẽ hỏi file ZIP, tự tải engine và render MP4. Kết quả gồm MP4, SRT, Audio Manifest, metadata và ZIP tổng hợp trong Google Drive/VisualNovelRenders.</p>
+<p class="note">Gói ZIP chỉ chứa timeline, WAV thoại và tham chiếu tài nguyên. Colab tải tài nguyên gốc từ GitHub; render cloud là bộ dựng native, có thể khác một số chi tiết so với preview trình duyệt.</p>
 <div class="status" id="export-status">Sẵn sàng. Video xuất từ chính khung hình xem trước.</div>
 </details>
 
