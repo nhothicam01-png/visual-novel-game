@@ -100,6 +100,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .dialogue-line-item .line-copy span{display:block;color:#cbd5e1;font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dialogue-line-item .line-state{font-size:.68rem;color:#86efac;white-space:nowrap}
 .line-editor{display:flex;flex-direction:column;gap:10px;padding:12px;background:#0b1425;border:1px solid #334155;border-radius:9px}
+.visible-character-editor{display:flex;flex-direction:column;gap:9px;padding:10px;background:#101b30;border:1px solid #475569;border-radius:9px}.visible-character-list{display:flex;flex-direction:column;gap:8px}.visible-character-item{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:9px;background:#0b1425;border:1px solid #334155;border-radius:8px}.visible-character-item .wide{grid-column:1/-1}.visible-character-item .field{font-size:.72rem}.visible-character-item .btn{padding:6px 9px}.visible-character-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#c4b5fd;font-size:.8rem;font-weight:700}@media(max-width:480px){.visible-character-item{grid-template-columns:1fr}}
 
 .nav{width:100%;display:flex;gap:8px;flex-wrap:wrap;background:#111c30;border:1px solid #334155;border-radius:12px;padding:14px;margin:0 0 12px}
 .nav a{color:#e9d5ff;background:#263449;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:13px}
@@ -177,6 +178,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
 <label style="display:none!important" hidden class="field">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
 <details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
+<section class="visible-character-editor"><div class="visible-character-head"><span>👥 Nhân vật xuất hiện trong cảnh</span><span id="visible-character-count">0 nhân vật</span></div><div class="row"><label class="field" style="flex:1">Thêm nhân vật<select id="visible-character-add-select"></select></label><button class="btn" id="visible-character-add" type="button">＋ Thêm</button></div><div class="visible-character-list" id="visible-character-list"></div><div class="note">Mỗi nhân vật có biểu cảm, vị trí và kích thước riêng. Nhân vật nói được tự thêm vào khi bạn thêm nhân vật xuất hiện khác.</div></section>
 <div class="scene-groups">
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
 <label class="field">Chọn nhân vật<select id="character"></select></label>
@@ -1609,6 +1611,9 @@ function buildEditedStoryOutput(){
   const matched=activeCharacterList().find(ch=>ch.folder===asset)||activeCharacterList().find(ch=>ch.id===String(line.speakerId||''));
   const characterId=matched?.id||line.speakerId||asset;
   if(characterId)frame.nhan_vat=characterId;
+  const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
+  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>({id:String(item.id),bieu_cam:String(item.bieu_cam||''),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}));
+  else delete frame.nhan_vat_hien_thi;
   frame.noi_dung=String(line.text??'');
   const expression=String(line.expression||'').trim();if(expression)frame.bieu_cam=expression;
   const bg=String(line.background||scene.visual?.background||'').trim();
@@ -1704,6 +1709,7 @@ function saveCurrentLine(){
  line.speaker=$('speaker').value.trim()||'Nhân vật';
  line.text=$('dialogue').value;
  line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;
+ line.visibleCharacters=readVisibleCharactersFromEditor();
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
  if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
@@ -1722,8 +1728,68 @@ function loadLineToEditor(line){
  fillVoice();
  generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';
  applyLineEffects(line);
+ renderVisibleCharacters(line);
  $('line-editor-title').textContent='Chỉnh sửa câu thoại '+(activeLineIndex+1);
 }
+function visibleCharacterOptions(selected=''){
+ const list=activeCharacterList();
+ return list.map(ch=>'<option value="'+safeText(ch.id)+'" '+(String(ch.id)===String(selected)?'selected':'')+'>'+safeText(ch.name)+'</option>').join('');
+}
+function expressionsForCharacter(id,selected=''){
+ const ch=activeCharacterList().find(item=>item.id===String(id)),files=ch?(expressionFilesByFolder[String(ch.folder)]||[]):[];
+ const names=files.map(path=>path.split('/').pop().replace(/\\.webm$/i,''));
+ const current=normalizeExpression(selected||names[0]||'say_hello_bieu_cam_binh_thuong');
+ if(!names.includes(current))names.unshift(current);
+ return names.map(name=>'<option value="'+safeText(name)+'" '+(name===current?'selected':'')+'>'+safeText(name)+'</option>').join('');
+}
+function renderVisibleCharacters(line=getCurrentLine()){
+ const host=$('visible-character-list'),add=$('visible-character-add-select');if(!host||!add)return;
+ const list=activeCharacterList(),items=Array.isArray(line?.visibleCharacters)?line.visibleCharacters:[];
+ add.innerHTML='<option value="">-- Chọn nhân vật --</option>'+list.filter(ch=>!items.some(item=>String(item.id)===String(ch.id))).map(ch=>'<option value="'+safeText(ch.id)+'">'+safeText(ch.name)+'</option>').join('');
+ $('visible-character-count').textContent=items.length+' nhân vật';
+ host.innerHTML=items.map((item,index)=>{
+  const ch=list.find(value=>String(value.id)===String(item.id));
+  return '<div class="visible-character-item" data-visible-index="'+index+'"><div class="visible-character-head wide"><span>'+safeText(ch?.name||('Nhân vật '+item.id))+'</span><button class="btn danger" type="button" data-visible-remove="'+index+'">Xóa</button></div><label class="field wide">Nhân vật<select data-visible-field="id">'+visibleCharacterOptions(item.id)+'</select></label><label class="field wide">Biểu cảm<select data-visible-field="bieu_cam">'+expressionsForCharacter(item.id,item.bieu_cam)+'</select></label><label class="field">Vị trí ngang X (%)<input data-visible-field="x" type="number" min="0" max="100" step="1" value="'+Number(item.x??(index?70:30))+'"></label><label class="field">Vị trí chân Y (%)<input data-visible-field="y" type="number" min="0" max="110" step="1" value="'+Number(item.y??100)+'"></label><label class="field">Kích thước<input data-visible-field="scale" type="number" min="0.1" max="2.5" step="0.05" value="'+Number(item.scale??.72)+'"></label></div>';
+ }).join('');
+}
+function readVisibleCharactersFromEditor(){
+ return Array.from($('visible-character-list')?.querySelectorAll('[data-visible-index]')||[]).map((card,index)=>{
+  const get=name=>card.querySelector('[data-visible-field="'+name+'"]')?.value;
+  return {id:String(get('id')||''),bieu_cam:String(get('bieu_cam')||''),x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:index+1};
+ }).filter(item=>item.id);
+}
+$('visible-character-add').addEventListener('click',()=>{
+ const line=getCurrentLine(),id=$('visible-character-add-select').value;if(!line||!id)return;
+ saveCurrentLine();
+ if(!Array.isArray(line.visibleCharacters))line.visibleCharacters=[];
+ const list=activeCharacterList(),speaker=list.find(ch=>ch.id===String(line.speakerId||$('speaker').value));
+ if(!line.visibleCharacters.length&&speaker)line.visibleCharacters.push({id:speaker.id,bieu_cam:line.expression||line.sourceFrame?.bieu_cam||'',x:30,y:100,scale:.72,z_index:1});
+ const ch=list.find(item=>item.id===id);if(!ch||line.visibleCharacters.some(item=>String(item.id)===id))return;
+ const files=expressionFilesByFolder[String(ch.folder)]||[],first=files[0]?.split('/').pop().replace(/\\.webm$/i,'')||'';
+ line.visibleCharacters.push({id:ch.id,bieu_cam:first,x:70,y:100,scale:.72,z_index:line.visibleCharacters.length+1});
+ renderVisibleCharacters(line);updateAssets();
+});
+$('visible-character-list').addEventListener('change',e=>{
+ const card=e.target.closest('[data-visible-index]');if(!card)return;
+ const line=getCurrentLine();if(!line)return;
+ const index=Number(card.dataset.visibleIndex),field=e.target.dataset.visibleField;
+ if(field==='id'){
+  const ch=activeCharacterList().find(item=>item.id===e.target.value);if(!ch)return;
+  const files=expressionFilesByFolder[String(ch.folder)]||[];
+  line.visibleCharacters[index]={...line.visibleCharacters[index],id:ch.id,bieu_cam:files[0]?.split('/').pop().replace(/\\.webm$/i,'')||'',z_index:index+1};
+  renderVisibleCharacters(line);
+ }else{
+  line.visibleCharacters[index][field]=['x','y','scale'].includes(field)?Number(e.target.value):e.target.value;
+  line.visibleCharacters=readVisibleCharactersFromEditor();
+ }
+ updateAssets();
+});
+$('visible-character-list').addEventListener('click',e=>{
+ const button=e.target.closest('[data-visible-remove]');if(!button)return;
+ const line=getCurrentLine();if(!line)return;
+ saveCurrentLine();line.visibleCharacters.splice(Number(button.dataset.visibleRemove),1);
+ renderVisibleCharacters(line);updateAssets();
+});
 function renderSceneList(){
  $('scene-select').innerHTML=scenes.map((sc,i)=>'<option value="'+i+'">'+(i+1)+'. '+String(sc.name).replace(/[&<>"]/g,'')+'</option>').join('');
  $('scene-select').value=String(activeSceneIndex);
@@ -1783,6 +1849,7 @@ document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEv
 
 renderEffectCatalogs();
 scenes=[{name:'Cảnh 1',visual:captureVisual(),lines:[newLine()]}];
+renderVisibleCharacters(getCurrentLine());
 updateSeekUI(0);
 renderSceneList();loadLineToEditor(getCurrentLine());renderLineList();
 resizeCanvas(false);
