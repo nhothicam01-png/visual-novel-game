@@ -1,0 +1,23 @@
+name: Colab renderer validation
+on:
+  push:
+    paths:
+      - "colab-render/**"
+      - ".github/workflows/colab-render-check.yml"
+  pull_request:
+    paths:
+      - "colab-render/**"
+      - ".github/workflows/colab-render-check.yml"
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check Python syntax
+        run: python -m py_compile colab-render/renderer.py
+      - name: Check notebook JSON
+        run: python -c "import json; json.load(open('colab-render/colab_render.ipynb', encoding='utf-8'))"
