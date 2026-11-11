@@ -1092,8 +1092,10 @@ async function seekVideoFrame(video,time){
 // ===== [TỐI ƯU] Cache khung hình của video nền/nhân vật =====
 // Video nền/nhân vật là clip ngắn lặp vô hạn. Trước đây mỗi khung hình xuất ra đều seek lại video (chậm nhất).
 // Giờ mỗi khung của clip chỉ seek MỘT lần, lưu thành ImageBitmap, các vòng lặp sau lấy từ cache.
-const CLIP_CACHE_BUDGET=256*1024*1024;
-const CLIP_BLOB_CACHE_BUDGET=128*1024*1024;
+// Giới hạn cache theo bộ nhớ thiết bị để tránh làm Android thiếu RAM.
+const DEVICE_MEMORY_GB=Number(navigator.deviceMemory)||4;
+const CLIP_CACHE_BUDGET=(DEVICE_MEMORY_GB<=4?64:DEVICE_MEMORY_GB<=8?128:192)*1024*1024;
+const CLIP_BLOB_CACHE_BUDGET=(DEVICE_MEMORY_GB<=4?32:DEVICE_MEMORY_GB<=8?64:96)*1024*1024;
 const clipFrameCache=new Map(); // video -> {fps,n,frames:Map,blobs:Map,bytes,blobBytes}
 let clipCacheBytes=0,clipBlobCacheBytes=0;
 function clipKeyOf(video,t,fps){
@@ -1139,31 +1141,41 @@ async function clipBlobFromBitmap(bitmap){
   return await new Promise(resolve=>surface.toBlob(resolve,'image/webp',.78));
  }catch(_){return null}
 }
+function clipBitmapFromVideo(video){
+ const cv=renderCanvas||canvas,vw=video.videoWidth||0,vh=video.videoHeight||0;
+ if(!vw||!vh||!cv)return createImageBitmap(video);
+ const sc=Math.min(1,Math.max(cv.width,cv.height)/Math.min(vw,vh));
+ return sc<1?createImageBitmap(video,{resizeWidth:Math.round(vw*sc),resizeHeight:Math.round(vh*sc),resizeQuality:'medium'}):createImageBitmap(video);
+}
+function clipStoreBitmap(c,k,bmp){
+ const sz=bmp.width*bmp.height*4;
+ if(clipCacheBytes+sz>CLIP_CACHE_BUDGET)return;
+ c.frames.set(k,bmp);c.bytes+=sz;clipCacheBytes+=sz;
+}
 function clipFrame(video,t,fps){
  if(!video||!Number.isFinite(video.duration)||video.duration<=0)return video;
  const c=getClipEntry(video,fps),k=clipKeyOf(video,t,fps),hit=c.frames.get(k);
  if(hit)return hit;
  const packed=c.blobs.get(k);
- if(packed){c.blobs.delete(k);c.blobs.set(k,packed);return createImageBitmap(packed)}
+ if(packed){c.blobs.delete(k);c.blobs.set(k,packed);return createImageBitmap(packed).then(b=>{clipStoreBitmap(c,k,b);return b})}
  return clipFrameSlow(video,c,k,t,fps);
 }
 async function clipFrameSlow(video,c,k,t,fps){
  await seekVideoFrame(video,Math.min(k/fps,video.duration-0.001));
- const bmp=await createImageBitmap(video);
- // Lưu frame dạng WebP nén: clip 10–20 giây không còn bị bỏ cache chỉ vì vượt 256 MB RAM.
- const packed=await clipBlobFromBitmap(bmp);
- if(packed&&packed.size<=CLIP_BLOB_CACHE_BUDGET){
-  while(clipBlobCacheBytes+packed.size>CLIP_BLOB_CACHE_BUDGET){
-   let oldestVideo=null,oldestKey=null;
-   for(const [v,entry] of clipFrameCache){
-    if(entry.blobs.size){oldestVideo=v;oldestKey=entry.blobs.keys().next().value;break}
+ const bmp=await clipBitmapFromVideo(video);
+ clipStoreBitmap(c,k,bmp);
+ // Bản WebP nén dự phòng khi RAM bitmap đã đầy.
+ if(!c.frames.has(k)){
+  const packed=await clipBlobFromBitmap(bmp);
+  if(packed&&packed.size<=CLIP_BLOB_CACHE_BUDGET){
+   while(clipBlobCacheBytes+packed.size>CLIP_BLOB_CACHE_BUDGET){
+    let ov=null,ok=null;
+    for(const [v,entry] of clipFrameCache){if(entry.blobs.size){ov=v;ok=entry.blobs.keys().next().value;break}}
+    if(!ov)break;
+    const old=clipFrameCache.get(ov),ob=old.blobs.get(ok);
+    old.blobs.delete(ok);old.blobBytes-=ob.size;clipBlobCacheBytes-=ob.size;
    }
-   if(!oldestVideo)break;
-   const old=clipFrameCache.get(oldestVideo),oldBlob=old.blobs.get(oldestKey);
-   old.blobs.delete(oldestKey);old.blobBytes-=oldBlob.size;clipBlobCacheBytes-=oldBlob.size;
-  }
-  if(clipBlobCacheBytes+packed.size<=CLIP_BLOB_CACHE_BUDGET){
-   c.blobs.set(k,packed);c.blobBytes+=packed.size;clipBlobCacheBytes+=packed.size;
+   if(clipBlobCacheBytes+packed.size<=CLIP_BLOB_CACHE_BUDGET){c.blobs.set(k,packed);c.blobBytes+=packed.size;clipBlobCacheBytes+=packed.size}
   }
  }
  return bmp;
@@ -1284,6 +1296,7 @@ async function exportVideo(){
  const prepared=[],allAudio=[];let totalDuration=0,audioManifest=null;
  recording=true;$('export-video').disabled=true;setTaskProgress(scope==='scene'?'Đang chuẩn bị cảnh được chọn…':'Đang chuẩn bị toàn bộ kịch bản…',0);
  edgeDead=false;edgeFails=0;
+ const mbReady=window.__mbLoad||(window.__mbLoad=import('https://esm.sh/mediabunny@1.62.1'));mbReady.catch(()=>{window.__mbLoad=null});
  try{await loadPiperVoices();await prefetchEdgeTts()}catch(e){console.warn('Không thể nạp trước danh sách giọng/TTS:',e)}
  let audioContext=null,output=null,renderLabel='Chuẩn bị timeline';
  try{
@@ -1350,13 +1363,22 @@ async function exportVideo(){
   {const q=Number($('export-quality').value)||720,L=q===1080?1920:1280,S=q===1080?1080:720;renderCanvas.width=isPortrait?S:L;renderCanvas.height=isPortrait?L:S}
   renderCtx=renderCanvas.getContext('2d',{alpha:false});
   canvas=renderCanvas;ctx=renderCtx;
-  const mb=await import('https://esm.sh/mediabunny@1.62.1');
+  const mb=await mbReady;
   const target=new mb.BufferTarget(),format=new mb.Mp4OutputFormat();
   output=new mb.Output({format,target});
   const videoSource=new mb.CanvasSource(renderCanvas,{codec:'avc',bitrate:(Number($('export-quality').value)===1080?8000000:4500000),latencyMode:'realtime',hardwareAcceleration:'prefer-hardware',keyFrameInterval:2});
   const audioSource=new mb.AudioBufferSource({codec:'aac',quality:new mb.Quality({bitrate:160000})});
   output.addVideoTrack(videoSource,{frameRate:fps});output.addAudioTrack(audioSource);await output.start();
   const frameCount=Math.ceil(finalDuration*fps);let frameIndex=0,lastUi=0;const exportT0=performance.now();
+  // [TỐI ƯU] Cảnh không có video nền/nhân vật và không có hiệu ứng thì mọi khung hình giống hệt nhau:
+  // vẽ + mã hóa 1 khung rồi kéo dài thời lượng (tối đa 2 giây/khung để vẫn có keyframe định kỳ).
+  const isStaticState=st=>!bgVideo&&!charVideo&&!st.bgFx.length&&!st.charFx.length&&!st.camFx.length&&!st.atmFx.length;
+  const addStatic=async(st,local0,count)=>{
+   frameOverride.bg=null;frameOverride.char=null;drawFrame(local0,st);
+   const chunk=Math.max(1,Math.round(fps*2));let left=count;
+   while(left>0){const n=Math.min(chunk,left);await videoSource.add(frameIndex/fps,n/fps);frameIndex+=n;left-=n}
+  };
+  const grabClips=tt=>Promise.all([bgVideo?clipFrame(bgVideo,tt,fps):null,charVideo?clipFrame(charVideo,tt,fps):null]);
   for(let pi=0;pi<prepared.length;pi++){
    const pack=prepared[pi],si=pack.sourceSceneIndex;
    activeSceneIndex=si;applyVisual(pack.visual);await updateAssets();
@@ -1365,6 +1387,7 @@ async function exportVideo(){
     renderLabel='Cảnh '+(si+1)+' (không thoại)';
     const silentState=readFrameState();silentState.dialogueLayer=buildDialogueLayer(renderCanvas.width,renderCanvas.height);
     const silentEnd=Math.min(frameCount,Math.round((pack.silentStart+pack.silentDuration)*fps));
+    if(isStaticState(silentState)&&silentEnd>frameIndex){try{await addStatic(silentState,0,silentEnd-frameIndex)}catch(e){throw new Error(renderLabel+': '+(e.message||e))}}
     while(frameIndex<silentEnd){
      const local=frameIndex/fps-pack.silentStart;
      frameOverride.bg=bgVideo?await clipFrame(bgVideo,local,fps):null;frameOverride.char=charVideo?await clipFrame(charVideo,local,fps):null;
@@ -1388,12 +1411,24 @@ async function exportVideo(){
     const st=readFrameState();st.dialogueLayer=buildDialogueLayer(renderCanvas.width,renderCanvas.height);
     const lineEndFrame=Math.min(frameCount,Math.round((entry.start+entry.duration+entry.pause)*fps));
     const lineFrames=Math.max(0,lineEndFrame-frameIndex);
+    renderLabel='Cảnh '+(si+1)+' · Thoại '+(pack.lines.indexOf(entry)+1);
+    if(lineFrames>0&&isStaticState(st)){
+     try{await addStatic(st,sceneElapsed,lineFrames)}catch(frameErr){throw new Error(renderLabel+': '+(frameErr.message||frameErr))}
+     setTaskProgress('Đang render '+renderLabel+' (cảnh tĩnh) · '+frameIndex+'/'+frameCount+' khung hình',5+Math.round(frameIndex/frameCount*88));await yieldToUI();
+     sceneElapsed+=entry.duration+entry.pause;continue;
+    }
+    // Lấy trước khung clip kế tiếp trong lúc encoder đang xử lý khung hiện tại.
+    let pending=lineFrames>0&&(bgVideo||charVideo)?grabClips(sceneElapsed):null;
+    if(pending)pending.catch(()=>{});
     for(let f=0;f<lineFrames;f++){
      const local=f/fps;
      if(local>entry.duration+entry.pause)break;
      const tt=sceneElapsed+local;
-     renderLabel='Cảnh '+(si+1)+' · Thoại '+(pack.lines.indexOf(entry)+1);
-     try{frameOverride.bg=bgVideo?await clipFrame(bgVideo,tt,fps):null;frameOverride.char=charVideo?await clipFrame(charVideo,tt,fps):null;drawFrame(tt,st);await videoSource.add(frameIndex/fps,1/fps)}catch(frameErr){throw new Error(renderLabel+' · '+(frameIndex/fps).toFixed(2)+'s: '+(frameErr.message||frameErr))}
+     try{
+      if(pending){const [gb,gc]=await pending;frameOverride.bg=gb;frameOverride.char=gc;if(f+1<lineFrames){pending=grabClips(sceneElapsed+(f+1)/fps);pending.catch(()=>{})}}
+      else{frameOverride.bg=null;frameOverride.char=null}
+      drawFrame(tt,st);await videoSource.add(frameIndex/fps,1/fps)
+     }catch(frameErr){throw new Error(renderLabel+' · '+(frameIndex/fps).toFixed(2)+'s: '+(frameErr.message||frameErr))}
      frameIndex++;
      const now=performance.now();
      if(now-lastUi>250){
