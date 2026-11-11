@@ -386,6 +386,59 @@ def mix_audio(timeline,work,video_path,output):
         cmd += ["-f","lavfi","-i",f"anullsrc=r=48000:cl=stereo","-map","0:v:0","-map",f"{input_index}:a:0","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-c:a","aac","-t",str(duration),str(output)]
     run(cmd)
 
+def srt_time(seconds):
+    ms=max(0,int(round(float(seconds)*1000)))
+    hh,ms=divmod(ms,3600000); mm,ms=divmod(ms,60000); ss,ms=divmod(ms,1000)
+    return f"{hh:02d}:{mm:02d}:{ss:02d},{ms:03d}"
+
+def write_sidecar_files(timeline, output):
+    intervals=[]
+    for scene in timeline.get("scenes", []):
+        for item in scene.get("intervals", []):
+            text=str(item.get("text") or "").strip()
+            if text:
+                start=float(item.get("start", 0))
+                end=min(float(timeline.get("duration", start)), start+float(item.get("duration", 0)))
+                intervals.append((start,end,str(item.get("speaker") or "").strip(),text))
+    intervals.sort(key=lambda x:x[0])
+    srt_lines=[]
+    for idx,(start,end,speaker,text) in enumerate(intervals,1):
+        caption=(speaker+"\\n" if speaker and timeline.get("global",{}).get("show_speaker",True) else "")+text
+        srt_lines.extend([str(idx),srt_time(start)+" --> "+srt_time(end),caption,""])
+    srt_path=output.with_suffix(".srt")
+    srt_path.write_text("\\n".join(srt_lines),encoding="utf-8")
+
+    audio_path=output.with_name(output.stem+"_audio_manifest.json")
+    audio_manifest={
+        "schema_version":1,
+        "kind":"visual-novel-audio-manifest",
+        "video":output.name,
+        "duration":timeline.get("duration",0),
+        "mix":timeline.get("audio",{}).get("mix",{}),
+        "tts_assets":timeline.get("tts_assets",[]),
+        "events":timeline.get("audio",{}).get("events",[])
+    }
+    audio_path.write_text(json.dumps(audio_manifest,ensure_ascii=False,indent=2),encoding="utf-8")
+
+    metadata_path=output.with_name(output.stem+"_metadata.json")
+    metadata={
+        "schema_version":1,
+        "kind":"visual-novel-render-metadata",
+        "story":timeline.get("story",{}),
+        "created_at":timeline.get("created_at"),
+        "rendered_at":__import__("datetime").datetime.now().astimezone().isoformat(),
+        "video":{**timeline.get("video",{}),"duration":timeline.get("duration",0),"frames":int(round(float(timeline.get("duration",0))*int(timeline.get("video",{}).get("fps",30))))},
+        "scene_count":len(timeline.get("scenes",[])),
+        "dialogue_count":len(intervals),
+        "asset_count":len(timeline.get("assets",[])),
+        "files":{"video":output.name,"subtitles":srt_path.name,"audio_manifest":audio_path.name}
+    }
+    metadata_path.write_text(json.dumps(metadata,ensure_ascii=False,indent=2),encoding="utf-8")
+    print("📄 Phụ đề:",srt_path)
+    print("🔊 Audio manifest:",audio_path)
+    print("🧾 Metadata:",metadata_path)
+    return [srt_path,audio_path,metadata_path]
+
 def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--zip",required=True,help="Đường dẫn ZIP xuất từ phòng_video.html")
@@ -396,6 +449,7 @@ def main():
     timeline=load_package(Path(args.zip),work)
     out=Path(args.output)
     render_video(timeline,work,out)
+    write_sidecar_files(timeline,out)
 
 if __name__=="__main__":
     main()
