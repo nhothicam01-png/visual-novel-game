@@ -3,9 +3,9 @@
   "kind": "visual-novel-audio-manifest",
   "story": "DuoiBongTuThan",
   "story_path": "assets/KichBan/DuoiBongTuThan/DuoiBongTuThan.json",
-  "created_at": "2026-11-11T15:58:00.388Z",
+  "created_at": "2026-11-11T23:45:34.240Z",
   "source_language": "Vietnamese",
-  "duration": 50.5065,
+  "duration": 80.8333,
   "audio_mix": {
     "bgm_volume": 0.25,
     "sfx_volume": 0.8,
@@ -19,8 +19,8 @@
     {
       "type": "dialogue",
       "start": 0,
-      "end": 5.6076,
-      "duration": 5.6076,
+      "end": 7.92,
+      "duration": 7.92,
       "pause_after": 0.5,
       "speaker": "Lirien",
       "speaker_id": "1",
@@ -39,7 +39,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Lại thêm một chiếc lá rơi. Vô số lần ta chứng kiến cảnh tượng này, nhưng sự bất an trong lòng chưa bao giờ vơi đi.",
       "gain": 1,
@@ -47,20 +47,10 @@
       "timing_policy": "fixed_source_window"
     },
     {
-      "type": "bgm",
-      "start": 0,
-      "end": 50.5065,
-      "duration": 50.5065,
-      "audio_id": "afternoon_between_leaves.mp3",
-      "source": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
-      "loop": true,
-      "volume": 0.25
-    },
-    {
       "type": "dialogue",
-      "start": 6.1076,
-      "end": 9.3204,
-      "duration": 3.2128,
+      "start": 8.42,
+      "end": 15.068,
+      "duration": 6.648,
       "pause_after": 0.5,
       "speaker": "Elandra",
       "speaker_id": "2",
@@ -79,7 +69,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Lirien! Anh có nghe thấy tiếng chuông từ quảng trường không? Lại có thêm người ngã xuống rồi!",
       "gain": 1,
@@ -88,9 +78,9 @@
     },
     {
       "type": "dialogue",
-      "start": 9.8204,
-      "end": 16.4962,
-      "duration": 6.6757,
+      "start": 15.568,
+      "end": 25.888,
+      "duration": 10.32,
       "pause_after": 0.5,
       "speaker": "Lirien",
       "speaker_id": "1",
@@ -109,7 +99,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Elandra, đừng lớn tiếng ở đây. Cổ Thụ Sinh Mệnh đang quan sát tất cả chúng ta. Việc ai là người tiếp theo là định mệnh không thể thay đổi.",
       "gain": 1,
@@ -118,9 +108,9 @@
     },
     {
       "type": "dialogue",
-      "start": 16.9962,
-      "end": 22.1527,
-      "duration": 5.1565,
+      "start": 26.388,
+      "end": 35.436,
+      "duration": 9.048,
       "pause_after": 0.5,
       "speaker": "Elandra",
       "speaker_id": "2",
@@ -139,7 +129,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Định mệnh ư? Tôi đã tìm thấy những ghi chép cổ. Chiếc lá không tự nhiên rơi, nó bị thao túng bởi một thứ năng lượng lạ ở hẻm núi.",
       "gain": 1,
@@ -148,9 +138,9 @@
     },
     {
       "type": "dialogue",
-      "start": 22.6527,
-      "end": 29.6187,
-      "duration": 6.966,
+      "start": 35.936,
+      "end": 45.944,
+      "duration": 10.008,
       "pause_after": 0.5,
       "speaker": "Kaelen",
       "speaker_id": "3",
@@ -169,7 +159,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Hai người đang bàn chuyện gì thế? Nhà vua vừa ban lệnh tăng cường tuần tra. Kẻ nào dám bén mảng đến gần Cổ Thụ sẽ bị bắt giam ngay lập tức.",
       "gain": 1,
@@ -178,9 +168,9 @@
     },
     {
       "type": "dialogue",
-      "start": 30.1187,
-      "end": 34.7975,
-      "duration": 4.6788,
+      "start": 46.444,
+      "end": 54.22,
+      "duration": 7.776,
       "pause_after": 0.5,
       "speaker": "Kaelen",
       "speaker_id": "3",
@@ -199,7 +189,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Nhưng... tôi cũng nhìn thấy vết ấn ký trên tay Nesta. Con bé chỉ còn vài ngày nữa thôi, Lirien ạ.",
       "gain": 1,
@@ -208,9 +198,9 @@
     },
     {
       "type": "dialogue",
-      "start": 35.2975,
-      "end": 38.253,
-      "duration": 2.9555,
+      "start": 54.72,
+      "end": 61.992,
+      "duration": 7.272,
       "pause_after": 0.5,
       "speaker": "Nesta",
       "speaker_id": "5",
@@ -229,7 +219,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Em không muốn chết đâu... Chú Kaelen, anh Lirien, cứu em với. Tại sao lại là em?",
       "gain": 1,
@@ -238,9 +228,9 @@
     },
     {
       "type": "dialogue",
-      "start": 38.753,
-      "end": 45.2197,
-      "duration": 6.4668,
+      "start": 62.492,
+      "end": 72.644,
+      "duration": 10.152,
       "pause_after": 0.5,
       "speaker": "Lirien",
       "speaker_id": "1",
@@ -259,7 +249,7 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Nesta, bình tĩnh lại nào. Chúng ta sẽ tìm cách. Elandra nói đúng, ta không thể ngồi chờ cái chết giáng xuống đầu con bé được nữa.",
       "gain": 1,
@@ -268,9 +258,9 @@
     },
     {
       "type": "dialogue",
-      "start": 45.7197,
-      "end": 50.0065,
-      "duration": 4.2867,
+      "start": 73.144,
+      "end": 80.32,
+      "duration": 7.176,
       "pause_after": 0.5,
       "speaker": "Elandra",
       "speaker_id": "2",
@@ -289,19 +279,12 @@
           "volume": 100
         },
         "source_language": "vi",
-        "engine": "piper"
+        "engine": "edge"
       },
       "text": "Đêm nay, chúng ta phải đến Hẻm Núi Sương Mờ. Nơi đó chứa câu trả lời cho mọi bí ẩn về chiếc lá cuối cùng.",
       "gain": 1,
       "scene_index": 4,
       "timing_policy": "fixed_source_window"
     }
-  ],
-  "video": {
-    "format": "webm",
-    "fps": 30,
-    "width": 1920,
-    "height": 1080,
-    "export_mode": "direct_media_recorder"
-  }
+  ]
 }
