@@ -107,12 +107,12 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .nav a.current{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
 
 /* Compact scene/dialogue editor drawer; preview remains visible */
-.scene-editor-drawer{position:fixed;z-index:1000;top:76px;right:16px;width:min(540px,calc(100vw - 32px));max-height:calc(100vh - 92px);display:none;flex-direction:column;gap:8px;background:#080f1e;border:1px solid #a855f766;border-radius:12px;padding:10px;box-shadow:0 18px 55px #000c;overflow:hidden}
+.scene-editor-drawer{position:fixed;z-index:1000;top:76px;right:16px;width:min(540px,calc(100vw - 32px));max-height:70vh;display:none;flex-direction:column;gap:8px;background:#080f1e;border:1px solid #a855f766;border-radius:12px;padding:10px;box-shadow:0 18px 55px #000c;overflow:hidden}
 .scene-editor-drawer.open{display:flex}
 .scene-editor-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#e9d5ff;padding:2px 2px 6px}
 .scene-editor-drawer>.main-panel{display:flex;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 .scene-editor-drawer>.main-panel:not([open])>*:not(.panel-heading){display:none}
-@media(max-width:600px){.scene-editor-drawer{top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:68vh;padding:9px}.scene-editor-drawer>.main-panel{max-height:calc(68vh - 48px)}}
+@media(max-width:600px){.scene-editor-drawer{top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:48vh;padding:9px}.scene-editor-drawer>.main-panel{max-height:calc(48vh - 48px)}}
 </style>
 </head>
 <body>
@@ -1869,7 +1869,7 @@ document.querySelectorAll('#character,#expression,#background,#dialogue-width-mo
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
 const sceneDrawer=$('scene-editor-drawer'),sceneMenuButton=$('open-scene-editor');
-function setSceneEditorOpen(open){sceneDrawer.classList.toggle('open',!!open);sceneMenuButton.setAttribute('aria-expanded',String(!!open));sceneMenuButton.textContent=open?'✕ Đóng chỉnh sửa':'☰ Cảnh & lời thoại';}
+function setSceneEditorOpen(open){sceneDrawer.classList.toggle('open',!!open);sceneMenuButton.setAttribute('aria-expanded',String(!!open));sceneMenuButton.textContent=open?'✕ Đóng chỉnh sửa':'☰ Cảnh & lời thoại';if(open)window.scrollTo({top:0,behavior:'smooth'});}
 sceneMenuButton.addEventListener('click',()=>setSceneEditorOpen(!sceneDrawer.classList.contains('open')));
 $('close-scene-editor').addEventListener('click',()=>setSceneEditorOpen(false));
 renderEffectCatalogs();
