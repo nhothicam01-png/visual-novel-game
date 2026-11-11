@@ -25,8 +25,17 @@ def download(url: str, dest: Path):
     if dest.exists() and dest.stat().st_size:
         return dest
     req = urllib.request.Request(url, headers={"User-Agent":"Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=90) as r, open(dest, "wb") as f:
-        shutil.copyfileobj(r, f)
+    with urllib.request.urlopen(req, timeout=90) as response, open(dest, "wb") as f:
+        total=int(response.headers.get("Content-Length") or 0)
+        done=0
+        while True:
+            chunk=response.read(1024*1024)
+            if not chunk: break
+            f.write(chunk); done+=len(chunk)
+            if total:
+                pct=int(done*100/total)
+                print(f"    Tải {dest.name}: {pct}% ({done//1024}/{total//1024} KB)",flush=True)
+        if done==0: raise RuntimeError("Tệp tải về rỗng")
     return dest
 
 def load_package(zip_path: Path, work: Path):
@@ -53,7 +62,7 @@ def resolve_asset(rel, urlmap, work):
     url = urllib.parse.quote(url, safe=":/%")
     try: return download(url, local)
     except Exception as e:
-        print(f"⚠ Không tải được tài nguyên {rel}: {e}")
+        print(f"⚠ Không tải được tài nguyên {rel}: {e}",flush=True)
         return None
 
 def cover_image(src: Image.Image, size):
@@ -301,9 +310,23 @@ def render_video(timeline, work: Path, output: Path):
         for it in scene.get("intervals",[]):
             intervals.append((float(it.get("start",0)),float(it.get("end",0)),scene,it))
     intervals.sort(key=lambda x:x[0])
-    # Preload referenced media once.
+    # Preload unique referenced media with visible progress.
+    preload=[]
+    seen=set()
     for _,_,_,it in intervals:
-        get_bg(it.get("background")); get_char(it.get("character_asset"),it.get("expression"))
+        bg=it.get("background")
+        ch=it.get("character_asset")
+        ex=it.get("expression")
+        for key,kind in [(( "bg",str(bg)), "background") if bg else (None,None),
+                         (( "char",str(ch),str(ex)), "character") if ch and ex else (None,None)]:
+            if key and key not in seen:
+                seen.add(key); preload.append((kind,it))
+    print(f"📦 Chuẩn bị {len(preload)} tài nguyên hình ảnh/video…",flush=True)
+    for idx,(kind,it) in enumerate(preload,1):
+        print(f"  [{idx}/{len(preload)}] Đang tải/đọc {kind}…",flush=True)
+        if kind=="background": get_bg(it.get("background"))
+        else: get_char(it.get("character_asset"),it.get("expression"))
+    print("✅ Chuẩn bị tài nguyên xong.",flush=True)
     silent=[]
     for sc in scenes:
         if sc.get("silent_duration"): silent.append((sc.get("silent_start",0),sc.get("silent_start",0)+sc["silent_duration"]))
@@ -311,7 +334,7 @@ def render_video(timeline, work: Path, output: Path):
     fourcc=cv2.VideoWriter_fourcc(*"mp4v")
     writer=cv2.VideoWriter(str(tmp_video),fourcc,fps,(width,height))
     if not writer.isOpened(): raise RuntimeError("Không khởi tạo được MP4 writer.")
-    print(f"🎞️ Bắt đầu render: {total_frames:,} khung hình · {fps} FPS · {width}×{height} · {duration:.1f}s")
+    print(f"🎞️ Bắt đầu render: {total_frames:,} khung hình · {fps} FPS · {width}×{height} · {duration:.1f}s",flush=True)
     current_idx=0
     for fi in range(total_frames):
         t=fi/fps
@@ -340,12 +363,12 @@ def render_video(timeline, work: Path, output: Path):
             base=dialogue_layer(base.convert("RGB"),it,timeline.get("global",{}),it.get("scene_visual") or {})
         frame=cv2.cvtColor(np.asarray(base.convert("RGB")),cv2.COLOR_RGB2BGR)
         writer.write(frame)
-        if (fi+1)%max(1,fps*10)==0: print(f"  {fi+1:,}/{total_frames:,} khung hình ({(fi+1)/total_frames*100:.1f}%)")
+        if (fi+1)%max(1,fps*2)==0 or fi+1==total_frames: print(f"  🎬 {fi+1:,}/{total_frames:,} khung hình ({(fi+1)/total_frames*100:.1f}%)",flush=True)
     writer.release()
     for v in video_cache.values(): v.close()
     if not shutil.which("ffmpeg"): raise RuntimeError("Không tìm thấy FFmpeg.")
     mix_audio(timeline,work,tmp_video,output)
-    print("✅ Render xong:",output)
+    print("✅ Render xong:",output,flush=True)
     return output
 
 def mix_audio(timeline,work,video_path,output):
