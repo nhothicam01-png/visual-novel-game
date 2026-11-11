@@ -17,12 +17,12 @@ The ZIP is a timeline/audio package, not a video. Colab builds the video locally
 - Fetches background images/videos, transparent character WebM, BGM and SFX from the repository raw asset URLs.
 - Renders at the package's FPS and resolution.
 - Background cover and character portrait/landscape placement follow the current browser renderer's fit rules.
-- Dialogue box, speaker label, line timing, pause timing, and basic camera/background/character motion effects.
+- Dialogue box, speaker label, line timing, pause timing, camera/background/character motion, and atmosphere overlays (rain, snow, petals, dust, rays, fog, sparkle, lightning, flash, vignette).
 - Mixes TTS, looping BGM segments and SFX with FFmpeg; writes H.264/AAC MP4.
 
 ## Known limitations — not yet browser parity
 - This is an initial native implementation, not pixel-perfect parity with the Canvas renderer.
-- Atmosphere effects (rain, snow, petals, dust, rays, fog, sparkle, lightning, flash, vignette) are not ported yet.
+- Atmosphere overlays and text rendering are approximations; they may differ in shape, timing and blending from Canvas.
 - Some visual details, font metrics, blur compositing and effect timing can differ from the browser.
 - Custom/local-only assets that are not in the repository are not automatically included by the current ZIP exporter. Use assets already in the repository for the first test.
 - Very long/high-FPS projects can exceed free Colab time or RAM. A free GPU is not guaranteed; this version uses CPU video composition and FFmpeg.
