@@ -1317,11 +1317,12 @@ function renderCharacterVoiceSetup(){
  $('default-voice-profile').value=defaultVoiceProfileId;
  host.innerHTML=characterDirectory.map(ch=>{
   const saved=profileFromJsonVoice(ch.jsonVoice),selectedId=characterVoiceMap[ch.id]||(saved?.id||'');
+  if(selectedId&&!characterVoiceMap[ch.id])characterVoiceMap[ch.id]=selectedId;
   const options=profiles.slice();
   if(selectedId&&!options.some(p=>p.id===selectedId)){const info=saved||{id:selectedId,name:'Giọng đã lưu',voiceId:''};options.push({...info,id:selectedId})}
   return '<label class="field">🎭 '+safeText(ch.name)+'<select data-character-voice="'+safeText(ch.id)+'"><option value="">Dùng giọng mặc định</option>'+options.map(p=>'<option value="'+safeText(p.id)+'">'+safeText(p.name||p.profile_name||'Giọng đã lưu')+' · '+safeText(p.edgeVoice||p.edge_voice_id||p.voiceId||p.voice_id||'ID '+p.id)+'</option>').join('')+'</select><span class="note">ID nhân vật: '+safeText(ch.id)+(ch.jsonVoice?' · JSON có giọng khai báo':' · Chưa có giọng trong JSON')+'</span></label>';
  }).join('');
- host.querySelectorAll('[data-character-voice]').forEach(sel=>sel.value=characterVoiceMap[sel.dataset.characterVoice]||'');
+ host.querySelectorAll('[data-character-voice]').forEach(sel=>{const ch=characterDirectory.find(x=>x.id===sel.dataset.characterVoice),saved=profileFromJsonVoice(ch?.jsonVoice);sel.value=characterVoiceMap[sel.dataset.characterVoice]||(saved?.id||'')||'';});
 }
 function profileFromJsonVoice(value){
  if(!value)return null;
@@ -1493,7 +1494,7 @@ function buildEditedStoryOutput(){
  if(!activeStoryData)throw new Error('Hãy chọn hoặc import kịch bản JSON trước.');
  const output=JSON.parse(JSON.stringify(activeStoryData)),rows=[],profiles=getVoiceProfiles();
  const characterMap=output.nhan_vat&&typeof output.nhan_vat==='object'?output.nhan_vat:(output.nhan_vat={});
- activeCharacterList().forEach(ch=>{if(!characterMap[ch.id])characterMap[ch.id]={ten_hien_thi:ch.name};const prior=characterMap[ch.id]&&typeof characterMap[ch.id]==='object'?characterMap[ch.id]:{ten_hien_thi:ch.name};const selectedId=characterVoiceMap[ch.id]||'';const selectedProfile=profiles.find(p=>p.id===selectedId)||(profileFromJsonVoice(prior.giong_noi||prior.voice)?.id===selectedId?profileFromJsonVoice(prior.giong_noi||prior.voice):null);if(selectedProfile){characterMap[ch.id]={...prior,ten_hien_thi:prior.ten_hien_thi||ch.name,giong_noi:{profile_id:selectedProfile.id,profile_name:selectedProfile.name||selectedProfile.profile_name||'',voice_id:selectedProfile.voiceId||selectedProfile.voice_id||'',voiceId:selectedProfile.voiceId||selectedProfile.voice_id||'',edge_voice_id:selectedProfile.edgeVoice||selectedProfile.edge_voice_id||'',lang:selectedProfile.lang||'vi',gender:selectedProfile.gender||''}}}else if(Object.prototype.hasOwnProperty.call(characterVoiceMap,ch.id)){const clean={...prior};delete clean.giong_noi;delete clean.voice;characterMap[ch.id]=clean}});
+ activeCharacterList().forEach(ch=>{if(!characterMap[ch.id])characterMap[ch.id]={ten_hien_thi:ch.name};const prior=characterMap[ch.id]&&typeof characterMap[ch.id]==='object'?characterMap[ch.id]:{ten_hien_thi:ch.name};const selectedId=characterVoiceMap[ch.id]||'';const savedProfile=profileFromJsonVoice(prior.giong_noi||prior.voice);const selectedProfile=profiles.find(p=>p.id===selectedId)||(savedProfile?.id===selectedId?savedProfile:null);if(selectedProfile){characterMap[ch.id]={...prior,ten_hien_thi:prior.ten_hien_thi||ch.name,giong_noi:{...(prior.giong_noi&&typeof prior.giong_noi==='object'?prior.giong_noi:{}),profile_id:selectedProfile.id,profile_name:selectedProfile.name||selectedProfile.profile_name||prior.giong_noi?.profile_name||'',voice_id:selectedProfile.voiceId||selectedProfile.voice_id||prior.giong_noi?.voice_id||'',voiceId:selectedProfile.voiceId||selectedProfile.voice_id||prior.giong_noi?.voiceId||'',edge_voice_id:selectedProfile.edgeVoice||selectedProfile.edge_voice_id||prior.giong_noi?.edge_voice_id||'',lang:selectedProfile.lang||prior.giong_noi?.lang||'vi',gender:selectedProfile.gender||prior.giong_noi?.gender||''}}}else{characterMap[ch.id]={...prior,ten_hien_thi:prior.ten_hien_thi||ch.name}}});
  let lastBackground='';
  scenes.forEach(scene=>scene.lines.forEach(line=>{
   const frame=line.sourceFrame&&typeof line.sourceFrame==='object'?JSON.parse(JSON.stringify(line.sourceFrame)):{};
