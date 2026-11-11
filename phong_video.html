@@ -100,22 +100,18 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .dialogue-line-item .line-state{font-size:.68rem;color:#86efac;white-space:nowrap}
 .line-editor{display:flex;flex-direction:column;gap:10px;padding:12px;background:#0b1425;border:1px solid #334155;border-radius:9px}
 
-#site-navigation{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;padding:9px;background:rgba(15,23,42,.9);border:1px solid rgba(168,85,247,.3);border-radius:10px}
-#site-navigation .nav-link{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 13px;border-radius:8px;color:#fff;background:#263449;border:1px solid rgba(148,163,184,.28);text-decoration:none;font-size:.82rem;font-weight:650}
-#site-navigation .nav-link.current{background:linear-gradient(135deg,#6366f1,#a855f7);border-color:transparent}
-@media(max-width:600px){#site-navigation{gap:6px;padding:8px}#site-navigation .nav-link{flex:1 1 calc(50% - 6px);padding:8px 6px;font-size:.76rem}}
+.nav{width:100%;display:flex;gap:8px;flex-wrap:wrap;background:#111c30;border:1px solid #334155;border-radius:12px;padding:14px;margin:0 0 12px}
+.nav a{color:#e9d5ff;background:#263449;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:13px}
+.nav a.current{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
 </style>
 </head>
 <body>
-<nav id="site-navigation" aria-label="Điều hướng chính">
-<a class="nav-link current" href="./index.html" aria-current="page">🏠 Trang chủ</a>
-<a class="nav-link" href="./thunghiem.html">🧪 Trang thử nghiệm</a>
-<a class="nav-link" href="./rbg.html">🎬 Xóa phông video</a>
-<a class="nav-link" href="./subtitle_voice_player.html">💬 Đọc phụ đề</a>
-<a class="nav-link" href="./tao_giong.html">🎙️ Phòng tạo giọng</a>
-<a class="nav-link" href="./tao_phu_de.html">🌐 Tạo phụ đề & lồng tiếng</a>
-<a class="nav-link" href="./gemini.html">✨ Gemini Đi</a>
-<a class="nav-link" href="./github_manager.html">⬆ GitHub Manager</a>
+<nav class="nav" aria-label="Điều hướng chính">
+<a href="./index.html">🏠 Trang chủ</a>
+<a class="current" href="./phong_video.html" aria-current="page">🎬 Phòng tạo video</a>
+<a href="./tao_giong.html">🎙️ Phòng tạo giọng</a>
+<a href="./tao_phu_de.html">🌐 Tạo phụ đề & lồng tiếng</a>
+<a href="./github_manager.html">⬆ GitHub Manager</a>
 </nav>
 <div id="game-container">
 <canvas id="preview-canvas" width="1920" height="1080"></canvas>
