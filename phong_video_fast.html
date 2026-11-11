@@ -219,6 +219,8 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <details class="panel main-panel"><summary class="panel-heading">5. Xem trước & xuất video</summary>
 <div class="grid">
+<label class="field">Chế độ xuất MP4
+<select id="mp4-render-mode"><option value="fast" selected>⚡ Nhanh · 30 FPS (như bản nhanh)</option><option value="manual">Tùy chỉnh FPS</option></select></label>
 <label class="field">FPS
 <select id="fps"><option value="24">24 FPS</option><option value="30" selected>30 FPS</option><option value="60">60 FPS</option></select></label>
 <label class="field">Chất lượng xuất
@@ -1349,6 +1351,14 @@ async function exportVideo(){
  }
 }
 $('export-video').addEventListener('click',exportVideo);
+// Chế độ nhanh giữ FPS ở 30; chế độ tùy chỉnh cho phép chọn 24/30/60 FPS.
+$('mp4-render-mode')?.addEventListener('change',()=>{
+ if($('mp4-render-mode').value==='fast')$('fps').value='30';
+});
+// Nếu người dùng đổi FPS thủ công, tự chuyển sang chế độ tùy chỉnh.
+$('fps')?.addEventListener('change',()=>{
+ if(Number($('fps').value)!==30)$('mp4-render-mode').value='manual';
+});
 
 function stopDirectRecorder(){
  if(directRecorder&&directRecorder.state!=='inactive')directRecorder.stop();
