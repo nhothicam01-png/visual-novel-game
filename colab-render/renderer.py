@@ -275,7 +275,7 @@ def render_video(timeline, work: Path, output: Path):
         ch=None
         if active:
             start,end,scene,it=active
-            local=t-start
+            local=t-float(scene.get("start",start))
             bgsrc=get_bg(it.get("background"))
             if isinstance(bgsrc,VideoAsset):
                 bgframe=bgsrc.frame(local)
@@ -336,7 +336,7 @@ def mix_audio(timeline,work,video_path,output):
         graph=";".join(chains)
         cmd += ["-filter_complex",graph,"-map","0:v:0","-map","[mix]","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-c:a","aac","-b:a","192k","-t",str(duration),str(output)]
     else:
-        cmd += ["-f","lavfi","-i",f"anullsrc=r=48000:cl=stereo","-map","0:v:0","-map",f"{input_index}:a:0","-c:v","copy","-c:a","aac","-t",str(duration),str(output)]
+        cmd += ["-f","lavfi","-i",f"anullsrc=r=48000:cl=stereo","-map","0:v:0","-map",f"{input_index}:a:0","-c:v","libx264","-preset","veryfast","-crf","20","-pix_fmt","yuv420p","-c:a","aac","-t",str(duration),str(output)]
     run(cmd)
 
 def main():
