@@ -174,12 +174,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 </div>
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
 <label style="display:none!important" hidden class="field">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
-<details class="effect-panel"><summary>🔊 Âm thanh tùy chỉnh cho thoại này</summary>
-<label class="field">Nhạc nền<select id="line-bgm-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
-<label class="field">Tên tệp nhạc nền (trong AmThanh/Nen)<input id="line-bgm-file" placeholder="vd: afternoon_between_leaves.mp3"></label>
-<label class="field">Nhạc hiệu ứng<select id="line-sfx-mode"><option value="inherit">Theo JSON của kịch bản</option><option value="override">Dùng tệp khác</option><option value="off">Tắt ở thoại này</option></select></label>
-<label class="field">Tên tệp hiệu ứng (trong AmThanh/HieuUng)<input id="line-sfx-file" placeholder="vd: door_open.mp3"></label>
-</details><details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
+<details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
 <div class="scene-groups">
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
 <label class="field">Chọn nhân vật<select id="character"></select></label>
@@ -208,7 +203,6 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <details class="panel main-panel"><summary class="panel-heading">3. Khung hình & bố cục</summary>
 <div class="row">
-<button class="btn secondary" id="ratio-toggle-settings">📐 Tỉ lệ: 16:9</button>
 <label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
 <label class="check"><input type="checkbox" id="show-speaker" checked> Hiện tên nhân vật</label>
 <label class="field">Kiểu khung thoại
@@ -322,7 +316,7 @@ function buildAudioManifest(prepared,allAudio,bgmSegments,totalDuration){
   const line=entry.line||{},voice=manifestVoiceForLine(line);
   events.push({type:'dialogue',start:Number(entry.start.toFixed(4)),end:Number((entry.start+entry.duration).toFixed(4)),duration:Number(entry.duration.toFixed(4)),pause_after:Number(entry.pause||0),speaker:String(line.speaker||''),speaker_id:String(line.speakerId||''),voice_id:voice.profile_id,voice,text:String(line.text||''),gain:Number(entry.gain??1),scene_index:Number(entry.sceneIndex||0),timing_policy:'fixed_source_window'});
   const sfx=resolvedLineAudio(line,'sfx');
-  if(sfx)events.push({type:'sfx',start:Number(entry.start.toFixed(4)),duration:null,audio_id:sfx,source:'assets/AmThanh/HieuUng/'+sfx,loop:false,volume:Number($('sfx-volume').value),scene_index:Number(entry.sceneIndex||0)});
+  if(sfx)events.push({type:'sfx',start:Number(entry.start.toFixed(4)),duration:null,audio_id:sfx,source:'uploaded-file:'+sfx,loop:false,volume:Number($('sfx-volume').value),scene_index:Number(entry.sceneIndex||0)});
  }
  for(const segment of bgmSegments)events.push({type:'bgm',start:Number(segment.start.toFixed(4)),end:Number(segment.end.toFixed(4)),duration:Number((segment.end-segment.start).toFixed(4)),audio_id:segment.name,source:'assets/AmThanh/Nen/'+segment.name,loop:true,volume:Number($('bgm-volume').value)});
  events.sort((a,b)=>a.start-b.start);
@@ -362,8 +356,8 @@ function finishTaskProgress(label){
 }
 
 function updateRatioButtons(){
- const label='📐 Tỉ lệ: '+(isPortrait?'9:16':'16:9');
- ['ratio-toggle','ratio-toggle-settings'].forEach(id=>{const el=$(id);if(el)el.textContent=label;});
+ const el=$('ratio-toggle');
+ if(el)el.textContent='📐 Tỉ lệ: '+(isPortrait?'9:16':'16:9');
 }
 function toggleAspectRatio(){resizeCanvas(!isPortrait)}
 function resizeCanvas(portrait){
@@ -616,12 +610,17 @@ function audioElement(url,loop,volume){
  const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
 }
 function resolvedLineAudio(line,kind){
- const override=line?.audioOverride?.[kind];
- if(override?.mode==='off')return '';
- if(override?.mode==='override')return String(override.file||'').trim();
- return String(line?.sourceAudio?.[kind]??(kind==='bgm'&&!activeStoryData?$('bgm').value:'')).trim();
+ if(kind==='bgm')return String($('bgm')?.value||'').trim();
+ if(kind==='sfx')return String($('sfx-file')?.files?.[0]?.name||'').trim();
+ return '';
 }
-let previewLineBgmName='',previewLineSfxName='';
+let previewLineBgmName='',previewLineSfxName='',previewSfxFile=null,previewSfxUrl='';
+function getPreviewSfxUrl(){
+ const file=$('sfx-file')?.files?.[0]||null;
+ if(!file){if(previewSfxUrl)URL.revokeObjectURL(previewSfxUrl);previewSfxUrl='';previewSfxFile=null;return ''}
+ if(file!==previewSfxFile){if(previewSfxUrl)URL.revokeObjectURL(previewSfxUrl);previewSfxFile=file;previewSfxUrl=URL.createObjectURL(file)}
+ return previewSfxUrl;
+}
 async function playLineAudio(line){
  const bgm=resolvedLineAudio(line,'bgm');
  if(bgm!==previewLineBgmName){
@@ -629,12 +628,10 @@ async function playLineAudio(line){
   previewLineBgmName=bgm;
   if(bgm){previewAudio.bgm=audioElement(BASE+'AmThanh/Nen/'+bgm,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
  }
- const sfx=resolvedLineAudio(line,'sfx');
+ const sfx=resolvedLineAudio(line,'sfx'),sfxUrl=getPreviewSfxUrl();
  if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}
- if(sfx){previewLineSfxName=sfx;previewAudio.sfx=audioElement(BASE+'AmThanh/HieuUng/'+sfx,false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
- else if(!activeStoryData&&!line?.sourceAudio?.sfx&&$('sfx-file').files[0]){
-  previewAudio.sfx=audioElement(URL.createObjectURL($('sfx-file').files[0]),false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})
- }
+ previewLineSfxName=sfx;
+ if(sfx&&sfxUrl){previewAudio.sfx=audioElement(sfxUrl,false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
 }
 let browserSpeechState=null;
 function buildBrowserUtterance(state){
@@ -1142,12 +1139,17 @@ async function exportVideo(){
   const audioBuffers={bgm:new Map(),sfx:new Map()};
   const getLineAudioBuffer=async(line,kind)=>{
    const name=resolvedLineAudio(line,kind);
-   if(!name&&kind==='sfx'&&!activeStoryData&&$('sfx-file').files[0])return audioContext.decodeAudioData(await $('sfx-file').files[0].arrayBuffer());
    if(!name)return null;
    const cache=audioBuffers[kind];if(cache.has(name))return cache.get(name);
-   const folder=kind==='bgm'?'Nen/':'HieuUng/';
-   try{const buffer=await decodeUrl(BASE+'AmThanh/'+folder+name,audioContext);cache.set(name,buffer);return buffer}
-   catch(err){cache.set(name,null);setStatus('Bỏ qua âm thanh không tải được: '+name);console.warn('Không thể nạp âm thanh',name,err);return null}
+   try{
+    let buffer;
+    if(kind==='sfx'){
+     const file=$('sfx-file')?.files?.[0];
+     if(!file){cache.set(name,null);return null}
+     buffer=await audioContext.decodeAudioData(await file.arrayBuffer());
+    }else buffer=await decodeUrl(BASE+'AmThanh/Nen/'+name,audioContext);
+    cache.set(name,buffer);return buffer;
+   }catch(err){cache.set(name,null);setStatus('Bỏ qua âm thanh không tải được: '+name);console.warn('Không thể nạp âm thanh',name,err);return null}
   };
   {const seen=new Set(),warm=[];for(const en of allAudio)for(const kind of ['sfx','bgm']){const nm=resolvedLineAudio(en.line,kind),k=kind+'|'+nm;if(nm&&!seen.has(k)){seen.add(k);warm.push(getLineAudioBuffer(kind==='bgm'?{sourceAudio:{bgm:nm}}:en.line,kind))}}await Promise.all(warm)} // tải song song BGM/SFX
   const bgmSegments=[];
@@ -1454,7 +1456,6 @@ $('seek-next').addEventListener('click',()=>seekSourceLine(currentSourceIndex()+
 $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)));
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
 $('ratio-toggle').addEventListener('click',toggleAspectRatio);
-$('ratio-toggle-settings').addEventListener('click',toggleAspectRatio);
 $('stop-scene').addEventListener('click',stopAndResetPreview);
 
 $('toggle-fullscreen').addEventListener('click',togglePreviewFullscreen);
@@ -1548,7 +1549,14 @@ async function seekSourceLine(sourceIndex){
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(line.sourceIndex+1);
 }
 function captureVisual(){
- return {character:$('character').value,expression:$('expression').value,background:$('background').value,showDialogue:$('show-dialogue').checked,showSpeaker:$('show-speaker').checked,dialogueMode:$('dialogue-width-mode').value,dialogueWidth:$('dialogue-width').value,portrait:stage.classList.contains('portrait')};
+ return {character:$('character').value,expression:$('expression').value,background:$('background').value,dialogueMode:$('dialogue-width-mode').value,dialogueWidth:$('dialogue-width').value};
+}
+function applyVisual(v){
+ if(!v)return;
+ $('character').value=v.character;$('expression').value=v.expression;$('background').value=v.background;
+ $('dialogue-width-mode').value=v.dialogueMode||'percent';$('dialogue-width').value=v.dialogueWidth||75;
+ $('dialogue-width-control').style.display=v.dialogueMode==='fit'?'none':'flex';
+ $('dialogue-width-value').textContent=$('dialogue-width').value+'%';
 }
 function applyVisual(v){
  if(!v)return;
@@ -1569,7 +1577,6 @@ function saveCurrentLine(){
  line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
- line.audioOverride={bgm:{mode:$('line-bgm-mode').value,file:$('line-bgm-file').value.trim()},sfx:{mode:$('line-sfx-mode').value,file:$('line-sfx-file').value.trim()}};
  if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
 }
 function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual();const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
@@ -1581,7 +1588,6 @@ function loadLineToEditor(line){
  $('speaker').value=line.speaker||'Nhân vật 1';$('speaker').readOnly=!!activeStoryData;$('dialogue').value=line.text||'';
  $('voice-profile').value=line.profileId||'';
  $('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
- const ao=line.audioOverride||{};$('line-bgm-mode').value=ao.bgm?.mode||'inherit';$('line-bgm-file').value=ao.bgm?.file||'';$('line-sfx-mode').value=ao.sfx?.mode||'inherit';$('line-sfx-file').value=ao.sfx?.file||'';
  const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};
  fillVoice();
  generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';
@@ -1635,11 +1641,14 @@ $('delete-line').addEventListener('click',()=>{
  list.splice(activeLineIndex,1);activeLineIndex=Math.max(0,activeLineIndex-1);loadLineToEditor(getCurrentLine());renderLineList();
 });
 $('dialogue-line-list').addEventListener('click',e=>{const item=e.target.closest('[data-line-index]');if(item)selectLine(Number(item.dataset.lineIndex))});
-['speaker','dialogue','voice-profile','tts-lang','piper-voice','line-pause','line-bgm-mode','line-bgm-file','line-sfx-mode','line-sfx-file'].forEach(id=>{
+['speaker','dialogue','voice-profile','tts-lang','piper-voice','line-pause'].forEach(id=>{
  $(id).addEventListener('input',()=>{saveCurrentLine();renderLineList()});
  $(id).addEventListener('change',()=>{saveCurrentLine();renderLineList()});
 });
-document.querySelectorAll('#character,#expression,#background,#show-dialogue,#show-speaker,#dialogue-width-mode,#dialogue-width').forEach(el=>el.addEventListener('change',()=>saveCurrentScene()));
+document.querySelectorAll('#character,#expression,#background,#dialogue-width-mode,#dialogue-width').forEach(el=>el.addEventListener('change',()=>saveCurrentScene()));
+ ['show-dialogue','show-speaker'].forEach(id=>$(id).addEventListener('change',()=>drawFrame(0)));
+ $('bgm').addEventListener('change',()=>{previewLineBgmName='';if(previewing&&!previewPaused)playLineAudio(getCurrentLine())});
+ $('sfx-file').addEventListener('change',()=>{if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}getPreviewSfxUrl()});
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
 renderEffectCatalogs();
