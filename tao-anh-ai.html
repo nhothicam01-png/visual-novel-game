@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Xưởng tạo ảnh</title>
+<title>AI Image Studio · Visual Novel Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -48,7 +48,7 @@ button:disabled{opacity:.6;cursor:progress}
   </label>
   <label>Nguồn tạo ảnh
     <select id="provider">
-      <option value="pollinations">Pollinations (miễn phí, không cần key)</option>
+      <option value="pollinations">Pollinations AI (cần user key)</option>
       <option value="horde">Stable Horde (miễn phí, có thể phải chờ hàng đợi)</option>
       <option value="hf">Hugging Face (cần token miễn phí)</option>
     </select>
@@ -56,6 +56,10 @@ button:disabled{opacity:.6;cursor:progress}
   <label id="tokenWrap" hidden>Hugging Face token
     <input id="token" type="password" placeholder="hf_..." autocomplete="off">
     <span class="hint">Chỉ lưu trong trình duyệt của bạn. Khi đưa lên web thật, hãy gọi qua backend để không lộ token.</span>
+  </label>
+  <label id="pollTokenWrap">Pollinations user key (sk_...)
+    <input id="pollToken" type="password" placeholder="sk_..." autocomplete="off">
+    <span class="hint">Tạo key tại enter.pollinations.ai. Khóa secret không được nhúng trong mã nguồn công khai.</span>
   </label>
   <div class="row">
     <label>Kích thước
@@ -86,12 +90,13 @@ button:disabled{opacity:.6;cursor:progress}
 
 <script>
 const $ = id => document.getElementById(id);
-const el = {prompt:$('prompt'),provider:$('provider'),token:$('token'),tokenWrap:$('tokenWrap'),size:$('size'),seed:$('seed'),go:$('go'),frame:$('frame'),actions:$('actions'),hist:$('hist')};
+const el = {prompt:$('prompt'),provider:$('provider'),token:$('token'),tokenWrap:$('tokenWrap'),pollToken:$('pollToken'),pollTokenWrap:$('pollTokenWrap'),size:$('size'),seed:$('seed'),go:$('go'),frame:$('frame'),actions:$('actions'),hist:$('hist')};
 let current = null;
 
-try { el.token.value = localStorage.getItem('hf_token') || ''; } catch (e) {}
+try { el.token.value = localStorage.getItem('hf_token') || ''; el.pollToken.value = sessionStorage.getItem('poll_token') || ''; } catch (e) {}
 
-el.provider.onchange = () => { el.tokenWrap.hidden = el.provider.value !== 'hf'; };
+el.provider.onchange = () => { el.tokenWrap.hidden = el.provider.value !== 'hf'; el.pollTokenWrap.hidden = el.provider.value !== 'pollinations'; };
+el.provider.onchange();
 
 function status(msg, err) {
   el.frame.innerHTML = '';
@@ -102,9 +107,14 @@ function status(msg, err) {
 }
 
 async function viaPollinations(prompt, w, h, seed) {
-  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${w}&height=${h}&seed=${seed}&model=flux&nologo=true`;
-  const r = await fetch(url);
-  if (!r.ok) throw new Error('Pollinations trả về lỗi ' + r.status);
+  const key = el.pollToken.value.trim();
+  if (!key || !key.startsWith('sk_')) throw new Error('Pollinations hiện yêu cầu user key dạng sk_. Tạo key tại enter.pollinations.ai.');
+  try { sessionStorage.setItem('poll_token', key); } catch (e) {}
+  const url = new URL('https://gen.pollinations.ai/image/' + encodeURIComponent(prompt));
+  url.searchParams.set('model', 'black-forest-labs/flux.1-schnell');
+  url.searchParams.set('width', w); url.searchParams.set('height', h); url.searchParams.set('seed', seed);
+  const r = await fetch(url, {headers:{Authorization:'Bearer ' + key}});
+  if (!r.ok) throw new Error('Pollinations lỗi ' + r.status + '. Kiểm tra key, ngân sách và model.');
   return await r.blob();
 }
 
@@ -117,7 +127,7 @@ async function viaHF(prompt) {
     headers: {'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'},
     body: JSON.stringify({inputs: prompt})
   });
-  if (!r.ok) throw new Error('Hugging Face lỗi ' + r.status + '. Kiểm tra token và hạn mức.');
+  if (!r.ok) throw new Error('Hugging Face lỗi ' + r.status + '. Kiểm tra token, model và credit miễn phí.');
   return await r.blob();
 }
 
@@ -157,7 +167,7 @@ async function generate(newSeed) {
   try {
     const p = el.provider.value;
     const blob = p === 'hf' ? await viaHF(prompt) : p === 'horde' ? await viaHorde(prompt, w, h, seed) : await viaPollinations(prompt, w, h, seed);
-    if (!blob.type.startsWith('image/')) throw new Error('Nguồn không trả về ảnh. Thử lại hoặc đổi nguồn khác.');
+    if (!blob.type.startsWith('image/')) throw new Error('Nguồn không trả về ảnh hợp lệ. Thử lại hoặc đổi nguồn khác.');
     show(URL.createObjectURL(blob));
   } catch (e) {
     status((e instanceof TypeError ? 'Không kết nối được tới nguồn tạo ảnh (mạng hoặc CORS). Thử đổi nguồn khác.' : e.message), true);
@@ -183,6 +193,7 @@ $('dl').onclick = () => {
 };
 $('again').onclick = () => generate(true);
 el.go.onclick = () => generate(false);
+el.pollToken.addEventListener('change', () => { try { sessionStorage.setItem('poll_token', el.pollToken.value.trim()); } catch (e) {} });
 el.prompt.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate(false); });
 </script>
 </body>
