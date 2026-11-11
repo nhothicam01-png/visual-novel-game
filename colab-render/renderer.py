@@ -7,6 +7,7 @@ import argparse, json, os, shutil, subprocess, sys, urllib.request, urllib.parse
 from pathlib import Path
 from typing import Any
 import cv2
+import av
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
@@ -178,21 +179,49 @@ def apply_visual_effects(frame, bg, char, elapsed, interval, strength):
     return frame.convert("RGB")
 
 class VideoAsset:
+    """PyAV decoder keeps RGBA alpha for transparent character WebM clips."""
     def __init__(self,path):
-        self.cap=cv2.VideoCapture(str(path))
-        if not self.cap.isOpened(): raise RuntimeError("Không mở được video: "+str(path))
-        self.fps=self.cap.get(cv2.CAP_PROP_FPS) or 30
-        self.frames=self.cap.get(cv2.CAP_PROP_FRAME_COUNT) or 1
-        self.duration=max(.001,self.frames/self.fps)
+        self.path=str(path)
+        self.container=av.open(self.path)
+        self.stream=self.container.streams.video[0]
+        self.fps=float(self.stream.average_rate or 30)
+        self.frames=int(self.stream.frames or 0)
+        tb=float(self.stream.time_base)
+        self.duration=(float(self.stream.duration)*tb) if self.stream.duration else max(.001,self.frames/self.fps if self.frames else 1)
+        self.last_index=-1
+        self.last_image=None
+        self.iterator=None
+    def _seek(self,index):
+        timestamp=int((index/self.fps)/float(self.stream.time_base))
+        self.container.seek(max(0,timestamp),stream=self.stream,backward=True,any_frame=False)
+        self.iterator=iter(self.container.decode(self.stream))
+        self.last_index=-1
+        self.last_image=None
     def frame(self,t):
-        t=float(t)%self.duration
-        self.cap.set(cv2.CAP_PROP_POS_MSEC,t*1000)
-        ok,bgr=self.cap.read()
-        if not ok:
-            self.cap.set(cv2.CAP_PROP_POS_FRAMES,0); ok,bgr=self.cap.read()
-        if not ok: return None
-        return Image.fromarray(cv2.cvtColor(bgr,cv2.COLOR_BGR2RGBA))
-    def close(self): self.cap.release()
+        index=max(0,int((float(t)%self.duration)*self.fps))
+        if self.iterator is None or index<self.last_index or index>self.last_index+4:
+            self._seek(index)
+        chosen=None
+        try:
+            while self.last_index<index:
+                fr=next(self.iterator)
+                self.last_index+=1
+                chosen=fr
+            if chosen is None:
+                chosen=next(self.iterator)
+                self.last_index+=1
+            self.last_image=chosen.to_image().convert("RGBA")
+            return self.last_image
+        except StopIteration:
+            self._seek(0)
+            try:
+                fr=next(self.iterator); self.last_index=0
+                self.last_image=fr.to_image().convert("RGBA")
+                return self.last_image
+            except StopIteration:
+                return self.last_image
+    def close(self):
+        self.container.close()
 
 def render_video(timeline, work: Path, output: Path):
     width=int(timeline["video"]["width"]); height=int(timeline["video"]["height"])
