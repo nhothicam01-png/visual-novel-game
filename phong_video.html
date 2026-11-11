@@ -1224,13 +1224,15 @@ async function exportColabPackage(){
    const frameCount=Math.ceil(timeline.duration*fps),frameDir='browser_frames/';
    timeline.browser_frames={pattern:'browser_frames/{index}.jpg',count:frameCount,format:'jpeg',quality:.84};
    const frameItems=timeline.scenes.flatMap((sc,sceneIndex)=>sc.intervals.map(it=>({sc,sceneIndex,it}))).sort((a,b)=>a.it.start-b.it.start);
-   let activeKey='',savedOverride=frameOverride;
+   let activeKey='',savedOverride=frameOverride,frameCursor=0;
+   const blankDialogue=document.createElement('canvas');blankDialogue.width=width;blankDialogue.height=height;
    const toJpeg=()=>new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Không tạo được ảnh khung hình trình duyệt.')),'image/jpeg',.84));
    try{
     canvas.width=width;canvas.height=height;isPortrait=portrait;
     for(let fi=0;fi<frameCount;fi++){
      const t=fi/fps;let found=null;
-     for(const entry of frameItems){if(t>=entry.it.start&&t<entry.it.end){found=entry;break}}
+     while(frameCursor<frameItems.length&&frameItems[frameCursor].it.end<=t)frameCursor++;
+     const candidate=frameItems[frameCursor];if(candidate&&t>=candidate.it.start&&t<candidate.it.end)found=candidate;
      let elapsed=0;
      if(found){
       const key=found.sceneIndex+':'+found.it.line_index;elapsed=t-found.sc.start;
@@ -1243,14 +1245,15 @@ async function exportColabPackage(){
       }
       frameOverride={bg:bgVideo?await clipFrame(bgVideo,elapsed,fps):null,char:charVideo?await clipFrame(charVideo,t-found.it.start,fps):null};
      }else{frameOverride={bg:null,char:null}}
-     drawFrame(elapsed,readFrameState());
+     const frameState=readFrameState();if(!found)frameState.dialogueLayer=blankDialogue;
+     drawFrame(elapsed,frameState);
      zip.file(frameDir+String(fi).padStart(8,'0')+'.jpg',await toJpeg());
      if(fi%Math.max(1,fps*2)===0){setTaskProgress('Đang chụp khung hình trình duyệt '+(fi+1)+'/'+frameCount,Math.round((fi+1)/frameCount*75));await yieldToUI()}
     }
    }finally{frameOverride=savedOverride}
   }
   zip.file('timeline.json',JSON.stringify(timeline,null,2));
-  zip.file('manifest.json',JSON.stringify({schema_version:1,kind:'visual-novel-colab-package',created_at:timeline.created_at,story:timeline.story,files:{timeline:'timeline.json',assets:'asset_manifest.json',tts_directory:'tts/'},asset_fetch:'assets are fetched by Colab from the repository raw URLs; TTS WAV files are embedded in this ZIP',requirements:['Preserve timeline timestamps exactly','Use scene-local elapsed time for looping source videos and animated effects','Do not render browser PNG frames; render natively in Colab','Mix TTS, BGM and SFX using timeline.json']},null,2));
+  zip.file('manifest.json',JSON.stringify({schema_version:1,kind:'visual-novel-colab-package',created_at:timeline.created_at,story:timeline.story,files:{timeline:'timeline.json',assets:'asset_manifest.json',tts_directory:'tts/'},asset_fetch:'assets are fetched by Colab from the repository raw URLs; TTS WAV files are embedded in this ZIP',requirements:['Preserve timeline timestamps exactly','Use scene-local elapsed time for looping source videos and animated effects',timeline.render_mode==='browser'?'Use captured browser_frames as the authoritative visual frames':'Render visuals natively in Colab','Mix TTS, BGM and SFX using timeline.json']},null,2));
   zip.file('asset_manifest.json',JSON.stringify({repository:'nhothicam01-png/visual-novel-game',branch:'main',base_url:BASE,assets:timeline.assets},null,2));
   setTaskProgress('Đang nén gói Colab…',90);
   const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:4}});
