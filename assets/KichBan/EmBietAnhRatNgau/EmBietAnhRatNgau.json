@@ -9,13 +9,13 @@
     "1": {
       "ten_hien_thi": "Lirien",
       "giong_noi": {
-        "profile_id": "voice_1794303792721",
-        "profile_name": "Thiếu nữ",
+        "profile_id": "voice_1794267836392",
+        "profile_name": "Bé trai",
         "voice_id": "vi_VN-vais1000-medium",
         "voiceId": "vi_VN-vais1000-medium",
-        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
         "lang": "vi",
-        "gender": "female"
+        "gender": "male"
       }
     },
     "2": {
@@ -87,7 +87,16 @@
       }
     },
     "world_3": {
-      "ten_hien_thi": "world_3"
+      "ten_hien_thi": "world_3",
+      "giong_noi": {
+        "profile_id": "voice_1794205520158",
+        "profile_name": "Hoà",
+        "voice_id": "vi_VN-vais1000-medium",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "lang": "vi",
+        "gender": "female"
+      }
     }
   },
   "am_thanh_mac_dinh": {
@@ -154,7 +163,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "3"
+      "ten_hien_thi": "world_3"
     },
     {
       "nhan_vat": "1",
@@ -232,7 +241,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "3"
+      "ten_hien_thi": "world_3"
     },
     {
       "nhan_vat": "6",
@@ -316,7 +325,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "3"
+      "ten_hien_thi": "world_3"
     },
     {
       "nhan_vat": "5",
@@ -370,7 +379,7 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "3"
+      "ten_hien_thi": "world_3"
     },
     {
       "nhan_vat": "5",
