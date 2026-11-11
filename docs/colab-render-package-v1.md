@@ -101,3 +101,86 @@ Python implementation should use Pillow/NumPy for deterministic compositing/effe
 - The export loop renders each frame and sends it to Mediabunny CanvasSource.
 - Audio is prepared/mixed separately before the final MP4 is finalized.
 - Scene capture currently stores character, expression, background and dialogue width/portrait values; the final package must include additional global and per-line state required by the prepared render.
+
+
+## Findings verified in `phong_video.html` (2026-11-11)
+
+The current browser export timeline is built inside `exportVideo()` after TTS blobs have been prepared and decoded. Its timing rules are:
+
+- Each non-empty dialogue line becomes an entry with `start`, decoded WAV `duration`, `pause`, `gain`, `sceneIndex`, and a reference to its source line.
+- The next line starts at the previous line's `start + duration + pause`.
+- A scene with no non-empty dialogue receives a 3-second silent interval.
+- Final duration is rounded up to a whole output frame: `ceil(totalDuration * fps) / fps`.
+- The browser renderer uses the selected FPS and either 1280x720 / 1920x1080, swapped for portrait output.
+
+The actual visual state is not just `scene.visual`. At render time the browser applies:
+
+1. Scene-level visual selection (`character`, `expression`, `background`, dialogue width mode and width).
+2. Per-line character/background overrides from `sourceFrame` when present.
+3. Per-line effects from `effectSettings` and `effectStrength`.
+4. Global dialogue visibility and speaker-name visibility.
+5. Video backgrounds and character clips, sampled as looping clips at the scene-local elapsed time.
+
+The browser draws dialogue once per line into a cached dialogue layer. The dialogue box uses the current line's text/speaker, global visibility toggles, and the scene's dialogue width settings.
+
+### Audio timing verified
+
+The browser mixes:
+- TTS at each dialogue entry's `start`, multiplied by global TTS volume and per-entry gain.
+- SFX at the dialogue entry's `start`, with global SFX volume.
+- BGM as looping segments. A segment continues while consecutive lines resolve to the same BGM; it ends when the selected BGM changes.
+- Audio output is stereo AAC, currently 48 kHz where supported by the browser AudioContext, at 160 kbps.
+
+The package exporter must include the actual generated TTS audio bytes. A voice ID and dialogue text alone are not sufficient to reproduce the browser's exact timing or voice output.
+
+### Required normalized timeline record
+
+The package builder should serialize a deterministic, DOM-independent record for every render interval. The following is the target shape (illustrative field names; values must be copied from the live prepared timeline, not guessed):
+
+```json
+{
+  "scene_index": 0,
+  "scene_name": "Cảnh 1",
+  "scene_start": 0.0,
+  "scene_end": 8.25,
+  "scene_visual": {
+    "character": "1",
+    "expression": "Happy",
+    "background": "garden.png",
+    "dialogue_mode": "percent",
+    "dialogue_width": 75,
+    "portrait": false
+  },
+  "intervals": [
+    {
+      "kind": "dialogue",
+      "start": 0.0,
+      "duration": 2.75,
+      "pause": 0.5,
+      "speaker": "Aki",
+      "speaker_id": "1",
+      "text": "Example dialogue",
+      "character_asset": "1",
+      "expression": "Happy",
+      "background": "garden.png",
+      "effect_settings": ["bg:zoom"],
+      "effect_strength": 50,
+      "source_frame": {},
+      "tts_asset_id": "tts_000001",
+      "sfx_asset_id": null,
+      "bgm_asset_id": "bgm_000001"
+    }
+  ]
+}
+```
+
+A scene-local elapsed clock is used for the browser's looping background/character video clips and time-based effects. The exporter must preserve that clock behavior rather than using one global elapsed value for every scene.
+
+### Porting boundary / known parity risks
+
+- The browser effect renderer currently uses Canvas 2D transforms, blur, gradients, text measurement, and deterministic time-based particle formulas. A Python port must implement these explicitly; a simple FFmpeg overlay is not equivalent.
+- The browser character fit rule is different in portrait and landscape: portrait fits to full frame height and center-crops horizontally; landscape uses `min(width/source_width, height/source_height)` and bottom-aligns.
+- The browser background uses cover scaling and center alignment.
+- The selected scene visual settings and per-line overrides must be resolved before rendering each interval.
+- Do not advertise pixel-identical parity until comparison frames and audio sync tests pass.
+
