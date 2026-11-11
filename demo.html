@@ -105,6 +105,14 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .nav{width:100%;display:flex;gap:8px;flex-wrap:wrap;background:#111c30;border:1px solid #334155;border-radius:12px;padding:14px;margin:0 0 12px}
 .nav a{color:#e9d5ff;background:#263449;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:13px}
 .nav a.current{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
+
+/* Compact scene/dialogue editor drawer; preview remains visible */
+.scene-editor-drawer{position:fixed;z-index:1000;top:76px;right:16px;width:min(540px,calc(100vw - 32px));max-height:calc(100vh - 92px);display:none;flex-direction:column;gap:8px;background:#080f1e;border:1px solid #a855f766;border-radius:12px;padding:10px;box-shadow:0 18px 55px #000c;overflow:hidden}
+.scene-editor-drawer.open{display:flex}
+.scene-editor-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#e9d5ff;padding:2px 2px 6px}
+.scene-editor-drawer>.main-panel{display:flex;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.scene-editor-drawer>.main-panel:not([open])>*:not(.panel-heading){display:none}
+@media(max-width:600px){.scene-editor-drawer{top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:68vh;padding:9px}.scene-editor-drawer>.main-panel{max-height:calc(68vh - 48px)}}
 </style>
 </head>
 <body>
@@ -120,6 +128,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <div id="preview-loading"><strong>⏳ Đang tải tài nguyên…</strong><span id="preview-loading-status">Đang chuẩn bị cảnh</span></div>
 </div>
 <div class="preview-toolbar">
+<button class="btn secondary" id="open-scene-editor" type="button" aria-expanded="false" aria-controls="scene-editor-drawer">☰ Cảnh & lời thoại</button>
 <button class="btn" id="play-preview">▶ Chạy</button>
 <button class="btn secondary" id="direct-record-button">⏺ Ghi trực tiếp</button>
 <button class="btn secondary" id="stop-scene">■ Dừng chạy</button>
@@ -155,7 +164,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <label class="field">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
 <div class="status" id="voice-fallback-status">Giọng mặc định được dùng khi nhân vật chưa có giọng riêng hoặc giọng trong JSON không hợp lệ.</div>
 </details>
-<details class="panel main-panel" open><summary class="panel-heading">2. Cảnh & danh sách lời thoại</summary>
+<div id="scene-editor-drawer" class="scene-editor-drawer"><div class="scene-editor-drawer-head"><strong>☰ Chỉnh sửa cảnh & lời thoại</strong><button class="btn secondary" id="close-scene-editor" type="button">✕</button></div><details class="panel main-panel" open><summary class="panel-heading">2. Cảnh & danh sách lời thoại</summary>
 <div class="row scene-toolbar">
 <label class="field" style="flex:1">Chọn cảnh<select id="scene-select"></select></label>
 <button class="btn" id="add-scene">＋ Thêm cảnh</button>
@@ -183,7 +192,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
 <label class="field">Chọn nhân vật<select id="character"></select></label>
 <label class="field">Biểu cảm / chuyển động<select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
-<div class="effect-options" data-effect-list="character"></div></details>
+<div class="effect-options" data-effect-list="character"></div></details></div>
 <details class="effect-panel"><summary>🌄 Bối cảnh & nền</summary>
 <label class="field">Ảnh nền<select id="background"></select></label>
 <div class="effect-options" data-effect-list="background"></div></details>
@@ -1859,6 +1868,10 @@ document.querySelectorAll('#character,#expression,#background,#dialogue-width-mo
  $('sfx-file').addEventListener('change',()=>{if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}getPreviewSfxUrl()});
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
+const sceneDrawer=$('scene-editor-drawer'),sceneMenuButton=$('open-scene-editor');
+function setSceneEditorOpen(open){sceneDrawer.classList.toggle('open',!!open);sceneMenuButton.setAttribute('aria-expanded',String(!!open));sceneMenuButton.textContent=open?'✕ Đóng chỉnh sửa':'☰ Cảnh & lời thoại';}
+sceneMenuButton.addEventListener('click',()=>setSceneEditorOpen(!sceneDrawer.classList.contains('open')));
+$('close-scene-editor').addEventListener('click',()=>setSceneEditorOpen(false));
 renderEffectCatalogs();
 scenes=[{name:'Cảnh 1',visual:captureVisual(),lines:[newLine()]}];
 renderVisibleCharacters(getCurrentLine());
