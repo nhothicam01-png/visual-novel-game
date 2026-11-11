@@ -165,6 +165,51 @@ def apply_visual_effects(frame, bg, char, elapsed, interval, strength):
         if alpha<255: char.putalpha(char.getchannel("A").point(lambda x:int(x*alpha/255)))
         layer=Image.new("RGBA",(w,h),(0,0,0,0)); layer.alpha_composite(char,(int(dx),int(dy)))
         frame=Image.alpha_composite(frame.convert("RGBA"),layer)
+    # Atmosphere overlays: deterministic particle positions follow the browser renderer clock.
+    atm=ids["atm"]
+    if atm:
+        overlay=Image.new("RGBA",(w,h),(0,0,0,0)); ad=ImageDraw.Draw(overlay)
+        if "rays" in atm:
+            ad.polygon([(int(w*.12),0),(int(w*.48),0),(int(w*.78),h),(int(w*.42),h)],fill=(255,244,190,round(18*strength)))
+        if any(x in atm for x in ("snow","rain","petals","dust","sparkle")):
+            count=95 if "rain" in atm else (65 if "snow" in atm else 42)
+            for i in range(count):
+                seed=i*127.1
+                x=int(((seed*np.sin(i+2)*.5+.5)*w+np.sin(elapsed*.8+i)*w*.025+w*2)%w)
+                y=int(((i/count*h+elapsed*(h*1.25 if "rain" in atm else h*.16))%h))
+                if "rain" in atm:
+                    ad.line((x,y,x-int(w*.008),y+int(h*.035)),fill=(190,220,255,122),width=max(1,round(w*.0008)))
+                elif "petals" in atm:
+                    rr=max(2,round(w*.004))
+                    ad.ellipse((x-rr,y-rr*2,x+rr,y+rr*2),fill=(255,160,195,184))
+                else:
+                    rr=max(1,round(w*(.0025 if "snow" in atm else .0015)))
+                    color=(255,255,255,199) if "snow" in atm else (255,235,170,166)
+                    ad.ellipse((x-rr,y-rr,x+rr,y+rr),fill=color)
+        if "sparkle" in atm:
+            for i in range(18):
+                x=int((i*7919%997)/997*w); y=int((i*3571%991)/991*h)
+                alpha=round(64+166*abs(np.sin(elapsed*2+i)))
+                rr=max(1,round(w*.002))
+                ad.rectangle((x,y,x+rr,y+rr),fill=(255,247,204,alpha))
+        if "fog" in atm:
+            fog=Image.new("RGBA",(w,h),(210,220,235,0)); px=fog.load()
+            for yy in range(int(h*.55),h):
+                aa=round(255*.16*strength*(yy-h*.55)/(h*.45))
+                for xx in range(w): px[xx,yy]=(210,220,235,aa)
+            overlay=Image.alpha_composite(overlay,fog)
+        if "vignette" in atm:
+            yy,xx=np.mgrid[0:h:1,0:w:1]
+            dist=np.sqrt(((xx-w/2)/(max(w,h)*.72))**2+((yy-h/2)/(max(w,h)*.72))**2)
+            alpha=np.clip((dist-.22)*.55*strength/.50,0,.55*strength)
+            vig=Image.new("RGBA",(w,h),(0,0,0,0))
+            vig.putalpha(Image.fromarray(np.uint8(alpha*255)))
+            overlay=Image.alpha_composite(overlay,vig)
+        if "lightning" in atm and np.sin(elapsed*2.7)>.985:
+            overlay=Image.alpha_composite(overlay,Image.new("RGBA",(w,h),(220,235,255,107)))
+        if "flash" in atm and np.sin(elapsed*1.4)>.995:
+            overlay=Image.alpha_composite(overlay,Image.new("RGBA",(w,h),(255,255,255,166)))
+        frame=Image.alpha_composite(frame.convert("RGBA"),overlay)
     # Camera motion is intentionally applied to the combined visual layer.
     cam=ids["camera"]; zoom=1.; dx=dy=0
     if "camera-shake" in cam and elapsed<1.5:
