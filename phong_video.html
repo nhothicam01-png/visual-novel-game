@@ -1256,7 +1256,7 @@ async function loadStoryCatalog(){
   const parts=String(path||'').split('/');
   return parts.length===4&&parts[0]==='assets'&&parts[1]==='KichBan'&&/\.json$/i.test(parts[3])&&parts[3].replace(/\.json$/i,'').toLowerCase()===parts[2].toLowerCase();
  };
- const parseEntries=files=>(files||[]).filter(x=>x&&x.type==='blob'&&isStoryJson(x.path))
+ const parseEntries=files=>(files||[]).filter(x=>x&&(x.type==='blob'||x.type==='file')&&isStoryJson(x.path))
   .map(x=>({name:x.path.split('/')[2],path:x.path,url:null}))
   .sort((a,b)=>a.name.localeCompare(b.name,'vi'));
  async function getJson(url){
