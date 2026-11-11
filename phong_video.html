@@ -1298,7 +1298,7 @@ function uniqueCharacters(dataOrRows){
  });
  return [...map.values()];
 }
-function characterAssetFolder(id){const value=String(id??'').trim(),match=value.match(/(?:^|_)([1-6])$/);return match?match[1]:value}
+function characterAssetFolder(id){const value=String(id??'').trim();if(Object.prototype.hasOwnProperty.call(storyCharacterFolderMap,value))return storyCharacterFolderMap[value];const match=value.match(/(?:^|_)([1-6])$/);return match?match[1]:value}
 function normalizeExpression(value){return String(value||'say_hello_bieu_cam_binh_thuong').replace(/\.webm$/i,'')}
 function renderCharacterVoiceSetup(){
  const host=$('character-voice-list');if(!host)return;
@@ -1397,11 +1397,37 @@ function buildScenesFromJson(data){
  });
  if(current)out.push(current);return out;
 }
+let storyCharacterFolderMap={};
+function normalizeCharacterName(value){return String(value??'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
+async function loadWorldCharacterFolderMap(data,storyPath){
+ storyCharacterFolderMap={};
+ try{
+  const parts=String(storyPath||'').split('/'),storyFolder=parts.length>=3?parts[2]:'';
+  if(!storyFolder)return;
+  const treeResponse=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
+  if(!treeResponse.ok)throw new Error('GitHub tree HTTP '+treeResponse.status);
+  const tree=await treeResponse.json();
+  const worldPaths=(tree.tree||[]).filter(x=>x.type==='blob'&&/^assets\\/TheGioi\\/[^/]+\\/TheGioi\\.json$/i.test(x.path)).map(x=>x.path);
+  const rawBase='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
+  for(const worldPath of worldPaths){
+   const response=await fetch(rawBase+worldPath.split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});
+   if(!response.ok)continue;
+   const world=await response.json();
+   const linked=(world.story_folders||[]).some(item=>String(item.folder||'')===storyFolder||String(item.json_path||'')===storyPath);
+   if(!linked)continue;
+   const byName=new Map((Array.isArray(world.characters)?world.characters:[]).map(ch=>[normalizeCharacterName(ch.name),String(ch.assetFolder||'').trim()]).filter(x=>x[0]&&x[1]));
+   const scriptCharacters=data?.nhan_vat&&typeof data.nhan_vat==='object'?data.nhan_vat:{};
+   Object.entries(scriptCharacters).forEach(([id,info])=>{const folder=byName.get(normalizeCharacterName(info?.ten_hien_thi||info?.name||''));if(folder)storyCharacterFolderMap[String(id)]=folder});
+   break;
+  }
+ }catch(error){console.warn('Không thể đồng bộ thư mục nhân vật từ thế giới mới nhất:',error)}
+}
 async function applyStoryData(data,name,path){
  stopPreview();const rows=data?.danh_sach;
  if(!Array.isArray(rows)||!rows.length)throw new Error('File JSON không có danh_sach hợp lệ.');
  if(Number(data.phien_ban)!==2)throw new Error('File JSON phải dùng phien_ban: 2.');
  activeStoryData=data;activeStoryName=String(name||'Kịch bản import').replace(/\.json$/i,'');activeStoryPath=String(path||('assets/KichBan/'+activeStoryName+'/'+activeStoryName+'.json'));sourceLineCount=rows.length;
+ await loadWorldCharacterFolderMap(data,activeStoryPath);
  characterDirectory=uniqueCharacters(data);
  let saved={};try{saved=JSON.parse(localStorage.getItem(storySettingsKey())||'{}')}catch(e){}
  characterVoiceMap=saved.characterVoiceMap||{};defaultVoiceProfileId=saved.defaultVoiceProfileId||'';
