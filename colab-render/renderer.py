@@ -327,7 +327,7 @@ def render_video(timeline, work: Path, output: Path):
     preload=[]
     seen=set()
     for _,_,_,it in intervals:
-        bg=it.get("background") or (scene.get("visual") or {}).get("background")
+        bg=it.get("background") or (it.get("scene_visual") or {}).get("background")
         ch=it.get("character_asset")
         ex=it.get("expression")
         for key,kind in [(( "bg",str(bg)), "background") if bg else (None,None),
@@ -354,8 +354,10 @@ def render_video(timeline, work: Path, output: Path):
         while current_idx+1<len(intervals) and intervals[current_idx][1]<=t: current_idx+=1
         active=None
         if intervals and intervals[current_idx][0]<=t<intervals[current_idx][1]: active=intervals[current_idx]
-        if timeline.get("render_mode")=="browser":
-            frame_path=work/"browser_frames"/(f"{fi:08d}.jpg")
+        frame_path=work/"browser_frames"/(f"{fi:08d}.jpg")
+        render_mode=timeline.get("render_mode","ffmpeg")
+        use_browser_frame=render_mode=="browser" or (render_mode=="hybrid" and frame_path.exists())
+        if use_browser_frame:
             if not frame_path.exists():
                 writer.release()
                 raise RuntimeError(f"Thiếu khung hình trình duyệt: {frame_path.name}")
@@ -365,7 +367,8 @@ def render_video(timeline, work: Path, output: Path):
                     browser_frame=browser_frame.resize((width,height),Image.Resampling.LANCZOS)
                 writer.write(cv2.cvtColor(np.asarray(browser_frame),cv2.COLOR_RGB2BGR))
             if (fi+1)%max(1,fps*2)==0 or fi+1==total_frames:
-                print(f"  🌐 {fi+1:,}/{total_frames:,} khung hình trình duyệt ({(fi+1)/total_frames*100:.1f}%)",flush=True)
+                label="trình duyệt" if render_mode=="browser" else "hybrid"
+                print(f"  🌐 {fi+1:,}/{total_frames:,} khung hình ({label}; {(fi+1)/total_frames*100:.1f}%)",flush=True)
             continue
         base=Image.new("RGBA",(width,height),(0,0,0,255))
         ch=None
