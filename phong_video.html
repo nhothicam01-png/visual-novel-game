@@ -230,6 +230,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 </div>
 <div class="row">
 <button class="btn" id="export-video">🎬 Xuất video MP4 (timeline)</button>
+<button class="btn secondary" id="export-colab-package">☁️ Chuẩn bị gói render Colab</button>
 <button class="btn secondary" id="record-direct">⏺ Ghi trực tiếp (WebM)</button>
 <button class="btn danger" id="stop-direct-record" disabled>■ Dừng ghi</button>
 </div>
@@ -241,6 +242,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 
 <script src="./effects.js"></script>
 <script src="./environment-effects.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
 (function(){
 'use strict';
@@ -1164,6 +1166,72 @@ async function clipFrameSlow(video,c,k,t,fps){
 // Nhường luồng chính cho UI mà không bị trình duyệt giãn thời gian khi tab ẩn (setTimeout bị throttle, MessageChannel thì không).
 const yieldChannel=new MessageChannel();
 function yieldToUI(){return new Promise(r=>{yieldChannel.port1.onmessage=()=>r();yieldChannel.port2.postMessage(0)})}
+async function exportColabPackage(){
+ if(recording)return;
+ if(!window.JSZip){setStatus('Không tải được thư viện đóng gói ZIP. Hãy kiểm tra mạng rồi tải lại trang.');return}
+ if(!scenes.length||!scenes.some(sc=>sc.lines.some(line=>String(line.text||'').trim()))){setStatus('Hãy thêm ít nhất một câu thoại trước.');return}
+ saveCurrentLine();saveCurrentScene();
+ const originalScene=activeSceneIndex,originalLine=activeLineIndex;
+ const scope=$('preview-scope')?.value||'full',sceneIndexes=scope==='scene'?[originalScene]:scenes.map((_,i)=>i);
+ const fps=Number($('fps').value)||60,q=Number($('export-quality').value)||720;
+ const portrait=!!captureVisual().portrait,width=portrait?(q===1080?1080:720):(q===1080?1920:1280),height=portrait?(q===1080?1920:1280):(q===1080?1080:720);
+ const audioContext=new (window.AudioContext||window.webkitAudioContext)();
+ const zip=new JSZip(),timeline={schema_version:1,kind:'visual-novel-colab-timeline',created_at:new Date().toISOString(),story:{name:String(activeStoryName||'KichBan'),path:String(activeStoryPath||'')},video:{format:'mp4',fps,width,height,portrait,quality:q,scope},global:{show_dialogue:$('show-dialogue').checked,show_speaker:$('show-speaker').checked,dialogue_font:'Segoe UI, Arial, sans-serif',bgm_volume:Number($('bgm-volume').value),sfx_volume:Number($('sfx-volume').value),tts_volume:Number($('tts-volume').value)},scenes:[],assets:[]};
+ const assetMap=new Map(),ttsFiles=[];
+ const addAsset=(path,type)=>{if(!path)return;const clean=String(path).replace(/^\/+/,'');if(!assetMap.has(clean)){assetMap.set(clean,{path:clean,type,source_url:BASE+clean})}};
+ let cursor=0;
+ try{
+  setTaskProgress('Đang chuẩn bị timeline cho Colab…',0);
+  for(const si of sceneIndexes){
+   const scene=scenes[si],pack={scene_index:si,name:scene.name||('Cảnh '+(si+1)),start:cursor,end:cursor,visual:scene.visual||{},intervals:[]};
+   const lines=scene.lines||[];
+   for(let li=0;li<lines.length;li++){
+    const line=lines[li];if(!String(line.text||'').trim())continue;
+    activeSceneIndex=si;activeLineIndex=li;loadLineToEditor(line);
+    setTaskProgress('Đang chuẩn bị giọng · Cảnh '+(si+1)+' · Thoại '+(li+1)+'/'+lines.length);
+    const blob=line.wavBlob||await ensureTtsReady();
+    if(!blob)throw new Error('Không tạo được WAV cho cảnh '+(si+1)+' thoại '+(li+1));
+    line.wavBlob=blob;
+    const decoded=await audioContext.decodeAudioData(await blob.arrayBuffer());
+    const duration=decoded.duration,start=cursor,pause=Math.max(0,Number(line.pauseAfter??.3));
+    const ttsId='tts_'+String(ttsFiles.length+1).padStart(6,'0'),ttsPath='tts/'+ttsId+'.wav';
+    zip.file(ttsPath,blob);ttsFiles.push({id:ttsId,path:ttsPath,start,duration});
+    const frame=line.sourceFrame||{};
+    const bg=String(line.sourceIndex!==undefined?backgroundAtSourceIndex(line.sourceIndex):(frame.anh_nen||line.background||scene.visual?.background||'')).trim();
+    const character=characterAssetFolder(frame.nhan_vat??line.characterAsset??scene.visual?.character??'');
+    const expression=normalizeExpression(frame.bieu_cam||line.expression||scene.visual?.expression||'');
+    if(bg)addAsset('Nen/'+bg,'background');
+    if(character&&expression)addAsset('NhanVat/'+character+'/'+expression+'.webm','character');
+    const bgm=resolvedLineAudio(line,'bgm'),sfx=resolvedLineAudio(line,'sfx');
+    if(bgm)addAsset('AmThanh/Nen/'+bgm,'bgm');
+    if(sfx)addAsset('AmThanh/HieuUng/'+sfx,'sfx');
+    pack.intervals.push({kind:'dialogue',line_index:li,source_index:line.sourceIndex??null,start,duration,pause,end:start+duration+pause,speaker:String(line.speaker||''),speaker_id:String(line.speakerId||''),text:String(line.text||''),character_asset:character,expression,background:bg,scene_visual:scene.visual||{},effect_settings:Array.isArray(line.effectSettings)?line.effectSettings.slice():[],effect_strength:Number(line.effectStrength??50),source_frame:frame,tts_asset_id:ttsId,gain:Number(line.gain??1),audio:{bgm,sfx,bgm_override:line.audioOverride?.bgm||null,sfx_override:line.audioOverride?.sfx||null},voice:{profile_id:String(line.profileId||''),voice_id:String(line.voiceId||''),language:String(line.lang||'vi-VN')}});
+    cursor+=duration+pause;pack.end=cursor;
+   }
+   if(!pack.intervals.length){pack.silent_start=cursor;pack.silent_duration=3;cursor+=3;pack.end=cursor}
+   timeline.scenes.push(pack);
+  }
+  timeline.duration=Math.max(.5,Math.ceil(cursor*fps)/fps);
+  timeline.assets=Array.from(assetMap.values());timeline.tts_assets=ttsFiles;
+  timeline.audio={events:timeline.scenes.flatMap(sc=>sc.intervals.flatMap(it=>[{type:'dialogue',asset_id:it.tts_asset_id,start:it.start,duration:it.duration,gain:it.gain},{type:'bgm',file:it.audio.bgm,start:it.start,end:it.end,loop:true},{type:'sfx',file:it.audio.sfx,start:it.start}].filter(e=>e.asset_id||e.file))),mix:{bgm:Number($('bgm-volume').value),sfx:Number($('sfx-volume').value),tts:Number($('tts-volume').value)}};
+  zip.file('timeline.json',JSON.stringify(timeline,null,2));
+  zip.file('manifest.json',JSON.stringify({schema_version:1,kind:'visual-novel-colab-package',created_at:timeline.created_at,story:timeline.story,files:{timeline:'timeline.json',assets:'asset_manifest.json',tts_directory:'tts/'},asset_fetch:'assets are fetched by Colab from the repository raw URLs; TTS WAV files are embedded in this ZIP',requirements:['Preserve timeline timestamps exactly','Use scene-local elapsed time for looping source videos and animated effects','Do not render browser PNG frames; render natively in Colab','Mix TTS, BGM and SFX using timeline.json']},null,2));
+  zip.file('asset_manifest.json',JSON.stringify({repository:'nhothicam01-png/visual-novel-game',branch:'main',base_url:BASE,assets:timeline.assets},null,2));
+  setTaskProgress('Đang nén gói Colab…',90);
+  const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:4}});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(safeAudioDataName(activeStoryName||'KichBan'))+'_colab_render_package.zip';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+  setStatus('Đã tạo gói Colab: '+timeline.scenes.length+' cảnh · '+ttsFiles.length+' WAV · '+timeline.assets.length+' tài nguyên tham chiếu · '+(blob.size/1024/1024).toFixed(1)+' MB. Gói này chưa phải MP4.');
+  finishTaskProgress('Đã chuẩn bị gói dữ liệu Colab');
+ }catch(err){console.error(err);setStatus('Không thể chuẩn bị gói Colab: '+(err.message||err));finishTaskProgress('Chuẩn bị gói Colab thất bại')}
+ finally{
+  try{await audioContext.close()}catch(_){}
+  activeSceneIndex=originalScene;activeLineIndex=originalLine;
+  if(scenes[activeSceneIndex]){applyVisual(scenes[activeSceneIndex].visual);loadLineToEditor(scenes[activeSceneIndex].lines[activeLineIndex]);await updateAssets()}
+  renderSceneList();renderLineList();
+ }
+}
+$('export-colab-package').addEventListener('click',exportColabPackage);
+
 async function exportVideo(){
  if(recording)return;
  if(!window.VideoEncoder||!window.AudioEncoder){setStatus('Trình duyệt chưa hỗ trợ WebCodecs. Hãy dùng Chrome hoặc Edge mới.');return}
