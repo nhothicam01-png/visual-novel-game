@@ -201,21 +201,23 @@ class VideoAsset:
         index=max(0,int((float(t)%self.duration)*self.fps))
         if self.iterator is None or index<self.last_index or index>self.last_index+4:
             self._seek(index)
+        if index==self.last_index and self.last_image is not None:
+            return self.last_image
         chosen=None
         try:
             while self.last_index<index:
                 fr=next(self.iterator)
-                self.last_index+=1
+                frame_index=int(round(float(fr.pts or 0)*float(self.stream.time_base)*self.fps))
+                self.last_index=frame_index
                 chosen=fr
-            if chosen is None:
-                chosen=next(self.iterator)
-                self.last_index+=1
-            self.last_image=chosen.to_image().convert("RGBA")
+            if chosen is not None:
+                self.last_image=chosen.to_image().convert("RGBA")
             return self.last_image
         except StopIteration:
             self._seek(0)
             try:
-                fr=next(self.iterator); self.last_index=0
+                fr=next(self.iterator)
+                self.last_index=int(round(float(fr.pts or 0)*float(self.stream.time_base)*self.fps))
                 self.last_image=fr.to_image().convert("RGBA")
                 return self.last_image
             except StopIteration:
