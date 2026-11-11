@@ -1226,6 +1226,8 @@ async function exportColabPackage(){
    const frameItems=timeline.scenes.flatMap((sc,sceneIndex)=>sc.intervals.map(it=>({sc,sceneIndex,it}))).sort((a,b)=>a.it.start-b.it.start);
    let activeKey='',savedOverride=frameOverride,frameCursor=0;
    const blankDialogue=document.createElement('canvas');blankDialogue.width=width;blankDialogue.height=height;
+   const blankBackground=document.createElement('canvas');blankBackground.width=width;blankBackground.height=height;const blankBgCtx=blankBackground.getContext('2d');blankBgCtx.fillStyle='#000';blankBgCtx.fillRect(0,0,width,height);
+   const blankCharacter=document.createElement('canvas');blankCharacter.width=width;blankCharacter.height=height;
    const toJpeg=()=>new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Không tạo được ảnh khung hình trình duyệt.')),'image/jpeg',.84));
    try{
     canvas.width=width;canvas.height=height;isPortrait=portrait;
@@ -1244,7 +1246,7 @@ async function exportColabPackage(){
        await updateAssets({quiet:true});
       }
       frameOverride={bg:bgVideo?await clipFrame(bgVideo,elapsed,fps):null,char:charVideo?await clipFrame(charVideo,t-found.it.start,fps):null};
-     }else{frameOverride={bg:null,char:null}}
+     }else{frameOverride={bg:blankBackground,char:blankCharacter}}
      const frameState=readFrameState();if(!found)frameState.dialogueLayer=blankDialogue;
      drawFrame(elapsed,frameState);
      zip.file(frameDir+String(fi).padStart(8,'0')+'.jpg',await toJpeg());
