@@ -615,6 +615,7 @@ function stopPreview(){
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
  if(charVideo)charVideo.pause();
+ charLayerVideos.forEach(x=>x.media?.pause());
  if(bgVideo)bgVideo.pause();
  stopRenderLoop();updatePlaybackButtons();
 }
