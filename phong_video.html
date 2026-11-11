@@ -1458,8 +1458,9 @@ async function loadStory(index){
  const entry=$('story-select')._stories?.[index];if(!entry)return;
  stopPreview();$('story-select').disabled=true;$('story-status').textContent='Đang tải '+entry.name+'…';
  try{
-  let data=storyCache.get(entry.path);
-  if(!data){const encodedPath=entry.path.split('/').map(part=>encodeURIComponent(part)).join('/'),url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+encodedPath,response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error('Không tải được file (HTTP '+response.status+')');data=await response.json();storyCache.set(entry.path,data)}
+  const encodedPath=entry.path.split('/').map(part=>encodeURIComponent(part)).join('/'),url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+encodedPath+'?v='+Date.now(),response=await fetch(url,{cache:'no-store'});
+  if(!response.ok)throw new Error('Không tải được file mới nhất (HTTP '+response.status+')');
+  const data=await response.json();storyCache.set(entry.path,data);
   await applyStoryData(data,entry.name,entry.path);
  }catch(err){$('story-status').textContent='Lỗi nạp truyện: '+(err.message||err);console.error(err)}
  finally{$('story-select').disabled=false}
@@ -1535,8 +1536,15 @@ async function pushEditedStoryJson(){
   if(!confirm('Commit kịch bản "'+activeStoryName+'" lên '+path+'? Nội dung file trên GitHub sẽ được cập nhật.'))return;
   button.disabled=true;$('story-status').textContent='Đang cập nhật kịch bản lên GitHub…';
   const result=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path,content:JSON.stringify(output,null,2),message:'Update script: '+activeStoryName});
-  activeStoryData=output;storyCache.set(path,output);characterDirectory=uniqueCharacters(output);characterVoiceMap={};characterDirectory.forEach(ch=>{const v=profileFromJsonVoice(ch.jsonVoice);if(v?.id)characterVoiceMap[ch.id]=v.id});renderCharacterVoiceSetup();
-  $('story-status').textContent='Đã cập nhật '+output.danh_sach.length+' câu thoại lên GitHub. Commit: '+result.commitSha+' · '+result.path;
+  const verifyUrl='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path.split('/').map(encodeURIComponent).join('/')+'?verify='+Date.now();
+  const verifyResponse=await fetch(verifyUrl,{cache:'no-store'});if(!verifyResponse.ok)throw new Error('GitHub đã nhận yêu cầu nhưng không đọc xác minh được file (HTTP '+verifyResponse.status+').');
+  const verified=await verifyResponse.json();
+  const voiceMap=obj=>Object.fromEntries(Object.entries(obj?.nhan_vat||{}).map(([id,ch])=>[id,ch?.giong_noi?.profile_id||'']));
+  const expectedVoices=voiceMap(output),savedVoices=voiceMap(verified);
+  const mismatches=Object.keys(expectedVoices).filter(id=>(expectedVoices[id]||'')!==(savedVoices[id]||''));
+  if(mismatches.length)throw new Error('Đã push nhưng GitHub đọc lại chưa khớp ID giọng ở nhân vật: '+mismatches.join(', '));
+  activeStoryData=verified;storyCache.set(path,verified);characterDirectory=uniqueCharacters(verified);characterVoiceMap={};characterDirectory.forEach(ch=>{const v=profileFromJsonVoice(ch.jsonVoice);if(v?.id)characterVoiceMap[ch.id]=v.id});renderCharacterVoiceSetup();
+  $('story-status').textContent='Đã cập nhật và xác minh '+output.danh_sach.length+' câu thoại trên GitHub. ID giọng đã đọc lại khớp. Commit: '+result.commitSha+' · '+result.path;
   setStatus('Cập nhật kịch bản lên GitHub thành công.');
  }catch(err){$('story-status').textContent='Không thể cập nhật kịch bản: '+(err.message||err);setStatus('Push kịch bản thất bại.');console.error(err)}
  finally{button.disabled=false}
