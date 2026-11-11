@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xưởng tạo ảnh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eceef6;--ink:#1b1f3b;--mute:#5d6285;--card:#fff;--line:#d3d7e8;--acc:#3d4bff;--acc-ink:#fff;--pop:#e8f25c;--err:#b3261e}
+@media (prefers-color-scheme:dark){:root{--bg:#12142a;--ink:#eceefb;--mute:#9aa0c8;--card:#1b1e3d;--line:#323766;--acc:#8b95ff;--acc-ink:#12142a;--pop:#e8f25c;--err:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:28px 18px 48px;display:grid;gap:22px;grid-template-columns:minmax(0,380px) minmax(0,1fr)}
+@media (max-width:820px){main{grid-template-columns:1fr}}
+h1{grid-column:1/-1;margin:0;font-weight:800;font-size:clamp(2rem,6vw,3.6rem);line-height:1;letter-spacing:-.03em}
+h1 span{background:var(--pop);color:#1b1f3b;padding:0 .18em;border-radius:6px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:14px;align-content:start}
+label{display:grid;gap:6px;font-weight:600;font-size:.92rem}
+textarea,select,input{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+textarea{min-height:130px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button{font:inherit;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 14px}
+button.go{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);font-size:1.05rem;padding:13px}
+button:disabled{opacity:.6;cursor:progress}
+.hint{margin:0;color:var(--mute);font-size:.85rem}
+.stage{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px;align-content:start}
+.frame{aspect-ratio:1/1;max-height:70vh;width:100%;border-radius:10px;background:repeating-conic-gradient(var(--bg) 0 25%,var(--card) 0 50%) 0 0/24px 24px;display:grid;place-items:center;overflow:hidden;margin:0 auto}
+.frame img{width:100%;height:100%;object-fit:contain;display:block}
+.status{color:var(--mute);text-align:center;padding:20px;margin:0}
+.status.err{color:var(--err)}
+.bar{display:flex;gap:10px;flex-wrap:wrap}
+.hist{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.hist button{padding:0;flex:0 0 72px;height:72px;overflow:hidden}
+.hist img{width:100%;height:100%;object-fit:cover;display:block}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.spin{animation:p 1.2s ease-in-out infinite}@keyframes p{50%{opacity:.35}}}
+</style>
+</head>
+<body>
+<main>
+<h1>Gõ mô tả, nhận <span>ảnh</span></h1>
+
+<section class="panel" aria-label="Thiết lập">
+  <label>Mô tả ảnh
+    <textarea id="prompt" placeholder="Một chú mèo phi hành gia đang đọc sách trên mặt trăng, tranh màu nước"></textarea>
+  </label>
+  <label>Nguồn tạo ảnh
+    <select id="provider">
+      <option value="pollinations">Pollinations (miễn phí, không cần key)</option>
+      <option value="horde">Stable Horde (miễn phí, có thể phải chờ hàng đợi)</option>
+      <option value="hf">Hugging Face (cần token miễn phí)</option>
+    </select>
+  </label>
+  <label id="tokenWrap" hidden>Hugging Face token
+    <input id="token" type="password" placeholder="hf_..." autocomplete="off">
+    <span class="hint">Chỉ lưu trong trình duyệt của bạn. Khi đưa lên web thật, hãy gọi qua backend để không lộ token.</span>
+  </label>
+  <div class="row">
+    <label>Kích thước
+      <select id="size">
+        <option value="1024x1024">Vuông 1024</option>
+        <option value="768x1152">Dọc 768×1152</option>
+        <option value="1152x768">Ngang 1152×768</option>
+        <option value="512x512">Nhỏ 512</option>
+      </select>
+    </label>
+    <label>Seed (trống = ngẫu nhiên)
+      <input id="seed" type="number" min="0" inputmode="numeric">
+    </label>
+  </div>
+  <button class="go" id="go">Tạo ảnh</button>
+  <p class="hint">Ctrl + Enter để tạo nhanh. Mô tả bằng tiếng Anh thường cho kết quả tốt hơn.</p>
+</section>
+
+<section class="stage" aria-live="polite">
+  <div class="frame" id="frame"><p class="status">Ảnh sẽ hiện ở đây.</p></div>
+  <div class="bar" id="actions" hidden>
+    <button id="dl">Tải ảnh về</button>
+    <button id="again">Tạo lại (seed mới)</button>
+  </div>
+  <div class="hist" id="hist" aria-label="Ảnh đã tạo"></div>
+</section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const el = {prompt:$('prompt'),provider:$('provider'),token:$('token'),tokenWrap:$('tokenWrap'),size:$('size'),seed:$('seed'),go:$('go'),frame:$('frame'),actions:$('actions'),hist:$('hist')};
+let current = null;
+
+try { el.token.value = localStorage.getItem('hf_token') || ''; } catch (e) {}
+
+el.provider.onchange = () => { el.tokenWrap.hidden = el.provider.value !== 'hf'; };
+
+function status(msg, err) {
+  el.frame.innerHTML = '';
+  const p = document.createElement('p');
+  p.className = 'status' + (err ? ' err' : ' spin');
+  p.textContent = msg;
+  el.frame.appendChild(p);
+}
+
+async function viaPollinations(prompt, w, h, seed) {
+  const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${w}&height=${h}&seed=${seed}&model=flux&nologo=true`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('Pollinations trả về lỗi ' + r.status);
+  return await r.blob();
+}
+
+async function viaHF(prompt) {
+  const token = el.token.value.trim();
+  if (!token) throw new Error('Hãy nhập Hugging Face token.');
+  try { localStorage.setItem('hf_token', token); } catch (e) {}
+  const r = await fetch('https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell', {
+    method: 'POST',
+    headers: {'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'},
+    body: JSON.stringify({inputs: prompt})
+  });
+  if (!r.ok) throw new Error('Hugging Face lỗi ' + r.status + '. Kiểm tra token và hạn mức.');
+  return await r.blob();
+}
+
+async function viaHorde(prompt, w, h, seed) {
+  const round = n => Math.max(64, Math.round(n / 64) * 64);
+  const H = {'Content-Type': 'application/json', 'apikey': '0000000000'};
+  const base = 'https://stablehorde.net/api/v2/';
+  const start = await fetch(base + 'generate/async', {
+    method: 'POST', headers: H,
+    body: JSON.stringify({prompt, params: {width: Math.min(round(w), 768), height: Math.min(round(h), 768), steps: 25, n: 1, seed: String(seed)}, nsfw: false, r2: true})
+  });
+  if (!start.ok) throw new Error('Stable Horde từ chối yêu cầu (' + start.status + ').');
+  const {id} = await start.json();
+  for (let i = 0; i < 90; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const c = await (await fetch(base + 'generate/check/' + id)).json();
+    if (c.faulted) throw new Error('Stable Horde gặp lỗi khi tạo ảnh.');
+    status(c.done ? 'Đang tải ảnh...' : `Đang xếp hàng, vị trí ${c.queue_position ?? '?'}, còn khoảng ${c.wait_time ?? '?'} giây...`);
+    if (c.done) {
+      const s = await (await fetch(base + 'generate/status/' + id)).json();
+      const img = s.generations && s.generations[0] && s.generations[0].img;
+      if (!img) throw new Error('Không nhận được ảnh.');
+      return await (await fetch(img)).blob();
+    }
+  }
+  throw new Error('Chờ quá lâu, hãy thử lại sau.');
+}
+
+async function generate(newSeed) {
+  const prompt = el.prompt.value.trim();
+  if (!prompt) { status('Hãy nhập mô tả ảnh trước.', true); el.prompt.focus(); return; }
+  const [w, h] = el.size.value.split('x').map(Number);
+  if (newSeed || el.seed.value === '') el.seed.value = Math.floor(Math.random() * 1e9);
+  const seed = Number(el.seed.value);
+  el.go.disabled = true; el.actions.hidden = true;
+  status('Đang tạo ảnh...');
+  try {
+    const p = el.provider.value;
+    const blob = p === 'hf' ? await viaHF(prompt) : p === 'horde' ? await viaHorde(prompt, w, h, seed) : await viaPollinations(prompt, w, h, seed);
+    if (!blob.type.startsWith('image/')) throw new Error('Nguồn không trả về ảnh. Thử lại hoặc đổi nguồn khác.');
+    show(URL.createObjectURL(blob));
+  } catch (e) {
+    status((e instanceof TypeError ? 'Không kết nối được tới nguồn tạo ảnh (mạng hoặc CORS). Thử đổi nguồn khác.' : e.message), true);
+  } finally { el.go.disabled = false; }
+}
+
+function show(url) {
+  current = url;
+  el.frame.innerHTML = '';
+  const img = new Image(); img.src = url; img.alt = el.prompt.value;
+  el.frame.appendChild(img);
+  el.actions.hidden = false;
+  const b = document.createElement('button');
+  b.appendChild(Object.assign(new Image(), {src: url, alt: 'Ảnh trước đó'}));
+  b.onclick = () => show(url);
+  el.hist.prepend(b);
+}
+
+$('dl').onclick = () => {
+  if (!current) return;
+  const a = document.createElement('a');
+  a.href = current; a.download = 'anh-ai-' + Date.now() + '.png'; a.click();
+};
+$('again').onclick = () => generate(true);
+el.go.onclick = () => generate(false);
+el.prompt.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate(false); });
+</script>
+</body>
+</html>
