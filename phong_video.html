@@ -1407,7 +1407,7 @@ async function loadWorldCharacterFolderMap(data,storyPath){
   const treeResponse=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
   if(!treeResponse.ok)throw new Error('GitHub tree HTTP '+treeResponse.status);
   const tree=await treeResponse.json();
-  const worldPaths=(tree.tree||[]).filter(x=>x.type==='blob'&&/^assets\\/TheGioi\\/[^/]+\\/TheGioi\\.json$/i.test(x.path)).map(x=>x.path);
+  const worldPaths=(tree.tree||[]).filter(x=>x.type==='blob'&&/^assets\/TheGioi\/[^/]+\/TheGioi\.json$/i.test(x.path)).map(x=>x.path);
   const rawBase='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
   for(const worldPath of worldPaths){
    const response=await fetch(rawBase+worldPath.split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});
