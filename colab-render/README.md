@@ -1,5 +1,9 @@
 # Google Colab renderer
 
+## Open in Google Colab
+
+[Open the render notebook](https://colab.research.google.com/github/nhothicam01-png/visual-novel-game/blob/main/colab-render/colab_render.ipynb)
+
 ## Current files
 - `renderer.py`: native Python renderer. It reads `timeline.json`, uses the embedded TTS WAV files, fetches referenced library assets from the repository, renders the video in Colab, and muxes audio with FFmpeg.
 - `colab_render.ipynb`: notebook for uploading the ZIP package, mounting Google Drive, and starting the render.
