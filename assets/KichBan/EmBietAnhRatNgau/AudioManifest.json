@@ -3,9 +3,9 @@
   "kind": "visual-novel-audio-manifest",
   "story": "EmBietAnhRatNgau",
   "story_path": "assets/KichBan/EmBietAnhRatNgau/EmBietAnhRatNgau.json",
-  "created_at": "2026-11-11T16:15:13.023Z",
+  "created_at": "2026-11-11T16:15:56.851Z",
   "source_language": "Vietnamese",
-  "duration": 7.4918,
+  "duration": 7.5012,
   "audio_mix": {
     "bgm_volume": 0.25,
     "sfx_volume": 0.8,
@@ -18,9 +18,9 @@
   "events": [
     {
       "type": "dialogue",
-      "start": 0.0088,
-      "end": 6.9918,
-      "duration": 6.983,
+      "start": 0.0102,
+      "end": 7.0012,
+      "duration": 6.991,
       "pause_after": 0.5,
       "speaker": "Kaelen",
       "speaker_id": "world_3",
