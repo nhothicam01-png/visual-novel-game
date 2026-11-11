@@ -193,10 +193,11 @@ def apply_visual_effects(frame, bg, char, elapsed, interval, strength):
                 rr=max(1,round(w*.002))
                 ad.rectangle((x,y,x+rr,y+rr),fill=(255,247,204,alpha))
         if "fog" in atm:
-            fog=Image.new("RGBA",(w,h),(210,220,235,0)); px=fog.load()
-            for yy in range(int(h*.55),h):
-                aa=round(255*.16*strength*(yy-h*.55)/(h*.45))
-                for xx in range(w): px[xx,yy]=(210,220,235,aa)
+            fog=Image.new("RGBA",(w,h),(210,220,235,0))
+            alpha=np.zeros((h,w),dtype=np.uint8)
+            y0=int(h*.55)
+            alpha[y0:,:]=np.linspace(0,255*.16*strength,h-y0,dtype=np.uint8)[:,None]
+            fog.putalpha(Image.fromarray(alpha))
             overlay=Image.alpha_composite(overlay,fog)
         if "vignette" in atm:
             yy,xx=np.mgrid[0:h:1,0:w:1]
