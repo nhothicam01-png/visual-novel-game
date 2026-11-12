@@ -16,6 +16,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 #preview-canvas{display:block;width:100%;height:100%;object-fit:contain;background:#000}
 #preview-loading{position:absolute;inset:0;z-index:20;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#050811d9;color:#e2e8f0;font-size:.85rem;text-align:center;padding:18px}
 #preview-loading.active{display:flex}
+body.direct-recording #preview-loading,body.direct-recording #task-progress{display:none!important}
 .preview-toolbar{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.preview-tts-control{min-width:190px;max-width:250px}
 .seek-panel{width:100%;max-width:1000px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 12px;background:#0f172acc;border:1px solid #a855f744;border-radius:10px}
 .seek-panel input[type=range]{flex:1;min-width:140px;accent-color:#a855f7}
@@ -409,7 +410,7 @@ async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,character=$('character').value,expr=normalizeExpression($('expression').value);
  const bgPath=bg?BASE+'Nen/'+bg:'',charPath=character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
  const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},displaySpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
- $('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…';
+ if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
    const folder=characterAssetFolder(spec.id),files=expressionFilesByFolder[String(folder)]||[];
@@ -665,14 +666,14 @@ async function startDirectRecorder(){
  const types=['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
  directRecordChunks=[];directRecordEntries=[];directRecordStartedAt=performance.now();directRecorder=new MediaRecorder(stream,mimeType?{mimeType,videoBitsPerSecond:quality===1080?8000000:quality===540?2500000:5000000}:undefined);
  directRecorder.ondataavailable=e=>{if(e.data?.size)directRecordChunks.push(e.data)};
- directRecorder.start(1000);directRecording=true;$('direct-record-button').textContent='⏹ Dừng ghi';$('direct-record-button').classList.add('danger');
+ directRecorder.start(1000);directRecording=true;document.body.classList.add('direct-recording');$('preview-loading').classList.remove('active');$('direct-record-button').textContent='⏹ Dừng ghi';$('direct-record-button').classList.add('danger');
  directRecordRecorderStreams={stream,oldWidth,oldHeight,fps,quality};
  setStatus('Đang ghi trực tiếp · '+(isPortrait?'9:16':'16:9')+' · '+fps+' FPS · '+quality+'p');
 }
 let directRecordRecorderStreams=null;
 async function stopDirectRecorder(){
  if(!directRecording&&!directRecorder)return;
- const recorder=directRecorder;directRecording=false;
+ const recorder=directRecorder;directRecording=false;document.body.classList.remove('direct-recording');$('preview-loading').classList.remove('active');
  if(recorder&&recorder.state!=='inactive')await new Promise(resolve=>{recorder.addEventListener('stop',resolve,{once:true});recorder.stop()});
  const state=directRecordRecorderStreams;directRecorder=null;
  if(state){state.stream.getTracks().forEach(t=>t.stop());previewCanvas.width=state.oldWidth;previewCanvas.height=state.oldHeight;drawFrame(0)}
