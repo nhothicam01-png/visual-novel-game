@@ -1787,7 +1787,7 @@ function renderWebmPickerResults(card,index,item){
  const filters=Object.fromEntries(WEBM_FILTERS.map(([field])=>[field,card.querySelector('[data-webm-filter="'+field+'"]')?.value||'']));
  const rows=paths.filter(path=>{
   const meta=characterAnimationMetadata[path]||{},values=WEBM_FILTERS.flatMap(([field])=>webmMetadataValues(path,field));
-  const searchable=[path.split('/').pop(),meta.summary,meta.action,meta.start_pose,meta.end_pose,...values].join(' ').toLocaleLowerCase('vi');
+  const searchable=[path.split('/').pop(),meta.summary,meta.action,meta.start_pose,meta.end_pose,meta.notes,meta.interaction_target,JSON.stringify(meta.user_metadata||{}),JSON.stringify(meta.characters||[]),JSON.stringify(meta.interaction||[]),...values].join(' ').toLocaleLowerCase('vi');
   if(query&&!searchable.includes(query))return false;
   return WEBM_FILTERS.every(([field])=>!filters[field]||webmMetadataValues(path,field).includes(filters[field]));
  });
@@ -1806,7 +1806,7 @@ function renderSpeakerWebmPickerResults(){
  const filters=Object.fromEntries(WEBM_FILTERS.map(([field])=>[field,host.querySelector('[data-speaker-webm-filter="'+field+'"]')?.value||'']));
  const rows=paths.filter(path=>{
   const meta=characterAnimationMetadata[path]||{},values=WEBM_FILTERS.flatMap(([field])=>webmMetadataValues(path,field));
-  const searchable=[path.split('/').pop(),meta.summary,meta.action,meta.start_pose,meta.end_pose,...values].join(' ').toLocaleLowerCase('vi');
+  const searchable=[path.split('/').pop(),meta.summary,meta.action,meta.start_pose,meta.end_pose,meta.notes,meta.interaction_target,JSON.stringify(meta.user_metadata||{}),JSON.stringify(meta.characters||[]),JSON.stringify(meta.interaction||[]),...values].join(' ').toLocaleLowerCase('vi');
   return (!query||searchable.includes(query))&&WEBM_FILTERS.every(([field])=>!filters[field]||webmMetadataValues(path,field).includes(filters[field]));
  });
  if(!rows.length){result.innerHTML='<div class="note">Không có WebM khớp bộ lọc.</div>';return}
