@@ -444,7 +444,7 @@ function renderSceneEffectPicker(){
  host.innerHTML=sceneEffectLibrary.map(item=>'<label class="check" style="align-items:flex-start"><input type="checkbox" data-scene-effect="'+safeText(item.path)+'" '+(selectedPaths.has(item.path)?'checked':'')+'><span>'+safeText(item.name)+' <small style="opacity:.65">('+item.type.toUpperCase()+')</small></span></label>').join('');
  host.querySelectorAll('[data-scene-effect]').forEach(input=>input.addEventListener('change',()=>{
   const sc=getCurrentScene();if(!sc)return;
-  const picked=Array.from(host.querySelectorAll('[data-scene-effect]:checked')).map((el,index)=>{const item=sceneEffectLibrary.find(x=>x.path===el.dataset.sceneEffect);return {file:item.path,path:item.path,type:item.type,loop:item.type==='video'?!!$('scene-effect-loop').checked&&item.defaultLoop!==false:false,opacity:Number($('scene-effect-opacity').value)/100,z_index:20+index}});
+  const picked=Array.from(host.querySelectorAll('[data-scene-effect]:checked')).map((el,index)=>{const item=sceneEffectLibrary.find(x=>x.path===el.dataset.sceneEffect);return {file:item.path,path:item.path,type:item.type,loop:item.type==='video'?!!$('scene-effect-loop').checked:false,opacity:Number($('scene-effect-opacity').value)/100,z_index:20+index}});
   sc.visual={...(sc.visual||captureVisual()),sceneEffects:picked};
   $('scene-effect-status').textContent=picked.length+' hiệu ứng cảnh đã chọn.';
   updateAssets();
@@ -503,7 +503,7 @@ async function updateAssets(){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;try{item.media.currentTime=0}catch(e){} }});
    sceneEffectKey=effectKey;
   }else sceneEffectLayers=nextSceneEffects;
-  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
+  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
 }
@@ -518,6 +518,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
   const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=normalizeExpression(row.bieu_cam);
   if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
+  normalizeSceneEffects(row.hieu_ung_canh||[]).forEach(effect=>{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(()=>{})});
   (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),files=expressionFilesByFolder[String(folder)]||[],expr=normalizeExpression(spec?.bieu_cam)||(files[0]?.split('/').pop().replace(/\.webm$/i,'')||'');if(folder&&expr)cachedVideo(BASE+'NhanVat/'+folder+'/'+expr+'.webm').catch(()=>{})});
  }
 }
@@ -1708,6 +1709,7 @@ function buildEditedStoryOutput(){
   const characterId=matched?.id||line.speakerId||asset;
   if(characterId)frame.nhan_vat=characterId;
   frame.scene_id=String(scene.sceneId||('scene_'+(sceneIndex+1)));
+  const sceneEffects=normalizeSceneEffects(scene.visual?.sceneEffects||[]);if(sceneEffects.length)frame.hieu_ung_canh=sceneEffects.map(item=>({file:item.path,type:item.type,loop:item.loop!==false,opacity:item.opacity,z_index:item.z_index}));else delete frame.hieu_ung_canh;
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
   if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>({id:String(item.id),bieu_cam:String(item.bieu_cam||''),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}));
@@ -2007,7 +2009,7 @@ function selectLine(i){
  }
 }
 async function selectScene(i){
- saveCurrentLine();saveCurrentScene();activeSceneIndex=Math.max(0,Math.min(i,scenes.length-1));activeLineIndex=0;
+ saveCurrentLine();saveCurrentScene();activeSceneIndex=Math.max(0,Math.min(i,scenes.length-1));activeLineIndex=0;sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0}catch(e){}}});
  applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());renderSceneList();renderLineList();
  updateSeekUI(getCurrentLine()?.sourceIndex??0);
  await updateAssets();if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
