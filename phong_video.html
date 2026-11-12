@@ -1829,7 +1829,7 @@ $('visible-character-list').addEventListener('input',e=>{
  if(e.target.matches('[data-webm-search]')){if(card){const index=Number(card.dataset.visibleIndex),line=getCurrentLine();if(line?.visibleCharacters?.[index])renderWebmPickerResults(card,index,line.visibleCharacters[index])}return}
  const field=e.target.dataset.visibleField;
  if(!['x','y'].includes(field))return;
- const card=e.target.closest('[data-visible-index]'),line=getCurrentLine();if(!card||!line)return;
+ const line=getCurrentLine();if(!card||!line)return;
  const index=Number(card.dataset.visibleIndex);
  if(!Array.isArray(line.visibleCharacters)||!line.visibleCharacters[index])return;
  const value=Number(e.target.value);
