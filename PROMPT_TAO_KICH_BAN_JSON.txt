@@ -575,6 +575,8 @@ Dùng đúng cấu trúc sau, không tự ý đưa các trường cũ vào:
   },
   "danh_sach": [
     {
+      "scene_id": "canh_001",
+      "hoi_tuong": false,
       "nhan_vat": "nhan_vat_1",
       "noi_dung": "Xin chào!",
       "anh_nen": "canh_1.png",
@@ -623,6 +625,9 @@ Quy tắc cấu trúc:
 - `nhan_vat` khai báo nhân vật và giọng nói ở cấp cao nhất.
 - `am_thanh_mac_dinh.nhac_nen` là tên tệp nhạc nền mặc định; nếu không có thì để chuỗi rỗng.
 - `danh_sach` chứa các mục thoại theo đúng thứ tự diễn biến.
+- `scene_id` là ID cảnh. Tất cả lượt thoại liên tiếp thuộc cùng một cảnh phải dùng cùng ID; khi chuyển sang cảnh mới phải đổi ID, kể cả khi ảnh nền không đổi. Không dùng thay đổi `anh_nen` để quyết định ranh giới cảnh.
+- Gemini phải tự chia cảnh theo thay đổi địa điểm, thời gian, hành động hoặc nhịp diễn biến; mỗi cảnh mới có `scene_id` riêng. Người dùng tự sáng tác có thể tự tạo/tách/gộp cảnh trong trình chỉnh sửa.
+- `hoi_tuong` là boolean tùy chọn ở từng lượt thoại. Đặt `true` cho tất cả lượt thoại thuộc cảnh hồi tưởng; cảnh hiện tại bỏ trường này hoặc đặt `false`. Hồi tưởng vẫn là cảnh bình thường: có thể đổi ảnh nền, nhân vật và bố cục riêng. Player áp dụng lớp màu ký ức ấm/sepia và viền tối mềm lên toàn cảnh.
 - `nhan_vat` trong từng mục thoại là ID nhân vật đang nói, đã khai báo ở object nhân vật.
 - `nhan_vat_hien_thi` là trường tùy chọn trong từng mục thoại, dùng khi một khung hình có nhiều nhân vật. Mỗi phần tử gồm `id` (ID trong object `nhan_vat`), `bieu_cam` (tên biểu cảm WebM riêng của nhân vật), `x` (tâm ngang theo phần trăm khung hình), `y` (điểm chân theo phần trăm chiều cao), `scale` (hệ số kích thước) và `z_index` (thứ tự lớp, số nhỏ ở phía sau).
 - Khi có từ hai nhân vật cùng xuất hiện, phải khai báo đầy đủ tất cả nhân vật nhìn thấy trong `nhan_vat_hien_thi`, kể cả người không nói. Nhân vật đang nói vẫn được xác định riêng bằng trường `nhan_vat`.
