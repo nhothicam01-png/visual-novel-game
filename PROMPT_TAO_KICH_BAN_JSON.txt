@@ -844,3 +844,20 @@ QUY ƯỚC MẶC ĐỊNH CHO MỌI CỐT TRUYỆN:
 10. Quy ước chương = tập phim áp dụng mặc định cho mọi thể loại, mọi cốt truyện và mọi lần tái sử dụng prompt sau này, trừ khi người dùng yêu cầu rõ video ngắn/cảnh đơn/tập đặc biệt ngắn.
 
 ==================================================
+
+==================================================
+XIV. CHỌN ANIMATION WEBM BẰNG METADATA (BẮT BUỘC)
+==================================================
+
+Khi phần mềm cung cấp thư viện WEBM có metadata sidecar, hãy dùng metadata đó để chọn đúng animation cho từng nhân vật và từng lượt thoại.
+
+1. Mỗi nhân vật chỉ được dùng file WEBM nằm trong đúng thư mục tài nguyên đã gán cho nhân vật đó. Không lấy file từ thư mục nhân vật khác, kể cả khi tên file giống nhau.
+2. Danh sách expressions là danh sách file WEBM thực tế được phép dùng. Trường animations là metadata gắn với từng file; đối chiếu đúng file trước khi chọn.
+3. Chọn theo thứ tự ưu tiên: metadata do người dùng khai báo (user_metadata), metadata AI đã phân tích (characters, action, summary), sau đó mới dùng tên file. Không coi tên file là bằng chứng chắc chắn nếu metadata nói khác.
+4. Đối chiếu các thuộc tính khi có: pose (tư thế), emotion (cảm xúc), direction (hướng quay), face_angle (góc mặt), view_angle (khung hình/góc nhìn), communication (speaking/listening/silent/reacting/unknown), action và interaction_target.
+5. Chọn animation phù hợp với trạng thái thực tế trong chính lượt thoại: người đang nói ưu tiên animation speaking nếu có; người nghe ưu tiên listening/reacting; nhân vật không tham gia lời thoại ưu tiên silent/idle phù hợp. Không gán speaking cho tất cả nhân vật chỉ vì một người đang nói.
+6. Nếu một cảnh có nhiều nhân vật, chọn WEBM độc lập cho từng nhân vật theo tư thế, cảm xúc, hướng nhìn và vai trò giao tiếp của họ. Với hai nhân vật tương tác, ưu tiên các animation có hướng nhìn và interaction_target phù hợp để họ quay về phía nhau.
+7. Không bịa filename, không sửa tên file, không tự tạo animation mới. Giá trị bieu_cam phải là basename chính xác có trong expressions của đúng folder, không kèm .webm.
+8. Metadata có review_required=true, confidence thấp hoặc trường unknown/null chỉ là gợi ý chưa chắc chắn. Không biến dữ liệu chưa chắc thành sự thật. Nếu không có animation khớp hoàn toàn, chọn file có thật gần nhất và giữ kịch bản hợp lý; không tuyên bố khớp tuyệt đối.
+9. Nếu metadata của một file không tồn tại, vẫn có thể chọn file đó dựa trên tên file thật trong folder, nhưng không được giả vờ đã biết tư thế/cảm xúc/hướng quay của nó.
+10. Không thêm trường ngoài schema JSON player hỗ trợ chỉ để lưu metadata. Dùng metadata để ra quyết định chọn bieu_cam; JSON cuối vẫn phải đúng schema hiện hành.
