@@ -162,6 +162,8 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <button class="btn" id="add-scene">＋ Thêm cảnh</button>
 <button class="btn danger" id="delete-scene">Xóa cảnh</button>
 </div>
+<label class="check"><input type="checkbox" id="scene-flashback"> 🌙 Cảnh hồi tưởng</label>
+<div class="note">Bật để phủ tông màu ký ức ấm/sepia và viền mờ nhẹ lên hình ảnh của toàn cảnh. Ảnh nền gốc không bị thay đổi.</div>
 <div class="row" style="justify-content:space-between"><strong style="color:#c4b5fd">Các câu thoại trong cảnh</strong><button class="btn" id="add-line">＋ Thêm thoại</button></div>
 <div id="dialogue-line-list" class="dialogue-line-list"></div>
 <div class="line-editor">
@@ -470,7 +472,7 @@ function wrapText(text,maxWidth){
 let frameOverride={bg:null,char:null};
 function readFrameState(){
  const effects=(group,target)=>Array.from(document.querySelectorAll('[data-effect="'+group+'"]:checked')).map(x=>target&&window.VNEffects?window.VNEffects.renderKey(target,x.value):x.value);
- return{bgFx:effects('bg','background'),charFx:effects('char','character'),camFx:effects('camera','camera'),atmFx:effects('atm'),strength:Number($('effect-strength')?.value||50)/50,dialogueLayer:null};
+ return{bgFx:effects('bg','background'),charFx:effects('char','character'),camFx:effects('camera','camera'),atmFx:effects('atm'),strength:Number($('effect-strength')?.value||50)/50,flashback:!!(getCurrentScene()?.isFlashback||getCurrentLine()?.isFlashback),dialogueLayer:null};
 }
 function drawFrame(elapsed,st){
  const w=canvas.width,h=canvas.height;
@@ -538,6 +540,7 @@ function drawFrame(elapsed,st){
   ctx.restore();
  }
  ctx.restore();
+ if(st.flashback){ctx.save();ctx.globalCompositeOperation='soft-light';ctx.fillStyle='rgba(255,205,135,.34)';ctx.fillRect(0,0,w,h);ctx.globalCompositeOperation='source-over';ctx.fillStyle='rgba(255,231,185,.10)';ctx.fillRect(0,0,w,h);const memoryVignette=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.22,w/2,h/2,Math.max(w,h)*.76);memoryVignette.addColorStop(0,'rgba(90,53,25,0)');memoryVignette.addColorStop(1,'rgba(75,43,20,.24)');ctx.fillStyle=memoryVignette;ctx.fillRect(0,0,w,h);ctx.restore()}
  if(st.dialogueLayer)ctx.drawImage(st.dialogueLayer,0,0);else drawDialogue(w,h);
 }
 function drawDialogue(w,h){
@@ -1514,10 +1517,11 @@ function buildScenesFromJson(data){
   const characterFolder=characterAssetFolder(characterId),expression=normalizeExpression(frame.bieu_cam);
   const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;
   const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim();
-  const starts=!current||(!!rawBg&&rawBg!==current.visual.background);
-  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
-  current.sourceEnd=index;
-  current.lines.push({speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterFolder,expression});
+  const sceneId=String(frame.scene_id??'').trim(),flashback=frame.hoi_tuong===true;
+  const starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
+  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('legacy_scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
+  current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;
+  current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterFolder,expression});
   current.sourceAudio={bgm:activeBgm,sfx};
  });
  if(current)out.push(current);return out;
@@ -1606,12 +1610,14 @@ function buildEditedStoryOutput(){
  const characterMap=output.nhan_vat&&typeof output.nhan_vat==='object'?output.nhan_vat:(output.nhan_vat={});
  activeCharacterList().forEach(ch=>{if(!characterMap[ch.id])characterMap[ch.id]={ten_hien_thi:ch.name};const prior=characterMap[ch.id]&&typeof characterMap[ch.id]==='object'?characterMap[ch.id]:{ten_hien_thi:ch.name};const selectedId=characterVoiceMap[ch.id]||'';const savedProfile=profileFromJsonVoice(prior.giong_noi||prior.voice);const selectedProfile=profiles.find(p=>p.id===selectedId)||(savedProfile?.id===selectedId?savedProfile:null);if(selectedProfile){characterMap[ch.id]={...prior,ten_hien_thi:prior.ten_hien_thi||ch.name,giong_noi:{...(prior.giong_noi&&typeof prior.giong_noi==='object'?prior.giong_noi:{}),profile_id:selectedProfile.id,profile_name:selectedProfile.name||selectedProfile.profile_name||prior.giong_noi?.profile_name||'',voice_id:selectedProfile.voiceId||selectedProfile.voice_id||prior.giong_noi?.voice_id||'',voiceId:selectedProfile.voiceId||selectedProfile.voice_id||prior.giong_noi?.voiceId||'',edge_voice_id:selectedProfile.edgeVoice||selectedProfile.edge_voice_id||prior.giong_noi?.edge_voice_id||'',lang:selectedProfile.lang||prior.giong_noi?.lang||'vi',gender:selectedProfile.gender||prior.giong_noi?.gender||''}}}else{characterMap[ch.id]={...prior,ten_hien_thi:prior.ten_hien_thi||ch.name}}});
  let lastBackground='';
- scenes.forEach(scene=>scene.lines.forEach(line=>{
+ scenes.forEach((scene,sceneIndex)=>scene.lines.forEach(line=>{
   const frame=line.sourceFrame&&typeof line.sourceFrame==='object'?JSON.parse(JSON.stringify(line.sourceFrame)):{};
   const asset=String(line.characterAsset||'').trim();
   const matched=activeCharacterList().find(ch=>ch.folder===asset)||activeCharacterList().find(ch=>ch.id===String(line.speakerId||''));
   const characterId=matched?.id||line.speakerId||asset;
   if(characterId)frame.nhan_vat=characterId;
+  frame.scene_id=String(scene.sceneId||('scene_'+(sceneIndex+1)));
+  if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
   if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>({id:String(item.id),bieu_cam:String(item.bieu_cam||''),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}));
   else delete frame.nhan_vat_hien_thi;
@@ -1715,7 +1721,7 @@ function saveCurrentLine(){
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
  if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
 }
-function saveCurrentScene(){const sc=getCurrentScene();if(sc)sc.visual=captureVisual();const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
+function saveCurrentScene(){const sc=getCurrentScene();if(sc){sc.visual=captureVisual();sc.isFlashback=!!$('scene-flashback')?.checked;sc.lines.forEach(line=>line.isFlashback=sc.isFlashback)}const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
  if(!line)return;
  if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>({id:String(item.id),bieu_cam:String(item.bieu_cam||''),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}));
@@ -1806,6 +1812,7 @@ $('visible-character-list').addEventListener('click',e=>{
 function renderSceneList(){
  $('scene-select').innerHTML=scenes.map((sc,i)=>'<option value="'+i+'">'+(i+1)+'. '+String(sc.name).replace(/[&<>"]/g,'')+'</option>').join('');
  $('scene-select').value=String(activeSceneIndex);
+ const flashbackControl=$('scene-flashback');if(flashbackControl)flashbackControl.checked=!!getCurrentScene()?.isFlashback;
 }
 function renderLineList(){
  $('dialogue-line-list').innerHTML=getCurrentScene().lines.map((line,i)=>'<div class="dialogue-line-item '+(i===activeLineIndex?'active':'')+'" data-line-index="'+i+'"><div class="line-copy"><strong>Thoại '+(i+1)+' · '+String(line.speaker||'Nhân vật').replace(/[&<>"]/g,'')+'</strong><span>'+String(line.text||'Chưa nhập nội dung').replace(/[&<>"]/g,'')+'</span></div><span class="line-state">'+(line.wavBlob&&line.cacheKey?'✓ WAV':'Chưa tạo WAV')+'</span></div>').join('');
@@ -1833,9 +1840,10 @@ async function selectScene(i){
 }
 function newLine(){return {speaker:'Nhân vật 1',text:'',effectSettings:[],effectStrength:50,profileId:'',lang:$('tts-lang').value||'vi-VN',voiceId:$('piper-voice').value||'',pauseAfter:.3,wavBlob:null,cacheKey:''}}
 $('scene-select').addEventListener('change',e=>selectScene(Number(e.target.value)));
+$('scene-flashback').addEventListener('change',()=>{const sc=getCurrentScene();if(!sc)return;sc.isFlashback=$('scene-flashback').checked;sc.lines.forEach(line=>line.isFlashback=sc.isFlashback);drawFrame(0)});
 $('add-scene').addEventListener('click',async()=>{
  saveCurrentLine();saveCurrentScene();
- const n=scenes.length+1;scenes.push({name:'Cảnh '+n,visual:captureVisual(),lines:[newLine()]});
+ const n=scenes.length+1;scenes.push({name:'Cảnh '+n,sceneId:'scene_'+Date.now()+'_'+n,isFlashback:false,visual:captureVisual(),lines:[newLine()]});
  await selectScene(scenes.length-1);
 });
 $('delete-scene').addEventListener('click',async()=>{
@@ -1861,7 +1869,7 @@ document.querySelectorAll('#character,#expression,#background,#dialogue-width-mo
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
 renderEffectCatalogs();
-scenes=[{name:'Cảnh 1',visual:captureVisual(),lines:[newLine()]}];
+scenes=[{name:'Cảnh 1',sceneId:'scene_1',isFlashback:false,visual:captureVisual(),lines:[newLine()]}];
 renderVisibleCharacters(getCurrentLine());
 updateSeekUI(0);
 renderSceneList();loadLineToEditor(getCurrentLine());renderLineList();
