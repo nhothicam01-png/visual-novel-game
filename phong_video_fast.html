@@ -411,8 +411,9 @@ function normalizeSceneEffects(values){
   if(typeof value==='string')value={file:value};
   if(!value||typeof value!=='object')return null;
   let file=String(value.path||value.file||value.name||'').trim();if(!file)return null;
-  if(!file.includes('/')&&!/\.[a-z0-9]{2,5}$/i.test(file)){
-   const match=sceneEffectLibrary.find(x=>x.path.split('/').pop().replace(/\.[^.]+$/,'').toLowerCase()===file.toLowerCase());
+  if(!/\.[a-z0-9]{2,5}$/i.test(file.split('/').pop())){
+   const base=file.split('/').pop().toLowerCase();
+   const match=sceneEffectLibrary.find(x=>x.path.split('/').pop().replace(/\.[^.]+$/,'').toLowerCase()===base);
    if(match)file=match.path;
   }
   if(!file.startsWith('assets/'))file='assets/HieuUng/'+file.replace(/^\/+/, '');
@@ -424,11 +425,12 @@ function renderSceneEffectPicker(){
  const host=$('scene-effect-picker');if(!host)return;
  const scene=getCurrentScene(),selected=normalizeSceneEffects(scene?.visual?.sceneEffects||[]);
  const selectedPaths=new Set(selected.map(x=>x.path));
+ if(selected.length){$('scene-effect-loop').checked=selected.filter(x=>x.type==='video').every(x=>x.loop!==false);const opacity=Math.round(selected[0].opacity*100);$('scene-effect-opacity').value=String(opacity);$('scene-effect-opacity-value').textContent=opacity+'%';$('scene-effect-status').textContent=selected.length+' hiệu ứng cảnh đang bật.'}else{$('scene-effect-status').textContent='Chưa chọn hiệu ứng cảnh.'}
  if(!sceneEffectLibrary.length){host.innerHTML='<span class="note">Chưa có PNG / WEBM trong assets/HieuUng.</span>';return}
  host.innerHTML=sceneEffectLibrary.map(item=>'<label class="check" style="align-items:flex-start"><input type="checkbox" data-scene-effect="'+safeText(item.path)+'" '+(selectedPaths.has(item.path)?'checked':'')+'><span>'+safeText(item.name)+' <small style="opacity:.65">('+item.type.toUpperCase()+')</small></span></label>').join('');
  host.querySelectorAll('[data-scene-effect]').forEach(input=>input.addEventListener('change',()=>{
   const sc=getCurrentScene();if(!sc)return;
-  const picked=Array.from(host.querySelectorAll('[data-scene-effect]:checked')).map((el,index)=>{const item=sceneEffectLibrary.find(x=>x.path===el.dataset.sceneEffect);return {file:item.path,path:item.path,type:item.type,loop:item.type==='video'?!!$('scene-effect-loop').checked:false,opacity:Number($('scene-effect-opacity').value)/100,z_index:20+index}});
+  const picked=Array.from(host.querySelectorAll('[data-scene-effect]:checked')).map((el,index)=>{const item=sceneEffectLibrary.find(x=>x.path===el.dataset.sceneEffect);return {file:item.path,path:item.path,type:item.type,loop:item.type==='video'?!!$('scene-effect-loop').checked&&item.defaultLoop!==false:false,opacity:Number($('scene-effect-opacity').value)/100,z_index:20+index}});
   sc.visual={...(sc.visual||captureVisual()),sceneEffects:picked};
   $('scene-effect-status').textContent=picked.length+' hiệu ứng cảnh đã chọn.';
   updateAssets();
@@ -439,8 +441,15 @@ async function loadSceneEffectLibrary(){
   const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
   if(!response.ok)throw new Error('GitHub tree HTTP '+response.status);
   const data=await response.json();
-  sceneEffectLibrary=(data.tree||[]).filter(x=>x.type==='blob'&&/^assets\/HieuUng\//i.test(x.path)&&/\.(png|jpe?g|webp|gif|avif|webm)$/i.test(x.path)).map(x=>({path:x.path,name:x.path.split('/').pop(),type:/\.(png|jpe?g|webp|gif|avif)$/i.test(x.path)?'image':'video'})).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
-  renderSceneEffectPicker();
+  const allPaths=new Set((data.tree||[]).filter(x=>x.type==='blob').map(x=>x.path));
+  const effectPaths=[...allPaths].filter(path=>/^assets\/HieuUng\//i.test(path)&&/\.(png|jpe?g|webp|gif|avif|webm)$/i.test(path));
+  sceneEffectLibrary=await Promise.all(effectPaths.map(async path=>{
+   let metadata={};try{if(allPaths.has(path+'.json')){const m=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+(path+'.json').split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(m.ok)metadata=await m.json()}}catch(e){}
+   return {path,name:path.split('/').pop(),type:/\.(png|jpe?g|webp|gif|avif)$/i.test(path)?'image':'video',metadata,defaultLoop:metadata.user_metadata?.playback!=='once'};
+  }));
+  sceneEffectLibrary.sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+  scenes.forEach(sc=>{if(sc.visual?.sceneEffects)sc.visual.sceneEffects=normalizeSceneEffects(sc.visual.sceneEffects)});
+  renderSceneEffectPicker();if(getCurrentScene())updateAssets();
  }catch(error){$('scene-effect-picker').innerHTML='<span class="note">Không tải được danh sách hiệu ứng: '+safeText(error.message)+'</span>'}
 }
 async function updateAssets(){
@@ -598,8 +607,8 @@ function drawFrame(elapsed,st){
  }
  // Hiệu ứng PNG / WEBM độc lập của toàn cảnh; alpha được giữ khi vẽ lên canvas.
  sceneEffectLayers.slice().sort((a,b)=>(Number(a.z_index)||0)-(Number(b.z_index)||0)).forEach(item=>{
-  const media=frameOverride.sceneEffects?.[item.path]||item.media;if(!media)return;
-  const ready=item.type==='image'?(media.complete&&media.naturalWidth):(media.readyState>=2&&media.videoWidth);
+  const overridden=frameOverride.sceneEffects?.[item.path],media=overridden||item.media;if(!media)return;
+  const ready=overridden?(Number(media.width||media.displayWidth)>0&&Number(media.height||media.displayHeight)>0):(item.type==='image'?(media.complete&&media.naturalWidth):(media.readyState>=2&&media.videoWidth));
   if(!ready)return;
   ctx.save();ctx.globalAlpha=Math.max(.05,Math.min(1,Number(item.opacity??1)));
   drawCover(media,w,h);ctx.restore();
