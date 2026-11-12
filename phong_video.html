@@ -459,8 +459,8 @@ async function loadSceneEffectLibrary(){
   const effectPaths=[...allPaths].filter(path=>/^assets\/HieuUng\//i.test(path)&&/\.(png|jpe?g|webp|gif|avif|webm)$/i.test(path));
   sceneEffectLibrary=await Promise.all(effectPaths.map(async path=>{
    let metadata={};try{if(allPaths.has(path+'.json')){const m=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+(path+'.json').split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(m.ok)metadata=await m.json()}}catch(e){}
-   return {path,name:path.split('/').pop(),type:/\.(png|jpe?g|webp|gif|avif)$/i.test(path)?'image':'video',metadata,defaultLoop:metadata.user_metadata?.playback!=='once'};
-  }));
+   const scope=String(metadata.scope||metadata.user_metadata?.scope||'scene');return {path,name:path.split('/').pop(),type:/\.(png|jpe?g|webp|gif|avif)$/i.test(path)?'image':'video',metadata,scope,defaultLoop:metadata.user_metadata?.playback!=='once'};
+  })).then(items=>items.filter(item=>item.scope==='scene'));
   sceneEffectLibrary.sort((a,b)=>a.name.localeCompare(b.name,'vi'));
   scenes.forEach(sc=>{if(sc.visual?.sceneEffects)sc.visual.sceneEffects=normalizeSceneEffects(sc.visual.sceneEffects)});
   renderSceneEffectPicker();if(getCurrentScene())updateAssets();
