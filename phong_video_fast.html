@@ -526,7 +526,7 @@ function wrapText(text,maxWidth){
  if(line)lines.push(line);return lines;
 }
 // [TỐI ƯU] Đọc DOM một lần cho mỗi câu thoại thay vì mỗi khung hình.
-let frameOverride={bg:null,char:null};
+let frameOverride={bg:null,char:null,sceneEffects:null};
 function readFrameState(){
  const effects=(group,target)=>Array.from(document.querySelectorAll('[data-effect="'+group+'"]:checked')).map(x=>target&&window.VNEffects?window.VNEffects.renderKey(target,x.value):x.value);
  return{bgFx:effects('bg','background'),charFx:effects('char','character'),camFx:effects('camera','camera'),atmFx:effects('atm'),strength:Number($('effect-strength')?.value||50)/50,flashback:!!(getCurrentScene()?.isFlashback||getCurrentLine()?.isFlashback),sceneTransition:!!(activeLineIndex===0&&(getCurrentScene()?.isFlashback||scenes[activeSceneIndex-1]?.isFlashback)),dialogueLayer:null};
@@ -598,7 +598,7 @@ function drawFrame(elapsed,st){
  }
  // Hiệu ứng PNG / WEBM độc lập của toàn cảnh; alpha được giữ khi vẽ lên canvas.
  sceneEffectLayers.slice().sort((a,b)=>(Number(a.z_index)||0)-(Number(b.z_index)||0)).forEach(item=>{
-  const media=item.media;if(!media)return;
+  const media=frameOverride.sceneEffects?.[item.path]||item.media;if(!media)return;
   const ready=item.type==='image'?(media.complete&&media.naturalWidth):(media.readyState>=2&&media.videoWidth);
   if(!ready)return;
   ctx.save();ctx.globalAlpha=Math.max(.05,Math.min(1,Number(item.opacity??1)));
@@ -662,7 +662,7 @@ function pausePreview(){
  previewPaused=true;previewPauseStartedAt=performance.now();
  Object.values(previewAudio).forEach(a=>{if(a&&!a.paused)a.pause()});
  pauseBrowserSpeech();
- if(charVideo)charVideo.pause();charLayerVideos.forEach(x=>x.media?.pause());if(bgVideo)bgVideo.pause();
+ if(charVideo)charVideo.pause();charLayerVideos.forEach(x=>x.media?.pause());sceneEffectLayers.forEach(x=>x.media?.pause());if(bgVideo)bgVideo.pause();
  updatePlaybackButtons();setTtsStatus('Đã tạm dừng. Nhấn Tiếp tục để chạy tiếp.');
 }
 function resumePreview(){
@@ -675,7 +675,7 @@ function resumePreview(){
   if(a&&a.paused&&!a.ended)a.play().catch(err=>console.warn('Khong the tiep tuc am thanh preview:',err));
  });
  resumeBrowserSpeech();
- if(charVideo)charVideo.play().catch(()=>{});charLayerVideos.forEach(x=>x.media?.play().catch(()=>{}));if(bgVideo)bgVideo.play().catch(()=>{});
+ if(charVideo)charVideo.play().catch(()=>{});charLayerVideos.forEach(x=>x.media?.play().catch(()=>{}));sceneEffectLayers.forEach(x=>x.media?.play().catch(()=>{}));if(bgVideo)bgVideo.play().catch(()=>{});
  updatePlaybackButtons();setTtsStatus('Đang tiếp tục chạy…');
 }
 async function waitWhilePaused(run){
@@ -1283,7 +1283,7 @@ async function exportVideo(){
   for(let si=0;si<prepared.length;si++){
    const pack=prepared[si];if(!pack.lines.length)continue;
    activeSceneIndex=si;applyVisual(pack.visual);await updateAssets();
-   bgVideo?.pause();charVideo?.pause(); // seek thủ công, không để video tự chạy
+   bgVideo?.pause();charVideo?.pause();sceneEffectLayers.forEach(x=>x.media?.pause()); // seek thủ công, không để video tự chạy
    let sceneElapsed=0;
    for(const entry of pack.lines){
     activeLineIndex=scenes[si].lines.indexOf(entry.line);loadLineToEditor(entry.line);
@@ -1294,7 +1294,7 @@ async function exportVideo(){
      if(frame.anh_nen)$('background').value=frame.anh_nen;
      applyLineEffects(entry.line);
      await updateAssets();
-     bgVideo?.pause();charVideo?.pause();
+     bgVideo?.pause();charVideo?.pause();sceneEffectLayers.forEach(x=>x.media?.pause());
     }
     // [TỐI ƯU] Chốt trạng thái hiệu ứng + hộp thoại một lần cho cả câu thoại.
     const st=readFrameState();st.dialogueLayer=buildDialogueLayer(renderCanvas.width,renderCanvas.height);
@@ -1306,6 +1306,8 @@ async function exportVideo(){
      const tt=sceneElapsed+local;
      frameOverride.bg=bgVideo?await clipFrame(bgVideo,tt,fps):null;
      frameOverride.char=charVideo?await clipFrame(charVideo,tt,fps):null;
+     frameOverride.sceneEffects={};
+     for(const effect of sceneEffectLayers){if(effect.type!=='video'||!effect.media)continue;frameOverride.sceneEffects[effect.path]=await clipFrame(effect.media,tt,fps)}
      drawFrame(tt,st);await videoSource.add(frameIndex/fps,1/fps);
      frameIndex++;
      const now=performance.now();
@@ -1331,7 +1333,7 @@ async function exportVideo(){
   try{await audioContext?.close()}catch(_){}
   // Trả lại canvas preview sau khi hoàn tất hoặc lỗi khi xuất.
   canvas=previewCanvas;ctx=previewCtx;renderCanvas=null;renderCtx=null;
-  frameOverride={bg:null,char:null};clearClipFrameCache();
+  frameOverride={bg:null,char:null,sceneEffects:null};clearClipFrameCache();
   activeSceneIndex=originalScene;activeLineIndex=originalLine;
   if(scenes[activeSceneIndex]){applyVisual(scenes[activeSceneIndex].visual);loadLineToEditor(scenes[activeSceneIndex].lines[activeLineIndex]);await updateAssets()}
   recording=false;$('export-video').disabled=false;renderSceneList();renderLineList();
