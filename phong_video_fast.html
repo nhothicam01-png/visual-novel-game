@@ -1320,7 +1320,7 @@ async function exportVideo(){
      frameOverride.bg=bgVideo?await clipFrame(bgVideo,tt,fps):null;
      frameOverride.char=charVideo?await clipFrame(charVideo,tt,fps):null;
      frameOverride.sceneEffects={};
-     for(const effect of sceneEffectLayers){if(effect.type!=='video'||!effect.media)continue;frameOverride.sceneEffects[effect.path]=await clipFrame(effect.media,tt,fps)}
+     for(const effect of sceneEffectLayers){if(effect.type!=='video'||!effect.media)continue;if(effect.loop===false&&tt>=effect.media.duration){frameOverride.sceneEffects[effect.path]=null;continue}frameOverride.sceneEffects[effect.path]=await clipFrame(effect.media,tt,fps)}
      drawFrame(tt,st);await videoSource.add(frameIndex/fps,1/fps);
      frameIndex++;
      const now=performance.now();
