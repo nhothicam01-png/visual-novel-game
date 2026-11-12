@@ -489,7 +489,7 @@ async function updateAssets(){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;try{item.media.currentTime=0}catch(e){} }});
    sceneEffectKey=effectKey;
   }else sceneEffectLayers=nextSceneEffects;
-  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
+  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
 }
@@ -699,6 +699,7 @@ function stopPreview(){
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
  if(charVideo)charVideo.pause();
  charLayerVideos.forEach(x=>x.media?.pause());
+ sceneEffectLayers.forEach(x=>x.media?.pause());
  if(bgVideo)bgVideo.pause();
  stopRenderLoop();updatePlaybackButtons();
 }
@@ -805,7 +806,9 @@ function loadBrowserTtsVoices(){
 }
 async function loadSourceLineForPlayback(item){
  saveCurrentLine();saveCurrentScene();
+ const previousSceneIndex=activeSceneIndex;
  activeSceneIndex=item.sceneIndex;activeLineIndex=item.lineIndex;savePlaybackProgress(item.sourceIndex);
+ if(previousSceneIndex!==activeSceneIndex)sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0}catch(e){}}});
  const line=getCurrentLine(),frame=line.sourceFrame||{};
  applyVisual(getCurrentScene().visual);
  if(line.sourceIndex!==undefined){
