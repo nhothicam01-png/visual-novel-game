@@ -503,7 +503,7 @@ async function updateAssets(){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;item.media.__sceneEffectFinished=false;item.media.onended=()=>{item.media.__sceneEffectFinished=true;drawFrame(0)};try{item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){} }});
    sceneEffectKey=effectKey;
   }else sceneEffectLayers=nextSceneEffects;
-  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
+  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)&&!(item.loop===false&&(item.media.__sceneEffectFinished||item.media.ended))).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
 }
