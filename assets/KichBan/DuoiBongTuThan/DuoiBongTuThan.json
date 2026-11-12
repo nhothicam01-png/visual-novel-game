@@ -7,7 +7,7 @@
   },
   "nhan_vat": {
     "1": {
-      "ten_hien_thi": "Lirien",
+      "ten_hien_thi": "1",
       "giong_noi": {
         "profile_id": "voice_1794205520158",
         "lang": "vi",
@@ -31,7 +31,7 @@
       }
     },
     "3": {
-      "ten_hien_thi": "Kaelen",
+      "ten_hien_thi": "3",
       "giong_noi": {
         "profile_id": "voice_1794205520158",
         "lang": "vi",
@@ -43,7 +43,7 @@
       }
     },
     "5": {
-      "ten_hien_thi": "Nesta",
+      "ten_hien_thi": "5",
       "giong_noi": {
         "profile_id": "voice_1794192970852",
         "lang": "vi",
@@ -90,7 +90,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Lirien"
+      "ten_hien_thi": "1",
+      "giong_noi": {
+        "profileId": "voice_1794205520158",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Hoà",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "2",
@@ -112,7 +118,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Elandra"
+      "ten_hien_thi": "2",
+      "giong_noi": {
+        "profileId": "voice_1794192970852",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Embe",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "1",
@@ -134,7 +146,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Lirien"
+      "ten_hien_thi": "1",
+      "giong_noi": {
+        "profileId": "voice_1794205520158",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Hoà",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "2",
@@ -156,7 +174,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Elandra"
+      "ten_hien_thi": "2",
+      "giong_noi": {
+        "profileId": "voice_1794192970852",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Embe",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "3",
@@ -178,7 +202,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Kaelen"
+      "ten_hien_thi": "3",
+      "giong_noi": {
+        "profileId": "voice_1794205520158",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Hoà",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "3",
@@ -200,7 +230,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Kaelen"
+      "ten_hien_thi": "3",
+      "giong_noi": {
+        "profileId": "voice_1794205520158",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Hoà",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "5",
@@ -222,7 +258,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Nesta"
+      "ten_hien_thi": "5",
+      "giong_noi": {
+        "profileId": "voice_1794192970852",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Embe",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "1",
@@ -244,7 +286,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Lirien"
+      "ten_hien_thi": "1",
+      "giong_noi": {
+        "profileId": "voice_1794205520158",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Hoà",
+        "lang": "vi-VN"
+      }
     },
     {
       "nhan_vat": "2",
@@ -274,7 +322,7 @@
           "bieu_cam": "say_hello_bieu_cam_binh_thuong",
           "x": 24,
           "y": 100,
-          "scale": 0.72,
+          "scale": 0.9,
           "z_index": 1
         },
         {
