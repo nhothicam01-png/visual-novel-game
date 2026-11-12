@@ -478,6 +478,11 @@ Quy tắc:
 - Chọn hiệu ứng theo hành động, cảm xúc và nhịp cảnh; tránh lạm dụng rung, zoom, xoay hoặc nhiều hiệu ứng xung đột.
 - Không dùng trường hiệu ứng cũ hoặc các ID cũ chỉ vì chúng từng xuất hiện trong prompt trước.
 - `anh_hieu_ung` là trường tài nguyên hình ảnh riêng nếu player vẫn hỗ trợ; không dùng nó thay thế object `hieu_ung`.
+- Hiệu ứng đồ họa toàn cảnh là lớp tài nguyên riêng, không thuộc object hiệu ứng chuyển động `hieu_ung`.
+- Trường mới `hieu_ung_canh` có thể là mảng các object `{ file, type, loop, opacity, z_index }`. `file` phải là đường dẫn đầy đủ trong `assets/HieuUng/` và phải giữ đúng phần mở rộng `.png` hoặc `.webm`.
+- Chỉ khai báo `hieu_ung_canh` khi danh sách tài nguyên thực tế được cung cấp có đúng file phù hợp; không tự bịa tên, không tự tạo đường dẫn. Nếu không có danh sách file thì bỏ trường này để người dùng chọn trong phòng tạo video.
+- Player vẫn đọc tương thích trường cũ `anh_hieu_ung` (tên không đuôi) và sẽ dò file tương ứng trong `assets/HieuUng/`. Khi xuất JSON đã chỉnh sửa, player ghi đường dẫn chính xác vào `hieu_ung_canh`.
+- `loop: true` dành cho mưa, gió, tuyết hoặc hiệu ứng nền liên tục; `loop: false` dành cho sự kiện một lần như nổ hoặc tia sét. `opacity` nằm trong khoảng 0.05–1; `z_index` quyết định thứ tự lớp.
 
 ==================================================
 VI. QUY TẮC ÂM THANH – CẤU TRÚC MỚI
