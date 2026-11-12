@@ -500,7 +500,7 @@ async function updateAssets(){
   if(effectKey!==sceneEffectKey){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.media.pause)item.media.pause()});
    sceneEffectLayers=nextSceneEffects;
-   sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;try{item.media.currentTime=0}catch(e){} }});
+   sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;item.media.__sceneEffectFinished=false;item.media.onended=()=>{item.media.__sceneEffectFinished=true;drawFrame(0)};try{item.media.currentTime=0}catch(e){} }});
    sceneEffectKey=effectKey;
   }else sceneEffectLayers=nextSceneEffects;
   await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
@@ -622,7 +622,7 @@ function drawFrame(elapsed,st){
  }
  // Hiệu ứng PNG / WEBM độc lập của toàn cảnh; alpha được giữ khi vẽ lên canvas.
  sceneEffectLayers.slice().sort((a,b)=>(Number(a.z_index)||0)-(Number(b.z_index)||0)).forEach(item=>{
-  const overridden=frameOverride.sceneEffects?.[item.path],media=overridden||item.media;if(!media)return;
+  const hasOverride=!!frameOverride.sceneEffects&&Object.prototype.hasOwnProperty.call(frameOverride.sceneEffects,item.path),overridden=hasOverride?frameOverride.sceneEffects[item.path]:null;if(hasOverride&&overridden===null)return;const media=hasOverride?overridden:item.media;if(!media||(!item.loop&&item.media?.__sceneEffectFinished))return;
   const ready=overridden?(Number(media.width||media.displayWidth)>0&&Number(media.height||media.displayHeight)>0):(item.type==='image'?(media.complete&&media.naturalWidth):(media.readyState>=2&&media.videoWidth));
   if(!ready)return;
   ctx.save();ctx.globalAlpha=Math.max(.05,Math.min(1,Number(item.opacity??1)));
@@ -909,6 +909,7 @@ async function playPreview(){
  }
  stopPreview();
  if(directRecordRequested){directRecordRequested=false;try{await loadSourceLineForPlayback(items[0]);await startDirectRecorder()}catch(err){setStatus('Không thể bắt đầu ghi: '+(err.message||err));$('direct-record-button').textContent='⏺ Ghi trực tiếp';return}}
+ sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){}}});
  previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  previewLineBgmName='';startRenderLoop();updatePlaybackButtons();
@@ -1407,7 +1408,7 @@ async function exportVideo(){
      let rb=bgVideo?clipFrame(bgVideo,tt,clipFps):null;if(rb instanceof Promise)rb=await rb;
      let rc=charVideo?clipFrame(charVideo,tt,clipFps):null;if(rc instanceof Promise)rc=await rc;
      frameOverride.bg=rb;frameOverride.char=rc;frameOverride.sceneEffects={};
-     for(const effect of sceneEffectLayers){if(effect.type!=='video'||!effect.media)continue;let frame=clipFrame(effect.media,tt,clipFps);if(frame instanceof Promise)frame=await frame;frameOverride.sceneEffects[effect.path]=frame}
+     for(const effect of sceneEffectLayers){if(effect.type!=='video'||!effect.media)continue;if(effect.loop===false&&tt>=effect.media.duration){frameOverride.sceneEffects[effect.path]=null;continue}let frame=clipFrame(effect.media,tt,clipFps);if(frame instanceof Promise)frame=await frame;frameOverride.sceneEffects[effect.path]=frame}
      const t1=performance.now();
      drawFrame(tt,st);
      const t2=performance.now();
@@ -1614,6 +1615,7 @@ function buildScenesFromJson(data){
   const starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
   if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('legacy_scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame),sceneEffects:normalizeSceneEffects(frame.hieu_ung_canh)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;
+  if(Object.prototype.hasOwnProperty.call(frame,'hieu_ung_canh'))current.visual.sceneEffects=normalizeSceneEffects(frame.hieu_ung_canh);
   current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterFolder,expression});
   current.sourceAudio={bgm:activeBgm,sfx};
  });
