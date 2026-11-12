@@ -500,7 +500,7 @@ async function updateAssets(){
   if(effectKey!==sceneEffectKey){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.media.pause)item.media.pause()});
    sceneEffectLayers=nextSceneEffects;
-   sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;item.media.__sceneEffectFinished=false;item.media.onended=()=>{item.media.__sceneEffectFinished=true;drawFrame(0)};try{item.media.currentTime=0}catch(e){} }});
+   sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;item.media.__sceneEffectFinished=false;item.media.onended=()=>{item.media.__sceneEffectFinished=true;drawFrame(0)};try{item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){} }});
    sceneEffectKey=effectKey;
   }else sceneEffectLayers=nextSceneEffects;
   await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
@@ -750,7 +750,7 @@ async function startDirectRecorder(){
  const types=['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
  directRecordChunks=[];directRecordEntries=[];directRecordStartedAt=performance.now();directRecorder=new MediaRecorder(stream,mimeType?{mimeType,videoBitsPerSecond:quality===1080?8000000:quality===540?2500000:5000000}:undefined);
  directRecorder.ondataavailable=e=>{if(e.data?.size)directRecordChunks.push(e.data)};
- directRecorder.start(1000);directRecording=true;sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.currentTime=0;item.media.play().catch(()=>{})}catch(e){}}});document.body.classList.add('direct-recording');$('preview-loading').classList.remove('active');$('direct-record-button').textContent='⏹ Dừng ghi';$('direct-record-button').classList.add('danger');
+ directRecorder.start(1000);directRecording=true;sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.currentTime=0;item.media.__sceneEffectFinished=false;item.media.play().catch(()=>{})}catch(e){}}});document.body.classList.add('direct-recording');$('preview-loading').classList.remove('active');$('direct-record-button').textContent='⏹ Dừng ghi';$('direct-record-button').classList.add('danger');
  directRecordRecorderStreams={stream,oldWidth,oldHeight,fps,quality};
  setStatus('Đang ghi trực tiếp · '+(isPortrait?'9:16':'16:9')+' · '+fps+' FPS · '+quality+'p');
 }
@@ -857,7 +857,7 @@ async function loadSourceLineForPlayback(item){
  saveCurrentLine();saveCurrentScene();
  const previousSceneIndex=activeSceneIndex;
  activeSceneIndex=item.sceneIndex;activeLineIndex=item.lineIndex;savePlaybackProgress(item.sourceIndex);
- if(previousSceneIndex!==activeSceneIndex)sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0}catch(e){}}});
+ if(previousSceneIndex!==activeSceneIndex)sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){}}});
  const line=getCurrentLine(),frame=line.sourceFrame||{};
  applyVisual(getCurrentScene().visual);
  if(line.sourceIndex!==undefined){
@@ -2014,7 +2014,7 @@ function selectLine(i){
  }
 }
 async function selectScene(i){
- saveCurrentLine();saveCurrentScene();activeSceneIndex=Math.max(0,Math.min(i,scenes.length-1));activeLineIndex=0;sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0}catch(e){}}});
+ saveCurrentLine();saveCurrentScene();activeSceneIndex=Math.max(0,Math.min(i,scenes.length-1));activeLineIndex=0;sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){}}});
  applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());renderSceneList();renderLineList();
  updateSeekUI(getCurrentLine()?.sourceIndex??0);
  await updateAssets();if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
