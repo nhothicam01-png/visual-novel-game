@@ -106,6 +106,14 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 .nav{width:100%;display:flex;gap:8px;flex-wrap:wrap;background:#111c30;border:1px solid #334155;border-radius:12px;padding:14px;margin:0 0 12px}
 .nav a{color:#e9d5ff;background:#263449;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:13px}
 .nav a.current{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
+
+/* Compact scene/dialogue editor drawer; preview remains visible */
+.scene-editor-drawer{position:fixed;z-index:1000;top:76px;right:16px;width:min(540px,calc(100vw - 32px));max-height:70vh;display:none;flex-direction:column;gap:8px;background:#080f1e;border:1px solid #a855f766;border-radius:12px;padding:10px;box-shadow:0 18px 55px #000c;overflow:hidden}
+.scene-editor-drawer.open{display:flex}
+.scene-editor-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#e9d5ff;padding:2px 2px 6px}
+.scene-editor-drawer>.main-panel{display:flex;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.scene-editor-drawer>.main-panel:not([open])>*:not(.panel-heading){display:none}
+@media(max-width:600px){.scene-editor-drawer{top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:48vh;padding:9px}.scene-editor-drawer>.main-panel{max-height:calc(48vh - 48px)}}
 </style>
 </head>
 <body>
@@ -121,6 +129,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <div id="preview-loading"><strong>⏳ Đang tải tài nguyên…</strong><span id="preview-loading-status">Đang chuẩn bị cảnh</span></div>
 </div>
 <div class="preview-toolbar">
+<button class="btn secondary" id="open-scene-editor" type="button" aria-expanded="false" aria-controls="scene-editor-drawer">☰ Cảnh & lời thoại</button>
 <button class="btn" id="play-preview">▶ Chạy</button>
 <button class="btn secondary" id="direct-record-button">⏺ Ghi trực tiếp</button>
 <button class="btn secondary" id="stop-scene">■ Dừng chạy</button>
@@ -156,7 +165,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <label class="field">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
 <div class="status" id="voice-fallback-status">Giọng mặc định được dùng khi nhân vật chưa có giọng riêng hoặc giọng trong JSON không hợp lệ.</div>
 </details>
-<details class="panel main-panel" open><summary class="panel-heading">2. Cảnh & danh sách lời thoại</summary>
+<div id="scene-editor-drawer" class="scene-editor-drawer"><div class="scene-editor-drawer-head"><strong>☰ Chỉnh sửa cảnh & lời thoại</strong><button class="btn secondary" id="close-scene-editor" type="button">✕</button></div><details class="panel main-panel" open><summary class="panel-heading">2. Cảnh & danh sách lời thoại</summary>
 <div class="row scene-toolbar">
 <label class="field" style="flex:1">Chọn cảnh<select id="scene-select"></select></label>
 <button class="btn" id="add-scene">＋ Thêm cảnh</button>
@@ -208,6 +217,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 </div>
 </details>
 
+</div>
 <details class="panel main-panel"><summary class="panel-heading">3. Khung hình & bố cục</summary>
 <div class="row">
 <label class="check"><input type="checkbox" id="show-dialogue" checked> Hiện khung thoại</label>
@@ -408,9 +418,9 @@ async function updateAssets(){
   const layerJobs=displaySpecs.map(async(spec,index)=>{
    const folder=characterAssetFolder(spec.id),files=expressionFilesByFolder[String(folder)]||[];
    let expression=normalizeExpression(spec.bieu_cam||'');
-   if(!expression&&files.length)expression=files[0].split('/').pop().replace(/\.webm$/i,'');
+   if(!expression||!files.some(path=>path.split('/').pop().replace(/\.webm$/i,'')===expression))expression=files[0]?.split('/').pop().replace(/\.webm$/i,'')||expression;
    const url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
-   const media=url?await cachedVideo(url):null;
+   let media=null;try{media=url?await cachedVideo(url):null}catch(error){console.warn('Không tải được lớp nhân vật '+spec.id+' ('+folder+'/'+expression+'):',error)}
    return {spec:{...spec,bieu_cam:expression},folder,media,index};
   });
   const [nextBg,nextChar,nextLayers]=await Promise.all([
@@ -1543,8 +1553,8 @@ async function loadWorldCharacterFolderMap(data,storyPath){
    const response=await fetch(rawBase+worldPath.split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(!response.ok)continue;
    const world=await response.json(),linked=(world.story_folders||[]).some(item=>String(item.folder||'')===storyFolder||String(item.json_path||'')===storyPath);if(!linked)continue;
    const source=data?.nhan_vat&&typeof data.nhan_vat==='object'?data.nhan_vat:{},byName=new Map(Object.entries(source).map(([id,info])=>[normalizeCharacterName(info?.ten_hien_thi||info?.name||''),String(id)]).filter(x=>x[0]));
-   worldCharacterDirectory=(Array.isArray(world.characters)?world.characters:[]).filter(ch=>ch&&ch.name&&ch.assetFolder).map(ch=>({id:byName.get(normalizeCharacterName(ch.name))||('world_'+String(ch.assetFolder).replace(/[^A-Za-z0-9_-]/g,'_')),name:String(ch.name),folder:String(ch.assetFolder).trim()}));
-   worldCharacterDirectory.forEach(ch=>{const id=byName.get(normalizeCharacterName(ch.name));if(id)storyCharacterFolderMap[id]=ch.folder});break;
+   worldCharacterDirectory=(Array.isArray(world.characters)?world.characters:[]).filter(ch=>ch&&ch.name&&ch.assetFolder).map(ch=>{const folder=String(ch.assetFolder).trim(),byDisplayName=byName.get(normalizeCharacterName(ch.name)),sourceEntry=Object.entries(source).find(([id,info])=>String(id)===folder||String(id)==='world_'+folder||normalizeCharacterName(info?.ten_hien_thi||info?.name||'')===normalizeCharacterName(ch.name)),id=byDisplayName||sourceEntry?.[0]||('world_'+folder.replace(/[^A-Za-z0-9_-]/g,'_'));return {id:String(id),name:String(ch.name),folder}});
+   worldCharacterDirectory.forEach(ch=>{storyCharacterFolderMap[ch.id]=ch.folder});break;
   }
  }catch(error){console.warn('Không thể đồng bộ nhân vật/tài nguyên từ thế giới:',error)}
  if(!worldCharacterDirectory.length)worldCharacterDirectory=characterDirectory.map(ch=>({id:String(ch.id),name:ch.name,folder:characterAssetFolder(ch.id)}));
@@ -1562,7 +1572,7 @@ async function applyStoryData(data,name,path){
  try{localStorage.removeItem(storySettingsKey())}catch(e){}
  scenes=buildScenesFromJson(data);activeSceneIndex=0;activeLineIndex=0;restorePlaybackProgress();
  renderCharacterVoiceSetup();renderStoryCharacterSelectors(getCurrentLine()?.speakerId,getCurrentLine()?.characterAsset);renderSceneList();renderLineList();applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());
- $('speaker').readOnly=false;$('dialogue').readOnly=false;updateSeekUI(0);
+ $('speaker').readOnly=false;$('dialogue').readOnly=false;updateSeekUI(currentSourceIndex());
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(0);
  $('story-status').textContent='Đã nạp '+activeStoryName+': '+rows.length+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh. JSON gốc không bị chỉnh sửa.';
  setStatus('Đã nạp kịch bản '+activeStoryName+'.');
@@ -1867,6 +1877,11 @@ document.querySelectorAll('#character,#expression,#background,#dialogue-width-mo
  $('bgm').addEventListener('change',()=>{previewLineBgmName='';if(previewing&&!previewPaused)playLineAudio(getCurrentLine())});
  $('sfx-file').addEventListener('change',()=>{if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}getPreviewSfxUrl()});
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
+
+const sceneDrawer=$('scene-editor-drawer'),sceneMenuButton=$('open-scene-editor');
+function setSceneEditorOpen(open){sceneDrawer.classList.toggle('open',!!open);sceneMenuButton.setAttribute('aria-expanded',String(!!open));sceneMenuButton.textContent=open?'✕ Đóng chỉnh sửa':'☰ Cảnh & lời thoại';if(open)window.scrollTo({top:0,behavior:'smooth'});}
+sceneMenuButton.addEventListener('click',()=>setSceneEditorOpen(!sceneDrawer.classList.contains('open')));
+$('close-scene-editor').addEventListener('click',()=>setSceneEditorOpen(false));
 
 renderEffectCatalogs();
 scenes=[{name:'Cảnh 1',sceneId:'scene_1',isFlashback:false,visual:captureVisual(),lines:[newLine()]}];
