@@ -101,7 +101,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 .dialogue-line-item .line-copy span{display:block;color:#cbd5e1;font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dialogue-line-item .line-state{font-size:.68rem;color:#86efac;white-space:nowrap}
 .line-editor{display:flex;flex-direction:column;gap:10px;padding:12px;background:#0b1425;border:1px solid #334155;border-radius:9px}
-.visible-character-editor{display:flex;flex-direction:column;gap:9px;padding:10px;background:#101b30;border:1px solid #475569;border-radius:9px}.visible-character-list{display:flex;flex-direction:column;gap:8px}.visible-character-item{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:9px;background:#0b1425;border:1px solid #334155;border-radius:8px}.visible-character-item .wide{grid-column:1/-1}.visible-character-item .field{font-size:.72rem}.visible-character-item .btn{padding:6px 9px}.visible-character-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#c4b5fd;font-size:.8rem;font-weight:700}@media(max-width:480px){.visible-character-item{grid-template-columns:1fr}}
+.visible-character-editor{display:flex;flex-direction:column;gap:9px;padding:10px;background:#101b30;border:1px solid #475569;border-radius:9px}.visible-character-list{display:flex;flex-direction:column;gap:8px}.visible-character-item{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:9px;background:#0b1425;border:1px solid #334155;border-radius:8px}.visible-character-item .wide{grid-column:1/-1}.visible-character-item .field{font-size:.72rem}.visible-character-item .btn{padding:6px 9px}.visible-character-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#c4b5fd;font-size:.8rem;font-weight:700}.webm-picker{grid-column:1/-1;border:1px solid #475569;border-radius:8px;padding:8px;background:#111c30}.webm-picker summary{cursor:pointer;color:#c4b5fd;font-size:.76rem;font-weight:700}.webm-search{width:100%;margin:8px 0;padding:8px;border:1px solid #475569;border-radius:7px;background:#0b1425;color:#fff}.webm-filter-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.webm-filter-grid .field{font-size:.68rem}.webm-filter-grid select{font-size:.72rem;padding:6px}.webm-results{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow:auto;margin-top:8px}.webm-choice{display:flex;align-items:flex-start;gap:8px;padding:7px;border:1px solid #334155;border-radius:7px;background:#0b1425;cursor:pointer}.webm-choice input{margin-top:3px;accent-color:#a78bfa}.webm-choice span{min-width:0}.webm-choice strong{display:block;font-size:.72rem;overflow-wrap:anywhere}.webm-choice small{display:block;color:#94a3b8;font-size:.64rem;line-height:1.35;margin-top:2px}@media(max-width:480px){.visible-character-item{grid-template-columns:1fr}.webm-filter-grid{grid-template-columns:1fr}}
 
 .nav{width:100%;display:flex;gap:8px;flex-wrap:wrap;background:#111c30;border:1px solid #334155;border-radius:12px;padding:14px;margin:0 0 12px}
 .nav a{color:#e9d5ff;background:#263449;padding:9px 12px;border-radius:8px;text-decoration:none;font-size:13px}
@@ -283,7 +283,7 @@ const previewCanvas=canvas,previewCtx=ctx;
 let renderCanvas=null,renderCtx=null;
 const stage=$('game-container');
 const characters=['1','2','3','4','5','6'];
-let worldCharacterDirectory=[],expressionFilesByFolder={};
+let worldCharacterDirectory=[],expressionFilesByFolder={},characterAnimationMetadata={};
 const backgrounds=[
  ['bg_school.png','Sân trường (bg_school)'],
  ['con_duong_dem.png','Con đường đêm'],
@@ -1539,14 +1539,16 @@ function buildScenesFromJson(data){
 let storyCharacterFolderMap={};
 function normalizeCharacterName(value){return String(value??'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
 async function loadWorldCharacterFolderMap(data,storyPath){
- storyCharacterFolderMap={};worldCharacterDirectory=[];expressionFilesByFolder={};
+ storyCharacterFolderMap={};worldCharacterDirectory=[];expressionFilesByFolder={};characterAnimationMetadata={};
  try{
   const parts=String(storyPath||'').split('/'),storyFolder=parts.length>=3?parts[2]:'';
   if(!storyFolder)return;
   const treeResponse=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
   if(!treeResponse.ok)throw new Error('GitHub tree HTTP '+treeResponse.status);
   const tree=await treeResponse.json(),files=(tree.tree||[]).filter(x=>x.type==='blob').map(x=>x.path);
-  files.filter(path=>/^assets\/NhanVat\/[^/]+\/[^/]+\.webm$/i.test(path)).forEach(path=>{const folder=path.split('/')[2];(expressionFilesByFolder[folder]||(expressionFilesByFolder[folder]=[])).push(path)});
+  const webmPaths=files.filter(path=>/^assets\/NhanVat\/[^/]+\/[^/]+\.webm$/i.test(path));
+  await Promise.all(webmPaths.map(async path=>{if(!files.includes(path+'.json'))return;try{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+(path+'.json').split('/').map(encodeURIComponent).join('/'),response=await fetch(url,{cache:'no-store'});if(response.ok)characterAnimationMetadata[path]=await response.json()}catch(error){console.warn('Không đọc được metadata WEBM:',path,error)}}));
+  webmPaths.forEach(path=>{const folder=path.split('/')[2];(expressionFilesByFolder[folder]||(expressionFilesByFolder[folder]=[])).push(path)});
   Object.values(expressionFilesByFolder).forEach(list=>list.sort((a,b)=>a.localeCompare(b,'en')));
   const worldPaths=files.filter(path=>/^assets\/TheGioi\/[^/]+\/TheGioi\.json$/i.test(path)),rawBase='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
   for(const worldPath of worldPaths){
@@ -1755,10 +1757,44 @@ function visibleCharacterOptions(selected=''){
 }
 function expressionsForCharacter(id,selected=''){
  const ch=activeCharacterList().find(item=>item.id===String(id)),files=ch?(expressionFilesByFolder[String(ch.folder)]||[]):[];
- const names=files.map(path=>path.split('/').pop().replace(/\\.webm$/i,''));
+ const names=files.map(path=>path.split('/').pop().replace(/\.webm$/i,''));
  const current=normalizeExpression(selected||names[0]||'say_hello_bieu_cam_binh_thuong');
  if(!names.includes(current))names.unshift(current);
  return names.map(name=>'<option value="'+safeText(name)+'" '+(name===current?'selected':'')+'>'+safeText(name)+'</option>').join('');
+}
+const WEBM_FILTERS=[['pose','Tư thế'],['emotion','Cảm xúc'],['direction','Hướng mặt'],['face_angle','Góc mặt'],['communication','Trạng thái']];
+function webmMetadataValues(path,field){
+ const m=characterAnimationMetadata[path]||{},u=m.user_metadata||{},a=(Array.isArray(m.characters)?m.characters[0]:{})||{};
+ let value='';
+ if(field==='pose')value=u.pose||a.pose||m.start_pose||'';
+ if(field==='emotion')value=u.emotion||a.emotion||'';
+ if(field==='direction')value=u.direction||a.direction||'';
+ if(field==='face_angle')value=u.face_angle||a.face_angle||u.view_angle||a.view_angle||'';
+ if(field==='communication')value=u.communication||a.communication?.state||a.communication||'';
+ return (Array.isArray(value)?value:[value]).map(x=>String(x||'').trim()).filter(Boolean);
+}
+function webmFilterSelect(folder,field,label){
+ const paths=expressionFilesByFolder[String(folder||'')]||[],values=[...new Set(paths.flatMap(path=>webmMetadataValues(path,field)))].sort((a,b)=>a.localeCompare(b,'vi'));
+ return '<label class="field">'+label+'<select data-webm-filter="'+field+'"><option value="">Tất cả</option>'+values.map(value=>'<option value="'+safeText(value)+'">'+safeText(value)+'</option>').join('')+'</select></label>';
+}
+function renderWebmPickerResults(card,index,item){
+ if(!card)return;
+ const ch=activeCharacterList().find(value=>String(value.id)===String(item.id)),paths=ch?(expressionFilesByFolder[String(ch.folder)]||[]):[],host=card.querySelector('[data-webm-results]');
+ if(!host)return;
+ const query=(card.querySelector('[data-webm-search]')?.value||'').trim().toLocaleLowerCase('vi');
+ const filters=Object.fromEntries(WEBM_FILTERS.map(([field])=>[field,card.querySelector('[data-webm-filter="'+field+'"]')?.value||'']));
+ const rows=paths.filter(path=>{
+  const meta=characterAnimationMetadata[path]||{},values=WEBM_FILTERS.flatMap(([field])=>webmMetadataValues(path,field));
+  const searchable=[path.split('/').pop(),meta.summary,meta.action,meta.start_pose,meta.end_pose,...values].join(' ').toLocaleLowerCase('vi');
+  if(query&&!searchable.includes(query))return false;
+  return WEBM_FILTERS.every(([field])=>!filters[field]||webmMetadataValues(path,field).includes(filters[field]));
+ });
+ if(!rows.length){host.innerHTML='<div class="note">Không có WebM khớp bộ lọc. Hãy đổi từ khóa hoặc chọn “Tất cả”.</div>';return}
+ const selected=normalizeExpression(item.bieu_cam||'');
+ host.innerHTML=rows.map(path=>{
+  const name=path.split('/').pop().replace(/\.webm$/i,''),meta=characterAnimationMetadata[path]||{},tags=WEBM_FILTERS.flatMap(([field,label])=>webmMetadataValues(path,field).map(value=>label+': '+value));
+  return '<label class="webm-choice"><input type="checkbox" data-webm-pick="'+safeText(name)+'" '+(name===selected?'checked':'')+'><span><strong>'+safeText(name)+'</strong><small>'+safeText(tags.slice(0,4).join(' · ')||(meta.summary||'Chưa có metadata'))+'</small></span></label>';
+ }).join('');
 }
 function renderVisibleCharacters(line=getCurrentLine()){
  const host=$('visible-character-list'),add=$('visible-character-add-select');if(!host||!add)return;
@@ -1766,9 +1802,10 @@ function renderVisibleCharacters(line=getCurrentLine()){
  add.innerHTML='<option value="">-- Chọn nhân vật --</option>'+list.filter(ch=>!items.some(item=>String(item.id)===String(ch.id))).map(ch=>'<option value="'+safeText(ch.id)+'">'+safeText(ch.name)+'</option>').join('');
  $('visible-character-count').textContent=items.length+' nhân vật';
  host.innerHTML=items.map((item,index)=>{
-  const ch=list.find(value=>String(value.id)===String(item.id));
-  return '<div class="visible-character-item" data-visible-index="'+index+'"><div class="visible-character-head wide"><span>'+safeText(ch?.name||('Nhân vật '+item.id))+'</span><button class="btn danger" type="button" data-visible-remove="'+index+'">Xóa</button></div><label class="field wide">Nhân vật<select data-visible-field="id">'+visibleCharacterOptions(item.id)+'</select></label><label class="field wide">Biểu cảm<select data-visible-field="bieu_cam">'+expressionsForCharacter(item.id,item.bieu_cam)+'</select></label><label class="field wide">Vị trí ngang X · <strong data-visible-value="x">'+Number(item.x??(index?70:30))+'%</strong><input data-visible-field="x" type="range" min="0" max="100" step="1" value="'+Number(item.x??(index?70:30))+'" style="width:100%"></label><label class="field wide">Vị trí chân Y · <strong data-visible-value="y">'+Number(item.y??100)+'%</strong><input data-visible-field="y" type="range" min="0" max="110" step="1" value="'+Number(item.y??100)+'" style="width:100%"></label><label class="field">Kích thước<input data-visible-field="scale" type="number" min="0.1" max="2.5" step="0.05" value="'+Number(item.scale??.72)+'"></label></div>';
+  const ch=list.find(value=>String(value.id)===String(item.id)),folder=ch?.folder||'';
+  return '<div class="visible-character-item" data-visible-index="'+index+'"><div class="visible-character-head wide"><span>'+safeText(ch?.name||('Nhân vật '+item.id))+'</span><button class="btn danger" type="button" data-visible-remove="'+index+'">Xóa</button></div><label class="field wide">Nhân vật<select data-visible-field="id">'+visibleCharacterOptions(item.id)+'</select></label><label class="field wide">Biểu cảm<select data-visible-field="bieu_cam">'+expressionsForCharacter(item.id,item.bieu_cam)+'</select></label><details class="webm-picker wide"><summary>☑ Tìm và chọn WebM phù hợp ('+(expressionFilesByFolder[String(folder)]||[]).length+')</summary><input class="webm-search" type="search" data-webm-search placeholder="Tìm tên file, tư thế, cảm xúc, hành động…"><div class="webm-filter-grid">'+WEBM_FILTERS.map(([field,label])=>webmFilterSelect(folder,field,label)).join('')+'</div><div class="webm-results" data-webm-results></div><div class="note">Mỗi nhân vật chọn một WebM cho lượt thoại này. Tích checkbox để áp dụng ngay vào xem trước.</div></details><label class="field wide">Vị trí ngang X · <strong data-visible-value="x">'+Number(item.x??(index?70:30))+'%</strong><input data-visible-field="x" type="range" min="0" max="100" step="1" value="'+Number(item.x??(index?70:30))+'" style="width:100%"></label><label class="field wide">Vị trí chân Y · <strong data-visible-value="y">'+Number(item.y??100)+'%</strong><input data-visible-field="y" type="range" min="0" max="110" step="1" value="'+Number(item.y??100)+'" style="width:100%"></label><label class="field">Kích thước<input data-visible-field="scale" type="number" min="0.1" max="2.5" step="0.05" value="'+Number(item.scale??.72)+'"></label></div>';
  }).join('');
+ host.querySelectorAll('[data-visible-index]').forEach(card=>renderWebmPickerResults(card,Number(card.dataset.visibleIndex),items[Number(card.dataset.visibleIndex)]));
 }
 function readVisibleCharactersFromEditor(){
  return Array.from($('visible-character-list')?.querySelectorAll('[data-visible-index]')||[]).map((card,index)=>{
@@ -1788,6 +1825,8 @@ $('visible-character-add').addEventListener('click',()=>{
  renderVisibleCharacters(line);updateAssets();
 });
 $('visible-character-list').addEventListener('input',e=>{
+ const card=e.target.closest('[data-visible-index]');
+ if(e.target.matches('[data-webm-search]')){if(card){const index=Number(card.dataset.visibleIndex),line=getCurrentLine();if(line?.visibleCharacters?.[index])renderWebmPickerResults(card,index,line.visibleCharacters[index])}return}
  const field=e.target.dataset.visibleField;
  if(!['x','y'].includes(field))return;
  const card=e.target.closest('[data-visible-index]'),line=getCurrentLine();if(!card||!line)return;
@@ -1802,6 +1841,15 @@ $('visible-character-list').addEventListener('change',e=>{
  const card=e.target.closest('[data-visible-index]');if(!card)return;
  const line=getCurrentLine();if(!line)return;
  const index=Number(card.dataset.visibleIndex),field=e.target.dataset.visibleField;
+ if(e.target.matches('[data-webm-filter]')){if(line.visibleCharacters?.[index])renderWebmPickerResults(card,index,line.visibleCharacters[index]);return}
+ if(e.target.matches('[data-webm-pick]')){
+  if(!e.target.checked){e.target.checked=true;return}
+  card.querySelectorAll('[data-webm-pick]').forEach(cb=>{cb.checked=cb===e.target});
+  if(!line.visibleCharacters?.[index])return;
+  line.visibleCharacters[index].bieu_cam=e.target.value;
+  const expression=card.querySelector('[data-visible-field="bieu_cam"]');if(expression)expression.value=e.target.value;
+  updateAssets();return;
+ }
  if(field==='id'){
   const ch=activeCharacterList().find(item=>item.id===e.target.value);if(!ch)return;
   const files=expressionFilesByFolder[String(ch.folder)]||[];
@@ -1810,6 +1858,7 @@ $('visible-character-list').addEventListener('change',e=>{
  }else{
   line.visibleCharacters[index][field]=['x','y','scale'].includes(field)?Number(e.target.value):e.target.value;
   line.visibleCharacters=readVisibleCharactersFromEditor();
+  renderWebmPickerResults(card,index,line.visibleCharacters[index]);
  }
  updateAssets();
 });
