@@ -1793,7 +1793,7 @@ function renderWebmPickerResults(card,index,item){
  const selected=normalizeExpression(item.bieu_cam||'');
  host.innerHTML=rows.map(path=>{
   const name=path.split('/').pop().replace(/\.webm$/i,''),meta=characterAnimationMetadata[path]||{},tags=WEBM_FILTERS.flatMap(([field,label])=>webmMetadataValues(path,field).map(value=>label+': '+value));
-  return '<label class="webm-choice"><input type="checkbox" data-webm-pick="'+safeText(name)+'" '+(name===selected?'checked':'')+'><span><strong>'+safeText(name)+'</strong><small>'+safeText(tags.slice(0,4).join(' · ')||(meta.summary||'Chưa có metadata'))+'</small></span></label>';
+  return '<label class="webm-choice"><input type="checkbox" data-webm-pick="'+safeText(name)+'" value="'+safeText(name)+'" '+(name===selected?'checked':'')+'><span><strong>'+safeText(name)+'</strong><small>'+safeText(tags.slice(0,4).join(' · ')||(meta.summary||'Chưa có metadata'))+'</small></span></label>';
  }).join('');
 }
 function renderVisibleCharacters(line=getCurrentLine()){
