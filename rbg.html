@@ -422,10 +422,8 @@ $('pushWebmGitHubBtn').onclick=async()=>{
   const stamp=new Date().toISOString(),common={schema_version:1,character_id:character,category:'characters',user_metadata: userMetadata,review_required:false,updated_at:stamp};
   const webmMeta={...common,file_path:path,asset_type:'animated_webm',fps:sampleFps,duration_seconds:Number(clipDuration.toFixed(3)),frame_count:total,analysis_status:'not_analyzed'};
   const pngMeta={...common,file_path:pngPath,asset_type:'static_png',source_video:path,frame_time_seconds:Number(video.currentTime.toFixed(3)),analysis_status:'not_analyzed'};
-  await Promise.all([
-   GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:path+'.json',content:JSON.stringify(webmMeta,null,2),message:'Save character WebM metadata: '+base}),
-   GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:pngPath+'.json',content:JSON.stringify(pngMeta,null,2),message:'Save character PNG metadata: '+base})
-  ]);
+  await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:path+'.json',content:JSON.stringify(webmMeta,null,2),message:'Save character WebM metadata: '+base});
+  await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:pngPath+'.json',content:JSON.stringify(pngMeta,null,2),message:'Save character PNG metadata: '+base});
   const indexPath='assets/Config/character_animation_library.json';
   let indexData={schema_version:1,assets:[]};
   try{const ir=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+indexPath+'?v='+Date.now(),{cache:'no-store'});if(ir.ok){const id=await ir.json();if(Array.isArray(id.assets))indexData=id}}catch(_){}
