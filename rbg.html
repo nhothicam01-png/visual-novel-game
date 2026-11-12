@@ -84,8 +84,15 @@ main{max-width:1400px;margin:22px auto;padding:0 16px 40px}.panel{background:lin
       <div class="field"><label>Nhân vật đã có trên GitHub</label><select id="githubCharacterSelect"><option value="">Đang tải danh sách nhân vật…</option></select></div>
       <div class="actions"><button id="refreshCharactersBtn" type="button">↻ Tải lại nhân vật</button></div>
       <div class="field"><label>Tên nhân vật mới (không bắt buộc)</label><input id="newCharacterName" type="text" maxlength="60" placeholder="Ví dụ: Aki hoặc Yui"></div>
-      <div class="field"><label>Tên file WebM muốn lưu (không cần đuôi .webm)</label><input id="webmFileName" type="text" maxlength="100" placeholder="Ví dụ: Aki_Neutral hoặc Aki_Talking"></div>
-      <button id="pushWebmGitHubBtn" class="primary" type="button">⬆ Xuất WebM & push lên GitHub</button>
+      <div class="field"><label>Tên tài nguyên (không cần đuôi)</label><input id="webmFileName" type="text" maxlength="100" placeholder="Ví dụ: Aki_Neutral hoặc Aki_Talking"></div>
+      <div class="field"><label>Tư thế</label><select id="assetPose"><option value="">Chưa xác định</option><option>Đứng</option><option>Ngồi</option><option>Nằm</option><option>Quỳ</option><option>Cúi người</option><option>Chuyển tư thế</option></select></div>
+      <div class="field"><label>Biểu cảm</label><select id="assetEmotion"><option value="">Chưa xác định</option><option>Vui</option><option>Buồn</option><option>Tức giận</option><option>Ngạc nhiên</option><option>Sợ hãi</option><option>Trung tính</option></select></div>
+      <div class="field"><label>Hướng nhìn</label><select id="assetDirection"><option value="">Chưa xác định</option><option>Chính diện</option><option>Trái</option><option>Phải</option><option>Quay lưng</option><option>Chếch trái</option><option>Chếch phải</option></select></div>
+      <div class="field"><label>Góc nhìn</label><select id="assetViewAngle"><option value="">Chưa xác định</option><option>Toàn thân</option><option>Bán thân</option><option>Cận cảnh</option><option>Góc nghiêng</option></select></div>
+      <div class="field"><label>Trạng thái giao tiếp</label><select id="assetCommunication"><option value="">Chưa xác định</option><option>Đang nói</option><option>Đang nghe</option><option>Im lặng</option><option>Đang phản ứng</option></select></div>
+      <div class="field"><label>Hành động</label><select id="assetAction"><option value="">Chưa xác định</option><option>Đứng yên</option><option>Đi</option><option>Chạy</option><option>Đứng dậy</option><option>Ngồi xuống</option><option>Quay đầu</option><option>Vẫy tay</option><option>Tương tác</option></select></div>
+      <div class="field"><label>Đối tượng tương tác (nếu có)</label><input id="assetInteraction" type="text" maxlength="100" placeholder="Nhân vật khác, đồ vật…"></div>
+      <button id="pushWebmGitHubBtn" class="primary" type="button">⬆ Lưu WebM + PNG vào thư viện</button>
       <p class="hint" id="githubUploadStatus">Cần kết nối token tại GitHub Manager trước. Chọn nhân vật để xem các WebM đã có.</p>
       <div class="field"><label>WebM đã lưu của nhân vật</label><div id="characterWebmList" class="hint">Chọn nhân vật để tải danh sách WebM.</div></div>
     </div>
@@ -369,7 +376,7 @@ $('refreshCharactersBtn').onclick=async()=>{await loadGitHubCharacters();await l
 loadGitHubCharacters().then(loadCharacterWebm);
 $('pushWebmGitHubBtn').onclick=async()=>{
  const button=$('pushWebmGitHubBtn'),status=$('githubUploadStatus');
- if(!video.duration||!video.videoWidth||!out.width){status.textContent='Hãy chọn video trước.';return}
+ if(!video.duration||!video.videoWidth||!out.width){status.textContent='Hãy chọn video và chạy xem trước/xử lý ít nhất một frame trước.';return}
  if(!window.GitHubManager?.getToken()){status.textContent='Chưa có GitHub Token. Hãy kết nối tại GitHub Manager.';return}
  const typed=$('newCharacterName').value.trim(),selected=$('githubCharacterSelect').value;
  const character=(typed||selected).trim().replace(/[\\/]+/g,'-').replace(/[<>:"|?*]/g,'_').replace(/^\.+|\.+$/g,'').trim();
@@ -378,46 +385,59 @@ $('pushWebmGitHubBtn').onclick=async()=>{
  if(processing||recording){status.textContent='Đang có tác vụ xử lý. Hãy đợi hoàn tất.';return}
  if(!('VideoEncoder' in window)||!('VideoFrame' in window)){status.textContent='Trình duyệt chưa hỗ trợ WebCodecs. Hãy mở bằng Chrome mới.';return}
  const rg=rangeFrames(),sampleFps=refFps(),total=Math.max(1,rg.end-rg.start+1),clipDuration=total/sampleFps;
- const oldTime=video.currentTime,wasPlaying=!video.paused;
- const requestedName=$('webmFileName').value.trim();
- const filename=(requestedName||character+'-'+sampleFps+'fps-'+Date.now()).replace(/\.webm$/i,'').replace(/[\\/:*?"<>|]+/g,'_').replace(/^\.+|\.+$/g,'').trim()+'.webm';
- if(filename.length>105){status.textContent='Tên file quá dài. Hãy rút gọn tên (tối đa khoảng 100 ký tự).';return}
- const path='assets/NhanVat/'+character+'/'+filename;
- if(!confirm('Xuất một file WebM '+sampleFps+' FPS ('+clipDuration.toFixed(2)+' giây) rồi tải lên '+path+'? Không tải PNG Sequence.'))return;
+ const oldTime=video.currentTime,wasPlaying=!video.paused,requestedName=$('webmFileName').value.trim();
+ const base=(requestedName||character+'-'+sampleFps+'fps-'+Date.now()).replace(/\.(?:webm|png)$/i,'').replace(/[\\/:*?"<>|]+/g,'_').replace(/^\.+|\.+$/g,'').trim();
+ const filename=base+'.webm',pngName=base+'.png';
+ if(filename.length>105){status.textContent='Tên file quá dài. Hãy rút gọn tên.';return}
+ const path='assets/NhanVat/'+character+'/'+filename,pngPath='assets/NhanVat/'+character+'/'+pngName;
+ const userMetadata={};
+ for(const [key,id] of [['pose','assetPose'],['emotion','assetEmotion'],['direction','assetDirection'],['view_angle','assetViewAngle'],['communication','assetCommunication'],['action','assetAction'],['interaction_target','assetInteraction']]){const v=$(id).value.trim();if(v)userMetadata[key]=v}
+ if(!confirm('Tạo WebM '+sampleFps+' FPS ('+clipDuration.toFixed(2)+' giây) và PNG tĩnh tại frame hiện tại rồi lưu cả hai vào '+character+'?'))return;
  let media=null,output=null,videoSource=null;
- button.disabled=true;$('webmBtn').disabled=true;$('sequenceBtn').disabled=true;$('startBtn').disabled=true;$('stopBtn').disabled=false;
- recording=true;
+ button.disabled=true;$('webmBtn').disabled=true;$('sequenceBtn').disabled=true;$('startBtn').disabled=true;$('stopBtn').disabled=false;recording=true;
  try{
   video.pause();await seekToTime(rg.startTime);
   if($('mode').value==='toonout')await loadToonout();else if(['ai','hybrid'].includes($('mode').value))await initAI();
-  status.textContent='Đang nạp bộ mã hóa WebM…';
+  status.textContent='Đang tạo WebM…';
   media=await import('https://esm.sh/mediabunny');
-  const {Output,BufferTarget,CanvasSource,WebMOutputFormat,Quality}=media;
-  const target=new BufferTarget();
+  const {Output,BufferTarget,CanvasSource,WebMOutputFormat,Quality}=media,target=new BufferTarget();
   output=new Output({format:new WebMOutputFormat(),target});
   videoSource=new CanvasSource(out,{codec:'vp9',quality:new Quality('high'),alpha:'keep'});
-  output.addVideoTrack(videoSource,{frameRate:sampleFps});
-  await output.start();
+  output.addVideoTrack(videoSource,{frameRate:sampleFps});await output.start();
   for(let n=0;n<total;n++){
-   const offset=n/sampleFps;
-   const t=Math.min(rg.startTime+offset,Math.max(rg.startTime,rg.endTime-0.001));
-   await seekToTime(t);await processCurrentFrame();
-   await videoSource.add(offset,1/sampleFps);
+   const offset=n/sampleFps,t=Math.min(rg.startTime+offset,Math.max(rg.startTime,rg.endTime-0.001));
+   await seekToTime(t);await processCurrentFrame();await videoSource.add(offset,1/sampleFps);
    $('progress').textContent=Math.round((n+1)/total*100)+'%';
-   if(n%3===0){status.textContent='Đang tạo WebM: '+(n+1)+'/'+total+' frame · '+sampleFps+' FPS';await new Promise(r=>setTimeout(r,0))}
+   if(n%3===0){status.textContent='Đang tạo WebM: '+(n+1)+'/'+total+' frame';await new Promise(r=>setTimeout(r,0))}
   }
-  await output.finalize();
-  const buffer=target.buffer;
+  await output.finalize();const buffer=target.buffer;
   if(!buffer)throw new Error('Không tạo được file WebM.');
-  const blob=new Blob([buffer],{type:'video/webm'});
-  if(blob.size>90*1024*1024)throw new Error('File WebM lớn hơn giới hạn 90 MB mỗi file của công cụ tải lên. Hãy giảm độ dài đoạn hoặc FPS.');
-  status.textContent='Đã tạo WebM ('+(blob.size/1024/1024).toFixed(2)+' MB). Đang tải lên GitHub…';
-  const result=await GitHubManager.pushFiles({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',files:[{path,blob}],message:'Upload character WebM: '+character+' ('+sampleFps+' FPS)'});
-  status.innerHTML='Đã push WebM thành công vào <strong>'+path+'</strong>. <a target="_blank" rel="noopener" href="'+result.htmlUrl+'">Xem commit GitHub</a>';
-  setStatus('Đã tải WebM của '+character+' lên GitHub thành công.');
+  const webmBlob=new Blob([buffer],{type:'video/webm'});
+  if(webmBlob.size>90*1024*1024)throw new Error('WebM lớn hơn giới hạn 90 MB. Hãy giảm độ dài đoạn hoặc FPS.');
+  await seekToTime(Math.min(Math.max(oldTime,rg.startTime),Math.max(rg.startTime,rg.endTime-0.001)));await processCurrentFrame();
+  const pngBlob=await new Promise((resolve,reject)=>out.toBlob(b=>b?resolve(b):reject(new Error('Không tạo được PNG nền trong suốt.')),'image/png'));
+  if(webmBlob.size+pngBlob.size>95*1024*1024)throw new Error('Tổng dung lượng WebM + PNG quá lớn. Hãy rút ngắn video.');
+  status.textContent='Đang tải WebM và PNG lên GitHub…';
+  const result=await GitHubManager.pushFiles({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',files:[{path,blob:webmBlob},{path:pngPath,blob:pngBlob}],message:'Upload character assets: '+character+' '+base});
+  const stamp=new Date().toISOString(),common={schema_version:1,character_id:character,category:'characters',user_metadata: userMetadata,review_required:false,updated_at:stamp};
+  const webmMeta={...common,file_path:path,asset_type:'animated_webm',fps:sampleFps,duration_seconds:Number(clipDuration.toFixed(3)),frame_count:total,analysis_status:'not_analyzed'};
+  const pngMeta={...common,file_path:pngPath,asset_type:'static_png',source_video:path,frame_time_seconds:Number(video.currentTime.toFixed(3)),analysis_status:'not_analyzed'};
+  await Promise.all([
+   GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:path+'.json',content:JSON.stringify(webmMeta,null,2),message:'Save character WebM metadata: '+base}),
+   GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:pngPath+'.json',content:JSON.stringify(pngMeta,null,2),message:'Save character PNG metadata: '+base})
+  ]);
+  const indexPath='assets/Config/character_animation_library.json';
+  let indexData={schema_version:1,assets:[]};
+  try{const ir=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+indexPath+'?v='+Date.now(),{cache:'no-store'});if(ir.ok){const id=await ir.json();if(Array.isArray(id.assets))indexData=id}}catch(_){}
+  const row={file_path:path,metadata_path:path+'.json',character_id:character,analysis_status:'not_analyzed',summary:Object.entries(userMetadata).map(([k,v])=>k+': '+v).join(' · '),updated_at:stamp};
+  const ix=indexData.assets.findIndex(x=>x.file_path===path);if(ix>=0)indexData.assets[ix]=row;else indexData.assets.push(row);
+  indexData.updated_at=stamp;
+  await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path:indexPath,content:JSON.stringify(indexData,null,2),message:'Update character animation library index'});
+  status.innerHTML='Đã lưu WebM + PNG nền trong suốt vào <strong>'+escapeHtml(path)+'</strong> và <strong>'+escapeHtml(pngPath)+'</strong>. <a target="_blank" rel="noopener" href="'+result.htmlUrl+'">Xem commit GitHub</a>';
+  setStatus('Đã lưu hai định dạng tài nguyên cho '+character+'.');
   if(typed){await loadGitHubCharacters();$('githubCharacterSelect').value=character}
   await loadCharacterWebm();
- }catch(e){status.textContent='Xuất hoặc push WebM thất bại: '+(e.message||String(e));setStatus('Không thể tải WebM lên GitHub.')}
+ }catch(e){status.textContent='Lưu tài nguyên thất bại: '+(e.message||String(e));setStatus('Không thể lưu đầy đủ tài nguyên lên GitHub. Kiểm tra các file đã được tải trước khi thử lại.')}
  finally{
   try{if(videoSource)videoSource.close()}catch(_){}
   recording=false;button.disabled=false;$('webmBtn').disabled=false;$('sequenceBtn').disabled=false;$('startBtn').disabled=false;$('stopBtn').disabled=true;
