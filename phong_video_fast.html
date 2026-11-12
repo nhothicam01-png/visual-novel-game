@@ -1519,8 +1519,9 @@ function buildScenesFromJson(data){
   const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim();
   const sceneId=String(frame.scene_id??'').trim(),flashback=frame.hoi_tuong===true;
   const starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
-  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('legacy_scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame),sceneEffects:normalizeSceneEffects(frame.hieu_ung_canh)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
+  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('legacy_scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterFolder,expression,effects:mapJsonEffects(frame),sceneEffects:normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;
+  if(Object.prototype.hasOwnProperty.call(frame,'hieu_ung_canh')||Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))current.visual.sceneEffects=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung);
   current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterFolder,expression});
   current.sourceAudio={bgm:activeBgm,sfx};
  });
@@ -1618,6 +1619,7 @@ function buildEditedStoryOutput(){
   if(characterId)frame.nhan_vat=characterId;
   frame.scene_id=String(scene.sceneId||('scene_'+(sceneIndex+1)));
   const sceneEffects=normalizeSceneEffects(scene.visual?.sceneEffects||[]);if(sceneEffects.length)frame.hieu_ung_canh=sceneEffects.map(item=>({file:item.path,type:item.type,loop:item.loop!==false,opacity:item.opacity,z_index:item.z_index}));else delete frame.hieu_ung_canh;
+  if(Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))frame.anh_hieu_ung=sceneEffects[0]?.path.split('/').pop().replace(/\.[^.]+$/,'')||'';
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
   if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>({id:String(item.id),bieu_cam:String(item.bieu_cam||''),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}));
