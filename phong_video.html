@@ -1598,7 +1598,7 @@ async function loadWorldCharacterFolderMap(data,storyPath){
   const slug=String(data?.world_id||''),worldPath=slug?'assets/TheGioi/'+slug+'/TheGioi.json':'',base='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
   let world=null;if(worldPath){const r=await fetch(base+worldPath.split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(r.ok)world=await r.json()}
   const latest=new Map((Array.isArray(world?.characters)?world.characters:[]).map(ch=>[String(ch.character_id||ch.id||''),ch]));
-  characterDirectory.forEach(ch=>{const wc=latest.get(ch.id),folder=wc?String(wc.assetFolder||''):String(ch.assetFolder||'');ch.assetFolder=folder;if(activeStoryData?.nhan_vat?.[ch.id])activeStoryData.nhan_vat[ch.id].assetFolder=folder;storyCharacterFolderMap[ch.id]=folder;worldCharacterDirectory.push({id:ch.id,name:String(wc?.name||ch.name),folder})});
+  characterDirectory.forEach(ch=>{const wc=latest.get(ch.id),folder=wc?String(wc.assetFolder||''):String(ch.assetFolder||'');ch.assetFolder=folder;ch.name=String(wc?.name||ch.name);if(activeStoryData?.nhan_vat?.[ch.id]){activeStoryData.nhan_vat[ch.id].assetFolder=folder;activeStoryData.nhan_vat[ch.id].ten_hien_thi=ch.name;}storyCharacterFolderMap[ch.id]=folder;worldCharacterDirectory.push({id:ch.id,name:String(wc?.name||ch.name),folder})});
   if(!worldCharacterDirectory.length)worldCharacterDirectory=characterDirectory.map(ch=>({id:ch.id,name:ch.name,folder:ch.assetFolder||''}));
  }catch(error){console.warn('Không thể đồng bộ nhân vật/tài nguyên từ thế giới:',error);characterDirectory.forEach(ch=>{const folder=String(ch.assetFolder||'');storyCharacterFolderMap[ch.id]=folder;worldCharacterDirectory.push({id:ch.id,name:ch.name,folder})})}
 }
