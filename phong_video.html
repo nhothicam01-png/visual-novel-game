@@ -634,7 +634,7 @@ function drawFrame(elapsed,st){
 }
 function drawDialogue(w,h){
  if($('show-dialogue').checked&&$('dialogue').value.trim()){
-  const text=$('dialogue').value.trim(),name=$('speaker').value.trim();
+  const text=$('dialogue').value.trim(),speakerSelect=$('speaker'),name=String(speakerSelect?.selectedOptions?.[0]?.textContent||speakerSelect?.value||'').trim();
   const mode=$('dialogue-width-mode')?.value||'percent';
   const pad=w*.018,fontSize=Math.max(24,Math.round(w*.022));
   const percent=Number($('dialogue-width')?.value||75)/100;
