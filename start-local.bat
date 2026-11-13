@@ -1,15 +1,15 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-where powershell.exe >nul 2>nul
+where node >nul 2>nul
 if errorlevel 1 (
-  echo Khong tim thay Windows PowerShell.
+  echo Chua tim thay Node.js. Hay cai Node.js LTS roi mo lai file nay.
   pause
   exit /b 1
 )
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0prepare-local.ps1"
-if errorlevel 1 exit /b 1
-start "Visual Novel Studio Local" powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0local-server.ps1"
-timeout /t 3 /nobreak >nul
+where git >nul 2>nul
+if errorlevel 1 echo Chua tim thay Git. Ung dung van chay local, nhung nut dong bo can Git.
+start "Visual Novel Studio Local" cmd /k node local-server.js
+timeout /t 2 /nobreak >nul
 start "" http://127.0.0.1:4173/
 exit
