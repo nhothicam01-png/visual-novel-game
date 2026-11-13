@@ -1631,11 +1631,11 @@ async function loadWorldCharacterFolderMap(data,storyPath){
   const treeResponse=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
   if(!treeResponse.ok)throw new Error('GitHub tree HTTP '+treeResponse.status);
   const tree=await treeResponse.json(),files=(tree.tree||[]).filter(x=>x.type==='blob').map(x=>x.path);
-  const webmPaths=files.filter(path=>/^assets\\/NhanVat\\/[^/]+\\/[^/]+\\.webm$/i.test(path));
+  const webmPaths=files.filter(path=>path.startsWith('assets/NhanVat/')&&path.split('/').length===4&&path.toLowerCase().endsWith('.webm'));
   await Promise.all(webmPaths.map(async path=>{if(!files.includes(path+'.json'))return;try{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+(path+'.json').split('/').map(encodeURIComponent).join('/'),response=await fetch(url,{cache:'no-store'});if(response.ok)characterAnimationMetadata[path]=await response.json()}catch(error){console.warn('Không đọc được metadata WEBM:',path,error)}}));
   webmPaths.forEach(path=>{const folder=path.split('/')[2];(expressionFilesByFolder[folder]||(expressionFilesByFolder[folder]=[])).push(path)});
   Object.values(expressionFilesByFolder).forEach(list=>list.sort((a,b)=>a.localeCompare(b,'en')));
-  const worldPaths=files.filter(path=>/^assets\\/TheGioi\\/[^/]+\\/TheGioi\\.json$/i.test(path)),rawBase='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
+  const worldPaths=files.filter(path=>path.startsWith('assets/TheGioi/')&&path.split('/').length===4&&path.endsWith('/TheGioi.json')),rawBase='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
   for(const worldPath of worldPaths){
    const response=await fetch(rawBase+worldPath.split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(!response.ok)continue;
    const world=await response.json(),linked=(world.story_folders||[]).some(item=>String(item.folder||'')===storyFolder||String(item.json_path||'')===storyPath);if(!linked)continue;
