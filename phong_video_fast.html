@@ -572,7 +572,15 @@ function drawFrame(elapsed,st){
   const requestedScale=Number(spec?.scale),scale=Number.isFinite(requestedScale)?Math.max(.1,Math.min(2.5,requestedScale)):(charLayerVideos.length>1?.72:1);
   ctx.save();let alpha=1;
   const isCurrentSpeaker=!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
-  if(isCurrentSpeaker&&speechMotionLevel>.08){const speechBob=speechMotionLevel*h*.012;ctx.translate(0,-speechBob)}
+  if(isCurrentSpeaker){
+   const motion=Math.max(0,Math.min(1,speechMotionSmooth));
+   const rhythm=[0,1,0,2,0,3,4,2][Math.max(0,speechTextIndex)%8];
+   const isDown=rhythm===0||rhythm===4;
+   const tilt=rhythm===1?-.095:(rhythm===2?.095:(rhythm===4?-.045:0));
+   const sx=1+(isDown?-.012:.018)*motion,sy=1+(isDown?-.065:.055)*motion;
+   // Neo transform tai diem chan giua de khong tao khe ho o day khung WEBM.
+   ctx.translate(x,y);ctx.rotate(tilt*motion);ctx.scale(sx,sy);ctx.translate(-x,-y);
+  }
   if(charFx.includes('char-bob'))ctx.translate(0,Math.sin(elapsed*5)*h*.008*strength);
   if(charFx.includes('char-sway')){ctx.translate(x,y);ctx.rotate(Math.sin(elapsed*1.8)*.018*strength);ctx.translate(-x,-y)}
   if(charFx.includes('char-shake')&&elapsed<2)ctx.translate(Math.sin(elapsed*42)*w*.009*strength,0);
@@ -631,22 +639,7 @@ function drawDialogue(w,h){
   ctx.textAlign='center';ctx.textBaseline='top';
   if(nameH){ctx.font='700 '+Math.round(fontSize*.75)+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#c4b5fd';ctx.fillText(name,w/2,boxY+topPad)}
   ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#fff';ctx.shadowColor='#000';ctx.shadowBlur=5;
-  let searchFrom=0;
-  lines.forEach((line,lineIndex)=>{
-   let lineStart=text.indexOf(line,searchFrom);if(lineStart<0)lineStart=searchFrom;searchFrom=lineStart+line.length;
-   const chars=Array.from(line),widths=chars.map(ch=>ctx.measureText(ch).width),totalWidth=widths.reduce((sum,value)=>sum+value,0);let x=(w-totalWidth)/2;
-   chars.forEach((ch,charIndex)=>{
-    const absoluteIndex=lineStart+charIndex,active=!!speakingCharacterId&&absoluteIndex===speechTextIndex&&!/\s/.test(ch);
-    const intensity=active?Math.max(0,Math.min(1,speechMotionSmooth)):0;
-    // Chu kỳ nhịp: xuống thẳng, lên nghiêng trái, xuống thẳng, lên nghiêng phải, xuống thẳng, lên thẳng, xuống nghiêng trái...
-    const rhythm=[0,1,0,2,0,3,4,2][absoluteIndex%8],isDown=rhythm===0||rhythm===4;
-    const tilt=rhythm===1?-.095:(rhythm===2?.095:(rhythm===4?-.045:0));
-    const scaleY=1+(isDown?-.13:.12)*intensity,scaleX=1+(isDown?-.015:.025)*intensity,angle=tilt*intensity;
-    const baseY=boxY+topPad+nameH+lineIndex*lineH+fontSize*.52;
-    ctx.save();ctx.translate(x+widths[charIndex]/2,baseY);ctx.rotate(angle);ctx.scale(scaleX,scaleY);
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(ch,0,0);ctx.restore();x+=widths[charIndex];
-   });
-  });
+  lines.forEach((line,lineIndex)=>ctx.fillText(line,w/2,boxY+topPad+nameH+lineIndex*lineH));
   ctx.shadowBlur=0;
  }
 }
