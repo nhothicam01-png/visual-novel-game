@@ -1504,7 +1504,7 @@ function normalizeExpression(value){return String(value||'').replace(/\.webm$/i,
 function activeCharacterList(){return worldCharacterDirectory.length?worldCharacterDirectory:characterDirectory.map(ch=>({id:String(ch.id),name:ch.name,folder:characterAssetFolder(ch.id)}))}
 function renderStoryCharacterSelectors(preferredId=''){const list=activeCharacterList(),speaker=$('speaker'),character=$('character');speaker.innerHTML=list.map(ch=>'<option value="'+safeText(ch.id)+'">'+safeText(ch.name)+'</option>').join('')||'<option value="">Chưa có nhân vật</option>';character.innerHTML=list.map(ch=>'<option value="'+safeText(ch.id)+'">'+safeText(ch.name)+'</option>').join('')||'<option value="">Chưa có nhân vật</option>';const selected=list.find(ch=>ch.id===String(preferredId))||list[0];speaker.value=selected?.id||'';character.value=selected?.id||''}
 function syncExpressionOptions(characterId,preferred=''){const folder=characterAssetFolder(characterId),select=$('expression'),files=(expressionFilesByFolder[String(folder||'')]||[]).slice(),names=files.map(path=>path.split('/').pop().replace(/\.webm$/i,'')),current=normalizeExpression(preferred||select.value),fallback=names.includes(current)?current:(names[0]||'');select.innerHTML=names.map(name=>'<option value="'+safeText(name)+'">'+safeText(name)+'</option>').join('')||'<option value="">Chưa có WEBM trong thư mục</option>';select.value=fallback;return fallback}
-function syncLineCharacterFromSpeaker(){const line=getCurrentLine(),ch=activeCharacterList().find(item=>item.id===$('speaker').value);if(!line||!ch)return;const oldFolder=characterAssetFolder(line.speakerId||line.characterAsset),semantic=line.sourceFrame?.expression_id||semanticFromExpression(oldFolder,line.expression);line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.id;if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.nhan_vat=ch.id;$('character').value=ch.id;const preferred=resolveSemanticExpression(ch.folder,semantic);line.expression=syncExpressionOptions(ch.id,preferred);if(line.sourceFrame&&typeof line.sourceFrame==='object'){line.sourceFrame.expression_id=semanticFromExpression(ch.folder,line.expression);delete line.sourceFrame.bieu_cam}applyLineEffects(line);renderLineList();updateAssets()}
+function syncLineCharacterFromSpeaker(){const line=getCurrentLine(),ch=activeCharacterList().find(item=>item.id===$('speaker').value);if(!line||!ch)return;const oldFolder=characterAssetFolder(line.speakerId||line.characterAsset),semantic=line.sourceFrame?.expression_id||semanticFromExpression(oldFolder,line.expression);line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.id;if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.nhan_vat=ch.id;$('character').value=ch.id;const preferred=resolveSemanticExpression(ch.folder,semantic);line.expression=syncExpressionOptions(ch.id,preferred);if(line.sourceFrame&&typeof line.sourceFrame==='object')delete line.sourceFrame.bieu_camapplyLineEffects(line);renderLineList();updateAssets()}
 function syncLineSpeakerFromCharacter(){const line=getCurrentLine(),ch=activeCharacterList().find(item=>item.id===$('character').value);if(!line||!ch)return;const oldFolder=characterAssetFolder(line.speakerId||line.characterAsset),semantic=line.sourceFrame?.expression_id||semanticFromExpression(oldFolder,line.expression);$('speaker').value=ch.id;line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.id;if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.nhan_vat=ch.id;const preferred=resolveSemanticExpression(ch.folder,semantic);line.expression=syncExpressionOptions(ch.id,preferred);if(line.sourceFrame&&typeof line.sourceFrame==='object'){line.sourceFrame.expression_id=semanticFromExpression(ch.folder,line.expression);delete line.sourceFrame.bieu_cam}renderLineList()}
 function profileFromJsonVoice(value){
  if(!value)return null;
@@ -1674,10 +1674,10 @@ function buildEditedStoryOutput(){
   if(Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))frame.anh_hieu_ung=sceneEffects[0]?.path.split('/').pop().replace(/\.[^.]+$/,'')||'';
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
-  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}});
+  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}});
   else delete frame.nhan_vat_hien_thi;
   frame.noi_dung=String(line.text??'');
-  const expression=String(line.expression||'').trim();if(expression)frame.expression_id=semanticFromExpression(characterAssetFolder(characterId),expression);delete frame.bieu_cam;
+  const expression=String(line.expression||'').trim();if(expression&&!frame.expression_id)frame.expression_id=semanticFromExpression(characterAssetFolder(characterId),expression);delete frame.bieu_cam;
   const bg=String(line.background||scene.visual?.background||'').trim();
   if(bg){if(bg!==lastBackground)frame.anh_nen=bg;else if(Object.prototype.hasOwnProperty.call(frame,'anh_nen'))frame.anh_nen=bg;lastBackground=bg}
   if(line.speaker?.trim())frame.ten_hien_thi=line.speaker.trim();
@@ -1769,7 +1769,7 @@ function saveCurrentLine(){
  const oldKey=line.cacheKey;
  line.speaker=activeCharacterList().find(ch=>ch.id===$('speaker').value)?.name||$('speaker').value.trim()||'Nhân vật';
  line.text=$('dialogue').value;
- line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;if(line.sourceFrame&&typeof line.sourceFrame==='object'){line.sourceFrame.expression_id=semanticFromExpression(characterAssetFolder($('character').value),line.expression);delete line.sourceFrame.bieu_cam}
+ line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;if(line.sourceFrame&&typeof line.sourceFrame==='object')delete line.sourceFrame.bieu_cam
  line.visibleCharacters=readVisibleCharactersFromEditor();
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
@@ -1778,12 +1778,12 @@ function saveCurrentLine(){
 function saveCurrentScene(){const sc=getCurrentScene();if(sc){const effects=normalizeSceneEffects(sc.visual?.sceneEffects||[]);sc.visual={...captureVisual(),sceneEffects:effects};sc.isFlashback=!!$('scene-flashback')?.checked;sc.lines.forEach(line=>{line.isFlashback=sc.isFlashback;if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.hieu_ung_canh=effects.map(x=>({...x}))})}const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
  if(!line)return;
- if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>{const folder=characterAssetFolder(item.id),expression=resolveSemanticExpression(folder,item.expression_id);return {id:String(item.id),bieu_cam:expression,x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}});
+ if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>{const folder=characterAssetFolder(item.id),expression=resolveSemanticExpression(folder,item.expression_id);return {id:String(item.id),expression_id:item.expression_id||{},bieu_cam:expression,x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}});
  const list=activeCharacterList(),ch=list.find(item=>item.id===String(line.speakerId||line.sourceFrame?.nhan_vat||''))||list.find(item=>normalizeCharacterName(item.name)===normalizeCharacterName(line.speaker));
  if(ch){$('character').value=ch.id;$('speaker').value=ch.id;line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.id}
  const preferred=resolveSemanticExpression(characterAssetFolder($('character').value),line.sourceFrame?.expression_id)||line.expression||'';
  line.expression=syncExpressionOptions($('character').value,preferred);
- if(line.sourceFrame&&typeof line.sourceFrame==='object'&&line.expression){line.sourceFrame.expression_id=semanticFromExpression(characterAssetFolder($('character').value),line.expression);delete line.sourceFrame.bieu_cam}
+ if(line.sourceFrame&&typeof line.sourceFrame==='object')delete line.sourceFrame.bieu_cam
  if(line.background&&Array.from($('background').options).some(o=>o.value===line.background))$('background').value=line.background;
  $('dialogue').value=line.text||'';$('voice-profile').value=line.profileId||'';$('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
  const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};fillVoice();
@@ -1858,9 +1858,10 @@ function renderVisibleCharacters(line=getCurrentLine()){
  host.querySelectorAll('[data-visible-index]').forEach(card=>renderWebmPickerResults(card,Number(card.dataset.visibleIndex),items[Number(card.dataset.visibleIndex)]));
 }
 function readVisibleCharactersFromEditor(){
+ const previous=Array.isArray(getCurrentLine()?.visibleCharacters)?getCurrentLine().visibleCharacters:[];
  return Array.from($('visible-character-list')?.querySelectorAll('[data-visible-index]')||[]).map((card,index)=>{
-  const get=name=>card.querySelector('[data-visible-field="'+name+'"]')?.value;
-  return {id:String(get('id')||''),bieu_cam:String(get('bieu_cam')||''),x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:index+1};
+  const get=name=>card.querySelector('[data-visible-field="'+name+'"]')?.value,id=String(get('id')||''),bieu_cam=String(get('bieu_cam')||''),old=previous.find(x=>String(x.id)===id),same=old&&normalizeExpression(old.bieu_cam)===normalizeExpression(bieu_cam),expression_id=same?old.expression_id:semanticFromExpression(characterAssetFolder(id),bieu_cam);
+  return {id,bieu_cam,expression_id:expression_id||{},x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:index+1};
  }).filter(item=>item.id);
 }
 $('visible-character-add').addEventListener('click',()=>{
@@ -1871,7 +1872,7 @@ $('visible-character-add').addEventListener('click',()=>{
  if(!line.visibleCharacters.length&&speaker)line.visibleCharacters.push({id:speaker.id,bieu_cam:line.expression||line.sourceFrame?.bieu_cam||'',x:30,y:100,scale:.72,z_index:1});
  const ch=list.find(item=>item.id===id);if(!ch||line.visibleCharacters.some(item=>String(item.id)===id))return;
  const files=expressionFilesByFolder[String(ch.folder)]||[],first=files[0]?.split('/').pop().replace(/\\.webm$/i,'')||'';
- line.visibleCharacters.push({id:ch.id,bieu_cam:first,x:70,y:100,scale:.72,z_index:line.visibleCharacters.length+1});
+ line.visibleCharacters.push({id:ch.id,bieu_cam:first,expression_id:semanticFromExpression(ch.folder,first),x:70,y:100,scale:.72,z_index:line.visibleCharacters.length+1});
  renderVisibleCharacters(line);updateAssets();
 });
 $('visible-character-list').addEventListener('input',e=>{
@@ -1896,14 +1897,14 @@ $('visible-character-list').addEventListener('change',e=>{
   if(!e.target.checked){e.target.checked=true;return}
   card.querySelectorAll('[data-webm-pick]').forEach(cb=>{cb.checked=cb===e.target});
   if(!line.visibleCharacters?.[index])return;
-  line.visibleCharacters[index].bieu_cam=e.target.value;
+  line.visibleCharacters[index].bieu_cam=e.target.value;line.visibleCharacters[index].expression_id=semanticFromExpression(characterAssetFolder(line.visibleCharacters[index].id),e.target.value);
   const expression=card.querySelector('[data-visible-field="bieu_cam"]');if(expression)expression.value=e.target.value;
   updateAssets();return;
  }
  if(field==='id'){
   const ch=activeCharacterList().find(item=>item.id===e.target.value);if(!ch)return;
   const files=expressionFilesByFolder[String(ch.folder)]||[];
-  line.visibleCharacters[index]={...line.visibleCharacters[index],id:ch.id,bieu_cam:files[0]?.split('/').pop().replace(/\\.webm$/i,'')||'',z_index:index+1};
+  const old=line.visibleCharacters[index],semantic=old.expression_id||semanticFromExpression(characterAssetFolder(old.id),old.bieu_cam),file=resolveSemanticExpression(ch.folder,semantic);line.visibleCharacters[index]={...old,id:ch.id,expression_id:semantic,bieu_cam:file,z_index:index+1};
   renderVisibleCharacters(line);
  }else{
   line.visibleCharacters[index][field]=['x','y','scale'].includes(field)?Number(e.target.value):e.target.value;
