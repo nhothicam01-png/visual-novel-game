@@ -297,7 +297,7 @@ const backgrounds=[
  ['render.mp4','Video nền render.mp4']
 ];
 let bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
-let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null;
+let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null;
 const speechAudioSources=new WeakMap();
 let piperVoices=[];
 let previewAudio={bgm:null,tts:null,sfx:null};
@@ -621,29 +621,30 @@ function drawFrame(elapsed,st){
 }
 function drawDialogue(w,h){
  if($('show-dialogue').checked&&$('dialogue').value.trim()){
-   const text=$('dialogue').value.trim(),speakerSelect=$('speaker'),line=getCurrentLine(),speakerId=String(line?.speakerId||line?.sourceFrame?.nhan_vat||speakerSelect?.value||''),character=activeCharacterList().find(ch=>String(ch.id)===speakerId),selectedName=String(speakerSelect?.selectedOptions?.[0]?.textContent||'').trim(),name=String(line?.speaker||character?.name||selectedName||'').trim();
-  const mode=$('dialogue-width-mode')?.value||'percent';
-  const pad=w*.018,fontSize=Math.max(24,Math.round(w*.022));
-  const percent=Number($('dialogue-width')?.value||75)/100;
-  const maxW=mode==='fit'?w*.88:w*percent;
+  const text=$('dialogue').value.trim(),speakerSelect=$('speaker'),line=getCurrentLine(),speakerId=String(line?.speakerId||line?.sourceFrame?.nhan_vat||speakerSelect?.value||''),character=activeCharacterList().find(ch=>String(ch.id)===speakerId),selectedName=String(speakerSelect?.selectedOptions?.[0]?.textContent||'').trim(),name=String(line?.speaker||character?.name||selectedName||'').trim();
+  const mode=$('dialogue-width-mode')?.value||'percent',pad=w*.018,fontSize=Math.max(24,Math.round(w*.022)),percent=Number($('dialogue-width')?.value||75)/100,maxW=mode==='fit'?w*.88:w*percent;
   ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';
-  const lines=wrapText(text,maxW-pad*2),lineH=fontSize*1.28;
-  const measured=Math.max(0,...lines.map(line=>ctx.measureText(line).width));
-  const boxW=mode==='fit'?Math.min(w*.92,measured+pad*2):maxW;
-  const boxX=(w-boxW)/2;
-  const nameH=$('show-speaker').checked&&name?fontSize*1.05:0;
-  const topPad=pad*.42,bottomPad=pad*.42;
-  const boxH=topPad+nameH+lines.length*lineH+bottomPad;
-  const boxY=h-boxH-h*.025;
+  const lines=wrapText(text,maxW-pad*2),lineH=fontSize*1.28,measured=Math.max(0,...lines.map(line=>ctx.measureText(line).width));
+  const boxW=mode==='fit'?Math.min(w*.92,measured+pad*2):maxW,boxX=(w-boxW)/2,nameH=$('show-speaker').checked&&name?fontSize*1.05:0,topPad=pad*.42,bottomPad=pad*.42;
+  const boxH=topPad+nameH+lines.length*lineH+bottomPad,bounceRoom=fontSize*.14,boxY=Math.max(0,h-boxH-h*.025-bounceRoom);
   ctx.fillStyle='rgba(5,8,17,.72)';roundRect(boxX,boxY,boxW,boxH,Math.max(12,w*.009));ctx.fill();
   ctx.textAlign='center';ctx.textBaseline='top';
   if(nameH){ctx.font='700 '+Math.round(fontSize*.75)+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#c4b5fd';ctx.fillText(name,w/2,boxY+topPad)}
   ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#fff';ctx.shadowColor='#000';ctx.shadowBlur=5;
-  lines.forEach((line,i)=>ctx.fillText(line,w/2,boxY+topPad+nameH+i*lineH,boxW-pad));
+  let searchFrom=0;
+  lines.forEach((line,lineIndex)=>{
+   let lineStart=text.indexOf(line,searchFrom);if(lineStart<0)lineStart=searchFrom;searchFrom=lineStart+line.length;
+   const chars=Array.from(line),widths=chars.map(ch=>ctx.measureText(ch).width),totalWidth=widths.reduce((sum,value)=>sum+value,0);let x=(w-totalWidth)/2;
+   chars.forEach((ch,charIndex)=>{
+    const absoluteIndex=lineStart+charIndex,active=!!speakingCharacterId&&absoluteIndex===speechTextIndex&&!/\\s/.test(ch);
+    const amp=active?fontSize*.14*Math.max(.25,Math.min(1,speechMotionLevel||.65)):0,direction=absoluteIndex%2===0?1:-1;
+    ctx.textAlign='left';ctx.fillText(ch,x,boxY+topPad+nameH+lineIndex*lineH+direction*amp);x+=widths[charIndex];
+   });
+  });
   ctx.shadowBlur=0;
  }
 }
-// [TỐI ƯU] Vẽ hộp thoại (đo chữ, bo góc, đổ bóng) đúng một lần rồi dán lại mỗi khung hình.
+ // [TỐI ƯU] Vẽ hộp thoại (đo chữ, bo góc, đổ bóng) đúng một lần rồi dán lại mỗi khung hình.
 function buildDialogueLayer(w,h){
  const layer=document.createElement('canvas');layer.width=w;layer.height=h;
  const saved=ctx;ctx=layer.getContext('2d');
@@ -656,7 +657,8 @@ function animate(){
  if(recording){raf=requestAnimationFrame(animate);return}
  // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
  const t=previewing?Math.max(0,((previewPaused?previewPauseStartedAt:performance.now())-previewStartedAt)/1000):0;
- if(speechAnalyser&&speechAnalyserData&&speakingCharacterId&&!previewPaused){
+ if(speechAudioElement&&speakingCharacterId&&!previewPaused&&Number.isFinite(speechAudioElement.duration)&&speechAudioElement.duration>0){const spokenText=($('dialogue').value||'').trim();speechTextIndex=Math.min(Math.max(0,spokenText.length-1),Math.floor(speechAudioElement.currentTime/speechAudioElement.duration*spokenText.length));}
+  if(speechAnalyser&&speechAnalyserData&&speakingCharacterId&&!previewPaused){
   speechAnalyser.getByteTimeDomainData(speechAnalyserData);
   let energy=0;for(let i=0;i<speechAnalyserData.length;i++){const v=(speechAnalyserData[i]-128)/128;energy+=v*v}
   const rms=Math.sqrt(energy/speechAnalyserData.length);
@@ -701,7 +703,7 @@ async function waitWhilePaused(run){
  return previewing&&run===previewRunId;
 }
 function stopPreview(){
- previewRunId++;previewing=false;previewPaused=false;previewPauseStartedAt=0;previewLineBgmName='';previewLineSfxName='';speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechMotionLevel=0;
+ previewRunId++;previewing=false;previewPaused=false;previewPauseStartedAt=0;previewLineBgmName='';previewLineSfxName='';speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;
  if(window.speechSynthesis)window.speechSynthesis.cancel();
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
@@ -776,7 +778,7 @@ function buildBrowserUtterance(state){
  state.utterance=utterance;previewSpeech=utterance;
  utterance.onboundary=e=>{
   if(browserSpeechState!==state||state.paused||state.utterance!==utterance)return;
-  if(Number.isFinite(e.charIndex))state.offset=Math.min(state.text.length,baseOffset+e.charIndex);
+  if(Number.isFinite(e.charIndex)){state.offset=Math.min(state.text.length,baseOffset+e.charIndex);speechTextIndex=state.offset;}
   speechMotionLevel=.9;
  };
  utterance.onend=()=>{
@@ -861,13 +863,13 @@ async function playPreview(){
   await loadSourceLineForPlayback(item);if(!await waitWhilePaused(run))break;
   const line=getCurrentLine();await playLineAudio(line);
   const text=$('dialogue').value.trim();
-  speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
+  speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';speechTextIndex=0;speechAudioElement=null;
   try{
    if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
-   else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;attachSpeechAnalyser(audio);
+   else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;speechAudioElement=audio;attachSpeechAnalyser(audio);
     await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
    }
-  }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechMotionLevel=0;}
+  }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;}
   const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
   let remaining=pause*1000;
   while(previewing&&run===previewRunId&&remaining>0){
