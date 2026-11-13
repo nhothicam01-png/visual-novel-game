@@ -1,26 +1,17 @@
-# Chạy Visual Novel Studio trên máy tính
+# Chạy Visual Novel Studio từ ZIP trên Windows
 
-## Yêu cầu
-- Clone repository bằng GitHub Desktop hoặc lệnh git clone. Không dùng Download ZIP nếu muốn hai nút đồng bộ hoạt động.
-- Cài Node.js LTS và Git for Windows.
-- Mở thư mục repository đã clone.
+## Không cần cài thêm phần mềm
+- Tải ZIP của repository và giải nén toàn bộ vào một thư mục.
+- Không mở trực tiếp `index.html`.
+- Nhấp đúp `start-local.bat`. File này dùng Windows PowerShell có sẵn để chạy máy chủ local; không cần Node.js, Git hay GitHub Desktop.
+- Trình duyệt tự mở `http://127.0.0.1:4173/`. Giữ cửa sổ PowerShell mở trong lúc dùng.
+- Đóng cửa sổ PowerShell để dừng máy chủ.
 
-## Khởi động
-1. Nhấp đúp start-local.bat.
-2. Trình duyệt mở http://127.0.0.1:4173/.
-3. Giữ cửa sổ máy chủ đang chạy trong lúc sử dụng.
-4. Để dừng, đóng cửa sổ Visual Novel Studio Local.
+## Dùng offline
+Trang, JSON, hình ảnh, WEBM, âm thanh và các file có sẵn trong ZIP được đọc từ ổ đĩa. Các tính năng cần Gemini API, dịch vụ trực tuyến, tải model/giọng mới hoặc truy cập GitHub vẫn cần Internet.
 
-## Đồng bộ
-- Máy → GitHub: đưa toàn bộ thay đổi trong thư mục repository vào một commit rồi git push.
-- GitHub → Máy: chỉ git pull --ff-only khi thư mục local sạch. Nếu có thay đổi chưa commit, hệ thống từ chối tải về để tránh ghi đè.
-- Nếu push/pull báo lỗi xác thực, đăng nhập GitHub Desktop hoặc cấu hình Git Credential Manager rồi thử lại.
-- Nếu GitHub không truy cập được, vẫn có thể mở và làm việc với dữ liệu hiện có trên máy; chỉ thao tác đồng bộ bị tạm ngưng.
-
-## Phạm vi offline
-Các trang, JSON, hình ảnh, WEBM, âm thanh và thao tác chỉnh sửa/lưu file trong repository được phục vụ trực tiếp từ máy. Các chức năng cần dịch vụ bên ngoài như Gemini, dịch máy trực tuyến, Edge TTS trực tuyến hoặc tải model/giọng mới vẫn cần Internet. Tài nguyên/model đã được tải và cache trước đó có thể còn dùng được tùy trình duyệt.
-
-## Lưu ý
-- Không xóa thư mục .git; thư mục này chứa lịch sử và thông tin remote để đồng bộ.
-- Nút Máy → GitHub sẽ commit tất cả thay đổi trong repository, kể cả file mới/xóa. Kiểm tra file lớn hoặc file tạm trước khi bấm.
-- Nút GitHub → Máy không tự merge khi hai bên lệch nhánh; chỉ fast-forward để tránh tự ghi đè. Khi có xung đột, xử lý bằng GitHub Desktop.
+## Dữ liệu và đồng bộ
+- Các thay đổi lưu qua công cụ sẽ được ghi vào thư mục đã giải nén.
+- Token GitHub được lưu trong localStorage của trình duyệt trên máy này; chỉ dùng token fine-grained giới hạn đúng repository với quyền Contents: Read and write.
+- Khi mất Internet, bạn vẫn làm việc với dữ liệu trong máy; đồng bộ GitHub cần kết nối Internet.
+- Không xóa hoặc di chuyển các thư mục tài nguyên khỏi thư mục dự án.
