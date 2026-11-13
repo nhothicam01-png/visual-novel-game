@@ -297,7 +297,8 @@ const backgrounds=[
  ['render.mp4','Video nền render.mp4']
 ];
 let bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
-let speakingCharacterId='';
+let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null;
+const speechAudioSources=new WeakMap();
 let piperVoices=[];
 let previewAudio={bgm:null,tts:null,sfx:null};
 let recordingTimer=null;
@@ -571,7 +572,7 @@ function drawFrame(elapsed,st){
   const requestedScale=Number(spec?.scale),scale=Number.isFinite(requestedScale)?Math.max(.1,Math.min(2.5,requestedScale)):(charLayerVideos.length>1?.72:1);
   ctx.save();let alpha=1;
   const isCurrentSpeaker=!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
-  if(isCurrentSpeaker){const speechBob=(.0045+Math.abs(Math.sin(elapsed*17))*0.0045)*h;ctx.translate(0,-speechBob)}
+  if(isCurrentSpeaker&&speechMotionLevel>.08){const speechBob=speechMotionLevel*h*.012;ctx.translate(0,-speechBob)}
   if(charFx.includes('char-bob'))ctx.translate(0,Math.sin(elapsed*5)*h*.008*strength);
   if(charFx.includes('char-sway')){ctx.translate(x,y);ctx.rotate(Math.sin(elapsed*1.8)*.018*strength);ctx.translate(-x,-y)}
   if(charFx.includes('char-shake')&&elapsed<2)ctx.translate(Math.sin(elapsed*42)*w*.009*strength,0);
@@ -655,6 +656,13 @@ function animate(){
  if(recording){raf=requestAnimationFrame(animate);return}
  // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
  const t=previewing?Math.max(0,((previewPaused?previewPauseStartedAt:performance.now())-previewStartedAt)/1000):0;
+ if(speechAnalyser&&speechAnalyserData&&speakingCharacterId&&!previewPaused){
+  speechAnalyser.getByteTimeDomainData(speechAnalyserData);
+  let energy=0;for(let i=0;i<speechAnalyserData.length;i++){const v=(speechAnalyserData[i]-128)/128;energy+=v*v}
+  const rms=Math.sqrt(energy/speechAnalyserData.length);
+  speechMotionLevel=Math.max(0,Math.min(1,(rms-.012)*18));
+ }else if(!speechAnalyser||!speakingCharacterId||previewPaused){speechMotionLevel*=.72;if(speechMotionLevel<.03)speechMotionLevel=0}
+
  // Luôn vẽ preview lên canvas xem trước, không ghi đè canvas xuất video.
  const activeCanvas=canvas,activeCtx=ctx;canvas=previewCanvas;ctx=previewCtx;
  try{drawFrame(t)}finally{canvas=activeCanvas;ctx=activeCtx}
@@ -693,7 +701,7 @@ async function waitWhilePaused(run){
  return previewing&&run===previewRunId;
 }
 function stopPreview(){
- previewRunId++;previewing=false;previewPaused=false;previewPauseStartedAt=0;previewLineBgmName='';previewLineSfxName='';speakingCharacterId='';
+ previewRunId++;previewing=false;previewPaused=false;previewPauseStartedAt=0;previewLineBgmName='';previewLineSfxName='';speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechMotionLevel=0;
  if(window.speechSynthesis)window.speechSynthesis.cancel();
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
@@ -716,6 +724,18 @@ async function stopAndResetPreview(){
  if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
  preloadAdjacentAssets(0);
  setTtsStatus('Đã dừng và đặt lại tiến trình về thoại đầu tiên.');
+}
+function attachSpeechAnalyser(audio){
+ if(!audio||!window.AudioContext&&!window.webkitAudioContext)return;
+ try{
+  const AudioCtx=window.AudioContext||window.webkitAudioContext;
+  if(!speechAudioContext)speechAudioContext=new AudioCtx();
+  let source=speechAudioSources.get(audio);
+  if(!source){source=speechAudioContext.createMediaElementSource(audio);source.connect(speechAudioContext.destination);speechAudioSources.set(audio,source)}
+  speechAnalyser=speechAudioContext.createAnalyser();speechAnalyser.fftSize=256;speechAnalyser.smoothingTimeConstant=.72;
+  speechAnalyserData=new Uint8Array(speechAnalyser.fftSize);source.connect(speechAnalyser);
+  speechAudioContext.resume().catch(()=>{});
+ }catch(err){console.warn('Không thể phân tích nhịp âm thanh thoại:',err);speechAnalyser=null;speechAnalyserData=null}
 }
 function audioElement(url,loop,volume){
  const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;return a;
@@ -757,6 +777,7 @@ function buildBrowserUtterance(state){
  utterance.onboundary=e=>{
   if(browserSpeechState!==state||state.paused||state.utterance!==utterance)return;
   if(Number.isFinite(e.charIndex))state.offset=Math.min(state.text.length,baseOffset+e.charIndex);
+  speechMotionLevel=.9;
  };
  utterance.onend=()=>{
   if(browserSpeechState!==state||state.paused||state.utterance!==utterance)return;
@@ -843,10 +864,10 @@ async function playPreview(){
   speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
   try{
    if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
-   else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;
+   else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;attachSpeechAnalyser(audio);
     await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
    }
-  }finally{speakingCharacterId='';}
+  }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechMotionLevel=0;}
   const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
   let remaining=pause*1000;
   while(previewing&&run===previewRunId&&remaining>0){
