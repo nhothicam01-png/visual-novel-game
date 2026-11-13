@@ -1064,7 +1064,7 @@ async function edgeSynthOnce(text,lang,plan){
    // Edge TTS frame header length is a 16-bit big-endian value.
    const hl=new DataView(buf).getUint16(0,false);if(hl<=0||2+hl>buf.byteLength)return;
    const header=new TextDecoder().decode(new Uint8Array(buf,2,hl));
-   if(/(?:^|\\r\\n)Path:audio(?:\\r\\n|$)/i.test(header)){const payload=buf.slice(2+hl);if(payload.byteLength)chunks.push(payload);}
+   if(/(?:^|\r\n)Path:audio(?:\r\n|$)/i.test(header)){const payload=buf.slice(2+hl);if(payload.byteLength)chunks.push(payload);}
   };
   ws.onerror=()=>fin(new Error('Không thể bắt tay WebSocket với Edge TTS. Brave/Chrome Android có thể chặn kết nối trực tiếp; hãy thử Microsoft Edge.'));
   ws.onclose=()=>fin(ended?null:new Error('Edge TTS đóng kết nối sớm'));
