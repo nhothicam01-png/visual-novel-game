@@ -1,0 +1,5468 @@
+{
+  "phien_ban": 2,
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.5,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "2": {
+      "ten_hien_thi": "Mira",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "3": {
+      "ten_hien_thi": "Draco",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "4": {
+      "ten_hien_thi": "Lyra",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "5": {
+      "ten_hien_thi": "Valerius",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "6": {
+      "ten_hien_thi": "Cassian",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "Hầu gái": {
+      "ten_hien_thi": "Elena",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đêm nay, khu vườn sau dinh thự yên tĩnh đến lạ. Nếu bị phát hiện, cả hai chúng ta đều không có cơ hội giải thích.",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chàng lại đến muộn. Em đã nghĩ chàng đổi ý rồi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ta phải đợi lính tuần đi qua cổng phía bắc. Elena, ta không muốn nàng phải chờ trong sợ hãi thêm nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chàng từng hứa sẽ đưa em rời khỏi nơi này. Em không cần cung điện hay vàng bạc, chỉ cần một nơi không ai có quyền gọi em là tài sản.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ta sẽ giữ lời. Khi trăng tròn lần tới, chúng ta sẽ rời thành phố.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta đã chuẩn bị một căn nhà nhỏ bên kia con sông. Có giếng nước, một mảnh vườn và cánh cửa không khóa từ bên ngoài.",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chàng nói như thể tự do chỉ cách chúng ta vài bước chân.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta biết nó không dễ. Nhưng ta đã dành dụm tiền, tìm người đưa đường và mua giấy thông hành.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Vậy còn cha chàng? Valerius sẽ không để con trai mình bỏ đi cùng một nữ nô lệ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Đừng nhắc đến ông ta lúc này. Đêm nay, ta chỉ muốn được ở cạnh nàng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ta đã thấy Cassian đứng chờ nàng ở vườn sau. Một người hầu không nên có bí mật với người trong nhà chủ.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Thưa ngài, tôi chỉ mang nước đến khu vườn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ngươi tưởng ta không nhận ra ánh mắt của kẻ đang yêu sao? Tình cảm khiến nô lệ quên mất vị trí của mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi không làm ảnh hưởng đến công việc. Xin ngài cho tôi tiếp tục phục vụ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ta chưa quyết định sẽ làm gì. Nhưng từ giờ, Draco sẽ để mắt đến ngươi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Thưa chủ nhân, tôi đã theo dõi Elena ba đêm. Cô ta gặp một người đàn ông mặc áo choàng của gia tộc.",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi thấy mặt hắn chưa?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Chỉ thấy bóng lưng. Hắn biết lối đi trong dinh thự và có thể mở cổng phụ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Vậy không phải một kẻ lang thang. Hãy tìm tên hắn, nhưng đừng để Elena biết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Rõ. Tôi sẽ kiểm tra sổ ra vào và hỏi lính gác.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Con đã quên mình là ai rồi sao, Cassian? Một người thừa kế không thể đem danh dự gia tộc đổi lấy một nô lệ.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Con không muốn nghe cha nói về danh dự. Cha đã biến nó thành cái cớ để chà đạp bất cứ ai.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ta cho con mọi thứ: tên tuổi, tiền bạc, quyền lực. Ta chỉ yêu cầu con đừng phá hỏng tương lai của mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Elena không phải món đồ để cha đem ra mặc cả. Con yêu nàng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Vậy con sẽ phải học rằng tình yêu không thể đứng cao hơn dòng máu và quyền thừa kế.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Cha ta đã biết chuyện của chúng ta. Ta sẽ đưa nàng đi sớm hơn dự định.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chàng có chắc không? Nếu ông ấy biết, ông ấy sẽ trừng phạt cả hai.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta sẽ không để ông ấy chạm vào nàng. Ta có thể lấy tiền và giấy thông hành ngay trong đêm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Em không muốn chàng vì em mà mất tất cả.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta đã có tất cả mà vẫn không được chọn người mình yêu. Nếu đó là tất cả, ta không cần nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Draco, hãy chuẩn bị một cuộc áp giải bí mật. Ta muốn kẻ đã dụ dỗ con trai ta biến mất trước bình minh.",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ngài muốn bắt hắn hay giết hắn?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ta muốn mọi dấu vết dẫn đến hắn đều biến mất. Không có xác nhận, không có nhân chứng, không có câu hỏi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Còn Elena?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Giữ cô ta lại. Một người đang yêu sẽ tự tìm đến nơi người mình yêu biến mất.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chàng bảo em đến cổng phía đông, nhưng sao đèn trong sân lại tắt hết?",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Có người đang đến. Elena, đừng bước ra khỏi bóng tối.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đó là tiếng lính gác! Cassian, chạy đi!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đừng quay lại tìm ta. Hãy đi theo lối qua kho củi, rồi đến bờ sông.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chàng đã hứa sẽ cùng em đi. Em không bỏ chàng lại!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi đã thấy đủ rồi, Elena. Người đàn ông kia bị bắt trong lúc chống lệnh áp giải.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Không! Các người đã làm gì chàng ấy?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Hắn rút kiếm trước. Ta chỉ làm đúng mệnh lệnh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Vậy hãy để tôi gặp chàng. Tôi cần biết chàng còn sống hay không.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi không có quyền đòi hỏi. Hãy nhìn thứ hắn để lại rồi trở về làm việc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chiếc trâm bạc này là của Cassian. Máu trên đó vẫn còn mới.",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Valerius nói hắn đã chết. Có lẽ ngươi nên thôi tìm kiếm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Không thể nào. Chàng đã hẹn sẽ gặp tôi ở bờ sông.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ngươi nên biết điều gì sẽ xảy ra với kẻ không chấp nhận sự thật.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Nếu họ đã giết chàng, tôi sẽ khiến kẻ ra lệnh phải trả giá.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC011",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Em đã đợi đến sáng. Không có ai trở về, không có lời nhắn, chỉ có chiếc trâm dính máu.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC011",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ta không biết người ấy đã chết thật hay chưa. Nhưng Valerius muốn ngươi tin điều đó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC011",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi không còn gì để mất. Tôi sẽ tìm bằng chứng và đưa ông ta ra trước hội đồng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC011",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đừng để đau buồn khiến ngươi hành động hấp tấp. Một mình ngươi không thể đối đầu cả dinh thự.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC011",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi sẽ bắt đầu từ sổ áp giải. Ai ký lệnh đưa Cassian đi, người đó sẽ dẫn tôi đến sự thật.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC012",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Ta nghe nói cô đang tìm một người biến mất trong đêm. Người của Valerius đã trả rất nhiều tiền để mua sự im lặng.",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC012",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Tôi cần biết ai nhận tiền và nơi họ đưa người đi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC012",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Ta có thể tìm được sổ giao dịch, nhưng đổi lại cô phải mang cho ta một bản sao lệnh áp giải.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC012",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Tôi chưa có nó. Tôi chỉ biết Draco đã điều lính đến cổng đông.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC012",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Vậy đừng tìm Draco trước. Hãy tìm dấu niêm trên những giấy tờ hắn buộc phải nộp lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC013",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Sổ trực đêm ghi một chuyến xe rời dinh thự lúc canh ba. Nhưng tên người bị áp giải đã bị cạo đi.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC013",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ngươi biết đọc những dòng này từ khi nào?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC013",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Thalia từng dạy tôi nhận mặt chữ. Tôi chỉ cần ghép ngày tháng với dấu niêm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC013",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Vậy ngươi cũng biết dòng chữ bên dưới là lệnh chuyển một tù nhân sang khu nhà phía tây.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC013",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Nhưng không có xác nhận tử vong. Có nghĩa là họ chưa chứng minh Cassian đã chết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC014",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi đang tìm thứ gì trong kho hồ sơ?",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC014",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Tôi được giao mang giấy đến phòng quản sự.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC014",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi nói dối. Không ai giao cho ngươi chìa khóa này.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC014",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Tôi chỉ muốn biết người bị áp giải đêm đó được đưa đi đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC014",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi nên ngừng đặt câu hỏi nếu còn muốn sống.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC015",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đây là hồ sơ gia tộc Valerius. Có hai người thừa kế được ghi tên, nhưng một cái tên đã bị xóa.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC015",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đừng đọc tiếp nếu ngươi chưa sẵn sàng đối diện điều mình sắp biết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC015",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ngày sinh, dấu xác nhận của gia tộc... Cassian không phải người ngoài. Chàng là con trai Valerius.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC015",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Vậy người đàn ông ngươi yêu chính là người thừa kế của kẻ ngươi muốn trả thù.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC015",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Không... chàng chưa từng nói với tôi. Vì sao chàng phải giấu điều đó?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC016",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Trong hồ sơ còn có lệnh thay xác. Một tù nhân vô danh được ghi là chết trong cuộc áp giải.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC016",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Vậy chiếc trâm và vết máu chỉ là đạo cụ cho một màn kịch.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC016",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chữ ký xác nhận là của Cassian. Chàng đã biết kế hoạch từ đầu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC016",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ngươi vẫn muốn tin hắn bị ép buộc sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC016",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi không biết mình còn tin được điều gì nữa. Nhưng tôi phải nghe chính miệng chàng giải thích.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC017",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Elena. Nàng vẫn luôn thông minh hơn ta tưởng.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC017",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chàng còn sống... Tất cả chuyện đó là giả sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC017",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta phải biến mất để cha tin rằng nàng sẽ tìm cách trả thù. Ta cần biết nàng đã lấy được hồ sơ nào.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC017",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chàng đã để em khóc bên chiếc trâm đẫm máu. Chàng biết em tưởng chàng chết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC017",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta biết. Nhưng ta không nghĩ nàng sẽ đi xa đến mức tìm ra thân phận của ta.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC018",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chàng là con trai Valerius. Chàng biết cha mình giết người, biết ông ta bắt nô lệ, vậy mà chàng vẫn giúp ông ta?",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC018",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ta đã sống trong cái bóng của cha. Nếu chống lại ông ấy, ta sẽ mất quyền thừa kế và cả mạng sống.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC018",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Vậy tình yêu chàng nói với em là gì? Một chiếc bẫy để xem em sẽ làm gì khi tưởng chàng chết?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC018",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ban đầu ta muốn bảo vệ nàng. Sau đó ta nhận ra nàng đã nắm trong tay những thứ có thể hủy hoại gia tộc ta.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC018",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chàng đã chọn gia tộc thay vì chọn sự thật. Từ giờ đừng gọi tên em như thể chàng còn quyền đó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC019",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Elena, đặt hồ sơ xuống và đưa hai tay ra trước mặt.",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC019",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Chính các người đã dàn dựng cái chết. Tôi có bằng chứng Cassian còn sống.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC019",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi không hiểu mình đang đứng trước ai. Cả cha lẫn con đều có quyền khiến ngươi im lặng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC019",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Tôi sẽ đưa chuyện này ra hội đồng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC019",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Không có hội đồng nào nghe lời một nô lệ nếu Valerius không cho phép.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC020",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ngươi đã nhìn thấy hồ sơ gia tộc và biết con trai ta còn sống. Đó là hai bí mật không thể để lọt ra ngoài.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC020",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Tôi không sợ ông nữa. Tôi biết ông đã dựng nên cái chết giả để bịt miệng tôi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC020",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ngươi nhầm. Ta dựng nó để xem con trai ta có đủ quyết đoán bảo vệ gia tộc hay không.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC020",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ông biến tình yêu của con trai mình thành một cuộc thử nghiệm tàn nhẫn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC020",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ta chỉ quan tâm kết quả. Hãy nói bản sao hồ sơ đang ở đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC021",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi sẽ không nói. Những gì tôi biết đã được gửi đi.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC021",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ngươi nghĩ có người sẽ đến cứu sao? Không ai muốn chết vì một nô lệ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC021",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ông có thể khóa cửa, lấy đi thức ăn, nhưng không thể khiến sự thật biến mất.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC021",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ngươi sẽ được hỏi lại. Lần sau có thể không phải ta hỏi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC021",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi thà chết mà không phản bội những người đã giúp tôi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC022",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta đã xin cha cho nàng một cơ hội. Chỉ cần nàng nói nơi cất hồ sơ, mọi chuyện có thể kết thúc.",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC022",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chàng vẫn nói như thể đang ban ơn. Chính chàng đã biến mất rồi để em tin rằng mình mất người yêu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC022",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta không muốn nàng chết. Ta chỉ cần nàng hiểu rằng ta không thể để nàng phá hủy gia tộc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC022",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chàng muốn em đổi mạng sống của mình lấy quyền thừa kế của chàng?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC022",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta muốn nàng chọn điều dễ dàng. Nhưng nếu nàng cứ chống lại, cha ta sẽ không dừng lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC023",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ngươi đã có nhiều cơ hội khai ra. Ta sẽ không tiếp tục kiên nhẫn.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC023",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Tôi không có gì để nói với ông.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC023",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ngươi sẽ bị giữ trong căn phòng này cho đến khi nhớ ra nơi cất hồ sơ. Ta sẽ hỏi lại mỗi ngày.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC023",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ông đang sợ. Nếu không sợ, ông đã để tôi đứng trước hội đồng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC023",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ta không sợ một nô lệ. Ta chỉ không cho phép một nô lệ quyết định số phận gia tộc ta.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC024",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Cha đã hỏi rồi. Đến lượt ta.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC024",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chàng không cần giả vờ dịu dàng nữa. Em đã nhìn thấy con người thật của chàng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC024",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta đã từng yêu nàng. Nhưng tình yêu không thể đứng giữa ta và mọi thứ ta được sinh ra để thừa hưởng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC024",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Vậy chàng sẽ làm gì? Lặp lại lời cha, rồi gọi đó là lựa chọn của mình?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC024",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta sẽ khiến nàng hiểu rằng không ai có thể chống lại hai cha con ta mà không phải trả giá.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC025",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Hôm nay cha chàng hỏi tôi, ngày mai chàng lại hỏi. Hai người thay phiên nhau, như thể nỗi đau của tôi là một cuộc thi.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC025",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đừng dùng những lời đó. Nàng chỉ cần nói nơi cất bản sao.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC025",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi sẽ không nói. Mira không biết gì về chuyện này, và tôi sẽ không để các người tìm đến em ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC025",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Vậy hóa ra ngươi còn một người thân. Ta sẽ tìm cô ta nếu ngươi tiếp tục im lặng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC025",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đừng động đến em gái tôi. Nếu các người muốn trừng phạt ai, hãy trừng phạt tôi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC026",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ta không còn sức để đứng nữa. Nhưng ta vẫn nhớ từng lời hứa của Mira: dù có chuyện gì cũng phải sống.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC026",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Nói đi, Elena. Bản sao đang ở đâu?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC026",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi đã giấu nó ở nơi ông không thể tìm thấy bằng tiền hay lính canh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC026",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Ngươi nghĩ mình có thể thắng sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC026",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Tôi không cần thắng. Tôi chỉ cần sự thật sống lâu hơn tôi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC027",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Mira, nếu em nhận được lời nhắn này, hãy nhớ rằng chị đã chọn không giao em cho họ.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC027",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Đừng để nỗi đau biến em thành một người giống Valerius. Hãy tìm Lyra, cô ấy biết nơi chị gửi bằng chứng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC027",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Chị xin lỗi vì đã không thể tự mình trở về.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC027",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Em từng hỏi tự do là gì. Tự do là khi không ai có quyền buộc em phải quỳ xuống.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC027",
+      "hoi_tuong": false,
+      "nhan_vat": "Hầu gái",
+      "noi_dung": "Nếu chị không còn ở đó, hãy sống thay cả phần đời chị chưa kịp có.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "Hầu gái-60fps-1794543537080",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC028",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ngươi vẫn không chịu nói. Con trai ta đã mất kiên nhẫn, còn ta thì không còn lý do để giữ ngươi lại.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC028",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Tôi không còn gì để trao đổi với ông.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC028",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Vậy thì kết thúc ở đây. Ngươi đã tự chọn số phận của mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC028",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Cha, để con nói lần cuối. Elena, nàng chỉ cần nói một câu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC028",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Đừng gọi tên tôi. Tôi không còn là người chàng từng biết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC029",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Chị Elena? Em đã trở về. Sao căn phòng lại trống không?",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC029",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Ta rất tiếc, Mira. Chị cô đã không qua khỏi những ngày bị giam giữ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC029",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Không... chị ấy đã hứa sẽ chờ em.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC029",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Valerius đã thông báo rằng cô ấy chết vì bệnh. Nhưng người đưa thi thể về không dám nhìn vào mắt ta.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC029",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Ai đã làm chuyện này? Nói cho em biết tên họ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC030",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Chị cô đã để lại một lá thư và một bản ghi chép. Cô cần bình tĩnh trước khi đọc.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC030",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Trong thư chị chỉ nhắc đến bà. Chị nói bà biết nơi cất bằng chứng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC030",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Ta giữ bản sao sổ áp giải và danh sách người nhận tiền. Elena đã giao cho ta trước khi bị bắt.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC030",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Vậy chị em đã biết Cassian còn sống?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC030",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Đúng. Và cô cần biết thêm: hắn là con trai Valerius, kẻ đã cùng cha mình giam giữ chị cô.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC031",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em đã mất chị vì một người đàn ông mà chị từng yêu. Em không biết phải căm ghét hắn hay căm ghét chính mình vì đã không ở đó.",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC031",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Elena không muốn cô sống chỉ để căm ghét. Nhưng cô có quyền đòi lại sự thật.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC031",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em muốn họ phải nhìn vào điều họ đã làm. Không được phép gọi cái chết của chị là một cơn bệnh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC031",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Muốn làm được điều đó, cô cần bằng chứng, nhân chứng và một nơi mà Valerius không thể bịt miệng tất cả.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC031",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Vậy em sẽ lấy cả ba. Em không đến đây để xin họ thương hại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC032",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Đây là lệnh áp giải giả, chữ ký của Cassian và sổ chi tiền cho Draco. Từng dòng đều dẫn về cùng một đêm.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC032",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Ta còn giữ lời khai của người đã thay xác trong cuộc dàn dựng. Hắn đang trốn ở khu bến hàng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC032",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Chúng ta cần đưa hắn ra khỏi thành trước khi Draco tìm thấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC032",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em sẽ không để thêm ai chết vì giúp gia đình em.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC032",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Vậy hãy để ta lo đường đi. Cô lo việc khiến họ phải nói trước công chúng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC033",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ta biết cô đang tìm những hồ sơ của Elena. Hãy dừng lại trước khi ta phải bắt cô.",
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC033",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ông đã canh giữ căn phòng nơi chị tôi chết. Ông có thể nhìn thẳng vào tôi và nói rằng mình không biết gì sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC033",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ta làm theo lệnh. Trong dinh thự này, không ai được phép chống lại Valerius.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC033",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Vậy ông cũng là tù nhân của ông ta. Ông có thể tiếp tục cúi đầu, hoặc lần đầu tiên làm chứng cho điều đúng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC033",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ta có một bản ghi lệnh. Nếu đưa nó ra, ta sẽ mất tất cả.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC034",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Ông đã chọn im lặng suốt nhiều năm. Hôm nay ông có thể chọn nói thật.",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC034",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Ta sẽ giao bản ghi cho Lyra. Nhưng ta không thể đứng trước hội đồng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC034",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Không cần ông đứng cạnh em. Chỉ cần lời khai có dấu xác nhận và đúng thời điểm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC034",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Valerius sẽ nói ta bịa chuyện để thoát tội.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC034",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Vậy chúng ta sẽ đưa cả người thay xác và sổ tiền đến cùng một nơi. Hắn không thể phủ nhận tất cả.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC035",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Buổi yến tiệc tối nay có mặt các nguyên lão, thương nhân và quan chức đấu trường. Valerius sẽ không thể đuổi tất cả ra ngoài.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC035",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Em sẽ bước vào với tư cách người mang lời tố cáo.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC035",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Ta sẽ phân phát bản sao sổ giao dịch cho những người có mặt trước khi họ kịp thu giữ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC035",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Draco có thể chặn em ở cổng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC035",
+      "hoi_tuong": false,
+      "nhan_vat": "4",
+      "noi_dung": "Ta sẽ tạo một cuộc tranh chấp hàng hóa ở lối phía nam. Cô đi vào bằng cửa dành cho người phục vụ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC036",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta nghe nói em gái Elena đang tìm ta. Cô ta giống chị mình hơn ta tưởng.",
+      "anh_nen": "thu_vien.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC036",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ngài muốn tôi làm gì?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC036",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Tìm cô ta trước khi buổi yến tiệc bắt đầu. Lấy lại mọi giấy tờ và đừng để cô ta bước lên bục.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC036",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Nếu cô ta chống cự?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC036",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Đừng để cô ta chết trước mặt người khác. Ta muốn cha ta thấy ta có thể giải quyết chuyện này.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC037",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Các vị đang nâng cốc chúc mừng một gia tộc được xây dựng trên những cái tên bị xóa khỏi sổ sách.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC037",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Ngươi là ai mà dám làm gián đoạn yến tiệc của ta?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC037",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Tôi là Mira, em gái của Elena. Chị tôi bị giam giữ và chết trong căn phòng của gia tộc Valerius.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC037",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Đưa cô ta ra ngoài! Đây là lời vu khống!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC037",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Tôi không đến đây bằng lời đồn. Tôi mang lệnh áp giải, sổ giao dịch, lời khai của người thay xác và chữ ký của Cassian.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC038",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Những giấy tờ ấy có thể bị làm giả. Một nô lệ không có quyền buộc tội gia tộc ta.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC038",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Vậy hãy hỏi người ghi sổ. Hỏi Draco. Hỏi người đã được trả tiền để mang một thi thể khác đi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC038",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ngươi không hiểu mình đang phá hủy điều gì. Thành phố này tồn tại nhờ trật tự.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC038",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Trật tự nào cho phép một người bị giam đến chết chỉ vì biết sự thật?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC038",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ta sẽ không để ngươi biến nỗi đau riêng thành cuộc xét xử cả gia tộc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC039",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta đã làm tất cả để bảo vệ gia đình. Elena không chịu hiểu, còn em gái nàng thì đang lặp lại sai lầm ấy.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC039",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Anh đã giả chết để thử lòng chị tôi, rồi cùng cha giam giữ chị ấy. Anh còn định gọi đó là tình yêu sao?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC039",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta từng yêu Elena. Nhưng nàng đã chọn chống lại ta.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC039",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chị tôi không phải người phá hủy tình yêu ấy. Anh đã tự tay giết nó khi chọn quyền lực.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC039",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta sẽ không để một cô gái nhỏ phá hỏng những gì ta sẽ thừa hưởng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC040",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Thưa hội đồng, tôi có bản ghi lệnh áp giải do Valerius ký và lệnh thay xác có chữ ký Cassian.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC040",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi phản bội ta, Draco!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC040",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Tôi đã làm theo lệnh quá lâu. Tôi sẽ không tiếp tục nói dối về cái chết của Elena.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC040",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Ngươi chỉ đang tìm cách cứu mạng mình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC040",
+      "hoi_tuong": false,
+      "nhan_vat": "3",
+      "noi_dung": "Có thể. Nhưng những gì tôi nói đều có thể đối chiếu với sổ trực và dấu niêm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC041",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Đây là lời khai của người thay xác. Ông ta xác nhận Cassian còn sống trong suốt thời gian Elena bị lừa rằng người yêu đã chết.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC041",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Ta không biết hắn sẽ làm gì với nàng. Ta chỉ nhận tiền để chuyển thi thể.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC041",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Và đây là bản ghi những lần cha con họ thay phiên thẩm vấn chị tôi. Ngày tháng trùng khớp với sổ canh phòng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC041",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Đủ rồi! Các người không có quyền biến chuyện trong nhà thành phiên tòa!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC041",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Chính vì các người gọi đó là chuyện trong nhà nên chị tôi mới chết mà không ai được phép lên tiếng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC042",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Mira, nghe ta nói. Ta có thể trả cho cô tự do, nhà cửa và tiền bạc. Cô không cần tiếp tục chuyện này.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC042",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chị tôi đã xin anh dừng lại. Anh đã có cơ hội chọn làm người, nhưng anh chọn làm con trai Valerius.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC042",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Ta không muốn chết vì một chuyện đã qua.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC042",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Chị tôi cũng không muốn chết. Nhưng anh và cha anh đã không cho chị ấy lựa chọn.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC042",
+      "hoi_tuong": false,
+      "nhan_vat": "6",
+      "noi_dung": "Vậy cô muốn gì? Ta đã mất Elena rồi!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC043",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em muốn anh nói tên chị tôi trước mọi người. Không phải như một nô lệ chết vì bệnh, mà là một con người bị hai cha con anh hành hạ vì không chịu phản bội sự thật.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC043",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Elena...",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC043",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Nói đầy đủ tên chị ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC043",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Elena. Ta đã cùng cha giam giữ Elena và ép nàng khai ra nơi cất bằng chứng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC043",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Và anh đã biết nàng sẽ chết mà vẫn tiếp tục. Lời thú nhận ấy sẽ theo anh đến hết đời.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC044",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ta không ra lệnh giết Elena. Cassian mới là kẻ trực tiếp giữ cô ta lại.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC044",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Cha đừng giả vờ. Chính cha đã bắt đầu mọi chuyện và dạy con cách dùng nỗi sợ để cai trị.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC044",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Ngươi là con trai ta! Ngươi có được mọi thứ nhờ ta!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC044",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Và con đã dùng chính những điều cha dạy để hủy hoại người con từng yêu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC044",
+      "hoi_tuong": false,
+      "nhan_vat": "5",
+      "noi_dung": "Hai người có thể đổ lỗi cho nhau, nhưng sổ sách và nhân chứng đều ghi lại sự thật.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC045",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Hội đồng đã nghe lời khai, đối chiếu sổ sách và xác nhận lệnh áp giải giả. Valerius bị tước quyền chủ nô và quyền quản lý đấu trường.",
+      "anh_nen": "san_thuong_hoang_hon.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC045",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Cassian cũng bị kết tội đồng lõa, giam giữ trái phép và hành hạ Elena đến chết.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC045",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em từng muốn tự tay giết cả hai. Nhưng nếu làm vậy, họ sẽ biến em thành một bản sao của họ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC045",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Ta sẽ sống để nhớ Elena và bảo đảm không ai khác bị xóa tên khỏi sổ đời như chị cô.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC045",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Vậy hãy để bản án bắt đầu từ hôm nay. Không ai được dùng dòng máu hay gia sản để đứng ngoài công lý.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC046",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Chị Elena, em đã đưa sự thật ra ánh sáng. Hai người đã hủy hoại chị không còn có thể gọi cái chết ấy là một bí mật.",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC046",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em không biết chị có nghe được không, nhưng em đã giữ lời hứa: em không để họ quên tên chị.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC046",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Chiếc trâm bạc này từng là lời hứa của một tình yêu. Giờ nó sẽ là vật chứng nhắc em rằng tình yêu không thể tồn tại bên cạnh sự phản bội.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC046",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em sẽ rời khỏi dinh thự. Em không muốn sống trong căn nhà được xây bằng nỗi sợ của người khác.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC046",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Chị từng nói tự do là được chọn con đường của mình. Hôm nay, em bắt đầu chọn con đường ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC047",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Người ta sẽ kể câu chuyện này như chuyện một cô gái trả thù cho chị mình. Nhưng em biết nó còn là câu chuyện về những người đã im lặng quá lâu.",
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC047",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Elena đã chết, nhưng lời khai của chị ấy vẫn sống trong từng trang hồ sơ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC047",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Valerius mất quyền lực, Cassian mất tự do, còn những người bị giam trong đấu trường được mở cổng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC047",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em không thể đưa chị trở về. Em chỉ có thể ngăn một người khác phải chết trong căn phòng ấy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC047",
+      "hoi_tuong": false,
+      "nhan_vat": "2",
+      "noi_dung": "Em sẽ không để nỗi đau trở thành di sản duy nhất mà chị để lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "bieu_cam": "say_hello_bieu_cam_binh_thuong",
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    }
+  ]
+}
