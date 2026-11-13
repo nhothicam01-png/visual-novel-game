@@ -2,7 +2,7 @@
 'use strict';
 const LOCAL=location.hostname==='localhost'||location.hostname==='127.0.0.1';
 const originalFetch=window.fetch.bind(window);
-const TREE_KEY='vns.github.tree.cache.v1',TREE_TTL=120000;let treePending=null;
+const TREE_KEY='vns.github.tree.cache.v1',TREE_TTL=300000;let treePending=null;
 function cachedTree(){try{return JSON.parse(localStorage.getItem(TREE_KEY)||'null')}catch(_){return null}}
 function saveTree(data){try{localStorage.setItem(TREE_KEY,JSON.stringify({at:Date.now(),data}))}catch(_){}}
 function localPathFromRaw(url){const marker='/main/';const i=url.pathname.indexOf(marker);return i<0?null:url.pathname.slice(i+marker.length).split('/').map(decodeURIComponent).join('/')}
