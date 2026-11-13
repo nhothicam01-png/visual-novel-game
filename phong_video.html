@@ -871,7 +871,7 @@ async function prepareDirectRecording(items,useBrowser){
  for(const item of items){
   const line=scenes[item.sceneIndex]?.lines[item.lineIndex];if(!line)continue;
   const frame=line.sourceFrame||{},bg=String(frame.anh_nen||line.background||backgroundAtSourceIndex(item.sourceIndex)||'').trim();
-  const folder=characterAssetFolder(frame.nhan_vat??line.characterAsset??line.speakerId),expression=normalizeExpression(frame.bieu_cam||line.expression||'');
+  const folder=characterAssetFolder(frame.nhan_vat??line.characterAsset??line.speakerId),expression=resolveSemanticExpression(folder,frame.expression_id)||normalizeExpression(line.expression||'');
   if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))videoUrls.add(url);else imageUrls.add(url)}
   if(folder&&expression)videoUrls.add(BASE+'NhanVat/'+folder+'/'+expression+'.webm');
   (Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[]).forEach(spec=>{const displayFolder=characterAssetFolder(spec?.id),files=expressionFilesByFolder[String(displayFolder)]||[],displayExpression=normalizeExpression(spec?.bieu_cam)||(files[0]?.split('/').pop().replace(/\.webm$/i,'')||'');if(displayFolder&&displayExpression)videoUrls.add(BASE+'NhanVat/'+displayFolder+'/'+displayExpression+'.webm')});
