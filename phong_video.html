@@ -475,7 +475,7 @@ async function updateAssets(){
  if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
-   const folder=characterAssetFolder(spec.id),expression=resolveSemanticExpression(folder,spec.expression_id),url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
+   const folder=characterAssetFolder(spec.id),expression=resolveSemanticExpression(folder,spec.expression_id||semanticFromExpression(folder,spec.bieu_cam)),url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
    let media=null;try{media=url?await cachedVideo(url):null}catch(error){console.warn('Không tải được lớp nhân vật '+spec.id+' ('+folder+'/'+expression+'):',error)}
    return {spec:{...spec,expression_id:spec.expression_id},folder,media,index};
   });
@@ -1156,7 +1156,7 @@ async function generatePiperAudio(){
  const useEdge=$('tts-engine').value==='edge'&&!edgeDead;
  if(!voiceId&&!useEdge)throw new Error('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');
  const btn=$('generate-piper'),key=ttsRequestKey(),line=getCurrentLine();
- if(line){line.text=text;line.speaker=$('speaker').value.trim()||'Nhân vật';line.profileId=profile?.id||'';line.lang=$('tts-lang').value;line.voiceId=voiceId}
+ if(line){line.text=text;line.speaker=activeCharacterList().find(ch=>ch.id===$('speaker').value)?.name||$('speaker').value.trim()||'Nhân vật';line.profileId=profile?.id||'';line.lang=$('tts-lang').value;line.voiceId=voiceId}
  btn.disabled=true;
  try{
   if(useEdge){
@@ -1674,10 +1674,10 @@ function buildEditedStoryOutput(){
   if(Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))frame.anh_hieu_ung=sceneEffects[0]?.path.split('/').pop().replace(/\.[^.]+$/,'')||'';
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
-  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>({id:String(item.id),bieu_cam:String(item.bieu_cam||''),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}));
+  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}});
   else delete frame.nhan_vat_hien_thi;
   frame.noi_dung=String(line.text??'');
-  const expression=String(line.expression||'').trim();if(expression)frame.bieu_cam=expression;
+  const expression=String(line.expression||'').trim();if(expression)frame.expression_id=semanticFromExpression(characterAssetFolder(characterId),expression);delete frame.bieu_cam;
   const bg=String(line.background||scene.visual?.background||'').trim();
   if(bg){if(bg!==lastBackground)frame.anh_nen=bg;else if(Object.prototype.hasOwnProperty.call(frame,'anh_nen'))frame.anh_nen=bg;lastBackground=bg}
   if(line.speaker?.trim())frame.ten_hien_thi=line.speaker.trim();
@@ -1690,7 +1690,7 @@ function buildEditedStoryOutput(){
   }
   rows.push(frame);
  }));
- output.danh_sach=rows;
+ output.phien_ban=3;output.world_id=String(activeStoryData?.world_id||output.world_id||'');output.danh_sach=rows;
  return output;
 }
 function exportEditedStoryJson(){
@@ -1769,7 +1769,7 @@ function saveCurrentLine(){
  const oldKey=line.cacheKey;
  line.speaker=$('speaker').value.trim()||'Nhân vật';
  line.text=$('dialogue').value;
- line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;
+ line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;if(line.sourceFrame&&typeof line.sourceFrame==='object'){line.sourceFrame.expression_id=semanticFromExpression(characterAssetFolder($('character').value),line.expression);delete line.sourceFrame.bieu_cam}
  line.visibleCharacters=readVisibleCharactersFromEditor();
  line.profileId=$('voice-profile').value;line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
@@ -1778,22 +1778,16 @@ function saveCurrentLine(){
 function saveCurrentScene(){const sc=getCurrentScene();if(sc){const effects=normalizeSceneEffects(sc.visual?.sceneEffects||[]);sc.visual={...captureVisual(),sceneEffects:effects};sc.isFlashback=!!$('scene-flashback')?.checked;sc.lines.forEach(line=>{line.isFlashback=sc.isFlashback;if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.hieu_ung_canh=effects.map(x=>({...x}))})}const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
  if(!line)return;
- if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>({id:String(item.id),bieu_cam:String(item.bieu_cam||''),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}));
- const folder=String(line.characterAsset||characterAssetFolder(line.speakerId)||'').trim(),list=activeCharacterList(),ch=list.find(item=>item.folder===folder)||list.find(item=>item.id===String(line.speakerId||''))||list.find(item=>normalizeCharacterName(item.name)===normalizeCharacterName(line.speaker));
- if(ch){$('character').value=ch.id;$('speaker').value=ch.id;line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.folder}
- line.expression=syncExpressionOptions($('character').value||folder,line.expression||line.sourceFrame?.bieu_cam);if(line.sourceFrame&&typeof line.sourceFrame==='object'&&line.expression)line.sourceFrame.bieu_cam=line.expression;
+ if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>{const folder=characterAssetFolder(item.id),expression=resolveSemanticExpression(folder,item.expression_id);return {id:String(item.id),bieu_cam:expression,x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}});
+ const list=activeCharacterList(),ch=list.find(item=>item.id===String(line.speakerId||line.sourceFrame?.nhan_vat||''))||list.find(item=>normalizeCharacterName(item.name)===normalizeCharacterName(line.speaker));
+ if(ch){$('character').value=ch.id;$('speaker').value=ch.id;line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.id}
+ const preferred=resolveSemanticExpression(characterAssetFolder($('character').value),line.sourceFrame?.expression_id)||line.expression||'';
+ line.expression=syncExpressionOptions($('character').value,preferred);
+ if(line.sourceFrame&&typeof line.sourceFrame==='object'&&line.expression){line.sourceFrame.expression_id=semanticFromExpression(characterAssetFolder($('character').value),line.expression);delete line.sourceFrame.bieu_cam}
  if(line.background&&Array.from($('background').options).some(o=>o.value===line.background))$('background').value=line.background;
- $('dialogue').value=line.text||'';
- $('voice-profile').value=line.profileId||'';
- $('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
- const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};
- fillVoice();
- generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';
- applyLineEffects(line);
- renderVisibleCharacters(line);
- renderSceneEffectPicker();
- renderSpeakerWebmPicker();
- $('line-editor-title').textContent='Chỉnh sửa câu thoại '+(activeLineIndex+1);
+ $('dialogue').value=line.text||'';$('voice-profile').value=line.profileId||'';$('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
+ const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};fillVoice();
+ generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';applyLineEffects(line);renderVisibleCharacters(line);renderSceneEffectPicker();renderSpeakerWebmPicker();$('line-editor-title').textContent='Chỉnh sửa câu thoại '+(activeLineIndex+1);
 }
 function visibleCharacterOptions(selected=''){
  const list=activeCharacterList();
