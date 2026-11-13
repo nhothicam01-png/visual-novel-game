@@ -1807,7 +1807,7 @@ async function pushEditedStoryJson(){
   const verifyPayload=await verifyResponse.json().catch(()=>({}));
   if(!verifyResponse.ok)throw new Error('Đã push nhưng không đọc được file tại commit '+result.commitSha.slice(0,7)+' (GitHub API HTTP '+verifyResponse.status+': '+(verifyPayload.message||'không rõ lỗi')+').');
   if(!verifyPayload.content)throw new Error('GitHub không trả nội dung file để xác minh.');
-  const binary=atob(String(verifyPayload.content).replace(/\\s/g,''));
+  const binary=atob(String(verifyPayload.content).replace(/\s/g,''));
   const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
   const verified=JSON.parse(new TextDecoder().decode(bytes));
   const voiceMap=obj=>Object.fromEntries(Object.entries(obj?.nhan_vat||{}).map(([id,ch])=>[id,ch?.giong_noi?.profile_id||'']));
