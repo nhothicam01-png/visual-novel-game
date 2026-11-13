@@ -475,12 +475,9 @@ async function updateAssets(){
  if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
-   const folder=characterAssetFolder(spec.id),files=expressionFilesByFolder[String(folder)]||[];
-   let expression=normalizeExpression(spec.bieu_cam||'');
-   if(!expression||!files.some(path=>path.split('/').pop().replace(/\.webm$/i,'')===expression))expression=files[0]?.split('/').pop().replace(/\.webm$/i,'')||expression;
-   const url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
+   const folder=characterAssetFolder(spec.id),expression=resolveSemanticExpression(folder,spec.expression_id),url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
    let media=null;try{media=url?await cachedVideo(url):null}catch(error){console.warn('Không tải được lớp nhân vật '+spec.id+' ('+folder+'/'+expression+'):',error)}
-   return {spec:{...spec,bieu_cam:expression},folder,media,index};
+   return {spec:{...spec,expression_id:spec.expression_id},folder,media,index};
   });
   const [nextBg,nextChar,nextLayers,nextSceneEffects]=await Promise.all([
    bgPath?(/\.mp4$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
