@@ -20,6 +20,7 @@
     const token=getToken();if(!token)throw new Error('Chưa lưu GitHub Token. Mở github_manager.html để kết nối.');
     const response=await fetch(url,{...options,headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',Authorization:'Bearer '+token,...(options.headers||{})}});
     const data=await response.json().catch(()=>({}));
+    if(response.ok&&options.method&&options.method!=='GET'&&window.VNSLocal)window.VNSLocal.clearTreeCache();
     if(!response.ok){const message=data.message||('GitHub API HTTP '+response.status);if(response.status===401)throw new Error('Token không hợp lệ hoặc đã hết hạn.');if(response.status===403)throw new Error('GitHub từ chối quyền. Kiểm tra quyền Contents: Read and write và quyền truy cập repository.');throw new Error(message)}
     return data;
   }
@@ -105,7 +106,8 @@
         let blob;
         if(String(item.sha).startsWith('local:')){if(!localBlobs.has(item.sha))throw new Error('Không tìm thấy dữ liệu tạm cho '+item.path);blob=new Blob([localBlobs.get(item.sha)]);localBlobs.delete(item.sha)}
         else{
-          const byName=deletes.find(x=>!used.has(x.path)&&x.path.split('/').pop()===item.path.split('/').pop());
+          let byName=deletes.find(x=>!used.has(x.path)&&x.path.split('/').pop()===item.path.split('/').pop());
+          if(!byName){const ext=x=>x.path.split('/').pop().split('.').slice(1).join('.').toLowerCase();const sameParent=deletes.filter(x=>!used.has(x.path)&&x.path.split('/').slice(0,-1).join('/')===item.path.split('/').slice(0,-1).join('/')&&ext(x)===ext(item));if(sameParent.length===1)byName=sameParent[0]}
           if(!byName)throw new Error('Không xác định được file nguồn để đổi tên: '+item.path);
           used.add(byName.path);const response=await fetch('/'+byName.path);if(!response.ok)throw new Error('Không đọc được file nguồn '+byName.path);blob=await response.blob();
         }
