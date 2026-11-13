@@ -110,6 +110,12 @@
       "logline": "Một nữ nô lệ âm thầm thu thập chứng cứ tội ác của chủ nhân để lật đổ ách thống trị.",
       "arc": "Từ sự phục tùng tuyệt đối đến bước ngoặt trả thù và giành lại quyền tự do.",
       "selected": true
+    },
+    {
+      "title": "Hoa Hồng Trên Mộ Máu",
+      "logline": "Sau khi người yêu bị cho là sát hại, một nữ nô lệ phát hiện anh ta là con trai chủ nhân và cái chết chỉ là màn kịch; khi cô bị cha con hắn hành hạ đến chết, em gái cô tiếp tục cuộc báo thù bằng cách phơi bày tội ác trước toàn thành.",
+      "arc": "Từ tình yêu bí mật và mất mát, qua cú lừa về cái chết giả và sự phản bội, đến cuộc báo thù của người em gái và sự sụp đổ của gia tộc chủ nô.",
+      "selected": false
     }
   ],
   "story_folders": [
@@ -124,7 +130,13 @@
       "folder": "AnTinDuoiTroTan",
       "path": "assets/KichBan/AnTinDuoiTroTan",
       "json_path": "assets/KichBan/AnTinDuoiTroTan/AnTinDuoiTroTan.json"
+    },
+    {
+      "title": "Hoa Hồng Trên Mộ Máu",
+      "folder": "HoaHongTrenMoMau",
+      "path": "assets/KichBan/HoaHongTrenMoMau",
+      "json_path": "assets/KichBan/HoaHongTrenMoMau/HoaHongTrenMoMau.json"
     }
   ],
-  "updated_at": "2026-11-13T07:33:58.064Z"
+  "updated_at": "2026-11-13T07:52:03.652Z"
 }
