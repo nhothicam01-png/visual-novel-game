@@ -743,7 +743,7 @@ function attachSpeechAnalyser(audio){
  if(!audio||!window.AudioContext&&!window.webkitAudioContext)return;
  try{
   const AudioCtx=window.AudioContext||window.webkitAudioContext;
-  if(!speechAudioContext)speechAudioContext=directRecording&&directRecordAudioContext?directRecordAudioContext:new AudioCtx();
+  if(directRecording&&directRecordAudioContext)speechAudioContext=directRecordAudioContext;else if(!speechAudioContext)speechAudioContext=new AudioCtx();
   let source=speechAudioSources.get(audio);
   if(!source){source=speechAudioContext.createMediaElementSource(audio);source.connect(speechAudioContext.destination);speechAudioSources.set(audio,source)}
   speechAnalyser=speechAudioContext.createAnalyser();speechAnalyser.fftSize=256;speechAnalyser.smoothingTimeConstant=.72;
