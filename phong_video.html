@@ -467,7 +467,7 @@ async function loadSceneEffectLibrary(){
  }catch(error){$('scene-effect-picker').innerHTML='<span class="note">Không tải được danh sách hiệu ứng: '+safeText(error.message)+'</span>'}
 }
 async function updateAssets(){
- const token=++assetLoadToken,bg=$('background').value,character=$('character').value,expr=normalizeExpression($('expression').value);
+ const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
  const bgPath=bg?BASE+'Nen/'+bg:'',charPath=character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
  const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},displaySpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
  const activeScene=getCurrentScene(),sceneSpecs=normalizeSceneEffects(activeScene?.visual?.sceneEffects||frame.hieu_ung_canh||[]);
@@ -858,8 +858,8 @@ async function loadSourceLineForPlayback(item){
  const line=getCurrentLine(),frame=line.sourceFrame||{};
  applyVisual(getCurrentScene().visual);
  if(line.sourceIndex!==undefined){
-  $('character').value=characterAssetFolder(frame.nhan_vat??line.characterAsset);
-  $('expression').value=normalizeExpression(frame.bieu_cam||line.expression);
+  $('character').value=String(frame.nhan_vat??line.characterAsset??line.speakerId??'');
+  $('expression').value=resolveSemanticExpression(characterAssetFolder($('character').value),frame.expression_id)||normalizeExpression(line.expression);
   $('background').value=backgroundAtSourceIndex(line.sourceIndex)||getCurrentScene().visual.background;
  }
  loadLineToEditor(line);renderSceneList();renderLineList();applyLineEffects(line);updateSeekUI(line.sourceIndex??0);
@@ -1386,8 +1386,8 @@ async function exportVideo(){
     activeLineIndex=scenes[si].lines.indexOf(entry.line);loadLineToEditor(entry.line);
     const frame=entry.line.sourceFrame;
     if(frame){
-     if(frame.nhan_vat!==undefined)$('character').value=characterAssetFolder(frame.nhan_vat);
-     if(frame.bieu_cam)$('expression').value=normalizeExpression(frame.bieu_cam);
+     if(frame.nhan_vat!==undefined)$('character').value=String(frame.nhan_vat);
+     if(frame.expression_id)$('expression').value=resolveSemanticExpression(characterAssetFolder(frame.nhan_vat),frame.expression_id);
      if(frame.anh_nen)$('background').value=frame.anh_nen;
      applyLineEffects(entry.line);
      const sig=$('background').value+'|'+$('character').value+'|'+normalizeExpression($('expression').value);
