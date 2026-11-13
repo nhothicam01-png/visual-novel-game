@@ -34,7 +34,7 @@
 <section class="panel"><h2>3. Danh sách tài nguyên</h2><label class="field">Lọc theo tên file<input id="filter" placeholder="Nhập tên hoặc một phần đường dẫn…"></label><div id="assets" class="asset-list"><div class="empty">Nhấn “Tải lại thư viện” để đọc tài nguyên.</div></div></section><section class="panel" id="metadata-panel" hidden><h2>4. Chỉnh sửa thông tin tài nguyên</h2><div class="small" id="metadata-selected">Chưa chọn tài nguyên.</div><label class="field">Metadata dạng JSON<textarea id="metadata-json" spellcheck="false" placeholder="Thông tin mô tả, tư thế, biểu cảm, hướng nhìn, trạng thái giao tiếp..."></textarea></label><div class="row"><button class="btn" id="save-metadata">💾 Lưu thông tin</button><button class="btn secondary" id="close-metadata">Đóng</button></div><div class="status" id="metadata-status"></div><p class="small">Thông tin được lưu thành file JSON cạnh tài nguyên gốc, ví dụ: nhan_vat.webm.json.</p></section>
 <p class="small">Đường dẫn thư viện: assets/NhanVat · assets/Nen · assets/AmThanh/Nen · assets/AmThanh/HieuUng · assets/HieuUng</p>
 </main>
-<script src="./github-manager.js?v=20261113-pat2"></script><script src="./studio-shell.js?v=20261113-rollback2"></script>
+<script src="./github-manager.js?v=20261113-pat2"></script><script src="./studio-shell.js?v=20261113-clean3"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),owner='nhothicam01-png',repo='visual-novel-game',branch='main',base='https://api.github.com/repos/'+owner+'/'+repo+'/git/trees/'+branch+'?recursive=1';
