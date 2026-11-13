@@ -1798,9 +1798,18 @@ async function pushEditedStoryJson(){
   if(!confirm('Commit kịch bản "'+activeStoryName+'" lên '+path+'? Nội dung file trên GitHub sẽ được cập nhật.'))return;
   button.disabled=true;$('story-status').textContent='Đang cập nhật kịch bản lên GitHub…';
   const result=await GitHubManager.pushTextFile({owner:'nhothicam01-png',repo:'visual-novel-game',branch:'main',path,content:JSON.stringify(output,null,2),message:'Update script: '+activeStoryName});
-  const verifyUrl='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path.split('/').map(encodeURIComponent).join('/')+'?verify='+Date.now();
-  const verifyResponse=await fetch(verifyUrl,{cache:'no-store'});if(!verifyResponse.ok)throw new Error('GitHub đã nhận yêu cầu nhưng không đọc xác minh được file (HTTP '+verifyResponse.status+').');
-  const verified=await verifyResponse.json();
+  // Verify against the exact commit via the authenticated GitHub Contents API.
+  // raw.githubusercontent.com may serve a stale CDN copy immediately after a push.
+  if(!result.commitSha)throw new Error('GitHub chưa trả về mã commit để xác minh.');
+  const token=GitHubManager.getToken();
+  const verifyUrl='https://api.github.com/repos/nhothicam01-png/visual-novel-game/contents/'+path.split('/').map(encodeURIComponent).join('/')+'?ref='+encodeURIComponent(result.commitSha);
+  const verifyResponse=await fetch(verifyUrl,{cache:'no-store',headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',Authorization:'Bearer '+token}});
+  const verifyPayload=await verifyResponse.json().catch(()=>({}));
+  if(!verifyResponse.ok)throw new Error('Đã push nhưng không đọc được file tại commit '+result.commitSha.slice(0,7)+' (GitHub API HTTP '+verifyResponse.status+': '+(verifyPayload.message||'không rõ lỗi')+').');
+  if(!verifyPayload.content)throw new Error('GitHub không trả nội dung file để xác minh.');
+  const binary=atob(String(verifyPayload.content).replace(/\\s/g,''));
+  const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+  const verified=JSON.parse(new TextDecoder().decode(bytes));
   const voiceMap=obj=>Object.fromEntries(Object.entries(obj?.nhan_vat||{}).map(([id,ch])=>[id,ch?.giong_noi?.profile_id||'']));
   const expectedVoices=voiceMap(output),savedVoices=voiceMap(verified);
   const mismatches=Object.keys(expectedVoices).filter(id=>(expectedVoices[id]||'')!==(savedVoices[id]||''));
