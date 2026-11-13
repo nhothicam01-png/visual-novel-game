@@ -574,11 +574,13 @@ function drawFrame(elapsed,st){
   const isCurrentSpeaker=!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
   if(isCurrentSpeaker){
    const motion=Math.max(0,Math.min(1,speechMotionSmooth));
-   const rhythm=[0,1,0,2,0,3,4,2][Math.max(0,speechTextIndex)%8];
-   const isDown=rhythm===0||rhythm===4;
-   const tilt=rhythm===1?-.095:(rhythm===2?.095:(rhythm===4?-.045:0));
-   const sx=1+(isDown?-.012:.018)*motion,sy=1+(isDown?-.065:.055)*motion;
-   // Neo transform tai diem chan giua de khong tao khe ho o day khung WEBM.
+   // Chu ky lien tuc, khong bam theo am luong hay tung am tiet nen khong bi giat.
+   // Thu tu: nhun xuong thang -> len nghieng trai -> xuong thang -> len nghieng phai.
+   const phase=(performance.now()/1000)*4.8;
+   const compression=(1+Math.cos(phase))*.5;
+   const tilt=Math.sin(phase*.5)*.075;
+   const sx=1+.015*compression*motion,sy=1-.06*compression*motion;
+   // Neo tai diem chan giua de khong tao khe ho o day khung WEBM.
    ctx.translate(x,y);ctx.rotate(tilt*motion);ctx.scale(sx,sy);ctx.translate(-x,-y);
   }
   if(charFx.includes('char-bob'))ctx.translate(0,Math.sin(elapsed*5)*h*.008*strength);
@@ -657,7 +659,7 @@ function animate(){
  // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
  const t=previewing?Math.max(0,((previewPaused?previewPauseStartedAt:performance.now())-previewStartedAt)/1000):0;
  const motionNow=performance.now(),motionDt=speechMotionFrameAt?Math.min(.08,(motionNow-speechMotionFrameAt)/1000):1/60;speechMotionFrameAt=motionNow;
- const motionTarget=speakingCharacterId&&!previewPaused?Math.max(0,Math.min(1,speechMotionLevel)):0;
+ const motionTarget=speakingCharacterId&&!previewPaused?1:0;
  speechMotionSmooth+=(motionTarget-speechMotionSmooth)*(1-Math.exp(-motionDt*14));if(speechMotionSmooth<.005)speechMotionSmooth=0;
  if(speechAudioElement&&speakingCharacterId&&!previewPaused&&Number.isFinite(speechAudioElement.duration)&&speechAudioElement.duration>0){const spokenText=($('dialogue').value||'').trim();speechTextIndex=Math.min(Math.max(0,spokenText.length-1),Math.floor(speechAudioElement.currentTime/speechAudioElement.duration*spokenText.length));}
   if(speechAnalyser&&speechAnalyserData&&speakingCharacterId&&!previewPaused){
