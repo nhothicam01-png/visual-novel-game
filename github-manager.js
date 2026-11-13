@@ -8,14 +8,11 @@
   const TOKEN_KEY='vnGitHubTokenV1';
   const CONFIG_KEY='vnGitHubConfigV1';
   const API='https://api.github.com';
-  const localBlobs=new Map();let localBlobId=0;
   function getToken(){try{return localStorage.getItem(TOKEN_KEY)||''}catch(e){return ''}}
   function setToken(token){if(!token)throw new Error('Token trống.');localStorage.setItem(TOKEN_KEY,String(token).trim());clearApiCache()}
   function clearToken(){localStorage.removeItem(TOKEN_KEY);clearApiCache()}
   function getConfig(){try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}')}catch(e){return {}}}
   function setConfig(config){localStorage.setItem(CONFIG_KEY,JSON.stringify(config||{}))}
-  const isLocal=()=>location.hostname==='localhost'||location.hostname==='127.0.0.1';
-  async function writeLocal(path,blob){const response=await fetch('/__local__/write?path='+encodeURIComponent(path),{method:'PUT',body:blob});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.message||'Không ghi được file cục bộ.');return {commitSha:'LOCAL',htmlUrl:'/'+path,path,created:false,local:true};}
   const API_CACHE_PREFIX='vn.github.api.get.v2:',API_CACHE_TTL=180000;
   const apiPending=new Map();
   function readApiCache(key){try{const v=JSON.parse(localStorage.getItem(API_CACHE_PREFIX+key)||'null');return v&&v.at&&v.data!==undefined?v:null}catch(_){return null}}
@@ -56,13 +53,11 @@
     throw new Error('File liên tục thay đổi trên GitHub. Hãy thử cập nhật lại sau.');
   }
   async function pushTextFile({owner,repo,path,content,message,branch='main'}){
-    if(isLocal())return writeLocal(path,new Blob([content],{type:'text/plain;charset=utf-8'}));
     if(!owner||!repo||!path||typeof content!=='string')throw new Error('Thiếu owner, repository, đường dẫn hoặc nội dung file.');
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/'+path.split('/').map(encodeURIComponent).join('/');
     return putContentWithRetry({url,path,bytes:new TextEncoder().encode(content),message,branch});
   }
   async function pushFile({owner,repo,path,file,message,branch='main'}){
-    if(isLocal())return writeLocal(path,file);
     if(!(file instanceof File))throw new Error('File không hợp lệ.');
     const buffer=await file.arrayBuffer(),bytes=new Uint8Array(buffer);
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/'+path.split('/').map(encodeURIComponent).join('/');
@@ -70,13 +65,11 @@
   }
 
   async function listCharacterFolders({owner,repo,branch='main'}){
-    if(isLocal()){const r=await fetch('/__local__/tree');const d=await r.json();return [...new Set((d.tree||[]).filter(x=>x.path.startsWith('assets/NhanVat/')&&x.path.split('/').length>2).map(x=>x.path.split('/')[2]))].sort((a,b)=>a.localeCompare(b,'vi'))}
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/trees/'+encodeURIComponent(branch)+'?recursive=1';
     const data=await request(url);const prefix='assets/NhanVat/';
     return [...new Set((data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith(prefix)).map(x=>x.path.slice(prefix.length).split('/')[0]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'));
   }
   async function listCharacterWebm({owner,repo,character,branch='main'}){
-    if(isLocal()){const r=await fetch('/__local__/tree');const d=await r.json(),prefix='assets/NhanVat/'+String(character||'').trim()+'/';return (d.tree||[]).filter(x=>x.path.startsWith(prefix)&&x.path.slice(prefix.length).indexOf('/')<0&&/\.webm$/i.test(x.path)).map(x=>({name:x.path.split('/').pop(),path:x.path,size:x.size||0,downloadUrl:'/'+x.path,htmlUrl:'/'+x.path})).sort((a,b)=>a.name.localeCompare(b.name,'vi'))}
     const safe=String(character||'').trim();
     if(!safe) return [];
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/trees/'+encodeURIComponent(branch)+'?recursive=1';
@@ -84,7 +77,6 @@
     return (data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith(prefix)&&x.path.slice(prefix.length).indexOf('/')<0&&/\.webm$/i.test(x.path)).map(x=>({name:x.path.slice(prefix.length),path:x.path,size:x.size||0,downloadUrl:'https://raw.githubusercontent.com/'+owner+'/'+repo+'/'+branch+'/'+x.path.split('/').map(encodeURIComponent).join('/'),htmlUrl:'https://github.com/'+owner+'/'+repo+'/blob/'+branch+'/'+x.path})).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
   }
   async function pushFiles({owner,repo,files,message,branch='main'}){
-    if(isLocal()){if(!Array.isArray(files)||!files.length)throw new Error('Không có file để lưu.');const results=[];for(const item of files){if(!item?.path||!(item.blob instanceof Blob))throw new Error('File không hợp lệ.');results.push(await writeLocal(item.path,item.blob));}return {commitSha:'LOCAL',fileCount:results.length,local:true}}
     if(!Array.isArray(files)||!files.length)throw new Error('Không có file để push.');
     const base=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo);
     const ref=await request(base+'/git/ref/heads/'+encodeURIComponent(branch));
@@ -105,30 +97,11 @@
   }
 
   async function createBlob({owner,repo,content}){
-    if(isLocal()){const sha='local:'+String(++localBlobId);localBlobs.set(sha,String(content));return {sha}}
     if(typeof content!=='string')throw new Error('Nội dung blob không hợp lệ.');
     const bytes=new TextEncoder().encode(content);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
     return request(API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/blobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:btoa(binary),encoding:'base64'})});
   }
   async function applyTreeChanges({owner,repo,branch='main',changes,message}){
-    if(isLocal()){
-      if(!Array.isArray(changes)||!changes.length)throw new Error('Không có thay đổi cục bộ.');
-      const deletes=changes.filter(x=>x.sha===null),adds=changes.filter(x=>x.sha!==null);
-      const used=new Set();
-      for(const item of adds){
-        let blob;
-        if(String(item.sha).startsWith('local:')){if(!localBlobs.has(item.sha))throw new Error('Không tìm thấy dữ liệu tạm cho '+item.path);blob=new Blob([localBlobs.get(item.sha)]);localBlobs.delete(item.sha)}
-        else{
-          let byName=deletes.find(x=>!used.has(x.path)&&x.path.split('/').pop()===item.path.split('/').pop());
-          if(!byName){const ext=x=>x.path.split('/').pop().split('.').slice(1).join('.').toLowerCase();const sameParent=deletes.filter(x=>!used.has(x.path)&&x.path.split('/').slice(0,-1).join('/')===item.path.split('/').slice(0,-1).join('/')&&ext(x)===ext(item));if(sameParent.length===1)byName=sameParent[0]}
-          if(!byName)throw new Error('Không xác định được file nguồn để đổi tên: '+item.path);
-          used.add(byName.path);const response=await fetch('/'+byName.path);if(!response.ok)throw new Error('Không đọc được file nguồn '+byName.path);blob=await response.blob();
-        }
-        await writeLocal(item.path,blob);
-      }
-      for(const item of deletes)if(!used.has(item.path)){const r=await fetch('/__local__/delete?path='+encodeURIComponent(item.path),{method:'DELETE'});if(!r.ok)throw new Error('Không xóa được '+item.path)}
-      return {commitSha:'LOCAL',fileCount:changes.length,local:true};
-    }
     if(!Array.isArray(changes)||!changes.length)throw new Error('Không có thay đổi GitHub.');
     const base=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo);
     const ref=await request(base+'/git/ref/heads/'+encodeURIComponent(branch));
@@ -146,6 +119,6 @@
     return {commitSha:commit.sha,fileCount:changes.length};
   }
 
-  async function checkConnection(){if(isLocal()){const r=await fetch('/__local__/status');const d=await r.json();return {login:'local',name:d.git?'Local · Git '+d.branch:'Local · chưa có Git',local:true}}const user=await request(API+'/user');return {login:user.login,name:user.name||user.login}}
+  async function checkConnection(){const user=await request(API+'/user');return {login:user.login,name:user.name||user.login}}
   window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,clearApiCache,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,createBlob,applyTreeChanges,checkConnection};
 })();
