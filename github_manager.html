@@ -11,7 +11,7 @@ main{width:100%;max-width:850px}.nav,.panel{background:#111c30;border:1px solid 
 h1{font-size:22px;color:#c4b5fd;margin:8px 0}h2{font-size:16px;color:#c4b5fd;margin:0 0 12px}p,.note{font-size:13px;line-height:1.55;color:#aab8cc}.field{display:flex;flex-direction:column;gap:6px;margin:10px 0;color:#cbd5e1;font-size:13px}.field input,.field textarea{width:100%;min-height:42px;padding:10px;color:#fff;background:#0b1425;border:1px solid #475569;border-radius:8px;font:inherit}.field textarea{min-height:170px;resize:vertical;line-height:1.45}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.btn{border:0;border-radius:8px;padding:10px 14px;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-weight:700;cursor:pointer}.btn.secondary{background:#263449;border:1px solid #64748b}.btn.danger{background:#9f1239}.btn:disabled{opacity:.5}.status{font-size:13px;line-height:1.5;min-height:20px;color:#a5f3fc;white-space:pre-wrap;overflow-wrap:anywhere}.warning{padding:10px;border:1px solid #92400e;background:#42200655;border-radius:8px;color:#fde68a;font-size:12px;line-height:1.5}.success{color:#86efac}.small{font-size:11px;color:#94a3b8}.hidden{display:none!important}
 @media(max-width:560px){body{padding:8px}.grid{grid-template-columns:1fr}.panel{padding:11px}}
 </style>
-<script src="./github-progress.js"></script><script src="./vns-local.js?v=20261113-local"></script>
+<script src="./github-progress.js"></script><script src="./vns-local.js?v=20261113-pat2"></script>
 </head>
 <body>
 <main>
@@ -44,7 +44,7 @@ h1{font-size:22px;color:#c4b5fd;margin:8px 0}h2{font-size:16px;color:#c4b5fd;mar
 <div class="row"><a id="repo-link" href="https://github.com/nhothicam01-png/visual-novel-game" target="_blank" rel="noopener" style="color:#c4b5fd">Mở repository</a><span>·</span><a id="pages-link" href="https://nhothicam01-png.github.io/visual-novel-game/" target="_blank" rel="noopener" style="color:#c4b5fd">Mở website</a></div>
 </section>
 </main>
-<script src="./github-manager.js?v=20261110sha1"></script>
+<script src="./github-manager.js?v=20261113-pat2"></script>
 <script>
 const $=id=>document.getElementById(id);
 function config(){return {owner:$('owner').value.trim(),repo:$('repo').value.trim(),branch:$('branch').value.trim()||'main'}}
@@ -78,6 +78,6 @@ $('push').addEventListener('click',async()=>{
  finally{$('push').disabled=false}
 });
 </script>
-<script src="./studio-shell.js"></script>
+<script src="./studio-shell.js?v=20261113-rollback2"></script>
 </body>
 </html>
