@@ -131,7 +131,9 @@ $('publish-creative').onclick=async()=>{
   if(!window.GitHubManager?.pushFiles)throw Error('GitHub Manager chưa sẵn sàng. Bạn vẫn có thể tải JSON về.');
   const title=$('creation-title').value.trim()||'TruyenMoi',folder=slug($('story-folder').value||title),dir='assets/KichBan/'+folder,jp=dir+'/'+folder+'.json',wp='assets/TheGioi/'+world.slug+'/TheGioi.json';
   const check=await fetch('https://api.github.com/repos/'+REPO+'/git/trees/main?recursive=1');const tree=await check.json();if(!check.ok)throw Error('Không kiểm tra được GitHub.');
-  if((tree.tree||[]).some(x=>x.path===jp)&&!confirm('Truyện đã tồn tại. Bạn có chắc muốn ghi đè?'))return;
+  const allPaths=(tree.tree||[]).map(x=>x.path);
+  if(allPaths.includes(jp)&&!confirm('Truyện đã tồn tại. Bạn có chắc muốn ghi đè?'))return;
+  if($('creation-mode').value==='new'&&allPaths.includes(wp)&&!confirm('Thư mục thế giới này đã tồn tại. Ghi đè hồ sơ thế giới?'))return;
   world.story_folders=world.story_folders||[];if(!world.story_folders.some(x=>x.folder===folder))world.story_folders.push({title,folder,path:dir,json_path:jp});
   world.updated_at=new Date().toISOString();
   const files=[{path:wp,blob:new Blob([JSON.stringify(world,null,2)],{type:'application/json'})},{path:jp,blob:new Blob([JSON.stringify(story,null,2)],{type:'application/json'})},{path:dir+'/PhuDe/.gitkeep',blob:new Blob([''],{type:'text/plain'})},{path:'assets/PhuDe/.gitkeep',blob:new Blob([''],{type:'text/plain'})}];
