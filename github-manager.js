@@ -16,13 +16,26 @@
   function setConfig(config){localStorage.setItem(CONFIG_KEY,JSON.stringify(config||{}))}
   const isLocal=()=>location.hostname==='localhost'||location.hostname==='127.0.0.1';
   async function writeLocal(path,blob){const response=await fetch('/__local__/write?path='+encodeURIComponent(path),{method:'PUT',body:blob});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.message||'Không ghi được file cục bộ.');return {commitSha:'LOCAL',htmlUrl:'/'+path,path,created:false,local:true};}
+  const API_CACHE_PREFIX='vn.github.api.get.v2:',API_CACHE_TTL=180000;
+  const apiPending=new Map();
+  function readApiCache(key){try{const v=JSON.parse(localStorage.getItem(API_CACHE_PREFIX+key)||'null');return v&&v.at&&v.data!==undefined?v:null}catch(_){return null}}
+  function writeApiCache(key,data){try{localStorage.setItem(API_CACHE_PREFIX+key,JSON.stringify({at:Date.now(),data}))}catch(_){}}
+  function clearApiCache(){try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith(API_CACHE_PREFIX))localStorage.removeItem(k)}}catch(_){}apiPending.clear()}
   async function request(url,options={}){
     const token=getToken();if(!token)throw new Error('Chưa lưu GitHub Token. Mở github_manager.html để kết nối.');
-    const response=await fetch(url,{...options,headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',Authorization:'Bearer '+token,...(options.headers||{})}});
-    const data=await response.json().catch(()=>({}));
-    if(response.ok&&options.method&&options.method!=='GET'&&window.VNSLocal)window.VNSLocal.clearTreeCache();
-    if(!response.ok){const message=data.message||('GitHub API HTTP '+response.status);if(response.status===401)throw new Error('Token không hợp lệ hoặc đã hết hạn.');if(response.status===403)throw new Error('GitHub từ chối quyền. Kiểm tra quyền Contents: Read and write và quyền truy cập repository.');throw new Error(message)}
-    return data;
+    const method=String(options.method||'GET').toUpperCase(),cacheable=method==='GET'&&!/\/git\/(?:blobs|commits)\//.test(url);
+    const key=cacheable?btoa(unescape(encodeURIComponent(url))).replace(/=+$/,''): '';
+    if(cacheable){const cached=readApiCache(key);if(cached&&Date.now()-cached.at<API_CACHE_TTL)return cached.data;if(apiPending.has(key))return apiPending.get(key)}
+    const task=(async()=>{
+      const response=await fetch(url,{...options,headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',Authorization:'Bearer '+token,...(options.headers||{})}});
+      const data=await response.json().catch(()=>({}));
+      if(response.ok&&method!=='GET'){clearApiCache();if(window.VNSLocal)window.VNSLocal.clearTreeCache()}
+      if(!response.ok){const message=data.message||('GitHub API HTTP '+response.status);if(response.status===401)throw new Error('Token không hợp lệ hoặc đã hết hạn.');if(response.status===403)throw new Error('GitHub từ chối yêu cầu hoặc đã chạm giới hạn API. Hãy chờ reset limit rồi thử lại.');throw new Error(message)}
+      if(cacheable)writeApiCache(key,data);
+      return data;
+    })();
+    if(cacheable)apiPending.set(key,task);
+    try{return await task}finally{if(cacheable&&apiPending.get(key)===task)apiPending.delete(key)}
   }
   async function putContentWithRetry({url,path,bytes,message,branch}){
     let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
@@ -57,18 +70,17 @@
 
   async function listCharacterFolders({owner,repo,branch='main'}){
     if(isLocal()){const r=await fetch('/__local__/tree');const d=await r.json();return [...new Set((d.tree||[]).filter(x=>x.path.startsWith('assets/NhanVat/')&&x.path.split('/').length>2).map(x=>x.path.split('/')[2]))].sort((a,b)=>a.localeCompare(b,'vi'))}
-    const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/assets/NhanVat?ref='+encodeURIComponent(branch);
-    try{const rows=await request(url);return rows.filter(x=>x.type==='dir').map(x=>x.name).sort((a,b)=>a.localeCompare(b,'vi'))}
-    catch(e){if(String(e.message).includes('Not Found'))return [];throw e}
+    const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/trees/'+encodeURIComponent(branch)+'?recursive=1';
+    const data=await request(url);const prefix='assets/NhanVat/';
+    return [...new Set((data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith(prefix)).map(x=>x.path.slice(prefix.length).split('/')[0]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'));
   }
   async function listCharacterWebm({owner,repo,character,branch='main'}){
     if(isLocal()){const r=await fetch('/__local__/tree');const d=await r.json(),prefix='assets/NhanVat/'+String(character||'').trim()+'/';return (d.tree||[]).filter(x=>x.path.startsWith(prefix)&&x.path.slice(prefix.length).indexOf('/')<0&&/\.webm$/i.test(x.path)).map(x=>({name:x.path.split('/').pop(),path:x.path,size:x.size||0,downloadUrl:'/'+x.path,htmlUrl:'/'+x.path})).sort((a,b)=>a.name.localeCompare(b.name,'vi'))}
     const safe=String(character||'').trim();
     if(!safe) return [];
-    const path='assets/NhanVat/'+safe;
-    const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/'+path.split('/').map(encodeURIComponent).join('/')+'?ref='+encodeURIComponent(branch);
-    const rows=await request(url);
-    return rows.filter(x=>x.type==='file'&&/\.webm$/i.test(x.name)).map(x=>({name:x.name,path:x.path,size:x.size||0,downloadUrl:x.download_url||'',htmlUrl:x.html_url||''})).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
+    const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/trees/'+encodeURIComponent(branch)+'?recursive=1';
+    const data=await request(url),prefix='assets/NhanVat/'+safe+'/';
+    return (data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith(prefix)&&x.path.slice(prefix.length).indexOf('/')<0&&/\.webm$/i.test(x.path)).map(x=>({name:x.path.slice(prefix.length),path:x.path,size:x.size||0,downloadUrl:'https://raw.githubusercontent.com/'+owner+'/'+repo+'/'+branch+'/'+x.path.split('/').map(encodeURIComponent).join('/'),htmlUrl:'https://github.com/'+owner+'/'+repo+'/blob/'+branch+'/'+x.path})).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
   }
   async function pushFiles({owner,repo,files,message,branch='main'}){
     if(isLocal()){if(!Array.isArray(files)||!files.length)throw new Error('Không có file để lưu.');const results=[];for(const item of files){if(!item?.path||!(item.blob instanceof Blob))throw new Error('File không hợp lệ.');results.push(await writeLocal(item.path,item.blob));}return {commitSha:'LOCAL',fileCount:results.length,local:true}}
@@ -134,5 +146,5 @@
   }
 
   async function checkConnection(){if(isLocal()){const r=await fetch('/__local__/status');const d=await r.json();return {login:'local',name:d.git?'Local · Git '+d.branch:'Local · chưa có Git',local:true}}const user=await request(API+'/user');return {login:user.login,name:user.name||user.login}}
-  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,createBlob,applyTreeChanges,checkConnection};
+  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,clearApiCache,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,createBlob,applyTreeChanges,checkConnection};
 })();
