@@ -567,7 +567,7 @@ function drawFrame(elapsed,st){
  // Nếu không có trường này, giữ nguyên cách dựng một nhân vật của JSON cũ.
  const drawOneCharacter=(media,spec)=>{
   if(!media)return;
-  const x=w*(Number.isFinite(Number(spec?.x))?Math.max(0,Math.min(100,Number(spec.x))):50)/100;
+  const x=charLayerVideos.length===1?w/2:w*(Number.isFinite(Number(spec?.x))?Math.max(0,Math.min(100,Number(spec.x))):50)/100;
   const y=h*(Number.isFinite(Number(spec?.y))?Math.max(0,Math.min(110,Number(spec.y))):100)/100;
   const requestedScale=Number(spec?.scale),scale=Number.isFinite(requestedScale)?Math.max(.1,Math.min(2.5,requestedScale)):(charLayerVideos.length>1?.72:1);
   ctx.save();let alpha=1;
