@@ -310,7 +310,7 @@ const backgrounds=[
  ['render.mp4','Video nền render.mp4']
 ];
 let bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
-let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null;
+let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null,speechMotionSmooth=0,speechMotionFrameAt=0;
 const speechAudioSources=new WeakMap();
 let piperVoices=[];
 let previewAudio={bgm:null,tts:null,sfx:null};
@@ -631,7 +631,7 @@ function drawFrame(elapsed,st){
  });
  ctx.restore();
  if(st.flashback){ctx.save();ctx.globalCompositeOperation='soft-light';ctx.fillStyle='rgba(255,205,135,.34)';ctx.fillRect(0,0,w,h);ctx.globalCompositeOperation='source-over';ctx.fillStyle='rgba(255,231,185,.10)';ctx.fillRect(0,0,w,h);const memoryVignette=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.22,w/2,h/2,Math.max(w,h)*.76);memoryVignette.addColorStop(0,'rgba(90,53,25,0)');memoryVignette.addColorStop(1,'rgba(75,43,20,.24)');ctx.fillStyle=memoryVignette;ctx.fillRect(0,0,w,h);ctx.restore()}if(st.sceneTransition){const fade=Math.max(0,1-Math.max(0,Number(elapsed)||0)/.7);if(fade>0){ctx.save();ctx.fillStyle='rgba(0,0,0,'+fade+')';ctx.fillRect(0,0,w,h);ctx.restore()}}
- if(st.dialogueLayer)ctx.drawImage(st.dialogueLayer,0,0);else drawDialogue(w,h);
+ if(st.dialogueLayer&&!speakingCharacterId)ctx.drawImage(st.dialogueLayer,0,0);else drawDialogue(w,h);
 }
 function drawDialogue(w,h){
  if($('show-dialogue').checked&&$('dialogue').value.trim()){
@@ -651,8 +651,14 @@ function drawDialogue(w,h){
    const chars=Array.from(line),widths=chars.map(ch=>ctx.measureText(ch).width),totalWidth=widths.reduce((sum,value)=>sum+value,0);let x=(w-totalWidth)/2;
    chars.forEach((ch,charIndex)=>{
     const absoluteIndex=lineStart+charIndex,active=!!speakingCharacterId&&absoluteIndex===speechTextIndex&&!/\s/.test(ch);
-    const amp=active?fontSize*.14*Math.max(.25,Math.min(1,speechMotionLevel||.65)):0,direction=absoluteIndex%2===0?1:-1;
-    ctx.textAlign='left';ctx.fillText(ch,x,boxY+topPad+nameH+lineIndex*lineH+direction*amp);x+=widths[charIndex];
+    const intensity=active?Math.max(0,Math.min(1,speechMotionSmooth)):0;
+    // Chu kỳ nhịp: xuống thẳng, lên nghiêng trái, xuống thẳng, lên nghiêng phải, xuống thẳng, lên thẳng, xuống nghiêng trái...
+    const rhythm=[0,1,0,2,0,3,4,2][absoluteIndex%8],isDown=rhythm===0||rhythm===4;
+    const tilt=rhythm===1?-.095:(rhythm===2?.095:(rhythm===4?-.045:0));
+    const scaleY=1+(isDown?-.13:.12)*intensity,scaleX=1+(isDown?-.015:.025)*intensity,angle=tilt*intensity;
+    const baseY=boxY+topPad+nameH+lineIndex*lineH+fontSize*.52;
+    ctx.save();ctx.translate(x+widths[charIndex]/2,baseY);ctx.rotate(angle);ctx.scale(scaleX,scaleY);
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(ch,0,0);ctx.restore();x+=widths[charIndex];
    });
   });
   ctx.shadowBlur=0;
@@ -671,6 +677,9 @@ function animate(){
  if(recording){raf=requestAnimationFrame(animate);return}
  // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
  const t=previewing?Math.max(0,((previewPaused?previewPauseStartedAt:performance.now())-previewStartedAt)/1000):0;
+ const motionNow=performance.now(),motionDt=speechMotionFrameAt?Math.min(.08,(motionNow-speechMotionFrameAt)/1000):1/60;speechMotionFrameAt=motionNow;
+ const motionTarget=speakingCharacterId&&!previewPaused?Math.max(0,Math.min(1,speechMotionLevel)):0;
+ speechMotionSmooth+=(motionTarget-speechMotionSmooth)*(1-Math.exp(-motionDt*14));if(speechMotionSmooth<.005)speechMotionSmooth=0;
  if(speechAudioElement&&speakingCharacterId&&!previewPaused&&Number.isFinite(speechAudioElement.duration)&&speechAudioElement.duration>0){const spokenText=($('dialogue').value||'').trim();speechTextIndex=Math.min(Math.max(0,spokenText.length-1),Math.floor(speechAudioElement.currentTime/speechAudioElement.duration*spokenText.length));}
   if(speechAnalyser&&speechAnalyserData&&speakingCharacterId&&!previewPaused){
   speechAnalyser.getByteTimeDomainData(speechAnalyserData);
@@ -717,7 +726,7 @@ async function waitWhilePaused(run){
  return previewing&&run===previewRunId;
 }
 function stopPreview(){
- previewRunId++;previewing=false;previewPaused=false;previewPauseStartedAt=0;previewLineBgmName='';previewLineSfxName='';speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;
+ previewRunId++;previewing=false;previewPaused=false;previewPauseStartedAt=0;previewLineBgmName='';previewLineSfxName='';speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;speechMotionSmooth=0;speechMotionFrameAt=0;
  if(window.speechSynthesis)window.speechSynthesis.cancel();
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
@@ -941,7 +950,7 @@ async function playPreview(){
   await loadSourceLineForPlayback(item);if(!await waitWhilePaused(run))break;
   const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;await playLineAudio(line);
   const text=$('dialogue').value.trim();
-  speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';speechTextIndex=0;speechAudioElement=null;
+  speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';speechTextIndex=0;speechAudioElement=null;speechMotionSmooth=0;speechMotionFrameAt=0;
   try{
    if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
    else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;speechAudioElement=audio;attachSpeechAnalyser(audio);
