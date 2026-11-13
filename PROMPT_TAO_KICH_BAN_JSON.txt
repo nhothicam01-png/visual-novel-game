@@ -549,108 +549,62 @@ C. KẾ THỪA NHẠC NỀN VÀ SFX
 - Không thêm `che_do`, `lap_lai`, `ke_thua`, `ghi_de` hoặc `tat` vào từng object âm thanh. Cách hoạt động đã được quy định cố định ở trên.
 
 ==================================================
-VII. CẤU TRÚC JSON PHIÊN BẢN 2
+VII. CẤU TRÚC JSON PHIÊN BẢN 3
 ==================================================
 
-Dùng đúng cấu trúc sau, không tự ý đưa các trường cũ vào:
+Dùng đúng cấu trúc sau. JSON v3 là chuẩn mới duy nhất; không tạo JSON v2.
 
 ```json
 {
-  "phien_ban": 2,
-  "thiet_lap_chung": {
-    "thoi_gian_giu_khung": 2,
-    "thoi_gian_cho_giua": 0.5,
-    "toc_do_go_chu": 30
-  },
+  "phien_ban": 3,
+  "world_id": "ma_the_gioi",
+  "thiet_lap_chung": {"thoi_gian_giu_khung":2,"thoi_gian_cho_giua":0.5,"toc_do_go_chu":30},
   "nhan_vat": {
-    "nhan_vat_1": {
-      "ten_hien_thi": "Nhân vật 1",
-      "giong_noi": {
-        "profile_id": "",
-        "lang": "vi",
-        "voice_id": ""
-      }
+    "char_nhan_vat_a": {
+      "character_id":"char_nhan_vat_a",
+      "ten_hien_thi":"Nhân vật A",
+      "assetFolder":"2",
+      "giong_noi":{"profile_id":"","lang":"vi","voice_id":""}
     },
-    "nhan_vat_2": {
-      "ten_hien_thi": "Nhân vật 2",
-      "giong_noi": {
-        "profile_id": "",
-        "lang": "vi",
-        "voice_id": ""
-      }
+    "char_nhan_vat_b": {
+      "character_id":"char_nhan_vat_b",
+      "ten_hien_thi":"Nhân vật B",
+      "assetFolder":"2",
+      "giong_noi":{"profile_id":"","lang":"vi","voice_id":""}
     }
   },
-  "am_thanh_mac_dinh": {
-    "nhac_nen": ""
-  },
-  "danh_sach": [
-    {
-      "scene_id": "canh_001",
-      "hoi_tuong": false,
-      "nhan_vat": "nhan_vat_1",
-      "noi_dung": "Xin chào!",
-      "anh_nen": "canh_1.png",
-      "anh_hieu_ung": "",
-      "bieu_cam": "",
-      "nhan_vat_hien_thi": [
-        {
-          "id": "nhan_vat_1",
-          "bieu_cam": "bieu_cam_1",
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "nhan_vat_2",
-          "bieu_cam": "bieu_cam_2",
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
-      "hieu_ung": {
-        "nhan_vat": [],
-        "nen": [],
-        "camera": [],
-        "moi_truong": []
-      },
-      "am_thanh": {
-        "nhac_nen": {
-          "tep": ""
-        },
-        "hieu_ung_am_thanh": {
-          "tep": ""
-        }
-      }
-    }
-  ]
+  "am_thanh_mac_dinh":{"nhac_nen":""},
+  "danh_sach":[{
+    "scene_id":"SC001","hoi_tuong":false,
+    "nhan_vat":"char_nhan_vat_a","noi_dung":"Xin chào!",
+    "anh_nen":"canh_1.png","anh_hieu_ung":"",
+    "expression_id":{"communication":"speaking","emotion":"neutral","pose":"standing","direction":"front","face_angle":"three_quarter"},
+    "nhan_vat_hien_thi":[
+      {"id":"char_nhan_vat_a","expression_id":{"communication":"speaking","emotion":"neutral"},"x":30,"y":100,"scale":0.72,"z_index":1},
+      {"id":"char_nhan_vat_b","expression_id":{"communication":"silent","emotion":"neutral"},"x":70,"y":100,"scale":0.72,"z_index":2}
+    ],
+    "hieu_ung":{"nhan_vat":[],"nen":[],"camera":[],"moi_truong":[]},
+    "am_thanh":{"nhac_nen":{"tep":""},"hieu_ung_am_thanh":{"tep":""}}
+  }]
 }
 ```
 
 Quy tắc cấu trúc:
-- `phien_ban` luôn là số 2.
-- `thiet_lap_chung` chứa thiết lập thời gian và tốc độ gõ chữ.
-- `nhan_vat` khai báo nhân vật và giọng nói ở cấp cao nhất.
-- `am_thanh_mac_dinh.nhac_nen` là tên tệp nhạc nền mặc định; nếu không có thì để chuỗi rỗng.
-- `danh_sach` chứa các mục thoại theo đúng thứ tự diễn biến.
-- `scene_id` là ID cảnh. Tất cả lượt thoại liên tiếp thuộc cùng một cảnh phải dùng cùng ID; khi chuyển sang cảnh mới phải đổi ID, kể cả khi ảnh nền không đổi. Không dùng thay đổi `anh_nen` để quyết định ranh giới cảnh.
-- Gemini phải tự chia cảnh theo thay đổi địa điểm, thời gian, hành động hoặc nhịp diễn biến; mỗi cảnh mới có `scene_id` riêng. Người dùng tự sáng tác có thể tự tạo/tách/gộp cảnh trong trình chỉnh sửa.
-- `hoi_tuong` là boolean tùy chọn ở từng lượt thoại. Đặt `true` cho tất cả lượt thoại thuộc cảnh hồi tưởng; cảnh hiện tại bỏ trường này hoặc đặt `false`. Hồi tưởng vẫn là cảnh bình thường: có thể đổi ảnh nền, nhân vật và bố cục riêng. Player áp dụng lớp màu ký ức ấm/sepia và viền tối mềm lên toàn cảnh.
-- `nhan_vat` trong từng mục thoại là ID nhân vật đang nói, đã khai báo ở object nhân vật.
-- `nhan_vat_hien_thi` là trường tùy chọn trong từng mục thoại, dùng khi một khung hình có nhiều nhân vật. Mỗi phần tử gồm `id` (ID trong object `nhan_vat`), `bieu_cam` (tên biểu cảm WebM riêng của nhân vật), `x` (tâm ngang theo phần trăm khung hình), `y` (điểm chân theo phần trăm chiều cao), `scale` (hệ số kích thước) và `z_index` (thứ tự lớp, số nhỏ ở phía sau).
-- Khi có từ hai nhân vật cùng xuất hiện, phải khai báo đầy đủ tất cả nhân vật nhìn thấy trong `nhan_vat_hien_thi`, kể cả người không nói. Nhân vật đang nói vẫn được xác định riêng bằng trường `nhan_vat`.
-- Chỉ thêm `nhan_vat_hien_thi` ở những lượt/cảnh thực sự có nhiều nhân vật cùng xuất hiện. Không sao chép hai nhân vật minh họa trong mẫu vào mọi lượt thoại; không tự thêm nhân vật chỉ vì họ có tên trong danh sách nhân vật.
-- Mặc định bố cục hai người: nhân vật thứ nhất ở x=30, nhân vật thứ hai ở x=70, y=100, scale=0.72; điều chỉnh khi bố cục cảnh cần thiết. Không khai báo nhân vật không thực sự có mặt trong cảnh.
-- Nếu chỉ có một nhân vật hoặc không khai báo `nhan_vat_hien_thi`, player dùng cách hiển thị cũ để bảo đảm tương thích JSON cũ.
-- `anh_nen` rỗng nghĩa là kế thừa nền trước.
-- `hieu_ung` luôn có bốn nhóm như mẫu.
-- Cấu hình âm thanh chỉ dùng `tep`; tuyệt đối không có `che_do`.
-- Không sử dụng các trường âm thanh cũ dạng `am_thanh_nen` hoặc `am_thanh_hieu_ung` ở cấp mục thoại.
-- Không lặp `ten_hien_thi` hoặc `giong_noi` trong từng mục thoại.
-- Không thêm schema hoặc trường ngoài cấu trúc player hỗ trợ.
+- `phien_ban` luôn là số 3; `world_id` là slug chính xác của thế giới đang dùng.
+- `nhan_vat` được khóa bằng `character_id` ổn định, không phải tên thư mục. Mỗi nhân vật có ID riêng dạng `char_ten_nhan_vat`; ID không đổi khi đổi tên hiển thị hoặc đổi assetFolder.
+- Mỗi object nhân vật có `character_id`, `ten_hien_thi`, `assetFolder`, `giong_noi`. assetFolder là tên folder thật trong assets/NhanVat/ hoặc chuỗi rỗng nếu chưa có nguồn.
+- Nhiều nhân vật được phép dùng chung một assetFolder nếu hợp lý. Chung folder chỉ là dùng chung nguồn animation, không gộp danh tính, thoại, tên, giọng nói, quan hệ hoặc trạng thái.
+- Không bắt buộc một nhân vật một thư mục; không gán folder còn trống theo thứ tự; không chọn ngẫu nhiên. Nếu không có căn cứ phù hợp, để assetFolder rỗng.
+- `nhan_vat` trong từng lượt thoại là character_id người nói, không bao giờ là assetFolder.
+- `expression_id` là object mô tả ý nghĩa animation, KHÔNG phải filename/basename/path WEBM. Chỉ điền thuộc tính có căn cứ: communication, pose, emotion, direction, face_angle, view_angle, action, interaction_target.
+- `nhan_vat_hien_thi` là mảng tùy chọn. Mỗi phần tử có id là character_id, expression_id ngữ nghĩa riêng, x/y/scale/z_index. Người nói communication="speaking"; người nghe ưu tiên listening/reacting; người không nói ưu tiên silent/idle.
+- Runtime tra expression_id với metadata WEBM trong assetFolder hiện tại của chính nhân vật. Nếu không khớp, chọn gần nhất trong cùng folder theo communication trước, sau đó emotion/pose/direction/angle/action; cuối cùng dùng animation mặc định cùng folder. Không có WEBM thì báo thiếu tài nguyên; tuyệt đối không mượn folder khác.
+- Khi đổi assetFolder trong thế giới, expression_id vẫn giữ nguyên và runtime phân giải lại từ folder mới.
+- scene_id xác định cảnh; giữ mã SCxxx từ kế hoạch cảnh. hoi_tuong là boolean tùy chọn.
+- anh_nen rỗng nghĩa là kế thừa nền trước. hieu_ung luôn có bốn mảng; âm thanh chỉ dùng tep, không dùng che_do.
+- Không thêm trường ngoài schema; không lưu filename WEBM trong JSON.
 
+==================================================
 ==================================================
 VIII. QUY TẮC CHIA CÂU THOẠI
 ==================================================
@@ -672,7 +626,7 @@ IX. QUY TRÌNH KIỂM TRA TRƯỚC KHI LƯU
 
 Trước khi lưu:
 1. Kiểm tra JSON hợp lệ bằng parser.
-2. Đảm bảo đúng cấu trúc phiên bản 2.
+2. Đảm bảo đúng cấu trúc phiên bản 3.
 3. Mọi ID nhân vật trong danh_sach đều tồn tại trong object nhan_vat.
 4. Giọng nói chỉ khai báo ở cấp nhân vật; không có profile_id/voice_id tự tạo.
 5. Mọi biểu cảm, hình nền, file hình ảnh và file âm thanh đều tồn tại đúng đường dẫn và đúng phần mở rộng.
@@ -742,7 +696,7 @@ Yêu cầu bổ sung:
 Nếu người dùng không nêu tên thư mục nhưng đã cung cấp cốt truyện, tự sinh tên thư mục và tiếp tục lưu. Chỉ hỏi khi nguồn truyện thực sự chưa rõ, bị thiếu hoặc có nhiều nguồn cần người dùng chọn.
 
 BẮT ĐẦU:
-Đọc đúng nguồn truyện, đọc toàn bộ nội dung, kiểm tra tài nguyên hiện có, đọc danh mục hiệu ứng mới nhất, lập kế hoạch chuyển thể, tạo JSON phiên bản 2, kiểm tra toàn bộ dữ liệu và chỉ sau đó mới lưu vào đúng đường dẫn.
+Đọc đúng nguồn truyện, đọc toàn bộ nội dung, kiểm tra tài nguyên hiện có, đọc danh mục hiệu ứng mới nhất, lập kế hoạch chuyển thể, tạo JSON phiên bản 3, kiểm tra toàn bộ dữ liệu và chỉ sau đó mới lưu vào đúng đường dẫn.
 
 
 ==================================================
@@ -850,26 +804,22 @@ XIII-A. QUY ƯỚC QUY MÔ VÀ ĐƠN VỊ KỂ CHUYỆN (BẮT BUỘC)
 8. Sau khi tạo, đối chiếu từng cảnh trong kế hoạch với JSON. Cảnh chỉ được xem là hoàn thành khi hành động và kết quả thực sự được thể hiện, không phải chỉ được nhắc tên. Nếu thiếu hoặc triển khai quá sơ sài, phải bổ sung trước khi báo hoàn tất.
 
 ==================================================
-
 XIV. CHỌN ANIMATION WEBM BẰNG METADATA (BẮT BUỘC)
 ==================================================
 
-Khi phần mềm cung cấp thư viện WEBM có metadata sidecar, hãy dùng metadata đó để chọn đúng animation cho từng nhân vật và từng lượt thoại.
-
-1. Mỗi nhân vật chỉ được dùng file WEBM nằm trong đúng thư mục tài nguyên đã gán cho nhân vật đó. Không lấy file từ thư mục nhân vật khác, kể cả khi tên file giống nhau.
-2. Danh sách expressions là danh sách file WEBM thực tế được phép dùng. Trường animations là metadata gắn với từng file; đối chiếu đúng file trước khi chọn.
-3. Chọn theo thứ tự ưu tiên: metadata do người dùng khai báo (user_metadata), metadata AI đã phân tích (characters, action, summary), sau đó mới dùng tên file. Không coi tên file là bằng chứng chắc chắn nếu metadata nói khác.
-4. Đối chiếu các thuộc tính khi có: pose (tư thế), emotion (cảm xúc), direction (hướng quay), face_angle (góc mặt), view_angle (khung hình/góc nhìn), communication (speaking/listening/silent/reacting/unknown), action và interaction_target.
-5. Chọn animation phù hợp với trạng thái thực tế trong chính lượt thoại: người đang nói ưu tiên animation speaking nếu có; người nghe ưu tiên listening/reacting; nhân vật không tham gia lời thoại ưu tiên silent/idle phù hợp. Không gán speaking cho tất cả nhân vật chỉ vì một người đang nói.
-6. Nếu một cảnh có nhiều nhân vật, chọn WEBM độc lập cho từng nhân vật theo tư thế, cảm xúc, hướng nhìn và vai trò giao tiếp của họ. Với hai nhân vật tương tác, ưu tiên các animation có hướng nhìn và interaction_target phù hợp để họ quay về phía nhau.
-7. Không bịa filename, không sửa tên file, không tự tạo animation mới. Giá trị bieu_cam phải là basename chính xác có trong expressions của đúng folder, không kèm .webm.
-8. Metadata có review_required=true, confidence thấp hoặc trường unknown/null chỉ là gợi ý chưa chắc chắn. Không biến dữ liệu chưa chắc thành sự thật. Nếu không có animation khớp hoàn toàn, chọn file có thật gần nhất và giữ kịch bản hợp lý; không tuyên bố khớp tuyệt đối.
-9. Nếu metadata của một file không tồn tại, vẫn có thể chọn file đó dựa trên tên file thật trong folder, nhưng không được giả vờ đã biết tư thế/cảm xúc/hướng quay của nó.
-10. Không thêm trường ngoài schema JSON player hỗ trợ chỉ để lưu metadata. Dùng metadata để ra quyết định chọn bieu_cam; JSON cuối vẫn phải đúng schema hiện hành.
-
+1. JSON chỉ lưu expression_id ngữ nghĩa; tuyệt đối không lưu tên file WEBM. File thực tế được runtime phân giải động từ assetFolder hiện tại.
+2. Danh mục animations được nhóm theo folder; mỗi file có metadata sidecar. Ưu tiên user_metadata, sau đó metadata AI, cuối cùng mới dùng filename như gợi ý yếu.
+3. expression_id là object với thuộc tính tùy chọn communication, pose, emotion, direction, face_angle, view_angle, action, interaction_target. Không điền thuộc tính không có căn cứ.
+4. Mỗi character_id tra assetFolder riêng trong thế giới. Nhiều character_id có thể cùng assetFolder mà không bị gộp danh tính.
+5. Runtime lọc đúng assetFolder trước; ưu tiên communication, sau đó emotion, pose, direction, face_angle, view_angle, action, interaction_target. Chỉ chọn file thật trong folder đó.
+6. Người nói ưu tiên communication="speaking"; người nghe "listening"/"reacting"; người không tham gia thoại "silent"/"idle".
+7. Nếu không khớp expression_id, chọn gần nhất trong cùng folder; nếu không có, dùng animation mặc định cùng folder. Nếu folder không có WEBM thì báo thiếu tài nguyên. Không bịa file và không mượn folder khác.
+8. Khi đổi assetFolder, giữ nguyên expression_id và phân giải lại từ thư mục mới; không giữ filename cũ.
+9. Mỗi nhân vật trong cùng cảnh có expression_id độc lập, kể cả khi dùng chung assetFolder.
+10. Metadata chỉ dùng để chọn animation; JSON chỉ giữ expression_id ngữ nghĩa.
 
 ==================================================
-XV. QUY TRÌNH TREATMENT → PHÂN CẢNH → KỊCH BẢN (BẮT BUỘC)
+
 ==================================================
 
 Khi nhận treatment/cấu trúc phim đã duyệt, không được chuyển thẳng từng gạch đầu dòng thành một hoặc hai lượt thoại tượng trưng.
