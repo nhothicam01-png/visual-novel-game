@@ -9,6 +9,7 @@ if errorlevel 1 (
 )
 where git >nul 2>nul
 if errorlevel 1 echo Chua tim thay Git. Ung dung van chay local, nhung nut dong bo can Git.
+start "Visual Novel Studio Local" cmd /k node local-server.js
+timeout /t 2 /nobreak >nul
 start "" http://127.0.0.1:4173/
-node local-server.js
-pause
+exit
