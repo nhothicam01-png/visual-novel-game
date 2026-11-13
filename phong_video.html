@@ -1805,7 +1805,7 @@ function applyVisual(v){
  $('dialogue-width-mode').value=v.dialogueMode||'percent';$('dialogue-width').value=v.dialogueWidth||75;
  $('dialogue-width-control').style.display=v.dialogueMode==='fit'?'none':'flex';
  $('dialogue-width-value').textContent=$('dialogue-width').value+'%';
- resizeCanvas(!!v.portrait);
+ // Giữ tỉ lệ khung hình do người dùng chọn; không lấy lại giá trị cũ theo từng dòng/cảnh.
 }
 function getCurrentScene(){return scenes[activeSceneIndex]}
 function getCurrentLine(){return getCurrentScene()?.lines[activeLineIndex]||null}
