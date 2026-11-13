@@ -11,38 +11,61 @@
 </head>
 <body>
 <main class="wrap">
-<header class="top"><div class="eyebrow">GEMINI AUDIO · LONG-FORM TRANSCRIPTION</div><h1>🎧 MP3 → Văn bản TXT</h1><p>Tải bản ghi âm lên, để Gemini nghe và chép lại toàn bộ lời nói. Kết quả được giữ trong trang để bạn kiểm tra, sao chép hoặc tải thành một file TXT dài.</p></header>
+<header class="top"><div class="eyebrow">GEMINI AUDIO · CHIA NHỎ & CHUYỂN THỂ</div><h1>🎧 MP3 → Nhiều đoạn → TXT → Truyện</h1><p>Chia file MP3 dài thành các phần nhỏ ngay trên thiết bị. Tải từng phần lên Gemini app để chép lời, rồi nhập tất cả TXT trở lại đây để AI sáng tác.</p></header>
 <section class="panel">
-<h2>1 · Chọn file âm thanh</h2>
-<label class="field">File MP3 / audio<input id="audio-file" type="file" accept=".mp3,.m4a,.wav,.aac,.ogg,.flac,.webm,audio/*"></label>
-<div class="meta" id="file-meta"><span>Chưa chọn file</span></div>
+<h2>1 · Chia file MP3 thành nhiều phần</h2>
+<label class="field">Chọn file MP3<input id="audio-file" type="file" accept=".mp3,audio/mpeg"></label>
+<div class="meta" id="file-meta"><span>Chưa chọn file MP3</span></div>
 <div class="grid">
-<label class="field">Ngôn ngữ trong audio<select id="language"><option value="auto">Tự nhận diện (khuyên dùng)</option><option value="vi">Tiếng Việt</option><option value="en">English</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="zh">中文</option><option value="fr">Français</option><option value="es">Español</option></select></label>
-<label class="field">Model<select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash · Audio dài</option></select></label>
+<label class="field">Độ dài mỗi phần<select id="chunk-minutes"><option value="5">5 phút · dễ xử lý hơn</option><option value="8">8 phút</option><option value="10" selected>10 phút · khuyên dùng</option><option value="12">12 phút</option><option value="15">15 phút</option><option value="20">20 phút</option></select></label>
+<label class="field">Tên file đầu ra<input id="output-prefix" type="text" placeholder="Tự lấy theo tên MP3"></label>
 </div>
-<p class="note">Dùng Gemini Files API để tải file lớn, không nhúng MP3 vào request trực tiếp. File được gửi từ trình duyệt lên Google Gemini, không tải lên repository GitHub.</p>
+<p class="note">Công cụ cắt trực tiếp tại ranh giới frame MP3, không giải mã hay nén lại âm thanh. Nhanh, không gửi MP3 lên máy chủ và chất lượng âm thanh được giữ nguyên. Chỉ hỗ trợ MP3.</p>
+<div class="row"><button class="btn" id="split-mp3" type="button" disabled>✂ Chia MP3</button><button class="btn secondary" id="clear-splits" type="button">Xóa danh sách</button></div>
+<div class="progress hidden" id="split-progress"><div id="split-progress-fill"></div></div>
+<div class="status" id="split-status" role="status" aria-live="polite">Chọn MP3 để bắt đầu.</div>
+<div id="segment-list" class="hidden"></div>
 </section>
 <section class="panel">
-<h2>2 · Kết nối Gemini</h2>
-<label class="field">Gemini API Key<input id="api-key" type="password" autocomplete="off" placeholder="Nhập API key hoặc dùng key đã lưu trong Gemini Studio"></label>
-<div class="row"><button class="btn secondary" id="save-key" type="button">Lưu key trên thiết bị</button><button class="btn secondary" id="toggle-key" type="button">Hiện / Ẩn</button></div>
-<p class="note">Trang này dùng chung key localStorage <code>subtitleGeminiApiKey</code> với Gemini Studio / công cụ demo cũ. Nếu đã lưu key trên trình duyệt này, không cần nhập lại.</p>
-<div class="warn">API key được sử dụng trực tiếp trong trình duyệt và chỉ nên dùng trên thiết bị cá nhân. Không chia sẻ đường dẫn trang cùng key; không commit key vào GitHub.</div>
+<h2>2 · Prompt chép lời dùng trong Gemini app</h2>
+<p class="note">Tải prompt này một lần. Với mỗi MP3 đã chia, đính kèm đúng file vào Gemini app và dùng cùng prompt; chỉ thay số thứ tự phần nếu cần.</p>
+<label class="field">Prompt<textarea id="gemini-prompt" style="min-height:250px" readonly></textarea></label>
+<div class="row"><button class="btn" id="copy-prompt" type="button">Sao chép prompt</button><button class="btn secondary" id="download-prompt" type="button">Tải prompt TXT</button></div>
 </section>
 <section class="panel">
-<h2>3 · Chép lời toàn bộ audio</h2>
-<p class="note">Chế độ chép nguyên văn: giữ đúng ngôn ngữ gốc, không tóm tắt, không lược bỏ câu nói. Nếu nghe không rõ, Gemini sẽ đánh dấu [không nghe rõ] thay vì tự đoán.</p>
-<div class="row"><button class="btn" id="transcribe" type="button">▶ Bắt đầu chép lời</button><button class="btn secondary" id="cancel" type="button" disabled>Hủy xử lý</button></div>
-<div class="progress hidden" id="progress"><div id="progress-fill"></div></div>
-<div class="status" id="status" role="status" aria-live="polite">Sẵn sàng.</div>
+<h2>3 · Chép từng phần bằng Gemini app</h2>
+<ol class="note">
+<li>Mở ứng dụng Gemini, tạo cuộc trò chuyện mới.</li>
+<li>Đính kèm file <b>part_001.mp3</b>, gửi prompt ở trên.</li>
+<li>Chờ Gemini chép hết đoạn đó, sao chép kết quả hoặc tải thành TXT.</li>
+<li>Lặp lại cho part_002, part_003… Không yêu cầu Gemini kể lại hay tóm tắt.</li>
+<li>Nên đặt tên TXT theo thứ tự: <b>part_001.txt, part_002.txt…</b></li>
+</ol>
+<div class="warn">Đừng gộp nhiều MP3 vào cùng một yêu cầu. Mỗi lần chỉ xử lý một phần để tránh Gemini bỏ sót hoặc cắt mất phần cuối.</div>
 </section>
 <section class="panel">
-<div class="row" style="justify-content:space-between"><h2>4 · Văn bản đã nhận diện</h2><span class="tiny" id="text-stats">0 ký tự</span></div>
-<label class="field">Transcript<textarea id="transcript" spellcheck="false" placeholder="Toàn bộ nội dung Gemini nhận diện sẽ xuất hiện tại đây..."></textarea></label>
-<div class="row"><button class="btn" id="download" type="button" disabled>⬇ Tải file TXT</button><button class="btn secondary" id="copy" type="button" disabled>Sao chép văn bản</button><button class="btn secondary" id="clear" type="button">Xóa kết quả</button></div>
-<p class="note">Tên file TXT được lấy theo tên MP3. Văn bản có thể chỉnh sửa trước khi tải. Nếu Gemini báo hết giới hạn đầu ra, kết quả có thể chưa đầy đủ; đừng coi phần bị cắt là bản chép hoàn chỉnh.</p>
+<h2>4 · Nhập các file TXT đã chép lời</h2>
+<label class="field">Chọn nhiều file TXT cùng lúc<input id="txt-files" type="file" accept=".txt,text/plain" multiple></label>
+<p class="note">Trang tự sắp xếp theo số part trong tên file. Nếu thứ tự chưa đúng, dùng nút lên/xuống để chỉnh lại trước khi ghép.</p>
+<div id="txt-file-list" class="hidden"></div>
+<div class="row"><button class="btn" id="merge-txt-files" type="button" disabled>Ghép TXT theo thứ tự</button><button class="btn secondary" id="clear-txt-files" type="button">Xóa danh sách TXT</button></div>
+<div class="status" id="txt-import-status">Chưa nhập file TXT.</div>
 </section>
-
+<section class="panel">
+<div class="row" style="justify-content:space-between"><h2>5 · Transcript đã ghép</h2><span class="tiny" id="text-stats">0 ký tự</span></div>
+<label class="field">Văn bản nguồn<textarea id="transcript" spellcheck="false" placeholder="Các file TXT sẽ được ghép vào đây. Bạn vẫn có thể chỉnh sửa thủ công…"></textarea></label>
+<div class="row"><button class="btn secondary" id="download" type="button" disabled>Tải TXT đã ghép</button><button class="btn secondary" id="copy" type="button" disabled>Sao chép</button><button class="btn secondary" id="clear" type="button">Xóa văn bản</button></div>
+</section>
+<section class="panel">
+<h2>6 · Gemini API cho bước diễn sinh trong trang</h2>
+<label class="field">Gemini API Key<input id="api-key" type="password" autocomplete="off" placeholder="Chỉ cần nếu muốn AI phân tích / sáng tác ngay trong trang"></label>
+<div class="grid">
+<label class="field">Model<select id="model"><option value="gemini-2.5-flash">Gemini 2.5 Flash</option><option value="gemini-2.5-pro">Gemini 2.5 Pro</option></select></label>
+<div class="field"><span>Quản lý API key</span><div class="row"><button class="btn secondary" id="save-key" type="button">Lưu key trên thiết bị</button><button class="btn secondary" id="toggle-key" type="button">Hiện / Ẩn</button></div></div>
+</div>
+<p class="note">Bước chia MP3 và chép lời trong Gemini app không cần API key. API key chỉ dùng nếu bạn tiếp tục bấm phân tích và sáng tác bằng Gemini API ngay trong trang này.</p>
+<div class="warn">API key lưu trong trình duyệt trên thiết bị của bạn. Không chia sẻ key hoặc commit key lên GitHub.</div>
+</section>
 <section class="panel" id="story-workflow">
 <h2>5 · Sáng tác thế giới và truyện từ TXT</h2>
 <p class="note">TXT dài sẽ được chia thành nhiều phần để phân tích, sau đó hợp nhất thành hồ sơ nguồn trước khi sáng tác.</p>
@@ -57,10 +80,10 @@
 </section>
 <section class="panel hidden" id="analysis-panel"><h2>6 · Hồ sơ phân tích nguồn</h2><label class="field">Sự kiện, nhân vật, quan hệ, chủ đề<textarea id="source-analysis" style="min-height:300px"></textarea></label><div class="row"><button class="btn" id="create-treatment" type="button">② Sáng tác treatment</button><button class="btn secondary" id="download-analysis" type="button">Tải hồ sơ</button></div></section>
 <section class="panel hidden" id="treatment-panel"><h2>7 · Duyệt thế giới và treatment</h2><label class="field" id="world-json-label">Hồ sơ thế giới JSON<textarea id="world-json" style="min-height:230px"></textarea></label><label class="field">Treatment / bản đồ chương và cảnh<textarea id="treatment" style="min-height:350px"></textarea></label><div class="row"><button class="btn" id="generate-story-json" type="button">③ Tạo kịch bản JSON v3</button><button class="btn secondary" id="download-treatment" type="button">Tải treatment TXT</button><button class="btn secondary" id="download-world-json" type="button">Tải thế giới JSON</button></div></section>
-<section class="panel hidden" id="story-json-panel"><h2>8 · Kịch bản JSON v3</h2><label class="field">Tên thư mục truyện<input id="story-folder" placeholder="Tự tạo từ tên truyện"></label><label class="field">JSON<textarea id="story-json" style="min-height:380px"></textarea></label><div class="row"><button class="btn secondary" id="validate-story-json" type="button">Kiểm tra JSON</button><button class="btn" id="download-story-json" type="button">Tải JSON</button><button class="btn" id="publish-creative" type="button">Lưu lên GitHub</button></div><div class="status" id="publish-creative-status"></div></section><p class="tiny">Visual Novel Studio · Audio → TXT → Worldbuilding → Treatment → JSON v3</p>
+<section class="panel hidden" id="story-json-panel"><h2>8 · Kịch bản JSON v3</h2><label class="field">Tên thư mục truyện<input id="story-folder" placeholder="Tự tạo từ tên truyện"></label><label class="field">JSON<textarea id="story-json" style="min-height:380px"></textarea></label><div class="row"><button class="btn secondary" id="validate-story-json" type="button">Kiểm tra JSON</button><button class="btn" id="download-story-json" type="button">Tải JSON</button><button class="btn" id="publish-creative" type="button">Lưu lên GitHub</button></div><div class="status" id="publish-creative-status"></div></section><p class="tiny">Visual Novel Studio · MP3 → Gemini TXT → Worldbuilding → Treatment → JSON v3</p>
 </main>
 <script src="./github-manager.js"></script>
-<script src="./audio-story.js"></script>
+<script src="./audio-story.js"></script>\n<script src="./mp3-workflow.js"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),KEY_NAME='subtitleGeminiApiKey';
