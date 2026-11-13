@@ -1,5 +1,14 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-12T02:25:47.575Z",
-  "assets": []
+  "updated_at": "2026-11-13T04:12:40.324Z",
+  "assets": [
+    {
+      "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
+      "metadata_path": "assets/NhanVat/Hầu gái/HauGai1.webm.json",
+      "character_id": "Hầu gái",
+      "analysis_status": "not_analyzed",
+      "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Toàn thân · communication: Im lặng · action: Đứng yên",
+      "updated_at": "2026-11-13T04:12:40.324Z"
+    }
+  ]
 }
