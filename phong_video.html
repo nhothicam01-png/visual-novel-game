@@ -1027,6 +1027,21 @@ let remoteVoiceProfiles=[];
 function localVoiceProfiles(){try{return JSON.parse(localStorage.getItem(VOICE_PROFILE_KEY)||'[]')}catch(_){return[]}}
 function deletedVoiceProfileIds(){try{return new Set(JSON.parse(localStorage.getItem(DELETED_VOICE_PROFILE_KEY)||'[]'))}catch(_){return new Set()}}
 function getVoiceProfiles(){const map=new Map();remoteVoiceProfiles.forEach(p=>{if(p&&p.id)map.set(p.id,p)});localVoiceProfiles().forEach(p=>{if(p&&p.id)map.set(p.id,p)});const deleted=deletedVoiceProfileIds();return [...map.values()].filter(p=>!deleted.has(p.id))}
+function renderCharacterVoiceSetup(){
+ const profiles=getVoiceProfiles(),list=activeCharacterList(),container=$('character-voice-list'),fallback=$('default-voice-profile');
+ if(!container||!fallback)return;
+ const options='<option value="">Dùng giọng mặc định</option>'+profiles.map(p=>'<option value="'+safeText(p.id)+'">'+safeText(p.name||p.id)+' · '+safeText(p.edgeVoice||p.voiceId||'')+'</option>').join('');
+ container.innerHTML=list.map(ch=>{
+  const id=String(ch.id),saved=characterVoiceMap[id]||'',valid=profiles.some(p=>p.id===saved);
+  return '<label class="field">'+safeText(ch.name||id)+'<select data-character-voice="'+safeText(id)+'">'+options+'</select><span class="note">'+(valid?'Đang dùng giọng riêng của nhân vật.':saved?'Giọng trong JSON không hợp lệ; sẽ dùng giọng mặc định.':'Chưa gán giọng riêng; sẽ dùng giọng mặc định.')+'</span></label>';
+ }).join('')||'<span class="note">Chưa có nhân vật trong truyện.</span>';
+ container.querySelectorAll('[data-character-voice]').forEach(sel=>{sel.value=characterVoiceMap[sel.dataset.characterVoice]||''});
+ fallback.innerHTML='<option value="">Chọn hồ sơ giọng mặc định…</option>'+profiles.map(p=>'<option value="'+safeText(p.id)+'">'+safeText(p.name||p.id)+' · '+safeText(p.edgeVoice||p.voiceId||'')+'</option>').join('');
+ fallback.value=profiles.some(p=>p.id===defaultVoiceProfileId)?defaultVoiceProfileId:'';
+ const invalid=list.filter(ch=>{const id=String(ch.id),saved=characterVoiceMap[id];return saved&&!profiles.some(p=>p.id===saved)}).length;
+ const status=$('voice-fallback-status');
+ if(status)status.textContent=invalid?'Có '+invalid+' nhân vật đang lưu ID giọng không hợp lệ; hệ thống sẽ dùng giọng mặc định cho các nhân vật đó.':'Giọng mặc định được dùng khi nhân vật chưa có giọng riêng hoặc giọng trong JSON không hợp lệ.';
+}
 async function loadSavedVoiceProfiles(){
  const sel=$('voice-profile');sel.innerHTML='<option value="">Dùng giọng Piper bên dưới</option>';
  try{const r=await fetch(REMOTE_VOICE_CONFIG+'?v='+Date.now());if(r.ok){const data=await r.json();remoteVoiceProfiles=Array.isArray(data)?data:(data.profiles||[])}}
