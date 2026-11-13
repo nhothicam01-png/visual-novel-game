@@ -5,10 +5,10 @@ function communicationState(item){
  const m=item?.metadata||{},u=m.user_metadata||{},rawChars=Array.isArray(m.characters)?m.characters:[],c=rawChars[0]||{};
  let value=u.communication??c.communication?.state??c.communication??m.communication??'';
  if(value&&typeof value==='object')value=value.state??value.status??value.type??'';
- const s=String(value).toLocaleLowerCase('vi').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[_-]+/g,' ').trim();
+ const s=String(value).toLocaleLowerCase('vi').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[_-]+/g,' ').trim();
  if(/^(speaking|speak|talking|talk|speaks|noi|dang noi|1|true)$/.test(s)||/dang noi|speaking|talking/.test(s))return 'speaking';
  if(/^(listening|listen|silent|idle|quiet|not speaking|nonspeaking|im lang|dang nghe|nghe|0|false)$/.test(s)||/im lang|dang nghe|listening|silent|not speaking|idle/.test(s))return 'silent';
- const name=String(item?.file||'').replace(/\\.webm$/i,'').toLocaleLowerCase('vi').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[_-]+/g,' ');
+ const name=String(item?.file||'').replace(/\.webm$/i,'').toLocaleLowerCase('vi').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[_-]+/g,' ');
  if(/(^| )(say|speak|speaking|talk|talking|noi chuyen|dang noi)( |$)/.test(name))return 'speaking';
  if(/(^| )(idle|listen|listening|silent|silence|quiet|not talking|not speaking|im lang|dang nghe|nghe)( |$)/.test(name))return 'silent';
  return '';
@@ -17,10 +17,10 @@ function applyCommunicationAnimations(d){
  const assets=G.A.characters||[],byFolder=new Map(assets.map(a=>[String(a.folder),a]));
  const choose=(folder,state)=>{
   const a=byFolder.get(String(folder));if(!a)return '';
-  const candidates=(a.animations||[]).filter(v=>/\\.webm$/i.test(String(v.file||''))&&communicationState(v)===state);
+  const candidates=(a.animations||[]).filter(v=>/\.webm$/i.test(String(v.file||''))&&communicationState(v)===state);
   if(!candidates.length)return '';
   candidates.sort((x,y)=>Number(!!y.metadata?.user_metadata?.communication)-Number(!!x.metadata?.user_metadata?.communication));
-  return String(candidates[0].file).replace(/\\.webm$/i,'');
+  return String(candidates[0].file).replace(/\.webm$/i,'');
  };
  let removed=0;
  d.danh_sach.forEach((line,index)=>{
