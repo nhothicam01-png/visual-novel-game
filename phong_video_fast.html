@@ -1111,12 +1111,30 @@ function ttsRequestKey(){
  return JSON.stringify({text:$('dialogue').value.trim(),voiceId,profile:profile||null,lang:$('tts-lang').value,engine:$('tts-engine').value+(edgeDead?'-x':''),eg:$('edge-gender').value});
 }
 const piperMods=new Map();
+async function loadPiperModule(){
+ if(piperModule)return piperModule;
+ const urls=[
+  'https://cdn.jsdelivr.net/npm/@realtimex/piper-tts-web@1.1.1/+esm',
+  'https://esm.sh/@realtimex/piper-tts-web@1.1.1?bundle'
+ ];
+ const errors=[];
+ for(const url of urls){
+  try{
+   const mod=await import(url);
+   if(!mod||typeof mod.TtsSession!=='function')throw new Error('Module không có TtsSession');
+   piperModule=mod;return mod;
+  }catch(error){errors.push(url+': '+(error?.message||error));}
+ }
+ throw new Error('Không tải được thư viện Piper từ các CDN dự phòng. '+errors.join(' | '));
+}
 async function getPiperSession(voiceId){
  if(piperSession&&piperSessionVoice===voiceId)return piperSession;
  let mod=piperMods.get(voiceId);
- if(!mod){try{mod=await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1'+(piperMods.size?'?x='+encodeURIComponent(voiceId):''))}catch(_){mod=piperModule||await import('https://esm.sh/@realtimex/piper-tts-web@1.1.1')}piperMods.set(voiceId,mod)}
- piperModule=mod;try{if(mod.TtsSession&&mod.TtsSession._instance&&mod.TtsSession._instance.voiceId&&mod.TtsSession._instance.voiceId!==voiceId)mod.TtsSession._instance=null}catch(_){}
- piperSession=new mod.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'cdn'});piperSessionVoice=voiceId;return piperSession;
+ if(!mod){mod=await loadPiperModule();piperMods.set(voiceId,mod);}
+ try{if(mod.TtsSession&&mod.TtsSession._instance&&mod.TtsSession._instance.voiceId&&mod.TtsSession._instance.voiceId!==voiceId)mod.TtsSession._instance=null}catch(_){}
+ piperSession=new mod.TtsSession({voiceId,allowLocalModels:true,fallbackStrategy:'auto'});
+ piperSessionVoice=voiceId;
+ return piperSession;
 }
 async function generatePiperAudio(){
  const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
