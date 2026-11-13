@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-13T04:47:36.825Z",
+  "updated_at": "2026-11-13T05:49:08.060Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -33,6 +33,14 @@
       "analysis_status": "not_analyzed",
       "summary": "pose: Đứng · emotion: Vui · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
       "updated_at": "2026-11-13T04:47:36.825Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794548563832.webm",
+      "metadata_path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794548563832.webm.json",
+      "character_id": "Hầu gái",
+      "analysis_status": "not_analyzed",
+      "summary": "pose: Đứng · emotion: Ngượng ngùng / Xấu hổ · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Toàn thân · communication: Đang nói · action: Đứng yên",
+      "updated_at": "2026-11-13T05:49:08.060Z"
     }
   ]
 }
