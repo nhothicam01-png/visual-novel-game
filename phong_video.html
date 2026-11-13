@@ -592,7 +592,7 @@ function drawFrame(elapsed,st){
    // Thu tu: nhun xuong thang -> len nghieng trai -> xuong thang -> len nghieng phai.
    const phase=(performance.now()/1000)*4.8;
    const compression=(1+Math.cos(phase))*.5;
-   const tilt=Math.sin(phase*.5)*.075;
+   const tilt=Math.sin(phase*.5)*.055;
    const sx=1+.015*compression*motion,sy=1-.06*compression*motion;
    // Neo tai diem chan giua de khong tao khe ho o day khung WEBM.
    ctx.translate(x,y);ctx.rotate(tilt*motion);ctx.scale(sx,sy);ctx.translate(-x,-y);
