@@ -23,7 +23,7 @@ function renderOutlineChoices(){
    const edit=document.createElement('textarea');edit.value=op.detail||op.text||'';edit.rows=3;edit.style.width='100%';edit.style.marginTop='8px';edit.placeholder='Sửa nội dung phương án này…';edit.oninput=()=>{op.detail=edit.value};
    wrap.append(row,edit);card.append(wrap);
   });
-  const add=document.createElement('button');add.className='btn secondary';add.textContent='＋ Tự viết phương án';add.onclick=()=>{sec.options.push({title:'Phương án của tôi',detail:''});sec.selected=sec.options.length-1;renderOutlineChoices()};card.append(add);root.append(card);
+  const actions=document.createElement('div');actions.className='row';actions.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin-top:10px';const regen=document.createElement('button');regen.className='btn secondary';regen.textContent=sec.loading?'Đang tạo…':'↻ Đổi phương án riêng mục này';regen.disabled=!!sec.loading;regen.onclick=()=>regenerateOutlineSection(sec.key);const add=document.createElement('button');add.className='btn secondary';add.textContent='＋ Tự viết phương án';add.onclick=()=>{sec.options.push({title:'Phương án của tôi',detail:''});sec.selected=sec.options.length-1;renderOutlineChoices()};actions.append(regen,add);card.append(actions);root.append(card);
  });
  $('finalize-outline').disabled=!outlineSections.length||!outlineSections.every(x=>x.selected>=0);
  $('regenerate-outline-choices').disabled=!outlineSections.length;
@@ -40,6 +40,20 @@ async function requestOutlineChoices(){
   renderOutlineChoices();G.say('outline-choice-status','Đã có '+outlineSections.length+' mục, mỗi mục có nhiều phương án để chọn hoặc sửa.','ok');progress(100,'Đã có phương án','Chọn một phương án trong từng mục rồi ghép cấu trúc.','done');
  }catch(e){G.say('outline-choice-status',e.message,'err');progress(100,'Không thể tạo lựa chọn',e.message,'error')}
  finally{G.lock('build-outline',false);G.lock('regenerate-outline-choices',false)}
+}
+async function regenerateOutlineSection(key){
+ const sec=outlineSections.find(x=>x.key===key);if(!sec||sec.loading)return;
+ sec.loading=true;renderOutlineChoices();G.say('outline-choice-status','Đang tạo phương án mới riêng cho mục: '+sec.title+'…');progress(12,'Đổi phương án: '+sec.title,'Các lựa chọn ở những mục khác sẽ được giữ nguyên.');
+ try{
+  const b=storyBase();const chosen=[...selectedOptions].sort((a,b)=>a-b).map(i=>storyOptions[i]);
+  const context=outlineSections.filter(x=>x.key!==key&&x.selected>=0).map(x=>({title:x.title,choice:x.options[x.selected]}));
+  const prompt='Bạn là biên kịch. Chỉ tạo lại phương án cho MỘT mục, không tạo các mục khác. Trả về DUY NHẤT JSON hợp lệ dạng {"key":"'+key+'","title":"'+sec.title+'","options":[{"title":"Tên ngắn","detail":"Mô tả cụ thể 2–4 câu"}]}. Cần đúng 3 phương án khác biệt rõ rệt, cụ thể, hợp logic với các lựa chọn đã duyệt ở mục khác. Không lặp lại các phương án cũ: '+JSON.stringify(sec.options)+'. Không markdown.\\nMục cần tạo lại: '+sec.title+' ('+key+').\\nCác mục khác đang được giữ: '+JSON.stringify(context)+'\\nThế giới: '+JSON.stringify(b.w)+'\\nNguồn truyện: '+b.source+'\\nHướng truyện đã chọn: '+JSON.stringify(chosen)+'\\nYêu cầu riêng: '+(b.notes||'')+'\\nGhi chú kết hợp: '+G.val('story-choice-notes');
+  const data=G.parse(await G.ask(prompt,true));if(data.key&&data.key!==key)throw Error('Gemini trả sai mục cần tạo lại.');
+  if(!Array.isArray(data.options)||data.options.length<2)throw Error('Gemini chưa trả đủ phương án mới cho mục này.');
+  sec.options=data.options.slice(0,5);sec.selected=-1;
+  G.say('outline-choice-status','Đã đổi riêng mục “'+sec.title+'”. Các mục khác và lựa chọn của bạn vẫn được giữ nguyên.','ok');progress(100,'Đã đổi phương án','Chọn một phương án mới cho mục '+sec.title+'.','done');
+ }catch(e){G.say('outline-choice-status','Không thể đổi mục '+sec.title+': '+e.message,'err');progress(100,'Đổi phương án thất bại',e.message,'error')}
+ finally{sec.loading=false;renderOutlineChoices()}
 }
 $('build-outline').onclick=requestOutlineChoices;
 $('regenerate-outline-choices').onclick=requestOutlineChoices;
