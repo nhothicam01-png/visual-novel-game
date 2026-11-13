@@ -1781,8 +1781,8 @@ function selectLine(i){
  loadLineToEditor(getCurrentLine());renderLineList();updateSeekUI(getCurrentLine()?.sourceIndex??0);
  if(getCurrentLine()?.speakerId){
   const line=getCurrentLine(),frame=line.sourceFrame||{};
-  $('character').value=characterAssetFolder(frame.nhan_vat??line.characterAsset);
-  $('expression').value=normalizeExpression(frame.bieu_cam||line.expression);
+  $('character').value=String(frame.nhan_vat??line.characterAsset??line.speakerId??'');
+  $('expression').value=resolveSemanticExpression(characterAssetFolder($('character').value),frame.expression_id)||normalizeExpression(line.expression);
   $('background').value=backgroundAtSourceIndex(line.sourceIndex)||getCurrentScene().visual.background;
   applyLineEffects(line);updateAssets();applyVoiceForCurrentLine();preloadAdjacentAssets(line.sourceIndex+1);
  }
