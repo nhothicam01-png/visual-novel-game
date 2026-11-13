@@ -93,7 +93,7 @@ $('create-treatment').onclick=async()=>{
   say('✓ Đã tạo thế giới/treatment. Hãy duyệt và sửa treatment trước khi tạo JSON.');
  }catch(e){say(e.message)}finally{lock(false);controller=null}
 };
-$('download-treatment').onclick=()=>download('treatment.txt',$('treatment').value);
+$('download-treatment').onclick=()=>download('treatment.txt',$('treatment').value);\n$('download-world-json').onclick=()=>download((activeWorld?.slug||'TheGioiMoi')+'.json',$('world-json').value,'application/json;charset=utf-8');
 async function systemPrompt(){const r=await fetch(RAW+'PROMPT_TAO_KICH_BAN_JSON.txt');if(!r.ok)throw Error('Không tải được prompt schema v3.');return r.text()}
 function validateStory(d,w){
  if(!d||d.phien_ban!==3||d.world_id!==w.slug||!d.thiet_lap_chung||!d.nhan_vat||!Array.isArray(d.danh_sach)||!d.danh_sach.length||!d.am_thanh_mac_dinh||typeof d.am_thanh_mac_dinh.nhac_nen!=='string')throw Error('JSON không đúng schema v3 hoặc world_id không khớp.');
