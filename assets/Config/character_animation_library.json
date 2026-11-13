@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-13T05:53:24.981Z",
+  "updated_at": "2026-11-13T10:18:17.100Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -41,6 +41,14 @@
       "analysis_status": "not_analyzed",
       "summary": "pose: Đứng · emotion: Buồn · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Toàn thân · communication: Đang nói · action: Đứng yên",
       "updated_at": "2026-11-13T05:53:24.981Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Nữ1/Nu1.webm",
+      "metadata_path": "assets/NhanVat/Nữ1/Nu1.webm.json",
+      "character_id": "Nữ1",
+      "analysis_status": "not_analyzed",
+      "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
+      "updated_at": "2026-11-13T10:18:17.100Z"
     }
   ]
 }
