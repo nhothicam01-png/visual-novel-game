@@ -424,6 +424,11 @@ NHÂN VẬT:
 - Nếu thư mục nhân vật có mã số hoặc tên không mô tả ngoại hình, không suy đoán ngoại hình từ mã đó.
 - Ghép nhân vật truyện với thư mục tài nguyên có căn cứ. Nếu không thể nhận diện từ tên/thông tin, có thể phân bổ ngẫu nhiên trong các thư mục hợp lệ còn trống, nhưng phải giữ ánh xạ cố định xuyên suốt kịch bản.
 - Không dùng chung một thư mục cho hai nhân vật riêng biệt cùng xuất hiện nếu hệ thống cần hiển thị họ độc lập.
+- Trước khi viết từng lượt thoại, lập bảng ánh xạ nội bộ gồm: tên nhân vật trong truyện → ID thư mục GitHub → ten_hien_thi. Mỗi vai có đúng một ID; tuyệt đối không hoán đổi ID giữa hai nhân vật dù họ là người yêu, cha con, chị em hoặc đang đối thoại.
+- Với MỖI lượt thoại, xác định người thực sự đang phát ngôn dựa trên ngữ cảnh hội thoại, hành động và lượt đáp trước/sau; sau đó mới điền `nhan_vat` bằng ID của đúng người nói. Không suy ra người nói chỉ từ thứ tự lượt thoại, không gán tất cả câu trong một cảnh cho cùng nhân vật, không dùng ID của nhân vật đang được nhắc đến trong câu thay cho người nói.
+- Trước khi xuất JSON, thực hiện một lượt kiểm toán người nói độc lập: đọc tuần tự toàn bộ `danh_sach`, viết nháp tên người nói cho từng câu, đối chiếu với bảng ánh xạ, rồi kiểm tra ID `nhan_vat`. Đặc biệt rà soát cảnh có từ hai người trở lên, câu hỏi/đáp, lời gọi tên, độc thoại, hồi tưởng và cảnh cha-con/người yêu đối đầu.
+- Nếu không thể xác định chắc ai nói một câu, phải dựa vào mạch đối thoại để sửa câu/đánh dấu lời dẫn phù hợp; không được đoán ID ngẫu nhiên. Không xuất JSON nếu một lượt thoại chưa xác định được người nói.
+- Kiểm tra cuối: `ten_hien_thi` của các nhân vật khác nhau phải khác nhau; mỗi nhân vật truyện phải ánh xạ cố định vào đúng một thư mục tài nguyên; mọi lượt thoại phải dùng ID của chính người đang nói.
 - Giọng nói khai báo một lần trong `nhan_vat[ID].giong_noi`, không lặp trong từng lượt thoại.
 - Không tự tạo `profile_id` hoặc `voice_id`. Nếu chưa có dữ liệu giọng hợp lệ, để trống để website dùng giọng được gán trong Setup cảnh; nếu nhân vật cũng chưa được gán giọng riêng, website dùng giọng mặc định.
 - Không thêm thông tin giọng nói vào từng phần tử `danh_sach`.
