@@ -41,4 +41,10 @@ if(lastSavedFolder&&storyEntries().some(x=>x.folder===lastSavedFolder)){
  if(storySelect)storySelect.value=lastSavedFolder;
  $('open-story').click();
 }
+/* Story direction buttons: bind lại ở cuối file để tránh handler cũ bị ghi đè */
+window.generateStoryDirectionsNow=generateStoryDirections;
+const bindStoryDirectionButton=(id)=>{const el=$(id);if(!el)return;el.onclick=null;el.addEventListener('click',async ev=>{ev.preventDefault();ev.stopImmediatePropagation();try{progress(2,'Đã nhận thao tác','Đang khởi động yêu cầu Gemini…');G.say('direction-status','Đã nhận thao tác. Đang kiểm tra thế giới, nhân vật và API key…','');await generateStoryDirections()}catch(err){const msg=err&&err.message?err.message:String(err);G.say('direction-status','Lỗi khi bắt đầu: '+msg,'err');progress(100,'Không thể bắt đầu',msg,'error');G.lock(id,false)}},true)};
+bindStoryDirectionButton('suggest-directions');bindStoryDirectionButton('regenerate-directions');
+window.addEventListener('error',ev=>{const msg=ev.message||'Lỗi JavaScript không xác định';const box=$('direction-status');if(box)G.say('direction-status','Lỗi JavaScript: '+msg,'err')});
+
 })();
