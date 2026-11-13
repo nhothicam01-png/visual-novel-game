@@ -893,11 +893,11 @@ async function prepareDirectRecording(items,useBrowser){
  setTaskProgress('Đã chuẩn bị xong tài nguyên · '+items.length+' câu thoại',100);
 }
 async function playPreview(){
- // Toàn bộ kịch bản luôn bắt đầu từ thoại đầu tiên; phạm vi cảnh chỉ lấy thoại của cảnh đang chọn.
+ // Luôn tiếp tục từ thoại đang chọn, kể cả khi phạm vi là toàn bộ kịch bản.
  saveCurrentLine();saveCurrentScene();
  const scope=$('preview-scope').value;
- const startIndex=scope==='full'?0:currentSourceIndex();
- const items=allSourceLines().filter(item=>(scope==='full'||item.sceneIndex===activeSceneIndex)&&item.sourceIndex>=startIndex);
+ const startIndex=currentSourceIndex();
+ const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
  if(!items.length)return;
  const useBrowser=$('preview-tts-mode').value==='browser';
  if(directRecordRequested){
