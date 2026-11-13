@@ -19,10 +19,12 @@ function syncStorySelect(el){const v=saved(),name=String(v.name||'').trim();if(!
 const local=location.hostname==='localhost'||location.hostname==='127.0.0.1';
 if(local){
  const controls=document.createElement('div');controls.className='vns-context';
- const mode=document.createElement('span');mode.className='vns-chip';mode.textContent='💻 LOCAL · đọc/ghi trực tiếp từ thư mục ZIP';
- const syncInfo=document.createElement('span');syncInfo.className='vns-chip';syncInfo.textContent='GitHub Sync · cần Internet và token · đang hoàn thiện';
- controls.append(mode,syncInfo);top.append(controls);
- async function refreshStatus(){try{const r=await fetch('/__local__/status'),d=await r.json();chip.textContent=d.local?'Local · PowerShell · không cần Node/Git':'Local · đang chạy';}catch(_){chip.textContent='Local · offline'}}
+ const mode=document.createElement('span');mode.className='vns-chip';mode.textContent='💻 LOCAL · đọc/ghi từ ổ đĩa';
+ const push=document.createElement('button'),pull=document.createElement('button'),syncStatus=document.createElement('span');
+ push.type=pull.type='button';push.textContent='⬆ Máy → GitHub';pull.textContent='⬇ GitHub → Máy';push.className=pull.className='vns-chip';push.style.cursor=pull.style.cursor='pointer';syncStatus.className='vns-chip';syncStatus.textContent='Đang kiểm tra Git…';
+ const act=async(which)=>{if(which==='push'&&!confirm('Đẩy TOÀN BỘ thay đổi trong thư mục repository lên GitHub bằng một commit? Bao gồm file mới, sửa và xóa. Hãy kiểm tra file lớn hoặc file tạm trước khi tiếp tục.'))return;const btn=which==='push'?push:pull;btn.disabled=true;syncStatus.textContent=which==='push'?'Đang đẩy thay đổi…':'Đang tải thay đổi…';try{if(which==='pull'&&!confirm('Tải phiên bản GitHub về máy? Chỉ thực hiện khi thư mục local không có thay đổi chưa commit.'))return;const r=await fetch('/__local__/sync/'+which,{method:'POST',body:which==='push'?'Visual Novel Studio sync':'pull'}),d=await r.json();if(!r.ok)throw Error(d.message||'Đồng bộ thất bại.');syncStatus.textContent=which==='push'?'Đã đẩy lên GitHub.':'Đã tải từ GitHub. Đang tải lại trang…';if(which==='pull')setTimeout(()=>location.reload(),500);else refreshStatus();}catch(e){syncStatus.textContent='Lỗi: '+e.message}finally{btn.disabled=false}};
+ push.addEventListener('click',()=>act('push'));pull.addEventListener('click',()=>act('pull'));controls.append(mode,push,pull,syncStatus);top.append(controls);
+ async function refreshStatus(){try{const r=await fetch('/__local__/status'),d=await r.json();chip.textContent=d.git?'Local · Git '+d.branch+(d.dirty?' · có thay đổi':' · sạch'):'Local · '+(d.error||'chưa có Git');}catch(_){chip.textContent='Local · offline'}}
  refreshStatus();
 }else{const gm=window.GitHubManager;chip.textContent=gm&&typeof gm.getToken==='function'&&gm.getToken()?'GitHub: đã có token trên thiết bị':'GitHub: cần kết nối khi muốn commit';}
 window.StudioShell={getProject:saved,setProject(name){const v=saved();v.name=String(name||'').trim();v.updatedAt=new Date().toISOString();localStorage.setItem(store,JSON.stringify(v));inp.value=v.name;return v},clearProject(){localStorage.removeItem(store);inp.value='';document.dispatchEvent(new CustomEvent('vns:project-change',{detail:{name:'',cleared:true}}))},pages,flow};
