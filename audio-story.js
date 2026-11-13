@@ -122,6 +122,12 @@ $('publish-creative').onclick=async()=>{
  try{
   const world=$('creation-mode').value==='new'?parse($('world-json').value):activeWorld;
   const story=parse($('story-json').value);validateStory(story,world);
+  world.characters=Array.isArray(world.characters)?world.characters:[];
+  for(const [id,person] of Object.entries(story.nhan_vat)){
+   const existing=world.characters.find(c=>c.character_id===id);
+   if(existing){existing.assetFolder=String(person.assetFolder||'');existing.asset_status=existing.assetFolder?'linked':'missing';existing.name=String(person.ten_hien_thi||existing.name||id);}
+   else world.characters.push({character_id:id,name:String(person.ten_hien_thi||id),role:'Nhân vật mới trong kịch bản',personality:'Chưa cập nhật',relationships:'Được đăng ký khi xuất bản kịch bản',assetFolder:String(person.assetFolder||''),selected:true,asset_status:person.assetFolder?'linked':'missing'});
+  }
   if(!window.GitHubManager?.pushFiles)throw Error('GitHub Manager chưa sẵn sàng. Bạn vẫn có thể tải JSON về.');
   const title=$('creation-title').value.trim()||'TruyenMoi',folder=slug($('story-folder').value||title),dir='assets/KichBan/'+folder,jp=dir+'/'+folder+'.json',wp='assets/TheGioi/'+world.slug+'/TheGioi.json';
   const check=await fetch('https://api.github.com/repos/'+REPO+'/git/trees/main?recursive=1');const tree=await check.json();if(!check.ok)throw Error('Không kiểm tra được GitHub.');
