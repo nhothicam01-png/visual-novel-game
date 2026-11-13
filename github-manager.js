@@ -8,6 +8,7 @@
   const TOKEN_KEY='vnGitHubTokenV1';
   const CONFIG_KEY='vnGitHubConfigV1';
   const API='https://api.github.com';
+  const localBlobs=new Map();let localBlobId=0;
   function getToken(){try{return localStorage.getItem(TOKEN_KEY)||''}catch(e){return ''}}
   function setToken(token){if(!token)throw new Error('Token trống.');localStorage.setItem(TOKEN_KEY,String(token).trim())}
   function clearToken(){localStorage.removeItem(TOKEN_KEY)}
@@ -90,11 +91,29 @@
   }
 
   async function createBlob({owner,repo,content}){
+    if(isLocal()){const sha='local:'+String(++localBlobId);localBlobs.set(sha,String(content));return {sha}}
     if(typeof content!=='string')throw new Error('Nội dung blob không hợp lệ.');
     const bytes=new TextEncoder().encode(content);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
     return request(API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/blobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:btoa(binary),encoding:'base64'})});
   }
   async function applyTreeChanges({owner,repo,branch='main',changes,message}){
+    if(isLocal()){
+      if(!Array.isArray(changes)||!changes.length)throw new Error('Không có thay đổi cục bộ.');
+      const deletes=changes.filter(x=>x.sha===null),adds=changes.filter(x=>x.sha!==null);
+      const used=new Set();
+      for(const item of adds){
+        let blob;
+        if(String(item.sha).startsWith('local:')){if(!localBlobs.has(item.sha))throw new Error('Không tìm thấy dữ liệu tạm cho '+item.path);blob=new Blob([localBlobs.get(item.sha)]);localBlobs.delete(item.sha)}
+        else{
+          const byName=deletes.find(x=>!used.has(x.path)&&x.path.split('/').pop()===item.path.split('/').pop());
+          if(!byName)throw new Error('Không xác định được file nguồn để đổi tên: '+item.path);
+          used.add(byName.path);const response=await fetch('/'+byName.path);if(!response.ok)throw new Error('Không đọc được file nguồn '+byName.path);blob=await response.blob();
+        }
+        await writeLocal(item.path,blob);
+      }
+      for(const item of deletes)if(!used.has(item.path)){const r=await fetch('/__local__/delete?path='+encodeURIComponent(item.path),{method:'DELETE'});if(!r.ok)throw new Error('Không xóa được '+item.path)}
+      return {commitSha:'LOCAL',fileCount:changes.length,local:true};
+    }
     if(!Array.isArray(changes)||!changes.length)throw new Error('Không có thay đổi GitHub.');
     const base=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo);
     const ref=await request(base+'/git/ref/heads/'+encodeURIComponent(branch));
