@@ -1738,8 +1738,8 @@ async function seekSourceLine(sourceIndex){
  stopPreview();activeSceneIndex=found.sceneIndex;activeLineIndex=found.lineIndex;
  const line=getCurrentLine(),frame=line.sourceFrame||{};
  applyVisual(getCurrentScene().visual);
- $('character').value=characterAssetFolder(frame.nhan_vat??line.characterAsset);
- $('expression').value=normalizeExpression(frame.bieu_cam||line.expression);
+ $('character').value=String(frame.nhan_vat??line.characterAsset??line.speakerId??'');
+ $('expression').value=resolveSemanticExpression(characterAssetFolder($('character').value),frame.expression_id)||normalizeExpression(line.expression);
  $('background').value=backgroundAtSourceIndex(line.sourceIndex)||getCurrentScene().visual.background;
  loadLineToEditor(line);renderSceneList();renderLineList();applyLineEffects(line);updateSeekUI(line.sourceIndex);
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(line.sourceIndex+1);
@@ -1835,40 +1835,17 @@ function renderWebmPickerResults(card,index,item){
  }).join('');
 }
 function renderSpeakerWebmPickerResults(){
- const host=$('speaker-webm-picker'),result=host?.querySelector('[data-speaker-webm-results]'),folder=$('character')?.value||'';
- if(!result)return;
- const ch=activeCharacterList().find(item=>item.folder===String(folder)),paths=ch?(expressionFilesByFolder[String(folder)]||[]):[];
- const query=(host.querySelector('[data-speaker-webm-search]')?.value||'').trim().toLocaleLowerCase('vi');
- const filters=Object.fromEntries(WEBM_FILTERS.map(([field])=>[field,host.querySelector('[data-speaker-webm-filter="'+field+'"]')?.value||'']));
- const rows=paths.filter(path=>{
-  const meta=characterAnimationMetadata[path]||{},values=WEBM_FILTERS.flatMap(([field])=>webmMetadataValues(path,field));
-  const searchable=[path.split('/').pop(),meta.summary,meta.action,meta.start_pose,meta.end_pose,meta.notes,meta.interaction_target,JSON.stringify(meta.user_metadata||{}),JSON.stringify(meta.characters||[]),JSON.stringify(meta.interaction||[]),...values].join(' ').toLocaleLowerCase('vi');
-  return (!query||searchable.includes(query))&&WEBM_FILTERS.every(([field])=>!filters[field]||webmMetadataValues(path,field).includes(filters[field]));
- });
- if(!rows.length){result.innerHTML='<div class="note">Không có WebM khớp bộ lọc.</div>';return}
- const selected=normalizeExpression($('expression').value||'');
+ const host=$('speaker-webm-picker'),result=host?.querySelector('[data-speaker-webm-results]'),characterId=$('character')?.value||'',folder=characterAssetFolder(characterId);if(!result)return;
+ const ch=activeCharacterList().find(item=>item.id===String(characterId)),paths=ch?(expressionFilesByFolder[String(folder)]||[]):[],query=(host.querySelector('[data-speaker-webm-search]')?.value||'').trim().toLocaleLowerCase('vi'),filters=Object.fromEntries(WEBM_FILTERS.map(([field])=>[field,host.querySelector('[data-speaker-webm-filter="'+field+'"]')?.value||'']));
+ const rows=paths.filter(path=>{const meta=characterAnimationMetadata[path]||{},values=WEBM_FILTERS.flatMap(([field])=>webmMetadataValues(path,field)),searchable=[path.split('/').pop(),meta.summary,meta.action,meta.start_pose,meta.end_pose,meta.notes,meta.interaction_target,JSON.stringify(meta.user_metadata||{}),JSON.stringify(meta.characters||[]),JSON.stringify(meta.interaction||[]),...values].join(' ').toLocaleLowerCase('vi');return (!query||searchable.includes(query))&&WEBM_FILTERS.every(([field])=>!filters[field]||webmMetadataValues(path,field).includes(filters[field]))});
+ if(!rows.length){result.innerHTML='<div class="note">Không có WebM khớp bộ lọc.</div>';return}const selected=normalizeExpression($('expression').value||'');
  result.innerHTML=rows.map(path=>{const name=path.split('/').pop().replace(/\.webm$/i,''),meta=characterAnimationMetadata[path]||{},tags=WEBM_FILTERS.flatMap(([field,label])=>webmMetadataValues(path,field).map(value=>label+': '+value));return '<label class="webm-choice"><input type="checkbox" data-speaker-webm-pick value="'+safeText(name)+'" '+(name===selected?'checked':'')+'><span><strong>'+safeText(name)+'</strong><small>'+safeText(tags.slice(0,4).join(' · ')||(meta.summary||'Chưa có metadata'))+'</small></span></label>'}).join('');
 }
 function renderSpeakerWebmPicker(){
- const host=$('speaker-webm-picker');if(!host)return;
- const characterId=$('character')?.value||'',folder=characterAssetFolder(characterId),count=(expressionFilesByFolder[String(folder)]||[]).length;
- host.innerHTML='<details class="webm-picker"><summary>☑ Tìm WebM cho nhân vật đang nói ('+count+')</summary><input class="webm-search" type="search" data-speaker-webm-search placeholder="Tìm tên file, tư thế, cảm xúc, hành động…"><div class="webm-filter-grid">'+WEBM_FILTERS.map(([field,label])=>webmFilterSelect(folder,field,label).replace('data-webm-filter=','data-speaker-webm-filter=')).join('')+'</div><div class="webm-results" data-speaker-webm-results></div><div class="note">Tích một checkbox để chọn WebM cho nhân vật đang nói ở lượt thoại này.</div></details>';
- renderSpeakerWebmPickerResults();
+ const host=$('speaker-webm-picker');if(!host)return;const characterId=$('character')?.value||'',folder=characterAssetFolder(characterId),count=(expressionFilesByFolder[String(folder)]||[]).length;
+ host.innerHTML='<details class="webm-picker"><summary>☑ Tìm WebM cho nhân vật đang nói ('+count+')</summary><input class="webm-search" type="search" data-speaker-webm-search placeholder="Tìm tên file, tư thế, cảm xúc, hành động…"><div class="webm-filter-grid">'+WEBM_FILTERS.map(([field,label])=>webmFilterSelect(folder,field,label)).join('')+'</div><div class="webm-results" data-speaker-webm-results></div><div class="note">Chỉ hiển thị WEBM trong assetFolder đang gán cho nhân vật này.</div></details>';
+ host.querySelector('[data-speaker-webm-search]')?.addEventListener('input',renderSpeakerWebmPickerResults);host.querySelectorAll('[data-speaker-webm-filter]').forEach(sel=>sel.addEventListener('change',renderSpeakerWebmPickerResults));renderSpeakerWebmPickerResults();
 }
-$('speaker-webm-picker')?.addEventListener('input',e=>{if(e.target.matches('[data-speaker-webm-search]'))renderSpeakerWebmPickerResults()});
-$('speaker-webm-picker')?.addEventListener('change',e=>{
- if(e.target.matches('[data-speaker-webm-filter]')){renderSpeakerWebmPickerResults();return}
- if(!e.target.matches('[data-speaker-webm-pick]'))return;
- if(!e.target.checked){e.target.checked=true;return}
- $('speaker-webm-picker').querySelectorAll('[data-speaker-webm-pick]').forEach(cb=>{cb.checked=cb===e.target});
- const line=getCurrentLine(),ch=activeCharacterList().find(item=>item.id===$('character').value);if(!line||!ch)return;
- line.expression=e.target.value;$('expression').value=e.target.value;
- if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.bieu_cam=e.target.value;
- const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters.find(item=>String(item.id)===String(ch.id)):null;
- if(visible){visible.bieu_cam=e.target.value;renderVisibleCharacters(line)}
- updateAssets();
-});
-$('expression')?.addEventListener('change',renderSpeakerWebmPicker);
 function renderVisibleCharacters(line=getCurrentLine()){
  const host=$('visible-character-list'),add=$('visible-character-add-select');if(!host||!add)return;
  const list=activeCharacterList(),items=Array.isArray(line?.visibleCharacters)?line.visibleCharacters:[];
