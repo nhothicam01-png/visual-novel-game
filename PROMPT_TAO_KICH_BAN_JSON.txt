@@ -433,11 +433,12 @@ NHÂN VẬT:
 - Không tự tạo `profile_id` hoặc `voice_id`. Nếu chưa có dữ liệu giọng hợp lệ, để trống để website dùng giọng được gán trong Setup cảnh; nếu nhân vật cũng chưa được gán giọng riêng, website dùng giọng mặc định.
 - Không thêm thông tin giọng nói vào từng phần tử `danh_sach`.
 
-BIỂU CẢM:
-- Kiểm tra riêng danh sách file .webm của từng nhân vật.
-- `bieu_cam` phải khớp tên biểu cảm/tệp thực tế mà player hỗ trợ.
-- Không mặc định mọi nhân vật có cùng bộ biểu cảm.
-- Chọn biểu cảm theo cảm xúc và hành động trong câu thoại; nếu không có biểu cảm phù hợp, dùng trạng thái trung tính thực sự tồn tại hoặc giá trị rỗng theo khả năng player.
+ANIMATION / BIỂU CẢM:
+- Kiểm tra metadata WEBM trong assetFolder hiện tại của từng character_id.
+- JSON v3 dùng `expression_id` dạng object ngữ nghĩa; không dùng `expression_id`, không lưu basename hay filename.
+- Nhiều nhân vật có thể dùng chung assetFolder, nhưng phải giữ character_id và expression_id riêng cho từng người.
+- Chọn theo communication, emotion, pose, direction, face_angle, view_angle, action và interaction_target khi metadata có căn cứ.
+- Nếu thiếu khớp, runtime tự tìm animation gần nhất trong cùng folder; nếu folder không có WEBM thì để thiếu tài nguyên, không mượn folder khác.
 
 HÌNH NỀN:
 - Kiểm tra tài nguyên thực tế trong assets/Nen/.
@@ -629,7 +630,7 @@ Trước khi lưu:
 2. Đảm bảo đúng cấu trúc phiên bản 3.
 3. Mọi ID nhân vật trong danh_sach đều tồn tại trong object nhan_vat.
 4. Giọng nói chỉ khai báo ở cấp nhân vật; không có profile_id/voice_id tự tạo.
-5. Mọi biểu cảm, hình nền, file hình ảnh và file âm thanh đều tồn tại đúng đường dẫn và đúng phần mở rộng.
+5. Mọi expression_id phải là object ngữ nghĩa hợp lệ; runtime chỉ được phân giải WEBM trong assetFolder hiện tại. Hình nền, file hình ảnh và âm thanh phải tồn tại đúng đường dẫn.
 6. Đọc danh mục effects.js và environment-effects.js mới nhất; xác minh từng ID hiệu ứng thuộc đúng thư viện/nhóm.
 7. Mọi mục thoại có đủ bốn mảng hiệu ứng.
 8. Không có trường che_do trong cấu hình âm thanh.
