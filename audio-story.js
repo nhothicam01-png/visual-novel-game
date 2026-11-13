@@ -84,7 +84,7 @@ $('create-treatment').onclick=async()=>{
   if(!activeWorld){
    say('Đang sáng tạo thế giới mới…');const w=parse(await ask(newWorldPrompt(analysis),{json:true,max:14000,temperature:.7}));
    if(w.schema_version!==2||!w.world_name||!Array.isArray(w.characters)||!Array.isArray(w.places))throw Error('JSON thế giới không đúng schema v2.');
-   w.slug=slug(w.world_name);w.story_folders=w.story_folders||[];w.updated_at=new Date().toISOString();w.characters.forEach((c,i)=>{if(!c.character_id)c.character_id='char_'+slug(c.name||('nhan_vat_'+(i+1))).toLowerCase();c.assetFolder='';c.selected=true});
+   w.slug=slug(w.world_name);w.story_folders=w.story_folders||[];w.updated_at=new Date().toISOString();const usedIds=new Set();w.characters.forEach((c,i)=>{let base=String(c.character_id||('char_'+slug(c.name||('nhan_vat_'+(i+1))).toLowerCase())).toLowerCase().replace(/[^a-z0-9_]/g,'_');if(!/^char_[a-z0-9_]{1,120}$/.test(base))base='char_'+slug(c.name||('nhan_vat_'+(i+1))).toLowerCase().replace(/[^a-z0-9_]/g,'_');let id=base,n=2;while(usedIds.has(id))id=base+'_'+n++;c.character_id=id;usedIds.add(id);c.assetFolder='';c.selected=true});
    $('world-json').value=JSON.stringify(w,null,2);$('world-json-label').classList.remove('hidden');
   }else{$('world-json').value=JSON.stringify(activeWorld,null,2);$('world-json-label').classList.add('hidden')}
   say('Đang viết treatment và bản đồ sự kiện…');progress(80,true);
