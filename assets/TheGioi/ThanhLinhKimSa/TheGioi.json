@@ -45,9 +45,9 @@
       "role": "Nữ sinh lớp 12, nhân vật chính và người kể chuyện",
       "personality": "Thông minh, học giỏi, quan sát tốt; từng mềm lòng và luôn gánh trách nhiệm cho người khác. Sau khi bị phản bội và trọng sinh, cô bình tĩnh, sắc bén, thực tế, biết đặt ranh giới và lưu bằng chứng.",
       "relationships": "Từng là bạn thanh mai trúc mã của Chu Nghiên; từng giúp đỡ Bạch Vi Vi; được mẹ yêu thương; Lý Tĩnh là bạn học hiếm hoi tin cô.",
-      "assetFolder": "",
+      "assetFolder": "Nữ1",
       "selected": true,
-      "asset_status": "missing"
+      "asset_status": "linked"
     },
     {
       "character_id": "char_bach_vi_vi",
@@ -55,9 +55,9 @@
       "role": "Người khởi xướng chuyến đi tìm vàng, đối trọng chính",
       "personality": "Bề ngoài ngọt ngào, yếu đuối, thường tự xưng 'bảo bối'; giỏi dẫn dắt cảm xúc đám đông và né tránh trách nhiệm bằng cách đóng vai nạn nhân.",
       "relationships": "Được nhiều bạn học yêu mến; dựa vào Chu Nghiên để bảo vệ mình; từng được Chi Vãn giúp đỡ nhưng ở kiếp trước đã đẩy cô khỏi sân thượng.",
-      "assetFolder": "",
+      "assetFolder": "1",
       "selected": true,
-      "asset_status": "missing"
+      "asset_status": "linked"
     },
     {
       "character_id": "char_chu_nghien",
@@ -65,9 +65,9 @@
       "role": "Bạn thanh mai trúc mã của Chi Vãn, người tổ chức xe khách",
       "personality": "Tự tin, sĩ diện, thích thể hiện nghĩa khí; gây áp lực với người phản đối và che giấu rủi ro để chuyến đi diễn ra.",
       "relationships": "Quen Chi Vãn 19 năm; từng nhận tiền Chi Vãn giúp mẹ chữa bệnh; đứng về phía Bạch Vi Vi và im lặng khi Chi Vãn bị tấn công ở kiếp trước.",
-      "assetFolder": "",
+      "assetFolder": "2",
       "selected": true,
-      "asset_status": "missing"
+      "asset_status": "linked"
     },
     {
       "character_id": "char_truong_hao",
@@ -75,9 +75,9 @@
       "role": "Bạn học kích động và công kích Chi Vãn",
       "personality": "Nóng nảy, thích hùa theo đám đông, tự ái khi bị chạm vào thành tích học tập và hoàn cảnh gia đình.",
       "relationships": "Ủng hộ kế hoạch của Bạch Vi Vi; là người đầu tiên lao vào đẩy Chi Vãn trong ký ức kiếp trước.",
-      "assetFolder": "",
+      "assetFolder": "3",
       "selected": true,
-      "asset_status": "missing"
+      "asset_status": "linked"
     },
     {
       "character_id": "char_ly_mong_ky",
@@ -85,9 +85,9 @@
       "role": "Bạn học công kích Chi Vãn",
       "personality": "Dễ bị cuốn theo cảm xúc tập thể, phán xét gay gắt người không thuận theo số đông.",
       "relationships": "Đứng về phía Bạch Vi Vi và mắng Chi Vãn trước lớp.",
-      "assetFolder": "",
+      "assetFolder": "4",
       "selected": true,
-      "asset_status": "missing"
+      "asset_status": "linked"
     },
     {
       "character_id": "char_vuong_tu_hien",
@@ -95,9 +95,9 @@
       "role": "Bạn học bắt đầu nghi ngờ chuyến đi",
       "personality": "Dè dặt, biết lắng nghe cảnh báo nhưng thiếu can đảm đối đầu áp lực tập thể.",
       "relationships": "Từng dao động trước nguy cơ địa chất; bị Chu Nghiên dập tắt ý kiến.",
-      "assetFolder": "",
+      "assetFolder": "5",
       "selected": true,
-      "asset_status": "missing"
+      "asset_status": "linked"
     },
     {
       "character_id": "char_ly_tinh",
@@ -105,9 +105,9 @@
       "role": "Bạn cùng bàn, người duy nhất không bị cuốn theo chuyến đi",
       "personality": "Thực tế, chăm chỉ, tỉnh táo, biết quan tâm và kín đáo hỗ trợ Chi Vãn.",
       "relationships": "Bạn cùng bàn của Chi Vãn; âm thầm gửi ảnh chụp nhóm lớp; quyết định không tham gia chuyến đi.",
-      "assetFolder": "",
+      "assetFolder": "6",
       "selected": true,
-      "asset_status": "missing"
+      "asset_status": "linked"
     },
     {
       "character_id": "char_me_chi_van",
@@ -115,9 +115,9 @@
       "role": "Mẹ của nhân vật chính",
       "personality": "Thương con, ban đầu lo việc nghỉ học sát kỳ thi nhưng biết lắng nghe, suy nghĩ thận trọng và ủng hộ con khi hiểu nguy cơ.",
       "relationships": "Mẹ của Tống Chi Vãn; từng đau đớn vì cái chết của con ở dòng thời gian trước.",
-      "assetFolder": "",
+      "assetFolder": "Hầu gái",
       "selected": true,
-      "asset_status": "missing"
+      "asset_status": "linked"
     }
   ],
   "rules": [
@@ -199,5 +199,5 @@
       "json_path": "assets/KichBan/BayNgayTruocKyThi/BayNgayTruocKyThi.json"
     }
   ],
-  "updated_at": "2026-11-13T00:00:00.000Z"
+  "updated_at": "2026-11-13T13:17:52.647Z"
 }
