@@ -19,6 +19,7 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 .preview-toolbar{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}.preview-tts-control{min-width:190px;max-width:250px}
 .seek-panel{width:100%;max-width:1000px;display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:10px 12px;background:#0f172acc;border:1px solid #a855f744;border-radius:10px}
 .seek-panel input[type=range]{flex:1;min-width:140px;accent-color:#a855f7}
+.speech-motion-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.speech-motion-panel .field{width:100%}.speech-motion-panel input[type=range]{width:100%;min-width:0}@media(max-width:600px){.speech-motion-panel{grid-template-columns:1fr;gap:8px}}
 #seek-position{min-width:78px;text-align:center;color:#c4b5fd;font-variant-numeric:tabular-nums}
 @media(max-width:600px){.seek-panel{gap:6px;padding:8px}.seek-panel .btn{padding:7px 9px}#seek-position{min-width:65px}}
 .panel{width:100%;max-width:1000px;background:rgba(15,23,42,.88);border:1px solid rgba(168,85,247,.28);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px}
@@ -127,6 +128,12 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 <label class="field preview-tts-control">Phạm vi chạy<select id="preview-scope"><option value="scene">Chỉ cảnh đang chọn</option><option value="full">Toàn bộ kịch bản</option></select></label>
 <label class="field preview-tts-control">Giọng xem trước<select id="preview-tts-mode"><option value="browser">TTS trình duyệt · nhanh</option><option value="render">Giọng render · giống video</option></select></label>
 <label class="field preview-tts-control">Giọng trình duyệt<select id="browser-tts-voice"><option value="">Tự chọn theo ngôn ngữ</option></select></label>
+</div>
+<div class="seek-panel speech-motion-panel" aria-label="Điều chỉnh chuyển động nhân vật đang nói">
+<label class="field">Tốc độ nhún/nghiêng <span id="speech-motion-speed-value">50</span>/100
+<input id="speech-motion-speed" type="range" min="1" max="100" step="1" value="50"></label>
+<label class="field">Cường độ nhún/nghiêng <span id="speech-motion-intensity-value">40</span>/100
+<input id="speech-motion-intensity" type="range" min="1" max="100" step="1" value="40"></label>
 </div>
 <div class="seek-panel" aria-label="Điều khiển thoại">
 <button class="btn secondary" id="seek-prev">⏮ Lùi 1 thoại</button>
@@ -576,12 +583,15 @@ function drawFrame(elapsed,st){
    const motion=Math.max(0,Math.min(1,speechMotionSmooth));
    // Chu ky lien tuc, khong bam theo am luong hay tung am tiet nen khong bi giat.
    // Thu tu: nhun xuong thang -> len nghieng trai -> xuong thang -> len nghieng phai.
-   const phase=(performance.now()/1000)*5.6;
+   const speedValue=Math.max(1,Math.min(100,Number($('speech-motion-speed')?.value)||50));
+   const intensityValue=Math.max(1,Math.min(100,Number($('speech-motion-intensity')?.value)||40))/100;
+   const phase=(performance.now()/1000)*(1.2+(speedValue-1)*.09);
    const compression=(1+Math.cos(phase))*.5;
-   const tilt=Math.sin(phase*.5)*.055;
-   const sx=1+.015*compression*motion,sy=1-.07*compression*motion;
-    // Ha diem neo xuong mot chut khi nhun de day WEBM khong lo khe khi nghieng.
-    y+=h*.015*motion;
+   const strength=motion*intensityValue;
+   const tilt=Math.sin(phase*.5)*.04;
+   const sx=1+.012*compression*strength,sy=1-.05*compression*strength;
+    // Nho diem neo xuong de tranh ho day, bien do duoc dieu khien boi cuong do.
+    y+=h*.01*strength;
    // Neo tai diem chan giua de khong tao khe ho o day khung WEBM.
    ctx.translate(x,y);ctx.rotate(tilt*motion);ctx.scale(sx,sy);ctx.translate(-x,-y);
   }
@@ -1577,6 +1587,10 @@ $('seek-prev').addEventListener('click',()=>seekSourceLine(currentSourceIndex()-
 $('seek-next').addEventListener('click',()=>seekSourceLine(currentSourceIndex()+1));
 $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)));
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
+['speech-motion-speed','speech-motion-intensity'].forEach(id=>{
+ const slider=$(id),value=$(id+'-value');
+ slider?.addEventListener('input',()=>{if(value)value.textContent=slider.value;if(!previewing)drawFrame(0)});
+});
 $('ratio-toggle').addEventListener('click',toggleAspectRatio);
 $('stop-scene').addEventListener('click',stopAndResetPreview);
 
