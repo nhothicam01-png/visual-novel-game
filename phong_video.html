@@ -143,8 +143,10 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <div class="seek-panel speech-motion-panel" aria-label="Điều chỉnh chuyển động nhân vật đang nói">
 <label class="field">Tốc độ nhún/nghiêng <span id="speech-motion-speed-value">50</span>/100
 <input id="speech-motion-speed" type="range" min="1" max="100" step="1" value="50"></label>
-<label class="field">Cường độ nhún/nghiêng <span id="speech-motion-intensity-value">40</span>/100
+<label class="field">Cường độ nhún / scale <span id="speech-motion-intensity-value">40</span>/100
 <input id="speech-motion-intensity" type="range" min="1" max="100" step="1" value="40"></label>
+<label class="field">Độ nghiêng <span id="speech-motion-tilt-value">50</span>/100
+<input id="speech-motion-tilt" type="range" min="1" max="100" step="1" value="50"></label>
 </div>
 <div class="seek-panel" aria-label="Điều khiển thoại">
 <button class="btn secondary" id="seek-prev">⏮ Lùi 1 thoại</button>
@@ -599,10 +601,11 @@ function drawFrame(elapsed,st){
    // Thu tu: nhun xuong thang -> len nghieng trai -> xuong thang -> len nghieng phai.
    const speedValue=Math.max(1,Math.min(100,Number($('speech-motion-speed')?.value)||50));
    const intensityValue=Math.max(1,Math.min(100,Number($('speech-motion-intensity')?.value)||40))/100;
+   const tiltValue=Math.max(1,Math.min(100,Number($('speech-motion-tilt')?.value)||50))/100;
    const phase=(performance.now()/1000)*(1.2+(speedValue-1)*.09);
    const compression=(1+Math.cos(phase))*.5;
    const strength=motion*intensityValue;
-   const tilt=Math.sin(phase*.5)*.04;
+   const tilt=Math.sin(phase*.5)*(.08*tiltValue);
    const sx=1+.012*compression*strength,sy=1-.05*compression*strength;
     // Nho diem neo xuong de tranh ho day, bien do duoc dieu khien boi cuong do.
     y+=h*.01*strength;
@@ -1681,7 +1684,7 @@ $('seek-prev').addEventListener('click',()=>seekSourceLine(currentSourceIndex()-
 $('seek-next').addEventListener('click',()=>seekSourceLine(currentSourceIndex()+1));
 $('seek-slider').addEventListener('input',e=>updateSeekUI(Number(e.target.value)));
 $('seek-slider').addEventListener('change',e=>seekSourceLine(Number(e.target.value)));
-['speech-motion-speed','speech-motion-intensity'].forEach(id=>{
+['speech-motion-speed','speech-motion-intensity','speech-motion-tilt'].forEach(id=>{
  const slider=$(id),value=$(id+'-value');
  slider?.addEventListener('input',()=>{if(value)value.textContent=slider.value;if(!previewing)drawFrame(0)});
 });
