@@ -1666,7 +1666,7 @@ function buildEditedStoryOutput(){
  scenes.forEach((scene,sceneIndex)=>scene.lines.forEach(line=>{
   const frame=line.sourceFrame&&typeof line.sourceFrame==='object'?JSON.parse(JSON.stringify(line.sourceFrame)):{};
   const asset=String(line.characterAsset||'').trim();
-  const matched=activeCharacterList().find(ch=>ch.folder===asset)||activeCharacterList().find(ch=>ch.id===String(line.speakerId||''));
+  const matched=activeCharacterList().find(ch=>ch.id===String(line.speakerId||asset))||activeCharacterList().find(ch=>ch.folder===asset);
   const characterId=matched?.id||line.speakerId||asset;
   if(characterId)frame.nhan_vat=characterId;
   frame.scene_id=String(scene.sceneId||('scene_'+(sceneIndex+1)));
