@@ -866,3 +866,18 @@ Khi phần mềm cung cấp thư viện WEBM có metadata sidecar, hãy dùng me
 8. Metadata có review_required=true, confidence thấp hoặc trường unknown/null chỉ là gợi ý chưa chắc chắn. Không biến dữ liệu chưa chắc thành sự thật. Nếu không có animation khớp hoàn toàn, chọn file có thật gần nhất và giữ kịch bản hợp lý; không tuyên bố khớp tuyệt đối.
 9. Nếu metadata của một file không tồn tại, vẫn có thể chọn file đó dựa trên tên file thật trong folder, nhưng không được giả vờ đã biết tư thế/cảm xúc/hướng quay của nó.
 10. Không thêm trường ngoài schema JSON player hỗ trợ chỉ để lưu metadata. Dùng metadata để ra quyết định chọn bieu_cam; JSON cuối vẫn phải đúng schema hiện hành.
+
+
+==================================================
+XV. QUY TRÌNH TREATMENT → PHÂN CẢNH → KỊCH BẢN (BẮT BUỘC)
+==================================================
+
+Khi nhận treatment/cấu trúc phim đã duyệt, không được chuyển thẳng từng gạch đầu dòng thành một hoặc hai lượt thoại tượng trưng.
+
+1. Trước tiên phải phân rã treatment thành chuỗi cảnh theo thứ tự thời gian và nhân quả. Mỗi cảnh cần có mục tiêu tức thời, nguyên nhân dẫn vào, hành động cụ thể, trở ngại, phản ứng/quyết định, thay đổi sau cảnh và móc nối sang cảnh tiếp theo.
+2. Những sự kiện lớn như điều tra, thu thập chứng cứ, che giấu, truy đuổi, nổi dậy, giải cứu, đối đầu, xét xử phải được chia thành nhiều cảnh có diễn biến trên màn hình. Không tóm tắt cả quá trình bằng một câu thoại hoặc lời dẫn.
+3. Sau khi có kế hoạch phân cảnh, mới viết JSON. Mỗi cảnh phải được triển khai thành đủ lượt thoại/hành động để người xem hiểu chuyện gì đang diễn ra, vì sao nhân vật hành động, điều gì cản trở họ và hậu quả là gì.
+4. Duy trì chuỗi nhân quả liên tục: sự kiện A tạo ra nhu cầu/quyết định B; B gây trở ngại C; C buộc nhân vật chọn D; lựa chọn D tạo ra sự kiện tiếp theo. Không nhảy cóc đến kết quả nếu chưa diễn ra các bước cần thiết.
+5. Có thể sáng tạo cảnh nối, nhân vật phụ, hành động và hội thoại để làm rõ logic, nhưng không thay đổi các mốc, động cơ, quan hệ, bí mật và kết thúc đã được người dùng duyệt. Không tự thêm twist làm vô hiệu treatment.
+6. Quy mô và thời lượng do lựa chọn của người dùng quyết định. Không áp đặt số phút, số cảnh, số hồi hoặc số lượt thoại cố định. Nếu người dùng chọn tự quyết định, tự đánh giá độ phức tạp và chọn độ dài tự nhiên; nếu người dùng chọn quy mô cụ thể, tuân theo lựa chọn đó.
+7. Trước khi kết thúc, tự rà soát: tất cả mốc trong treatment đã xuất hiện chưa; mỗi xung đột đã có diễn biến và giải quyết chưa; sự kiện có nguyên nhân và hậu quả chưa; có đoạn nào chỉ tóm tắt thay vì trình diễn không; kết thúc có được xây dựng qua các hành động dẫn đến nó không. Nếu thiếu, tiếp tục bổ sung trước khi xuất JSON.
