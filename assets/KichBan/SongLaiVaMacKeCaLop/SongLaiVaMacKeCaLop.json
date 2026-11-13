@@ -12,12 +12,12 @@
       "ten_hien_thi": "Tống Chi Vãn",
       "assetFolder": "Nữ1",
       "giong_noi": {
-        "profile_id": "voice_1794303792721",
+        "profile_id": "voice_1794205520158",
         "lang": "vi",
         "voice_id": "vi_VN-vais1000-medium",
-        "profile_name": "Thiếu nữ",
+        "profile_name": "Hoà",
         "voiceId": "vi_VN-vais1000-medium",
-        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "edge_voice_id": "",
         "gender": "female"
       }
     },
@@ -68,12 +68,12 @@
       "ten_hien_thi": "Lý Mộng Kỳ",
       "assetFolder": "Hầu gái",
       "giong_noi": {
-        "profile_id": "voice_1794303742118",
+        "profile_id": "voice_1794192970852",
         "lang": "vi",
         "voice_id": "vi_VN-vais1000-medium",
-        "profile_name": "Giọng bé",
+        "profile_name": "Embe",
         "voiceId": "vi_VN-vais1000-medium",
-        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "edge_voice_id": "",
         "gender": "female"
       }
     },
@@ -96,13 +96,13 @@
       "ten_hien_thi": "Lý Tĩnh",
       "assetFolder": "Hầu gái",
       "giong_noi": {
-        "profile_id": "voice_1794267836392",
+        "profile_id": "voice_1794303792721",
         "lang": "vi",
         "voice_id": "vi_VN-vais1000-medium",
-        "profile_name": "Bé trai",
+        "profile_name": "Thiếu nữ",
         "voiceId": "vi_VN-vais1000-medium",
-        "edge_voice_id": "vi-VN-NamMinhNeural",
-        "gender": "male"
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
       }
     },
     "char_me_chi_van": {
@@ -135,19 +135,6 @@
         "communication": "silent",
         "emotion": "fear"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "fear"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -175,19 +162,6 @@
         "communication": "silent",
         "emotion": "fear"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "fear"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -215,19 +189,6 @@
         "communication": "speaking",
         "emotion": "crying"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "crying"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -255,19 +216,6 @@
         "communication": "silent",
         "emotion": "bitter"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "bitter"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -324,9 +272,9 @@
       },
       "ten_hien_thi": "Tống Chi Vãn",
       "giong_noi": {
-        "profileId": "voice_1794303792721",
+        "profileId": "voice_1794205520158",
         "voiceId": "vi_VN-vais1000-medium",
-        "name": "Thiếu nữ",
+        "name": "Hoà",
         "lang": "vi-VN"
       }
     },
@@ -341,19 +289,6 @@
         "communication": "speaking",
         "emotion": "angry"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_truong_hao",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "angry"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -381,19 +316,6 @@
         "communication": "speaking",
         "emotion": "defiant"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "defiant"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -421,30 +343,6 @@
         "communication": "silent",
         "emotion": "hurt"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "hurt"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -472,30 +370,6 @@
         "communication": "silent",
         "emotion": "sad"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "sad"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -523,19 +397,6 @@
         "communication": "speaking",
         "emotion": "crying"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "crying"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -563,30 +424,6 @@
         "communication": "silent",
         "emotion": "shock"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "shock"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -614,30 +451,6 @@
         "communication": "silent",
         "emotion": "grief"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "grief"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -665,19 +478,6 @@
         "communication": "silent",
         "emotion": "bitter"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "bitter"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -704,19 +504,6 @@
         "communication": "silent",
         "emotion": "neutral"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "neutral"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -743,19 +530,6 @@
         "communication": "silent",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "calm"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -782,19 +556,6 @@
         "communication": "speaking",
         "emotion": "excited"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "excited"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -821,30 +582,6 @@
         "communication": "silent",
         "emotion": "observant"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "observant"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -871,30 +608,6 @@
         "communication": "speaking",
         "emotion": "curious"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_truong_hao",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "curious"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -921,30 +634,6 @@
         "communication": "speaking",
         "emotion": "persuasive"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "persuasive"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_truong_hao",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -971,19 +660,6 @@
         "communication": "speaking",
         "emotion": "neutral"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "neutral"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1010,19 +686,6 @@
         "communication": "silent",
         "emotion": "cold"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "cold"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1049,30 +712,6 @@
         "communication": "speaking",
         "emotion": "confident"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "confident"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1099,19 +738,6 @@
         "communication": "speaking",
         "emotion": "commanding"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "commanding"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1138,19 +764,6 @@
         "communication": "silent",
         "emotion": "cold"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "cold"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1177,19 +790,6 @@
         "communication": "speaking",
         "emotion": "smug"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "smug"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1216,30 +816,6 @@
         "communication": "speaking",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "calm"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1266,19 +842,6 @@
         "communication": "speaking",
         "emotion": "mocking"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "mocking"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1305,30 +868,6 @@
         "communication": "speaking",
         "emotion": "sharp"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "sharp"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1355,30 +894,6 @@
         "communication": "speaking",
         "emotion": "angry"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "angry"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1405,19 +920,6 @@
         "communication": "speaking",
         "emotion": "teary"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "teary"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1444,30 +946,6 @@
         "communication": "speaking",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "calm"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1494,19 +972,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1533,19 +998,6 @@
         "communication": "silent",
         "emotion": "determined"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "determined"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1572,19 +1024,6 @@
         "communication": "speaking",
         "emotion": "excited"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "excited"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1611,30 +1050,6 @@
         "communication": "speaking",
         "emotion": "serious"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "serious"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1661,19 +1076,6 @@
         "communication": "speaking",
         "emotion": "mocking"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_truong_hao",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "mocking"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1700,30 +1102,6 @@
         "communication": "speaking",
         "emotion": "sharp"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "sharp"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_truong_hao",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1750,19 +1128,6 @@
         "communication": "speaking",
         "emotion": "angry"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_truong_hao",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "angry"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1789,30 +1154,6 @@
         "communication": "speaking",
         "emotion": "sarcastic"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "sarcastic"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_truong_hao",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1839,30 +1180,6 @@
         "communication": "speaking",
         "emotion": "sweet"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "sweet"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_truong_hao",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 3
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1889,30 +1206,6 @@
         "communication": "speaking",
         "emotion": "firm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "firm"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1939,19 +1232,6 @@
         "communication": "speaking",
         "emotion": "nervous"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "nervous"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -1978,30 +1258,6 @@
         "communication": "speaking",
         "emotion": "cold"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "cold"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2028,30 +1284,6 @@
         "communication": "speaking",
         "emotion": "angry"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "angry"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 3
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2078,30 +1310,6 @@
         "communication": "speaking",
         "emotion": "challenging"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "challenging"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2128,19 +1336,6 @@
         "communication": "speaking",
         "emotion": "angry"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "angry"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2167,30 +1362,6 @@
         "communication": "speaking",
         "emotion": "stern"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "stern"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2217,19 +1388,6 @@
         "communication": "speaking",
         "emotion": "furious"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "furious"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2256,30 +1414,6 @@
         "communication": "speaking",
         "emotion": "scornful"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "scornful"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2306,30 +1440,6 @@
         "communication": "speaking",
         "emotion": "crying"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "crying"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2356,19 +1466,6 @@
         "communication": "speaking",
         "emotion": "angry"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_ly_mong_ky",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "angry"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2395,19 +1492,6 @@
         "communication": "silent",
         "emotion": "hurt"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "hurt"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2434,19 +1518,6 @@
         "communication": "speaking",
         "emotion": "cold"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "cold"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2473,19 +1544,6 @@
         "communication": "silent",
         "emotion": "determined"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "determined"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2512,19 +1570,6 @@
         "communication": "silent",
         "emotion": "serious"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "serious"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2551,19 +1596,6 @@
         "communication": "silent",
         "emotion": "worried"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "worried"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2590,19 +1622,6 @@
         "communication": "silent",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "calm"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2629,19 +1648,6 @@
         "communication": "silent",
         "emotion": "determined"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "determined"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2668,19 +1674,6 @@
         "communication": "silent",
         "emotion": "relieved"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "relieved"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2707,19 +1700,6 @@
         "communication": "speaking",
         "emotion": "worried"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "worried"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2746,30 +1726,6 @@
         "communication": "speaking",
         "emotion": "serious"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "serious"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2796,19 +1752,6 @@
         "communication": "speaking",
         "emotion": "concerned"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "concerned"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2835,30 +1778,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2885,30 +1804,6 @@
         "communication": "speaking",
         "emotion": "explaining"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "explaining"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2935,19 +1830,6 @@
         "communication": "speaking",
         "emotion": "shocked"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "shocked"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -2974,30 +1856,6 @@
         "communication": "speaking",
         "emotion": "serious"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "serious"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3024,19 +1882,6 @@
         "communication": "speaking",
         "emotion": "worried"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "worried"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3063,30 +1908,6 @@
         "communication": "speaking",
         "emotion": "grief"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "grief"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3113,30 +1934,6 @@
         "communication": "speaking",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "calm"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3163,19 +1960,6 @@
         "communication": "speaking",
         "emotion": "gentle"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "gentle"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3202,30 +1986,6 @@
         "communication": "speaking",
         "emotion": "determined"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "determined"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3252,19 +2012,6 @@
         "communication": "speaking",
         "emotion": "tender"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_me_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "tender"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3291,19 +2038,6 @@
         "communication": "silent",
         "emotion": "sad"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "sad"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3330,19 +2064,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3369,19 +2090,6 @@
         "communication": "silent",
         "emotion": "serious"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "serious"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3408,19 +2116,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3447,19 +2142,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3486,19 +2168,6 @@
         "communication": "speaking",
         "emotion": "hesitant"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_vuong_tu_hien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "hesitant"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3525,30 +2194,6 @@
         "communication": "speaking",
         "emotion": "angry"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "angry"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_vuong_tu_hien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3575,41 +2220,6 @@
         "communication": "silent",
         "emotion": "observant"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "observant"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_vuong_tu_hien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        },
-        {
-          "id": "char_chu_nghien",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 3
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3636,19 +2246,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3675,19 +2272,6 @@
         "communication": "silent",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "calm"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3714,19 +2298,6 @@
         "communication": "silent",
         "emotion": "determined"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "determined"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3753,19 +2324,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3792,19 +2350,6 @@
         "communication": "silent",
         "emotion": "explaining"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "explaining"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3831,19 +2376,6 @@
         "communication": "silent",
         "emotion": "certain"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "certain"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3870,19 +2402,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3909,19 +2428,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3948,19 +2454,6 @@
         "communication": "silent",
         "emotion": "determined"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "determined"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -3987,19 +2480,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4026,19 +2506,6 @@
         "communication": "silent",
         "emotion": "surprised"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "surprised"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4065,19 +2532,6 @@
         "communication": "silent",
         "emotion": "confident"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "confident"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4104,19 +2558,6 @@
         "communication": "silent",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "calm"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4143,19 +2584,6 @@
         "communication": "silent",
         "emotion": "determined"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "determined"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4182,19 +2610,6 @@
         "communication": "speaking",
         "emotion": "supportive"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_ly_tinh",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "supportive"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4221,30 +2636,6 @@
         "communication": "silent",
         "emotion": "warm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "warm"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_ly_tinh",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4271,19 +2662,6 @@
         "communication": "speaking",
         "emotion": "firm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_ly_tinh",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "firm"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4310,19 +2688,6 @@
         "communication": "silent",
         "emotion": "focused"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "focused"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4349,19 +2714,6 @@
         "communication": "silent",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "calm"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4388,19 +2740,6 @@
         "communication": "speaking",
         "emotion": "concerned"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_ly_tinh",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "concerned"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4427,30 +2766,6 @@
         "communication": "speaking",
         "emotion": "gentle"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "gentle"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_ly_tinh",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4477,19 +2792,6 @@
         "communication": "speaking",
         "emotion": "calm"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "calm"
-          },
-          "x": 50,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4516,19 +2818,6 @@
         "communication": "speaking",
         "emotion": "sweet"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "sweet"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4555,30 +2844,6 @@
         "communication": "silent",
         "emotion": "bitter"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "bitter"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4605,30 +2870,6 @@
         "communication": "speaking",
         "emotion": "neutral"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "neutral"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4655,19 +2896,6 @@
         "communication": "speaking",
         "emotion": "neutral"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "neutral"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4694,30 +2922,6 @@
         "communication": "speaking",
         "emotion": "questioning"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_tong_chi_van",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "questioning"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        },
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "attentive"
-          },
-          "x": 70,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 2
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
@@ -4744,19 +2948,6 @@
         "communication": "speaking",
         "emotion": "nervous"
       },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bach_vi_vi",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "nervous"
-          },
-          "x": 30,
-          "y": 100,
-          "scale": 0.72,
-          "z_index": 1
-        }
-      ],
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
