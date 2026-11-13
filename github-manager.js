@@ -17,7 +17,7 @@
   const apiPending=new Map();
   function readApiCache(key){try{const v=JSON.parse(localStorage.getItem(API_CACHE_PREFIX+key)||'null');return v&&v.at&&v.data!==undefined?v:null}catch(_){return null}}
   function writeApiCache(key,data){try{localStorage.setItem(API_CACHE_PREFIX+key,JSON.stringify({at:Date.now(),data}))}catch(_){}}
-  function clearApiCache(){try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith(API_CACHE_PREFIX))localStorage.removeItem(k)}}catch(_){}apiPending.clear()}
+  function clearApiCache(){try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith(API_CACHE_PREFIX))localStorage.removeItem(k)}}catch(_){}apiPending.clear();try{window.VNSLocal?.clearApiCache?.()}catch(_){}}
   async function request(url,options={}){
     const token=getToken();if(!token)throw new Error('Chưa lưu GitHub Token. Mở github_manager.html để kết nối.');
     const method=String(options.method||'GET').toUpperCase(),cacheable=method==='GET'&&!/\/git\/(?:blobs|commits)\//.test(url);
