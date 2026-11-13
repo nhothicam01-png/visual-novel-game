@@ -1673,7 +1673,7 @@ function getCurrentLine(){return getCurrentScene()?.lines[activeLineIndex]||null
 function saveCurrentLine(){
  const line=getCurrentLine();if(!line)return;
  const oldKey=line.cacheKey;
- line.speaker=$('speaker').value.trim()||'Nhân vật';
+ line.speaker=activeCharacterList().find(ch=>ch.id===$('speaker').value)?.name||$('speaker').value.trim()||'Nhân vật';
  line.text=$('dialogue').value;
  line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value;if(line.sourceFrame&&typeof line.sourceFrame==='object'){line.sourceFrame.expression_id=semanticFromExpression(characterAssetFolder($('character').value),line.expression);delete line.sourceFrame.bieu_cam}
  line.visibleCharacters=readVisibleCharactersFromEditor();
