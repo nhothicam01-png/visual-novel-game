@@ -19,6 +19,16 @@ main{max-width:1400px;margin:22px auto;padding:0 16px 40px}.panel{background:lin
 <header><div class="head"><div class="logo">✂</div><div><h1>RemoveBG Anime Pro <span style="color:#71a8ff;font-size:11px">ULTIMATE · ORIGINAL SPEED EXPORT</span></h1><p>Local-first video matting · Adaptive Chroma · AI fallback · WEBM alpha</p></div></div></header>
 <nav style="max-width:1400px;margin:10px auto 0;padding:0 16px;display:flex;gap:8px;flex-wrap:wrap"><a href="./index.html" style="color:#dbeafe;text-decoration:none;background:#1c2b43;border:1px solid #3b5275;border-radius:9px;padding:8px 12px;font-size:13px">🏠 Trang chủ</a><a href="./github_manager.html" style="color:#fff;text-decoration:none;background:linear-gradient(110deg,#2869e8,#168fae);border-radius:9px;padding:8px 12px;font-size:13px;font-weight:700">⬆ GitHub Manager</a></nav>
 <main>
+
+<section id="frameBuilder" class="panel" style="max-width:900px;margin:24px auto">
+ <h2>🎞️ Ghép PNG thành video để xóa phông</h2>
+ <p class="hint">Tải nhiều ảnh PNG/JPG lên, sắp xếp đúng thứ tự, chọn FPS rồi ghép thành video. Video sẽ tự chuyển vào trình chỉnh sửa xóa phông bên dưới; ảnh nguồn không tải lên GitHub.</p>
+ <div class="field"><label>Chọn danh sách ảnh frame</label><input id="frameFiles" type="file" accept="image/png,image/jpeg,image/webp" multiple></div>
+ <div class="row" style="margin:10px 0"><label class="hint" style="flex:1">FPS phát<select id="frameFps"><option value="4">4 FPS</option><option value="6">6 FPS</option><option value="8" selected>8 FPS</option><option value="10">10 FPS</option><option value="12">12 FPS</option><option value="15">15 FPS</option><option value="24">24 FPS</option></select></label><div style="flex:1"><div class="hint">Thời lượng ước tính</div><strong id="frameDuration">0 ảnh · 0.00 giây</strong></div></div>
+ <div id="frameList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:9px;margin:12px 0"></div>
+ <div class="actions"><button id="buildFrameVideo" class="primary" disabled>▶ Ghép video và chuyển sang xóa phông</button><button id="clearFrameList" type="button">Xóa danh sách</button></div>
+ <p class="hint" id="frameBuildStatus" aria-live="polite">Chưa có ảnh. Chọn từ 2 ảnh trở lên để bắt đầu.</p>
+</section>
 <section id="uploadPanel" class="panel upload">
   <div style="font-size:42px">🎞️</div><h2>Chọn video cần tách nền</h2>
   <p class="hint">Hỗ trợ MP4, WebM, MOV (tùy trình duyệt). Video được xử lý trong trình duyệt.</p>
@@ -515,4 +525,32 @@ video.addEventListener('loadeddata',renderStill);
 </script>
 <footer style="max-width:1400px;margin:24px auto;padding:0 16px 24px;color:#8192aa;font-size:12px">ToonOut: BiRefNet fine-tune for anime · Model license MIT · Model source: sprited/birefnet-toonout-onnx · Paper: arXiv:2509.06839. ONNX Runtime Web is loaded from jsDelivr. No video is uploaded to a server by this app.</footer>
 <script src="./studio-shell.js"></script>
+
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);let frames=[],busy=false;
+const fmt=n=>Number(n).toFixed(2);
+function update(){const fps=Number($('frameFps').value)||8,sec=frames.length/fps;$('frameDuration').textContent=frames.length+' ảnh · '+fmt(sec)+' giây';$('buildFrameVideo').disabled=frames.length<2||busy;render()}
+function render(){const host=$('frameList');host.innerHTML='';frames.forEach((f,i)=>{const card=document.createElement('div');card.style.cssText='background:#0b1527;border:1px solid #344762;border-radius:10px;padding:7px;min-width:0';const img=document.createElement('img');img.src=f.url;img.alt='';img.style.cssText='width:100%;height:130px;object-fit:contain;background:#070b13;border-radius:6px';const label=document.createElement('div');label.textContent=(i+1)+'. '+f.file.name;label.title=f.file.name;label.style.cssText='font-size:11px;overflow-wrap:anywhere;margin:6px 0';const actions=document.createElement('div');actions.style.cssText='display:flex;gap:4px';[['↑',i>0,()=>move(i,-1)],['↓',i<frames.length-1,()=>move(i,1)],['✕',true,()=>remove(i)]].forEach(([txt,on,fn])=>{const b=document.createElement('button');b.type='button';b.textContent=txt;b.disabled=!on;b.style.cssText='flex:1;padding:6px 3px';b.onclick=fn;actions.appendChild(b)});card.append(img,label,actions);host.appendChild(card)})}
+function move(i,d){const j=i+d;if(j<0||j>=frames.length)return;[frames[i],frames[j]]=[frames[j],frames[i]];update()}
+function remove(i){URL.revokeObjectURL(frames[i].url);frames.splice(i,1);update()}
+$('frameFiles').addEventListener('change',e=>{const incoming=Array.from(e.target.files||[]).filter(f=>/^image\\/(png|jpeg|webp)$/.test(f.type));incoming.forEach(file=>frames.push({file,url:URL.createObjectURL(file)}));e.target.value='';update();$('frameBuildStatus').textContent=frames.length?'Đã tải '+frames.length+' ảnh. Dùng nút ↑ ↓ để chỉnh thứ tự.':'Chưa có ảnh.'});
+$('frameFps').addEventListener('change',update);
+$('clearFrameList').onclick=()=>{frames.forEach(f=>URL.revokeObjectURL(f.url));frames=[];update();$('frameBuildStatus').textContent='Đã xóa danh sách ảnh.'};
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+function loadImage(url){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('Không đọc được một ảnh trong danh sách.'));im.src=url})}
+$('buildFrameVideo').onclick=async()=>{if(busy||frames.length<2)return;if(!window.MediaRecorder){$('frameBuildStatus').textContent='Trình duyệt này không hỗ trợ tạo video. Hãy mở bằng Chrome mới.';return}busy=true;update();let stream=null,recorder=null,urls=[];try{
+ const fps=Number($('frameFps').value)||8,images=[];for(const f of frames)images.push(await loadImage(f.url));
+ const w=images[0].naturalWidth,h=images[0].naturalHeight;if(!w||!h)throw new Error('Kích thước ảnh không hợp lệ.');
+ const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const cx=canvas.getContext('2d');
+ stream=canvas.captureStream(0);const track=stream.getVideoTracks()[0];const mime=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(t=>MediaRecorder.isTypeSupported(t));if(!mime)throw new Error('Trình duyệt không hỗ trợ mã hóa WebM.');
+ const chunks=[];recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:Math.min(5000000,Math.max(700000,w*h*fps*0.08))});recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+ const stopped=new Promise((resolve,reject)=>{recorder.onstop=resolve;recorder.onerror=()=>reject(new Error('Lỗi khi mã hóa video.'))});recorder.start();const delay=1000/fps;
+ for(let i=0;i<images.length;i++){cx.clearRect(0,0,w,h);cx.drawImage(images[i],0,0,w,h);if(track.requestFrame)track.requestFrame();$('frameBuildStatus').textContent='Đang ghép frame '+(i+1)+'/'+images.length+'…';await wait(delay)}
+ recorder.stop();await stopped;const blob=new Blob(chunks,{type:'video/webm'});if(!blob.size)throw new Error('Video tạo ra bị rỗng.');
+ const videoFile=new File([blob],'png-frames-'+fps+'fps.webm',{type:'video/webm'});const dt=new DataTransfer();dt.items.add(videoFile);$('fileInput').files=dt.files;$('fileInput').dispatchEvent(new Event('change',{bubbles:true}));$('frameBuildStatus').textContent='Đã ghép '+images.length+' frame · '+fmt(images.length/fps)+' giây · '+(blob.size/1024/1024).toFixed(2)+' MB. Đã chuyển video sang trình xóa phông.';
+ }catch(err){$('frameBuildStatus').textContent='Không thể ghép video: '+(err.message||String(err))}finally{if(stream)stream.getTracks().forEach(t=>t.stop());busy=false;update()}};
+update();
+})();
+</script>
 </body></html>
