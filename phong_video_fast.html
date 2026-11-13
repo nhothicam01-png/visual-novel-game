@@ -1705,7 +1705,6 @@ function applyVisual(v){
 function applyVisual(v){
  if(!v)return;
  $('character').value=v.character;$('expression').value=v.expression;$('background').value=v.background;
- $('show-dialogue').checked=v.showDialogue;$('show-speaker').checked=v.showSpeaker;
  $('dialogue-width-mode').value=v.dialogueMode||'percent';$('dialogue-width').value=v.dialogueWidth||75;
  $('dialogue-width-control').style.display=v.dialogueMode==='fit'?'none':'flex';
  $('dialogue-width-value').textContent=$('dialogue-width').value+'%';
