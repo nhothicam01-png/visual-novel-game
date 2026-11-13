@@ -593,7 +593,7 @@ function drawFrame(elapsed,st){
    const phase=(performance.now()/1000)*5.6;
    const compression=(1+Math.cos(phase))*.5;
    const tilt=Math.sin(phase*.5)*.055;
-   const sx=1+.018*compression*motion,sy=1-.085*compression*motion;
+   const sx=1+.015*compression*motion,sy=1-.07*compression*motion;
     // Ha diem neo xuong mot chut khi nhun de day WEBM khong lo khe khi nghieng.
     y+=h*.015*motion;
    // Neo tai diem chan giua de khong tao khe ho o day khung WEBM.
