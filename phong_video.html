@@ -650,7 +650,7 @@ function drawDialogue(w,h){
    let lineStart=text.indexOf(line,searchFrom);if(lineStart<0)lineStart=searchFrom;searchFrom=lineStart+line.length;
    const chars=Array.from(line),widths=chars.map(ch=>ctx.measureText(ch).width),totalWidth=widths.reduce((sum,value)=>sum+value,0);let x=(w-totalWidth)/2;
    chars.forEach((ch,charIndex)=>{
-    const absoluteIndex=lineStart+charIndex,active=!!speakingCharacterId&&absoluteIndex===speechTextIndex&&!/\\s/.test(ch);
+    const absoluteIndex=lineStart+charIndex,active=!!speakingCharacterId&&absoluteIndex===speechTextIndex&&!/\s/.test(ch);
     const amp=active?fontSize*.14*Math.max(.25,Math.min(1,speechMotionLevel||.65)):0,direction=absoluteIndex%2===0?1:-1;
     ctx.textAlign='left';ctx.fillText(ch,x,boxY+topPad+nameH+lineIndex*lineH+direction*amp);x+=widths[charIndex];
    });
