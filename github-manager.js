@@ -10,8 +10,8 @@
   const API='https://api.github.com';
   const localBlobs=new Map();let localBlobId=0;
   function getToken(){try{return localStorage.getItem(TOKEN_KEY)||''}catch(e){return ''}}
-  function setToken(token){if(!token)throw new Error('Token trống.');localStorage.setItem(TOKEN_KEY,String(token).trim())}
-  function clearToken(){localStorage.removeItem(TOKEN_KEY)}
+  function setToken(token){if(!token)throw new Error('Token trống.');localStorage.setItem(TOKEN_KEY,String(token).trim());clearApiCache()}
+  function clearToken(){localStorage.removeItem(TOKEN_KEY);clearApiCache()}
   function getConfig(){try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}')}catch(e){return {}}}
   function setConfig(config){localStorage.setItem(CONFIG_KEY,JSON.stringify(config||{}))}
   const isLocal=()=>location.hostname==='localhost'||location.hostname==='127.0.0.1';
@@ -25,12 +25,13 @@
     const token=getToken();if(!token)throw new Error('Chưa lưu GitHub Token. Mở github_manager.html để kết nối.');
     const method=String(options.method||'GET').toUpperCase(),cacheable=method==='GET'&&!/\/git\/(?:blobs|commits)\//.test(url);
     const key=cacheable?btoa(unescape(encodeURIComponent(url))).replace(/=+$/,''): '';
-    if(cacheable){const cached=readApiCache(key);if(cached&&Date.now()-cached.at<API_CACHE_TTL)return cached.data;if(apiPending.has(key))return apiPending.get(key)}
+    const cached=cacheable?readApiCache(key):null;
+    if(cacheable){if(cached&&Date.now()-cached.at<API_CACHE_TTL)return cached.data;if(apiPending.has(key))return apiPending.get(key)}
     const task=(async()=>{
       const response=await fetch(url,{...options,headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28',Authorization:'Bearer '+token,...(options.headers||{})}});
       const data=await response.json().catch(()=>({}));
       if(response.ok&&method!=='GET'){clearApiCache();if(window.VNSLocal)window.VNSLocal.clearTreeCache()}
-      if(!response.ok){const message=data.message||('GitHub API HTTP '+response.status);if(response.status===401)throw new Error('Token không hợp lệ hoặc đã hết hạn.');if(response.status===403)throw new Error('GitHub từ chối yêu cầu hoặc đã chạm giới hạn API. Hãy chờ reset limit rồi thử lại.');throw new Error(message)}
+      if(!response.ok){if(cacheable&&cached&&(response.status===403||response.status===429))return cached.data;const message=data.message||('GitHub API HTTP '+response.status);if(response.status===401)throw new Error('Token không hợp lệ hoặc đã hết hạn.');if(response.status===403||response.status===429)throw new Error('GitHub từ chối yêu cầu hoặc đã chạm giới hạn API. Hãy chờ reset limit rồi thử lại.');throw new Error(message)}
       if(cacheable)writeApiCache(key,data);
       return data;
     })();
