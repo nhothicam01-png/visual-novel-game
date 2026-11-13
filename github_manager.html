@@ -66,7 +66,7 @@ $('file').addEventListener('change',()=>{const f=$('file').files[0];if(!f)return
 $('clear-content').addEventListener('click',()=>{$('content').value='';$('file').value='';$('push-status').textContent='Đã xóa nội dung nhập.'});
 $('push').addEventListener('click',async()=>{
  const c=config(),file=$('file').files[0],path=$('path').value.trim();
- if(!GitHubManager.getToken()&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){ $('push-status').textContent='Chưa có token. Hãy kết nối ở mục 1.';return}
+ if(!GitHubManager.getToken()){ $('push-status').textContent='Chưa có token. Hãy kết nối ở mục 1.';return}
  if(!c.owner||!c.repo||!path){$('push-status').textContent='Hãy nhập owner, repository và đường dẫn file.';return}
  if(!file&&!$('content').value){$('push-status').textContent='Hãy chọn file hoặc nhập nội dung.';return}
  if(!confirm('Xác nhận push '+path+' lên '+c.owner+'/'+c.repo+' ('+c.branch+')?'))return;
