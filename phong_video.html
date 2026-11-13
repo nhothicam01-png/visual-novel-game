@@ -515,7 +515,7 @@ function backgroundAtSourceIndex(index){
 function preloadAdjacentAssets(sourceIndex,count=3){
  const rows=activeStoryData?.danh_sach||[];
  for(let i=Math.max(0,sourceIndex);i<Math.min(rows.length,sourceIndex+count);i++){
-  const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=normalizeExpression(row.bieu_cam);
+  const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=resolveSemanticExpression(character,row.expression_id);
   if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
   normalizeSceneEffects(row.hieu_ung_canh||[]).forEach(effect=>{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(()=>{})});
@@ -1502,7 +1502,7 @@ function uniqueCharacters(dataOrRows){
  rows.forEach(x=>{const id=String(x.nhan_vat??x.character??'').trim();if(!id)return;const voice=x.giong_noi??x.giong??x.voice??x.voice_id??x.voiceId??x.tts_voice??null;if(!map.has(id))map.set(id,{id,name:String(x.ten_hien_thi||x.name||id),assetFolder:'',jsonVoice:voice});else if(!map.get(id).jsonVoice&&voice)map.get(id).jsonVoice=voice});
  return [...map.values()];
 }
-function characterAssetFolder(id){const value=String(id??'').trim(),entry=activeStoryData?.nhan_vat?.[value];if(entry&&typeof entry.assetFolder==='string')return entry.assetFolder;return Object.prototype.hasOwnProperty.call(storyCharacterFolderMap,value)?storyCharacterFolderMap[value]:(worldCharacterDirectory.find(ch=>ch.id===value)?.folder||'')}
+function characterAssetFolder(id){const value=String(id??'').trim();if(Object.prototype.hasOwnProperty.call(storyCharacterFolderMap,value))return storyCharacterFolderMap[value];const entry=activeStoryData?.nhan_vat?.[value];if(entry&&typeof entry.assetFolder==='string')return entry.assetFolder;return worldCharacterDirectory.find(ch=>ch.id===value)?.folder||''}
 function normalizeExpression(value){return String(value||'').replace(/\.webm$/i,'')}
 function activeCharacterList(){return worldCharacterDirectory.length?worldCharacterDirectory:characterDirectory.map(ch=>({id:String(ch.id),name:ch.name,folder:characterAssetFolder(ch.id)}))}
 function renderStoryCharacterSelectors(preferredId=''){const list=activeCharacterList(),speaker=$('speaker'),character=$('character');speaker.innerHTML=list.map(ch=>'<option value="'+safeText(ch.id)+'">'+safeText(ch.name)+'</option>').join('')||'<option value="">Chưa có nhân vật</option>';character.innerHTML=list.map(ch=>'<option value="'+safeText(ch.id)+'">'+safeText(ch.name)+'</option>').join('')||'<option value="">Chưa có nhân vật</option>';const selected=list.find(ch=>ch.id===String(preferredId))||list[0];speaker.value=selected?.id||'';character.value=selected?.id||''}
@@ -1601,7 +1601,7 @@ async function loadWorldCharacterFolderMap(data,storyPath){
   const slug=String(data?.world_id||''),worldPath=slug?'assets/TheGioi/'+slug+'/TheGioi.json':'',base='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
   let world=null;if(worldPath){const r=await fetch(base+worldPath.split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(r.ok)world=await r.json()}
   const latest=new Map((Array.isArray(world?.characters)?world.characters:[]).map(ch=>[String(ch.character_id||ch.id||''),ch]));
-  characterDirectory.forEach(ch=>{const wc=latest.get(ch.id),folder=wc?String(wc.assetFolder||''):String(ch.assetFolder||'');ch.assetFolder=folder;storyCharacterFolderMap[ch.id]=folder;worldCharacterDirectory.push({id:ch.id,name:String(wc?.name||ch.name),folder})});
+  characterDirectory.forEach(ch=>{const wc=latest.get(ch.id),folder=wc?String(wc.assetFolder||''):String(ch.assetFolder||'');ch.assetFolder=folder;if(activeStoryData?.nhan_vat?.[ch.id])activeStoryData.nhan_vat[ch.id].assetFolder=folder;storyCharacterFolderMap[ch.id]=folder;worldCharacterDirectory.push({id:ch.id,name:String(wc?.name||ch.name),folder})});
   if(!worldCharacterDirectory.length)worldCharacterDirectory=characterDirectory.map(ch=>({id:ch.id,name:ch.name,folder:ch.assetFolder||''}));
  }catch(error){console.warn('Không thể đồng bộ nhân vật/tài nguyên từ thế giới:',error);characterDirectory.forEach(ch=>{const folder=String(ch.assetFolder||'');storyCharacterFolderMap[ch.id]=folder;worldCharacterDirectory.push({id:ch.id,name:ch.name,folder})})}
 }
