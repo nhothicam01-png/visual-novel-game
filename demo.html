@@ -42,8 +42,25 @@
 <div class="row"><button class="btn" id="download" type="button" disabled>⬇ Tải file TXT</button><button class="btn secondary" id="copy" type="button" disabled>Sao chép văn bản</button><button class="btn secondary" id="clear" type="button">Xóa kết quả</button></div>
 <p class="note">Tên file TXT được lấy theo tên MP3. Văn bản có thể chỉnh sửa trước khi tải. Nếu Gemini báo hết giới hạn đầu ra, kết quả có thể chưa đầy đủ; đừng coi phần bị cắt là bản chép hoàn chỉnh.</p>
 </section>
-<p class="tiny">Visual Novel Studio · Công cụ chuyển audio thành văn bản · Gemini API</p>
+
+<section class="panel" id="story-workflow">
+<h2>5 · Sáng tác thế giới và truyện từ TXT</h2>
+<p class="note">TXT dài sẽ được chia thành nhiều phần để phân tích, sau đó hợp nhất thành hồ sơ nguồn trước khi sáng tác.</p>
+<div class="grid">
+<label class="field">Chế độ<select id="creation-mode"><option value="new">Tạo thế giới mới + truyện mới</option><option value="existing">Tạo truyện mới trong thế giới có sẵn</option></select></label>
+<label class="field">Tên truyện / dự án<input id="creation-title" placeholder="Để trống để AI đề xuất"></label>
+</div>
+<div id="existing-world-box" class="hidden"><label class="field">Thế giới<select id="existing-world"><option value="">Đang tải…</option></select></label><button class="btn secondary" id="reload-world-list" type="button">Tải lại danh sách thế giới</button></div>
+<label class="field">Yêu cầu sáng tác thêm<textarea id="creative-notes" style="min-height:80px" placeholder="Phong cách, kết thúc, điều muốn giữ hoặc thay đổi…"></textarea></label>
+<div class="row"><button class="btn" id="analyze-source" type="button">① Phân tích toàn bộ TXT</button><button class="btn secondary" id="cancel-creative" type="button" disabled>Hủy</button></div>
+<div class="progress hidden" id="creative-progress"><div id="creative-progress-fill"></div></div><div class="status" id="creative-status">Chưa bắt đầu.</div>
+</section>
+<section class="panel hidden" id="analysis-panel"><h2>6 · Hồ sơ phân tích nguồn</h2><label class="field">Sự kiện, nhân vật, quan hệ, chủ đề<textarea id="source-analysis" style="min-height:300px"></textarea></label><div class="row"><button class="btn" id="create-treatment" type="button">② Sáng tác treatment</button><button class="btn secondary" id="download-analysis" type="button">Tải hồ sơ</button></div></section>
+<section class="panel hidden" id="treatment-panel"><h2>7 · Duyệt thế giới và treatment</h2><label class="field" id="world-json-label">Hồ sơ thế giới JSON<textarea id="world-json" style="min-height:230px"></textarea></label><label class="field">Treatment / bản đồ chương và cảnh<textarea id="treatment" style="min-height:350px"></textarea></label><div class="row"><button class="btn" id="generate-story-json" type="button">③ Tạo kịch bản JSON v3</button><button class="btn secondary" id="download-treatment" type="button">Tải treatment TXT</button></div></section>
+<section class="panel hidden" id="story-json-panel"><h2>8 · Kịch bản JSON v3</h2><label class="field">Tên thư mục truyện<input id="story-folder" placeholder="Tự tạo từ tên truyện"></label><label class="field">JSON<textarea id="story-json" style="min-height:380px"></textarea></label><div class="row"><button class="btn secondary" id="validate-story-json" type="button">Kiểm tra JSON</button><button class="btn" id="download-story-json" type="button">Tải JSON</button><button class="btn" id="publish-creative" type="button">Lưu lên GitHub</button></div><div class="status" id="publish-creative-status"></div></section><p class="tiny">Visual Novel Studio · Audio → TXT → Worldbuilding → Treatment → JSON v3</p>
 </main>
+<script src="./github-manager.js"></script>
+<script src="./audio-story.js"></script>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),KEY_NAME='subtitleGeminiApiKey';
