@@ -743,7 +743,7 @@ function attachSpeechAnalyser(audio){
  if(!audio||!window.AudioContext&&!window.webkitAudioContext)return;
  try{
   const AudioCtx=window.AudioContext||window.webkitAudioContext;
-  if(!speechAudioContext)speechAudioContext=new AudioCtx();
+  if(!speechAudioContext)speechAudioContext=directRecording&&directRecordAudioContext?directRecordAudioContext:new AudioCtx();
   let source=speechAudioSources.get(audio);
   if(!source){source=speechAudioContext.createMediaElementSource(audio);source.connect(speechAudioContext.destination);speechAudioSources.set(audio,source)}
   speechAnalyser=speechAudioContext.createAnalyser();speechAnalyser.fftSize=256;speechAnalyser.smoothingTimeConstant=.72;
@@ -758,7 +758,7 @@ function audioElement(url,loop,volume){
 }
 function connectDirectRecordAudio(audio){
  if(!directRecording||!directRecordAudioContext||!directRecordDestination||directRecordSources.has(audio))return;
- try{const source=directRecordAudioContext.createMediaElementSource(audio);source.connect(directRecordAudioContext.destination);source.connect(directRecordDestination);directRecordSources.add(audio)}catch(err){console.warn('Không thể lấy âm thanh preview vào bản ghi',err)}
+ try{const source=directRecordAudioContext.createMediaElementSource(audio);source.connect(directRecordAudioContext.destination);source.connect(directRecordDestination);speechAudioSources.set(audio,source);directRecordSources.add(audio)}catch(err){console.warn('Không thể lấy âm thanh preview vào bản ghi',err)}
 }
 async function startDirectRecorder(){
  if(!previewCanvas.captureStream||!window.MediaRecorder)throw new Error('Trình duyệt không hỗ trợ ghi trực tiếp.');
