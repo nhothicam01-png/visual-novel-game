@@ -35,7 +35,7 @@
       "personality": "Bí ẩn, từ bi ngoài mặt nhưng che giấu tham vọng lật đổ giai cấp thống trị thông qua tín ngưỡng của nô lệ.",
       "relationships": "Lén lút liên lạc với Elena và cung cấp thuốc men cho các nô lệ bị thương.",
       "assetFolder": "2",
-      "selected": false
+      "selected": true
     },
     {
       "name": "Draco",
@@ -43,7 +43,7 @@
       "personality": "Tàn bạo, trung thành tuyệt đối với luật pháp hiện hành, sắc sảo trong việc phát hiện các âm mưu nổi loạn.",
       "relationships": "Dưới quyền trực tiếp của Marcus, là kẻ thù không đội trời chung với Cassius.",
       "assetFolder": "3",
-      "selected": false
+      "selected": true
     },
     {
       "name": "Lyra",
@@ -51,7 +51,7 @@
       "personality": "Thực dụng, sắc sảo, sẵn sàng mua bán thông tin tình báo và vũ khí lậu cho bất kỳ ai trả giá cao.",
       "relationships": "Có quan hệ ngầm với cả giới quý tộc lẫn phe kháng chiến nô lệ.",
       "assetFolder": "4",
-      "selected": false
+      "selected": true
     },
     {
       "name": "Valerius",
@@ -59,7 +59,7 @@
       "personality": "Kiêu ngạo, tàn nhẫn nhưng có óc thẩm mỹ cao, xem nô lệ như những tác phẩm nghệ thuật sống hoặc công cụ giải trí thuần túy.",
       "relationships": "Là đồng minh thân cận của Marcus và là chủ nhân trực tiếp của nhiều đấu sĩ trong dinh thự.",
       "assetFolder": "5",
-      "selected": false
+      "selected": true
     },
     {
       "name": "Cassius",
@@ -67,7 +67,7 @@
       "personality": "Kiên cường, bất khuất, có tầm nhìn chiến lược và khả năng truyền cảm hứng sâu sắc cho những người cùng cảnh ngộ.",
       "relationships": "Lãnh đạo cuộc nổi dậy tại đấu trường và có mối liên kết ngầm với Lyra để mua vũ khí.",
       "assetFolder": "6",
-      "selected": false
+      "selected": true
     },
     {
       "name": "Elena",
@@ -113,5 +113,5 @@
     }
   ],
   "story_folders": [],
-  "updated_at": "2026-11-13T06:18:34.415Z"
+  "updated_at": "2026-11-13T06:27:24.310Z"
 }
