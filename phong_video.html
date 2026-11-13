@@ -160,7 +160,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <button class="btn" id="push-story-button" type="button">⬆ Cập nhật kịch bản lên GitHub</button>
 
 </div>
-<div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 2.</div>
+<div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 3.</div>
 <div id="character-voice-list" class="grid"></div>
 <label class="field">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
 <div class="status" id="voice-fallback-status">Giọng mặc định được dùng khi nhân vật chưa có giọng riêng hoặc giọng trong JSON không hợp lệ.</div>
@@ -202,7 +202,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <div class="scene-groups">
 <details class="effect-panel"><summary>🧍 Nhân vật</summary>
 <label class="field">Chọn nhân vật<select id="character"></select></label>
-<label class="field">Biểu cảm / chuyển động<select id="expression"><option value="say_hello_bieu_cam_binh_thuong">say_hello_bieu_cam_binh_thuong</option></select></label>
+<label class="field">Biểu cảm / chuyển động<select id="expression"><option value="">Tự phân giải theo metadata</option></select></label>
 <div id="speaker-webm-picker"></div>
 <div class="effect-options" data-effect-list="character"></div></details>
 <details class="effect-panel"><summary>🌄 Bối cảnh & nền</summary>
@@ -516,7 +516,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
   if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
   normalizeSceneEffects(row.hieu_ung_canh||[]).forEach(effect=>{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(()=>{})});
-  (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),files=expressionFilesByFolder[String(folder)]||[],expr=normalizeExpression(spec?.bieu_cam)||(files[0]?.split('/').pop().replace(/\.webm$/i,'')||'');if(folder&&expr)cachedVideo(BASE+'NhanVat/'+folder+'/'+expr+'.webm').catch(()=>{})});
+  (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),expr=resolveSemanticExpression(folder,spec?.expression_id||semanticFromExpression(folder,spec?.bieu_cam));if(folder&&expr)cachedVideo(BASE+'NhanVat/'+folder+'/'+expr+'.webm').catch(()=>{})});
  }
 }
 $('background').addEventListener('change',updateAssets);
@@ -874,7 +874,7 @@ async function prepareDirectRecording(items,useBrowser){
   const folder=characterAssetFolder(frame.nhan_vat??line.characterAsset??line.speakerId),expression=resolveSemanticExpression(folder,frame.expression_id)||normalizeExpression(line.expression||'');
   if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))videoUrls.add(url);else imageUrls.add(url)}
   if(folder&&expression)videoUrls.add(BASE+'NhanVat/'+folder+'/'+expression+'.webm');
-  (Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[]).forEach(spec=>{const displayFolder=characterAssetFolder(spec?.id),files=expressionFilesByFolder[String(displayFolder)]||[],displayExpression=normalizeExpression(spec?.bieu_cam)||(files[0]?.split('/').pop().replace(/\.webm$/i,'')||'');if(displayFolder&&displayExpression)videoUrls.add(BASE+'NhanVat/'+displayFolder+'/'+displayExpression+'.webm')});
+  (Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[]).forEach(spec=>{const displayFolder=characterAssetFolder(spec?.id),displayExpression=resolveSemanticExpression(displayFolder,spec?.expression_id||semanticFromExpression(displayFolder,spec?.bieu_cam));if(displayFolder&&displayExpression)videoUrls.add(BASE+'NhanVat/'+displayFolder+'/'+displayExpression+'.webm')});
  }
  const assetJobs=[...imageUrls].map(url=>()=>cachedImage(url)),videoJobs=[...videoUrls].map(url=>()=>cachedVideo(url));
  const total=assetJobs.length+videoJobs.length+(useBrowser?0:items.length);let done=0;
