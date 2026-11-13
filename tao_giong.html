@@ -19,7 +19,7 @@ button.secondary{background:#334155}button.danger{background:#9f1239}button:disa
 .profile{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #334155;border-radius:9px;margin-top:8px}.profile small{display:block;color:#94a3b8;margin-top:4px}
 .warning{color:#fbbf24}.small{font-size:12px}
 </style>
-<script src="./github-progress.js"></script><script src="./vns-local.js?v=20261113-local"></script>
+<script src="./github-progress.js"></script><script src="./vns-local.js?v=20261113-pat2"></script>
 </head>
 <body><main>
 <nav class="nav"><a href="./index.html">🏠 Trang chủ</a><a href="./phong_video.html">🎬 Phòng tạo video</a><a href="./github_manager.html">⬆ GitHub Manager</a></nav>
@@ -198,6 +198,6 @@ $('push-voices').onclick=pushVoiceProfiles;$('import-config').onclick=()=>$('con
 $('config-file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const data=JSON.parse(await f.text()),incoming=Array.isArray(data)?data:data.profiles;if(!Array.isArray(incoming))throw Error('Không có profiles');const map=new Map(read().map(p=>[p.id,p]));incoming.forEach(p=>{if(p&&p.id&&p.name&&(p.voiceId||p.edgeVoice)){map.set(p.id,{...p,speed:Number(p.speed??1),pitch:Number(p.pitch??0),rough:Number(p.rough??0),volume:Number(p.volume??100)});const gone=new Set(deletedRead());gone.delete(p.id);localStorage.setItem(DELETED_KEY,JSON.stringify([...gone]))}});write([...map.values()]);$('status').textContent='Đã nhập '+incoming.length+' hồ sơ.'}catch(err){$('status').textContent='Lỗi JSON: '+err.message}e.target.value=''};
 render();updateValues();loadVoices();loadEdgeVoices();syncEngine();loadRemoteProfiles();
 })();
-</script><script src="./github-manager.js?v=20261110sha1"></script>
-<script src="./studio-shell.js"></script>
+</script><script src="./github-manager.js?v=20261113-pat2"></script>
+<script src="./studio-shell.js?v=20261113-rollback2"></script>
 </body></html>
