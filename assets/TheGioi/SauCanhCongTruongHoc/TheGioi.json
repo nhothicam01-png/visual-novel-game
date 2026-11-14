@@ -77,8 +77,9 @@
       "role": "Giáo viên chủ nhiệm lớp 11A3",
       "personality": "Có trách nhiệm nhưng nhiều việc, ban đầu nhìn sự việc như xích mích giữa học sinh. Không cố ý làm ngơ; cần học cách hỏi riêng, ghi nhận cụ thể và không ép hai bên hòa giải vội.",
       "relationships": "Giáo viên chủ nhiệm của cả nhóm; phối hợp với phòng tham vấn và gia đình.",
-      "assetFolder": "",
-      "selected": true
+      "assetFolder": "nữ sinh tóc tím 1",
+      "selected": true,
+      "asset_status": "linked"
     },
     {
       "character_id": "char_thay_minh",
@@ -168,5 +169,5 @@
   "story_folders": [
     "KhoangLangSauTiengCuoi"
   ],
-  "updated_at": "2026-11-14T17:34:11.067Z"
+  "updated_at": "2026-11-14T17:36:39.908Z"
 }
