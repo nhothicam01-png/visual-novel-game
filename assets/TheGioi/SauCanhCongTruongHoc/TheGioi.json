@@ -1,0 +1,168 @@
+{
+  "schema_version": 2,
+  "world_name": "Sau Cánh Cổng Trường Học",
+  "slug": "SauCanhCongTruongHoc",
+  "genre": "Đời thường học đường, tâm lý xã hội, giáo dục kỹ năng sống",
+  "premise": "Một thế giới truyện dài tập đặt trong một trường THPT Việt Nam đương đại. Mỗi câu chuyện bắt đầu từ một vấn đề thật mà học sinh có thể gặp: bạo lực học đường, áp lực điểm số, tình bạn độc hại, tin giả, tình yêu và ranh giới, sức khỏe tinh thần, tiền bạc, định hướng nghề nghiệp. Kiến thức được hé lộ qua lựa chọn, xung đột, hậu quả và nhiều góc nhìn của nhân vật, không biến thành bài giảng.",
+  "setting": "Trường THPT Bình Minh, một trường công lập ở thành phố Việt Nam hiện đại. Bối cảnh chính gồm lớp học, hành lang, sân trường, căn tin, phòng tham vấn học đường, nhà học sinh và khu dân cư quanh trường. Thời gian diễn ra trong một năm học bình thường. Công nghệ, mạng xã hội, áp lực thi cử và quan hệ bạn bè phản ánh đời sống học sinh hiện nay.",
+  "tone": "Chân thật, thẳng thắn, gần gũi, có lúc hài hước đời thường nhưng không làm nhẹ đi tổn thương. Không tô hồng, không lên lớp, không tạo phản diện một chiều. Tôn trọng sự phức tạp của con người nhưng không đánh đồng nguyên nhân với sự biện minh.",
+  "extra": "Đối tượng chính là học sinh THPT và người lớn muốn hiểu đời sống học đường. Mỗi tập tập trung vào một vấn đề và nhiều góc nhìn. Thông tin giáo dục phải chính xác, dễ hiểu, phân biệt dữ kiện với ý kiến nhân vật. Không đổ lỗi cho nạn nhân, không cổ súy trả thù, không mô tả bạo lực theo hướng giật gân, không tự ý chẩn đoán tâm lý hoặc khẳng định kết luận pháp lý khi chưa có căn cứ. Khi đề cập cách tìm trợ giúp, ưu tiên người lớn đáng tin cậy, giáo viên phụ trách, ban giám hiệu, tư vấn học đường và kênh hỗ trợ phù hợp.",
+  "mode": "guided",
+  "places": [
+    {
+      "name": "Lớp 11A3",
+      "description": "Lớp học đông, bàn ghế xếp thành bốn dãy. Đây là nơi các mối quan hệ, trò đùa, áp lực thành tích và những hành vi loại trừ diễn ra trước mắt mọi người."
+    },
+    {
+      "name": "Hành lang dãy B",
+      "description": "Khoảng không giữa các tiết học, nơi học sinh tụ tập, nói chuyện và đôi khi xảy ra những việc không có giáo viên chứng kiến."
+    },
+    {
+      "name": "Căn tin trường",
+      "description": "Không gian ồn ào, nơi tin đồn lan nhanh qua những câu nói tưởng như vô hại."
+    },
+    {
+      "name": "Phòng tham vấn học đường",
+      "description": "Phòng nhỏ cạnh thư viện, có tính riêng tư tương đối. Học sinh có thể trình bày sự việc và được hướng dẫn các bước tiếp theo."
+    },
+    {
+      "name": "Nhà của An",
+      "description": "Căn hộ bình dân nơi An sống cùng mẹ. Không khí gia đình thương yêu nhưng mẹ bận làm việc và đôi khi không nhận ra con đang gặp chuyện."
+    }
+  ],
+  "characters": [
+    {
+      "character_id": "char_nguyen_an",
+      "name": "Nguyễn An",
+      "role": "Học sinh lớp 11A3, người bị nhắm đến trong vụ bắt nạt",
+      "personality": "Quan sát tốt, ít nói khi ở nơi đông người, có lòng tự trọng. Ban đầu cố chịu đựng vì sợ chuyện lớn hơn và sợ bị xem là yếu đuối. Không phải hình mẫu nạn nhân hoàn hảo; đôi lúc cáu gắt, nói dối mẹ và tự trách mình.",
+      "relationships": "Bạn cùng lớp với Duy, My và Tuấn; sống cùng mẹ. Dần học cách gọi đúng tên hành vi mình đang chịu và tìm người hỗ trợ.",
+      "assetFolder": "",
+      "selected": true
+    },
+    {
+      "character_id": "char_pham_duy",
+      "name": "Phạm Duy",
+      "role": "Học sinh thường khởi xướng việc chế giễu và cô lập An",
+      "personality": "Hoạt ngôn, thích kiểm soát không khí nhóm, nhạy cảm với vị thế của mình. Có thể từng bị áp lực và học cách gây cười bằng cách hạ thấp người khác. Biết hành vi của mình khiến An khó chịu nhưng thường phủ nhận hoặc giảm nhẹ.",
+      "relationships": "Bạn cùng lớp; thân với Tuấn và có ảnh hưởng trong nhóm. Mâu thuẫn trực tiếp với An.",
+      "assetFolder": "",
+      "selected": true
+    },
+    {
+      "character_id": "char_ha_my",
+      "name": "Hạ My",
+      "role": "Bạn cùng lớp, người chứng kiến và đôi lúc tiếp tay bằng im lặng",
+      "personality": "Tử tế nhưng sợ bị tách khỏi nhóm. Nhận ra chuyện không ổn song thường tự thuyết phục rằng đó chỉ là đùa. Có lúc giúp An, có lúc chọn an toàn cho bản thân.",
+      "relationships": "Ngồi gần An; chơi chung nhóm với Duy và Tuấn. Là người đầu tiên cân nhắc nói rõ điều mình đã chứng kiến.",
+      "assetFolder": "",
+      "selected": true
+    },
+    {
+      "character_id": "char_le_tuan",
+      "name": "Lê Tuấn",
+      "role": "Bạn thân của Duy, người hùa theo và khuếch đại trò đùa",
+      "personality": "Thích được chú ý, hay cười theo đám đông, không nghĩ mình là người bắt nạt vì ít khi khởi xướng. Dễ thay đổi thái độ khi nhận ra hậu quả có thể quay lại với mình.",
+      "relationships": "Bạn thân Duy; cùng lớp với An và My.",
+      "assetFolder": "",
+      "selected": true
+    },
+    {
+      "character_id": "char_co_hanh",
+      "name": "Cô Hạnh",
+      "role": "Giáo viên chủ nhiệm lớp 11A3",
+      "personality": "Có trách nhiệm nhưng nhiều việc, ban đầu nhìn sự việc như xích mích giữa học sinh. Không cố ý làm ngơ; cần học cách hỏi riêng, ghi nhận cụ thể và không ép hai bên hòa giải vội.",
+      "relationships": "Giáo viên chủ nhiệm của cả nhóm; phối hợp với phòng tham vấn và gia đình.",
+      "assetFolder": "",
+      "selected": true
+    },
+    {
+      "character_id": "char_thay_minh",
+      "name": "Thầy Minh",
+      "role": "Nhân viên phụ trách tham vấn học đường",
+      "personality": "Điềm tĩnh, thực tế, không hứa giữ bí mật tuyệt đối khi có nguy cơ an toàn. Hỏi rõ sự việc, giúp học sinh phân biệt cảm xúc, hành vi, bằng chứng và lựa chọn hỗ trợ.",
+      "relationships": "Làm việc với học sinh, giáo viên và gia đình theo quy trình của trường.",
+      "assetFolder": "",
+      "selected": true
+    },
+    {
+      "character_id": "char_me_an",
+      "name": "Mẹ An",
+      "role": "Mẹ của An, làm việc theo ca",
+      "personality": "Thương con, thực tế, đôi khi mệt mỏi và phản ứng vội vì lo lắng. Ban đầu khuyên con nhịn cho yên chuyện, sau đó nhận ra cần lắng nghe và phối hợp với nhà trường.",
+      "relationships": "Mẹ đơn thân của An; trao đổi với cô Hạnh và thầy Minh khi biết sự việc.",
+      "assetFolder": "",
+      "selected": true
+    }
+  ],
+  "rules": [
+    {
+      "name": "Hiện thực đời sống học đường",
+      "description": "Không có nhân vật toàn thiện hoặc toàn ác. Mỗi hành vi có bối cảnh nhưng người thực hiện vẫn chịu trách nhiệm về lựa chọn và hậu quả."
+    },
+    {
+      "name": "Phân biệt xung đột và bắt nạt",
+      "description": "Một bất đồng đơn lẻ giữa hai bên tương đối ngang sức không tự động là bắt nạt. Cần xem xét hành vi gây hại có lặp lại hoặc có nguy cơ lặp lại, có sự mất cân bằng quyền lực hay không, và người bị nhắm đến có khó tự bảo vệ hay thoát khỏi tình huống không."
+    },
+    {
+      "name": "Nhiều hình thức gây hại",
+      "description": "Bắt nạt có thể bằng lời nói, thể chất, quan hệ xã hội hoặc trên mạng. Không cần có đánh đập mới là bạo lực học đường."
+    },
+    {
+      "name": "Không đổ lỗi cho người bị hại",
+      "description": "Ngoại hình, hoàn cảnh, tính cách, điểm số hay phản ứng của người bị nhắm đến không phải là lý do biện minh cho hành vi bắt nạt."
+    },
+    {
+      "name": "Trách nhiệm và hỗ trợ",
+      "description": "Người chứng kiến có nhiều lựa chọn an toàn: không hùa theo, không phát tán nội dung làm nhục, ở cạnh người bị nhắm đến, lưu lại thông tin cần thiết và báo người lớn đáng tin cậy. Không yêu cầu học sinh tự đối đầu nếu điều đó khiến họ nguy hiểm."
+    }
+  ],
+  "events": [
+    {
+      "name": "Trò đùa thành lệ",
+      "description": "Một câu nhận xét về bài thuyết trình của An trở thành biệt danh lặp lại. Nhóm bạn cười, chia sẻ ảnh chế và dần biến việc loại An khỏi hoạt động nhóm thành chuyện bình thường.",
+      "importance": "Thiết lập dấu hiệu lặp lại và sự mất cân bằng trong nhóm."
+    },
+    {
+      "name": "Sự im lặng của người chứng kiến",
+      "description": "My và Tuấn nhìn thấy An bị chế giễu nhưng mỗi người chọn phản ứng khác nhau. Sự im lặng và tiếng cười góp phần duy trì hành vi.",
+      "importance": "Cho thấy vai trò của người chứng kiến mà không quy trách nhiệm ngang với người khởi xướng."
+    },
+    {
+      "name": "An tìm cách né tránh",
+      "description": "An đổi chỗ ngồi, tắt thông báo nhóm lớp và viện cớ đau bụng để tránh giờ ra chơi. Những thay đổi này khiến mẹ và giáo viên bắt đầu nhận ra.",
+      "importance": "Thể hiện tác động đời thường và dấu hiệu cần quan tâm."
+    },
+    {
+      "name": "Buổi nói chuyện không dễ dàng",
+      "description": "Cô Hạnh ban đầu định gọi hai bên xin lỗi nhau, nhưng thầy Minh đề nghị tách riêng các cuộc trao đổi, xác minh hành vi và đánh giá an toàn trước.",
+      "importance": "Làm rõ cách xử lý có trách nhiệm, không hòa giải ép buộc."
+    },
+    {
+      "name": "Lời kể và trách nhiệm",
+      "description": "Các học sinh phải nhìn lại phần việc của mình: người khởi xướng, người hùa theo, người im lặng và người lớn đã bỏ sót tín hiệu.",
+      "importance": "Không có kết thúc thần kỳ; thay đổi cần thời gian và theo dõi."
+    }
+  ],
+  "story_ideas": [
+    {
+      "title": "Khoảng Lặng Sau Tiếng Cười",
+      "logline": "Một trò đùa lặp đi lặp lại trong lớp dần biến thành việc cô lập một học sinh. Khi An bắt đầu né tránh trường học, cả lớp buộc phải nhìn vào những điều họ đã coi là bình thường.",
+      "arc": "Từ dấu hiệu nhỏ, hành vi lặp lại, góc nhìn của từng người, hệ quả, phản ứng của nhà trường đến trách nhiệm và những bước thay đổi thực tế."
+    },
+    {
+      "title": "Điểm Mười Không Cứu Được Một Ngày Tệ",
+      "logline": "Một học sinh giỏi che giấu kiệt sức vì áp lực thành tích và kỳ vọng gia đình.",
+      "arc": "Áp lực, so sánh, mất ngủ, lựa chọn, hỗ trợ và giới hạn lành mạnh."
+    },
+    {
+      "title": "Một Tấm Ảnh, Cả Nhóm Chat",
+      "logline": "Ảnh riêng tư bị chuyền tay trong nhóm lớp và mỗi lần chia sẻ lại có người nói rằng mình chỉ xem thôi.",
+      "arc": "Quyền riêng tư, đồng thuận, dấu vết số, trách nhiệm người phát tán và cách tìm trợ giúp."
+    }
+  ],
+  "story_folders": [
+    "KhoangLangSauTiengCuoi"
+  ],
+  "updated_at": "2026-11-14T17:10:31.720Z"
+}
