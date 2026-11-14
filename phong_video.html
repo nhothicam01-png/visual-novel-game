@@ -905,7 +905,7 @@ async function loadSourceLineForPlayback(item){
  await updateAssets();
  if(line.speakerId)await applyVoiceForCurrentLine();
 }
-async function prepareDirectRecording(items,useBrowser){
+async function preparePreviewPlayback(items,useBrowser){
  const imageUrls=new Set(),videoUrls=new Set();
  for(const item of items){
   const line=scenes[item.sceneIndex]?.lines[item.lineIndex];if(!line)continue;
@@ -917,7 +917,7 @@ async function prepareDirectRecording(items,useBrowser){
  }
  const assetJobs=[...imageUrls].map(url=>()=>cachedImage(url)),videoJobs=[...videoUrls].map(url=>()=>cachedVideo(url));
  const total=assetJobs.length+videoJobs.length+(useBrowser?0:items.length);let done=0;
- setTaskProgress('Chuẩn bị tài nguyên ghi trực tiếp · 0/'+total,0);
+ setTaskProgress('Chuẩn bị tài nguyên phát · 0/'+total,0);
  const jobs=[...assetJobs,...videoJobs];
  for(let i=0;i<jobs.length;i+=2){
   await Promise.all(jobs.slice(i,i+2).map(async load=>{await load();done++;setTaskProgress('Nạp hình/video · '+done+'/'+total,total?done/total*100:100)}));
@@ -932,34 +932,49 @@ async function prepareDirectRecording(items,useBrowser){
  setTaskProgress('Đã chuẩn bị xong tài nguyên · '+items.length+' câu thoại',100);
 }
 async function playPreview(){
- // Luôn tiếp tục từ thoại đang chọn, kể cả khi phạm vi là toàn bộ kịch bản.
  saveCurrentLine();saveCurrentScene();
- const scope=$('preview-scope').value;
- const startIndex=currentSourceIndex();
+ const scope=$('preview-scope').value,startIndex=currentSourceIndex();
  const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
  if(!items.length)return;
  const useBrowser=$('preview-tts-mode').value==='browser';
- if(directRecordRequested){
-  try{await prepareDirectRecording(items,useBrowser)}
-  catch(err){setTaskProgress('Chuẩn bị thất bại: '+(err.message||err));setStatus('Không thể chuẩn bị tài nguyên ghi: '+(err.message||err));directRecordRequested=false;return}
+ // Giọng render: tạo/kiểm tra WAV cho toàn bộ lời thoại trước khi chạy timeline.
+ const shouldPrepare=directRecordRequested||!useBrowser;
+ if(shouldPrepare){
+  try{await preparePreviewPlayback(items,useBrowser)}
+  catch(err){setTaskProgress('Chuẩn bị thất bại: '+(err.message||err));setStatus('Không thể chuẩn bị tài nguyên phát: '+(err.message||err));directRecordRequested=false;return}
  }
  stopPreview();
- if(directRecordRequested){directRecordRequested=false;try{await loadSourceLineForPlayback(items[0]);await startDirectRecorder()}catch(err){setStatus('Không thể bắt đầu ghi: '+(err.message||err));$('direct-record-button').textContent='⏺ Ghi trực tiếp';return}}
+ // Đưa playhead về câu đầu tiên sau khi mọi WAV đã sẵn sàng.
+ let firstLineReady=false;
+ if(shouldPrepare){
+  try{await loadSourceLineForPlayback(items[0]);firstLineReady=true}
+  catch(err){setStatus('Không thể tải cảnh đầu tiên: '+(err.message||err));directRecordRequested=false;return}
+ }
+ if(directRecordRequested){
+  directRecordRequested=false;
+  try{if(!firstLineReady)await loadSourceLineForPlayback(items[0]);await startDirectRecorder()}
+  catch(err){setStatus('Không thể bắt đầu ghi: '+(err.message||err));$('direct-record-button').textContent='⏺ Ghi trực tiếp';return}
+ }
  sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){}}});
  previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  previewLineBgmName='';startRenderLoop();updatePlaybackButtons();
- for(const item of items){
+ for(let itemIndex=0;itemIndex<items.length;itemIndex++){
+  const item=items[itemIndex];
   if(!await waitWhilePaused(run))break;
-  await loadSourceLineForPlayback(item);if(!await waitWhilePaused(run))break;
+  if(!(firstLineReady&&itemIndex===0))await loadSourceLineForPlayback(item);
+  if(!await waitWhilePaused(run))break;
   const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;await playLineAudio(line);
   const text=$('dialogue').value.trim();
-  speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';speechTextIndex=0;speechAudioElement=null;speechMotionSmooth=0;speechMotionFrameAt=0;
+  speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
+  speechTextIndex=0;speechAudioElement=null;speechMotionSmooth=0;speechMotionFrameAt=0;
   try{
    if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
-   else if(line.wavBlob){const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;speechAudioElement=audio;attachSpeechAnalyser(audio);
-    await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});URL.revokeObjectURL(url);previewAudio.tts=null;
-   }
+   else if(line.wavBlob){
+    const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;speechAudioElement=audio;attachSpeechAnalyser(audio);
+    await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});
+    URL.revokeObjectURL(url);previewAudio.tts=null;
+   }else if(text){setTtsStatus('Thiếu WAV của câu thoại: '+(line.speaker||item.sourceIndex+1));}
   }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;}
   const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
   if(directRecording){const lineEnd=(performance.now()-directRecordStartedAt)/1000;directRecordEntries.push({line,blob:line.wavBlob||null,gain:line.gain??1,sceneIndex:item.sceneIndex,duration:Math.max(.01,lineEnd-lineStart),start:lineStart,pause})}
