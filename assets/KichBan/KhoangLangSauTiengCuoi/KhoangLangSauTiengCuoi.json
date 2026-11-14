@@ -1,0 +1,1710 @@
+{
+  "phien_ban": 3,
+  "world_id": "SauCanhCongTruongHoc",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.45,
+    "toc_do_go_chu": 32
+  },
+  "nhan_vat": {
+    "char_nguyen_an": {
+      "character_id": "char_nguyen_an",
+      "ten_hien_thi": "Nguyễn An",
+      "assetFolder": "",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_pham_duy": {
+      "character_id": "char_pham_duy",
+      "ten_hien_thi": "Phạm Duy",
+      "assetFolder": "",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_ha_my": {
+      "character_id": "char_ha_my",
+      "ten_hien_thi": "Hạ My",
+      "assetFolder": "",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_le_tuan": {
+      "character_id": "char_le_tuan",
+      "ten_hien_thi": "Lê Tuấn",
+      "assetFolder": "",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_co_hanh": {
+      "character_id": "char_co_hanh",
+      "ten_hien_thi": "Cô Hạnh",
+      "assetFolder": "",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_thay_minh": {
+      "character_id": "char_thay_minh",
+      "ten_hien_thi": "Thầy Minh",
+      "assetFolder": "",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_me_an": {
+      "character_id": "char_me_an",
+      "ten_hien_thi": "Mẹ An",
+      "assetFolder": "",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Thứ Hai, tiết sinh hoạt. Tôi biết hôm nay mình sẽ lại bị gọi bằng cái tên đó. Không ai cần nói trước; chỉ cần tôi bước vào lớp là vài tiếng cười đã bật lên.",
+      "anh_nen": "lop_hoc_anh_sang_mem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "anxious",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pham_duy",
+      "noi_dung": "Ê, nhân vật chính tới rồi. Hôm nay có định thuyết trình bằng cái giọng robot hôm trước nữa không?",
+      "anh_nen": "lop_hoc_anh_sang_mem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "teasing",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_le_tuan",
+      "noi_dung": "Ha ha. Đừng làm căng, tụi tao nhớ bài thuyết trình thôi mà.",
+      "anh_nen": "lop_hoc_anh_sang_mem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "amused",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Tao đã bảo đừng gọi tao như vậy.",
+      "anh_nen": "lop_hoc_anh_sang_mem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "tense",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pham_duy",
+      "noi_dung": "Có mỗi câu đùa mà cũng tự ái. Mày muốn cả lớp phải nói chuyện theo ý mày à?",
+      "anh_nen": "lop_hoc_anh_sang_mem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "dismissive",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_ha_my",
+      "noi_dung": "Thôi, vào tiết rồi. Cô sắp tới.",
+      "anh_nen": "lop_hoc_anh_sang_mem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "uneasy",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Câu chuyện bắt đầu từ một lần tôi nói vấp khi thuyết trình. Nhưng chuyện không dừng ở lần đó. Biệt danh được lặp lại, ảnh chế được gửi vào nhóm chat, rồi đến lượt chia nhóm cũng có người bảo đừng xếp chung với tôi.",
+      "anh_nen": "lop_hoc_anh_sang_mem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pham_duy",
+      "noi_dung": "Tao gửi cái ảnh chế hôm qua vào nhóm rồi nhé. Nhìn mặt An lúc đứng bảng buồn cười thật.",
+      "anh_nen": "hanhlangtruong",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "amused",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_le_tuan",
+      "noi_dung": "Tao thả haha thôi. Có phải tao làm ra đâu.",
+      "anh_nen": "hanhlangtruong",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "casual",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_ha_my",
+      "noi_dung": "Nhưng mày biết An không thích mà. Hôm qua nó xin xóa rồi.",
+      "anh_nen": "hanhlangtruong",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "concerned",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pham_duy",
+      "noi_dung": "Nó không thích thì kệ nó. Trong nhóm ai cũng cười. Có ai đánh nó đâu mà gọi là bắt nạt?",
+      "anh_nen": "hanhlangtruong",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "defensive",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_ha_my",
+      "noi_dung": "Không đánh không có nghĩa là không làm đau. Với lại chuyện này đâu phải một lần.",
+      "anh_nen": "hanhlangtruong",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "firm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_le_tuan",
+      "noi_dung": "Nhưng nếu tao không cười thì tụi nó quay sang chọc tao thì sao? Tao không muốn thành mục tiêu tiếp theo.",
+      "anh_nen": "hanhlangtruong",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "uneasy",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_ha_my",
+      "noi_dung": "Tao hiểu mày sợ. Nhưng tiếng cười của mày vẫn làm Duy nghĩ là mọi người đồng ý.",
+      "anh_nen": "hanhlangtruong",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "serious",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Mẹ, tuần này con muốn xin nghỉ một buổi. Con hơi mệt.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "tired",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_me_an",
+      "noi_dung": "Con mệt hay có chuyện ở lớp? Mấy hôm nay con về là đóng cửa phòng, điện thoại cũng tắt thông báo.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "concerned",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Không có gì đâu mẹ. Chỉ là bài nhiều thôi.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "guarded",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_me_an",
+      "noi_dung": "Mẹ không cần con phải kể ngay. Nhưng nếu có ai làm con sợ đến mức không muốn đi học, chuyện đó không phải lỗi của con.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "gentle",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Con sợ nói ra thì mọi chuyện lớn hơn. Người ta sẽ bảo con mách lẻo, rồi ngày mai con vẫn phải ngồi trong lớp đó.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_me_an",
+      "noi_dung": "Mẹ không hứa mọi chuyện sẽ giải quyết trong một ngày. Mẹ chỉ muốn nghe hết trước, rồi cùng con nghĩ cách an toàn.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "reassuring",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Cô ơi, em muốn đổi nhóm làm bài. Mấy bạn cứ lấy ảnh của em ra đùa, rồi không cho em tham gia. Em đã nói dừng nhưng họ vẫn làm.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "nervous",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_co_hanh",
+      "noi_dung": "Cô tưởng các em chỉ trêu nhau. Sao em không nói sớm hơn?",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Em có nói rồi ạ. Nhưng lúc đó mọi người bảo em nhạy cảm. Em không biết phải nói thế nào để cô tin.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "hurt",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_co_hanh",
+      "noi_dung": "Cô xin lỗi vì đã không nhận ra. Cô sẽ không gọi các em ra xin lỗi nhau ngay bây giờ. Cô cần hỏi riêng từng người và tìm hiểu việc gì đã xảy ra.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "serious",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_co_hanh",
+      "noi_dung": "Cô cũng cần biết em có đang lo bị trả đũa không, việc này xảy ra ở đâu, có tin nhắn hay hình ảnh nào cần giữ lại không. Em không phải tự đi đối chất với các bạn.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "reassuring",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "An, trước hết thầy muốn hiểu điều gì khiến em thấy không an toàn. Em có thể kể theo thứ tự: chuyện bắt đầu lúc nào, hành vi nào lặp lại, ai có mặt và em đã thử làm gì.",
+      "anh_nen": "thu_vien",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Ban đầu chỉ là biệt danh. Sau đó họ lấy ảnh em chụp lúc ngủ gật, ghép chữ rồi gửi vào nhóm lớp. Có lần em bị gạt khỏi nhóm làm bài. Em không bị đánh, nhưng ngày nào cũng phải đoán hôm nay họ sẽ làm gì.",
+      "anh_nen": "thu_vien",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Điều em kể có những dấu hiệu cần xem xét nghiêm túc: hành vi gây tổn thương lặp lại, có nhiều người cùng tham gia và em khó tự chấm dứt nó. Bắt nạt không chỉ là đánh nhau; nó còn có thể là chế giễu, cô lập hoặc làm nhục trên mạng.",
+      "anh_nen": "thu_vien",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Vậy có phải cứ cãi nhau hoặc nói câu khó nghe một lần là bắt nạt không thầy?",
+      "anh_nen": "thu_vien",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Không nên kết luận vội. Xung đột có thể xảy ra giữa những người tương đối ngang sức và cả hai đều có khả năng lên tiếng. Khi đánh giá bắt nạt, cần nhìn vào việc hành vi có lặp lại hoặc có nguy cơ lặp lại không, có sự mất cân bằng quyền lực không, và người bị nhắm đến có khó tự bảo vệ hay thoát khỏi tình huống không.",
+      "anh_nen": "thu_vien",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "explaining",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Ba câu hỏi đó giúp ta nhìn vào cả mô thức và hoàn cảnh, chứ không chỉ một câu nói bị tách khỏi những gì xảy ra trước và sau nó.",
+      "anh_nen": "thu_vien",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pham_duy",
+      "noi_dung": "Tao chỉ đùa thôi. Ở nhà tao cũng bị anh tao chọc suốt. Có ai chết đâu. Với lại An cũng từng cãi lại tao.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "defensive",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "char_co_hanh",
+      "noi_dung": "Việc em từng bị người khác trêu không làm cho hành vi em làm với An trở nên đúng. Cô sẽ nghe em nói về hoàn cảnh của em, nhưng điều đó không xóa tác động lên bạn.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "firm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pham_duy",
+      "noi_dung": "Nếu tao dừng thì tụi nó nghĩ tao rén. Trong nhóm, ai làm người khác cười thì người đó có tiếng nói. Tao không muốn bị xem thường.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "angry",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Thầy nghe thấy em đang sợ mất vị trí trong nhóm. Đó có thể là một phần lý do em chọn cách này, nhưng lý do không phải giấy phép làm tổn thương người khác. Em vẫn có trách nhiệm dừng hành vi và sửa phần mình gây ra.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "char_le_tuan",
+      "noi_dung": "Em không nghĩ mình bắt nạt An. Em chỉ thả biểu tượng cười, chuyển tiếp ảnh một lần. Nhưng nếu không có những người như em thì trò đó có lan xa vậy không?",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "uncertain",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Người khởi xướng và người khuếch đại không nhất thiết làm cùng một việc, nhưng việc hùa theo, chia sẻ lại hoặc biến chuyện đó thành trò vui có thể khiến tổn thương lan rộng. Em có thể bắt đầu bằng việc ngừng phát tán, xóa nội dung mình kiểm soát được và nói rõ với nhóm rằng em không tiếp tục tham gia.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "explaining",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "char_ha_my",
+      "noi_dung": "Em đã xem thấy chuyện đó từ đầu. Vì sao em không nói với cô?",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "char_ha_my",
+      "noi_dung": "Em sợ Duy quay sang ghét mình. Em cũng nghĩ nếu mình xen vào thì chuyện sẽ ầm lên. Nhưng mỗi lần An bị chọc, em lại thấy mình đã chọn cách dễ nhất cho bản thân.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "regretful",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Người chứng kiến không phải lúc nào cũng an toàn để can thiệp trực tiếp. Em không cần lao vào cãi nhau. Nhưng em có thể không cười, không chia sẻ ảnh, hỏi thăm An ở nơi riêng tư, ghi nhớ điều mình trực tiếp thấy và báo cho người lớn đáng tin cậy.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "char_ha_my",
+      "noi_dung": "Nếu em chỉ nhắn An rằng 'tao tin mày' thì có ích không thầy?",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC007",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Có thể rất có ích. Đừng ép bạn kể ngay, đừng hứa giữ bí mật tuyệt đối nếu có nguy cơ an toàn. Hãy hỏi bạn cần gì và cùng bạn tìm người có thể hỗ trợ. Một người đứng cạnh không giải quyết tất cả, nhưng có thể làm bạn bớt cô độc.",
+      "anh_nen": "phong_ngu_dem",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "reassuring",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "char_me_an",
+      "noi_dung": "Cô Hạnh, tôi muốn biết nhà trường sẽ làm gì để An không phải tiếp tục đối mặt với chuyện này mỗi ngày.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "firm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "char_co_hanh",
+      "noi_dung": "Trước mắt, chúng tôi sẽ tách các cuộc trao đổi, ghi nhận từng sự việc, kiểm tra nội dung liên quan và thống nhất cách bảo vệ An khỏi việc bị tiếp tục nhắm đến. Chúng tôi cũng sẽ theo dõi sau buổi làm việc, không coi một lời xin lỗi là kết thúc.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "serious",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Không nên ép An gặp trực tiếp Duy hoặc chấp nhận hòa giải khi em ấy chưa thấy an toàn. Nhà trường cần làm rõ hành vi, mức độ, nguy cơ tiếp diễn và trách nhiệm của từng người theo quy định áp dụng.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "char_me_an",
+      "noi_dung": "Tôi cũng không muốn con phải chuyển lớp chỉ để người gây chuyện được yên ổn. Nhưng tôi muốn biết nếu chuyện tái diễn thì liên hệ ai và ghi nhận thế nào.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "concerned",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "nhan_vat": "char_co_hanh",
+      "noi_dung": "Cô sẽ cung cấp đầu mối liên hệ và thống nhất lịch kiểm tra lại với gia đình. Nếu có tin nhắn hay ảnh liên quan, gia đình có thể lưu lại bản gốc, thời điểm và người gửi; không đăng công khai để trả đũa hoặc làm nội dung lan rộng thêm.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "reassuring",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pham_duy",
+      "noi_dung": "Tao đã xóa ảnh trong máy. Nhưng tao vẫn nghĩ mọi người làm quá lên.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "guarded",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Mày có thể nghĩ vậy. Nhưng với tao, chuyện đó không kết thúc khi mày thấy hết vui. Tao đã phải đổi đường đi trong trường và sợ mở điện thoại suốt mấy tuần.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "firm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pham_duy",
+      "noi_dung": "Tao không biết mày bị ảnh hưởng đến vậy.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "uneasy",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Tao đã nói dừng. Mày không cần phải đoán cảm giác của tao mới biết là phải dừng. Tao chưa sẵn sàng tha thứ hay nói mọi thứ ổn rồi.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "serious",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "nhan_vat": "char_co_hanh",
+      "noi_dung": "Cô sẽ theo dõi việc dừng hành vi, việc phát tán nội dung và cách các em tương tác trong lớp. Trách nhiệm không chỉ nằm ở một câu xin lỗi; nó nằm ở việc hành vi có thật sự chấm dứt hay không.",
+      "anh_nen": "lop_hoc_chieu",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "firm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Vài ngày sau, lớp học không bỗng nhiên trở nên thân thiện. Có người vẫn tránh nhìn tôi. Có người nói tôi làm mọi chuyện rắc rối. Nhưng ảnh chế không còn được gửi vào nhóm, và cô Hạnh hỏi thăm tôi riêng mỗi tuần.",
+      "anh_nen": "san_truong_ban_ngay",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "thoughtful",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "char_ha_my",
+      "noi_dung": "Tao không thể quay lại và làm như chưa từng cười theo. Nhưng tao có thể ngừng tiếp tay, nói thật điều tao đã thấy và không để chuyện đó bị biến thành trò vui nữa.",
+      "anh_nen": "san_truong_ban_ngay",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sincere",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "char_le_tuan",
+      "noi_dung": "Tao đã gỡ bài chia sẻ và nhắn trong nhóm là đừng gửi lại nữa. Tao biết làm vậy muộn, nhưng ít nhất tao không muốn tiếp tục làm nó lan ra.",
+      "anh_nen": "san_truong_ban_ngay",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "regretful",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "char_thay_minh",
+      "noi_dung": "Bạo lực học đường hiếm khi chỉ là chuyện của hai người. Có hành vi của người khởi xướng, sự tiếp sức của nhóm, sự im lặng vì sợ hãi, và cả những lần người lớn hiểu nhầm hoặc bỏ sót dấu hiệu. Nhìn đủ các phía giúp ta hiểu cách nó hình thành; không có nghĩa mọi người chịu trách nhiệm ngang nhau.",
+      "anh_nen": "san_truong_ban_ngay",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Tôi không có một cái kết đẹp như phim. Tôi vẫn còn ngại bước vào lớp, và có những ngày tôi không muốn nói chuyện với ai. Nhưng giờ tôi biết gọi tên điều đã xảy ra, biết mình không đáng bị đối xử như vậy, và biết mình có quyền tìm người giúp đỡ.",
+      "anh_nen": "san_truong_ban_ngay",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "hopeful",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "nhan_vat": "char_nguyen_an",
+      "noi_dung": "Có lẽ câu hỏi không chỉ là vì sao một người bắt nạt người khác. Còn phải hỏi vì sao cả nhóm lại thấy chuyện đó bình thường, vì sao người chứng kiến sợ lên tiếng, và vì sao người lớn đôi khi chỉ nhận ra khi học sinh đã chịu đựng quá lâu.",
+      "anh_nen": "san_truong_ban_ngay",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "thoughtful",
+        "pose": "standing",
+        "direction": "front"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    }
+  ]
+}
