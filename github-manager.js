@@ -64,14 +64,6 @@
     return putContentWithRetry({url,path,bytes,message,branch});
   }
 
-  async function getTree({owner,repo,branch='main'}){
-    if(!owner||!repo||!branch)throw new Error('Thiếu thông tin repository hoặc branch.');
-    const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/trees/'+encodeURIComponent(branch)+'?recursive=1';
-    const data=await request(url);
-    if(data.truncated)throw new Error('Thư viện GitHub quá lớn để đọc trong một lượt. Hãy tải lại hoặc dùng GitHub Manager để kiểm tra quyền truy cập.');
-    return data.tree||[];
-  }
-
   async function listCharacterFolders({owner,repo,branch='main'}){
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/trees/'+encodeURIComponent(branch)+'?recursive=1';
     const data=await request(url);const prefix='assets/NhanVat/';
@@ -128,5 +120,5 @@
   }
 
   async function checkConnection(){const user=await request(API+'/user');return {login:user.login,name:user.name||user.login}}
-  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,clearApiCache,getTree,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,createBlob,applyTreeChanges,checkConnection};
+  window.GitHubManager={getToken,setToken,clearToken,getConfig,setConfig,clearApiCache,pushTextFile,pushFile,listCharacterFolders,listCharacterWebm,pushFiles,createBlob,applyTreeChanges,checkConnection};
 })();
