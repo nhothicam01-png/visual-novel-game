@@ -12,9 +12,13 @@
       "ten_hien_thi": "Phạm Minh Anh",
       "assetFolder": "Nữ1",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794303742118",
         "lang": "vi",
-        "voice_id": ""
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Giọng bé",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
       }
     },
     "char_tran_gia_han": {
@@ -22,9 +26,13 @@
       "ten_hien_thi": "Trần Gia Hân",
       "assetFolder": "nữ sinh tóc tím 1",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794303742118",
         "lang": "vi",
-        "voice_id": ""
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Giọng bé",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
       }
     },
     "char_le_quoc_bao": {
@@ -32,9 +40,13 @@
       "ten_hien_thi": "Lê Quốc Bảo",
       "assetFolder": "nam sinh tóc đen đeo kính 1",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794267836392",
         "lang": "vi",
-        "voice_id": ""
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Bé trai",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
+        "gender": "male"
       }
     },
     "char_do_thanh_dat": {
@@ -42,9 +54,13 @@
       "ten_hien_thi": "Đỗ Thành Đạt",
       "assetFolder": "nam sinh tóc vàng đeo kính 1",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794303817586",
         "lang": "vi",
-        "voice_id": ""
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Thanh niên",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
+        "gender": "male"
       }
     },
     "char_co_lan": {
@@ -52,9 +68,13 @@
       "ten_hien_thi": "Cô Lan",
       "assetFolder": "2",
       "giong_noi": {
-        "profile_id": "",
+        "profile_id": "voice_1794303792721",
         "lang": "vi",
-        "voice_id": ""
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Thiếu nữ",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
       }
     }
   },
@@ -86,7 +106,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC001",
@@ -112,7 +138,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC001",
@@ -138,7 +170,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC001",
@@ -164,7 +202,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC001",
@@ -190,7 +234,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC001",
@@ -216,7 +266,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC001",
@@ -242,7 +298,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC002",
@@ -268,7 +330,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC002",
@@ -294,7 +362,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Đỗ Thành Đạt"
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC002",
@@ -320,7 +394,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC002",
@@ -346,7 +426,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Đỗ Thành Đạt"
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC002",
@@ -372,7 +458,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC002",
@@ -398,7 +490,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Đỗ Thành Đạt"
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC002",
@@ -424,7 +522,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC003",
@@ -450,7 +554,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC003",
@@ -476,7 +586,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC003",
@@ -502,7 +618,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC003",
@@ -528,7 +650,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC003",
@@ -554,7 +682,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC003",
@@ -580,7 +714,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC003",
@@ -606,7 +746,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC003",
@@ -632,7 +778,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -658,7 +810,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Đỗ Thành Đạt"
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -684,7 +842,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -710,7 +874,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Đỗ Thành Đạt"
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -736,7 +906,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -762,7 +938,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Đỗ Thành Đạt"
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -788,7 +970,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -814,7 +1002,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Lê Quốc Bảo"
+      "ten_hien_thi": "Lê Quốc Bảo",
+      "giong_noi": {
+        "profileId": "voice_1794267836392",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Bé trai",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -840,7 +1034,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC004",
@@ -866,7 +1066,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Lê Quốc Bảo"
+      "ten_hien_thi": "Lê Quốc Bảo",
+      "giong_noi": {
+        "profileId": "voice_1794267836392",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Bé trai",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
@@ -892,7 +1098,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
@@ -918,7 +1130,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Cô Lan"
+      "ten_hien_thi": "Cô Lan",
+      "giong_noi": {
+        "profileId": "voice_1794303792721",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thiếu nữ",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
@@ -944,7 +1162,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
@@ -970,7 +1194,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Cô Lan"
+      "ten_hien_thi": "Cô Lan",
+      "giong_noi": {
+        "profileId": "voice_1794303792721",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thiếu nữ",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
@@ -996,7 +1226,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Lê Quốc Bảo"
+      "ten_hien_thi": "Lê Quốc Bảo",
+      "giong_noi": {
+        "profileId": "voice_1794267836392",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Bé trai",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
@@ -1022,7 +1258,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Cô Lan"
+      "ten_hien_thi": "Cô Lan",
+      "giong_noi": {
+        "profileId": "voice_1794303792721",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thiếu nữ",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
@@ -1048,7 +1290,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Trần Gia Hân"
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
@@ -1074,13 +1322,19 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     },
     {
       "scene_id": "SC005",
       "nhan_vat": "char_pham_minh_anh",
       "noi_dung": "Tôi nhìn Gia Hân. Lần này, chúng tôi biết phải hỏi điều gì trước khi tin vào một lời hứa.",
-      "anh_nen": "hanhlangtruong.png",
+      "anh_nen": "cong_truong_anime.png",
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
@@ -1100,7 +1354,13 @@
           "tep": ""
         }
       },
-      "ten_hien_thi": "Phạm Minh Anh"
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
     }
   ]
 }
