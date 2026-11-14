@@ -47,9 +47,8 @@
       "role": "Học sinh thường khởi xướng việc chế giễu và cô lập An",
       "personality": "Hoạt ngôn, thích kiểm soát không khí nhóm, nhạy cảm với vị thế của mình. Có thể từng bị áp lực và học cách gây cười bằng cách hạ thấp người khác. Biết hành vi của mình khiến An khó chịu nhưng thường phủ nhận hoặc giảm nhẹ.",
       "relationships": "Bạn cùng lớp; thân với Tuấn và có ảnh hưởng trong nhóm. Mâu thuẫn trực tiếp với An.",
-      "assetFolder": "nam sinh tóc vàng đeo kính 1",
-      "selected": true,
-      "asset_status": "linked"
+      "assetFolder": "",
+      "selected": true
     },
     {
       "character_id": "char_ha_my",
@@ -57,9 +56,8 @@
       "role": "Bạn cùng lớp, người chứng kiến và đôi lúc tiếp tay bằng im lặng",
       "personality": "Tử tế nhưng sợ bị tách khỏi nhóm. Nhận ra chuyện không ổn song thường tự thuyết phục rằng đó chỉ là đùa. Có lúc giúp An, có lúc chọn an toàn cho bản thân.",
       "relationships": "Ngồi gần An; chơi chung nhóm với Duy và Tuấn. Là người đầu tiên cân nhắc nói rõ điều mình đã chứng kiến.",
-      "assetFolder": "nữ sinh tóc vàng 1",
-      "selected": true,
-      "asset_status": "linked"
+      "assetFolder": "",
+      "selected": true
     },
     {
       "character_id": "char_le_tuan",
@@ -67,9 +65,8 @@
       "role": "Bạn thân của Duy, người hùa theo và khuếch đại trò đùa",
       "personality": "Thích được chú ý, hay cười theo đám đông, không nghĩ mình là người bắt nạt vì ít khi khởi xướng. Dễ thay đổi thái độ khi nhận ra hậu quả có thể quay lại với mình.",
       "relationships": "Bạn thân Duy; cùng lớp với An và My.",
-      "assetFolder": "nam sinh tóc đen đeo kính 1",
-      "selected": true,
-      "asset_status": "linked"
+      "assetFolder": "",
+      "selected": true
     },
     {
       "character_id": "char_co_hanh",
@@ -77,9 +74,8 @@
       "role": "Giáo viên chủ nhiệm lớp 11A3",
       "personality": "Có trách nhiệm nhưng nhiều việc, ban đầu nhìn sự việc như xích mích giữa học sinh. Không cố ý làm ngơ; cần học cách hỏi riêng, ghi nhận cụ thể và không ép hai bên hòa giải vội.",
       "relationships": "Giáo viên chủ nhiệm của cả nhóm; phối hợp với phòng tham vấn và gia đình.",
-      "assetFolder": "nữ sinh tóc tím đậm 1",
-      "selected": true,
-      "asset_status": "linked"
+      "assetFolder": "",
+      "selected": true
     },
     {
       "character_id": "char_thay_minh",
@@ -87,9 +83,8 @@
       "role": "Nhân viên phụ trách tham vấn học đường",
       "personality": "Điềm tĩnh, thực tế, không hứa giữ bí mật tuyệt đối khi có nguy cơ an toàn. Hỏi rõ sự việc, giúp học sinh phân biệt cảm xúc, hành vi, bằng chứng và lựa chọn hỗ trợ.",
       "relationships": "Làm việc với học sinh, giáo viên và gia đình theo quy trình của trường.",
-      "assetFolder": "nam sinh tóc trắng đeo kính 1",
-      "selected": true,
-      "asset_status": "linked"
+      "assetFolder": "",
+      "selected": true
     },
     {
       "character_id": "char_me_an",
@@ -97,9 +92,8 @@
       "role": "Mẹ của An, làm việc theo ca",
       "personality": "Thương con, thực tế, đôi khi mệt mỏi và phản ứng vội vì lo lắng. Ban đầu khuyên con nhịn cho yên chuyện, sau đó nhận ra cần lắng nghe và phối hợp với nhà trường.",
       "relationships": "Mẹ đơn thân của An; trao đổi với cô Hạnh và thầy Minh khi biết sự việc.",
-      "assetFolder": "nữ sinh tóc tím 1",
-      "selected": true,
-      "asset_status": "linked"
+      "assetFolder": "",
+      "selected": true
     }
   ],
   "rules": [
@@ -171,5 +165,5 @@
   "story_folders": [
     "KhoangLangSauTiengCuoi"
   ],
-  "updated_at": "2026-11-14T17:22:06.157Z"
+  "updated_at": "2026-11-14T17:22:54.111Z"
 }
