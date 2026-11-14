@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-14T17:00:35.063Z",
+  "updated_at": "2026-11-14T04:53:04.646Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -57,30 +57,6 @@
       "analysis_status": "not_analyzed",
       "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
       "updated_at": "2026-11-14T04:53:04.646Z"
-    },
-    {
-      "file_path": "assets/NhanVat/nữ sinh tóc vàng 1/nữ sinh tóc vàng 1-24fps-1794675202798.webm",
-      "metadata_path": "assets/NhanVat/nữ sinh tóc vàng 1/nữ sinh tóc vàng 1-24fps-1794675202798.webm.json",
-      "character_id": "nữ sinh tóc vàng 1",
-      "analysis_status": "not_analyzed",
-      "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
-      "updated_at": "2026-11-14T16:53:40.072Z"
-    },
-    {
-      "file_path": "assets/NhanVat/nam sinh tóc đen đeo kính 1/nam sinh tóc đen đeo kính 1-24fps-1794675544831.webm",
-      "metadata_path": "assets/NhanVat/nam sinh tóc đen đeo kính 1/nam sinh tóc đen đeo kính 1-24fps-1794675544831.webm.json",
-      "character_id": "nam sinh tóc đen đeo kính 1",
-      "analysis_status": "not_analyzed",
-      "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
-      "updated_at": "2026-11-14T16:59:19.394Z"
-    },
-    {
-      "file_path": "assets/NhanVat/nam sinh tóc vàng đeo kính 1/nam sinh tóc vàng đeo kính 1-24fps-1794675620675.webm",
-      "metadata_path": "assets/NhanVat/nam sinh tóc vàng đeo kính 1/nam sinh tóc vàng đeo kính 1-24fps-1794675620675.webm.json",
-      "character_id": "nam sinh tóc vàng đeo kính 1",
-      "analysis_status": "not_analyzed",
-      "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
-      "updated_at": "2026-11-14T17:00:35.063Z"
     }
   ]
 }

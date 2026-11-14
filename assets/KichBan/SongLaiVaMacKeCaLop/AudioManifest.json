@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "kind": "visual-novel-audio-manifest",
+  "story": "SongLaiVaMacKeCaLop",
+  "story_path": "assets/KichBan/SongLaiVaMacKeCaLop/SongLaiVaMacKeCaLop.json",
+  "created_at": "2026-11-13T16:57:49.906Z",
+  "source_language": "Vietnamese",
+  "duration": 46.0914,
+  "audio_mix": {
+    "bgm_volume": 0.25,
+    "sfx_volume": 0.8,
+    "tts_volume": 1
+  },
+  "audio_policy": {
+    "translated_versions": "replace_dialogue_keep_bgm_sfx",
+    "upload_audio_to_github": false
+  },
+  "events": [
+    {
+      "type": "dialogue",
+      "start": 0.0214,
+      "end": 12.6809,
+      "duration": 12.6595,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật",
+      "speaker_id": "char_tong_chi_van",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "",
+        "piper_voice_id": "",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Ngày 24 tháng 6, lúc 4 giờ 17 phút chiều. Tôi nhớ chính xác thời điểm mình chết, vì chiếc đồng hồ trên nóc tòa nhà vẫn nằm trong tầm mắt cho đến giây cuối cùng.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 13.2287,
+      "end": 24.1395,
+      "duration": 10.9108,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật",
+      "speaker_id": "char_tong_chi_van",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "",
+        "piper_voice_id": "",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Gió trên sân thượng rất lớn. Nửa lớp đứng vây quanh tôi, điện thoại giơ lên, màn hình sáng vàng. Có người khóc, có người chửi, có người cười.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 24.6674,
+      "end": 33.939,
+      "duration": 9.2716,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật",
+      "speaker_id": "char_bach_vi_vi",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "",
+        "piper_voice_id": "",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Bảo bối cũng không muốn như vậy đâu mà. Trong lòng bảo bối buồn lắm. Nhưng Chi Vãn ơi, sao cậu có thể nhẫn tâm như thế?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 34.4672,
+      "end": 45.5914,
+      "duration": 11.1242,
+      "pause_after": 0.5,
+      "speaker": "Nhân vật",
+      "speaker_id": "char_tong_chi_van",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "",
+        "piper_voice_id": "",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Đề thi đại học vừa có kết quả. Mười bảy người trượt nguyện vọng, chín người không qua nổi điểm sàn. Họ cần một người để đổ lỗi, và người đó là tôi.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    }
+  ]
+}
