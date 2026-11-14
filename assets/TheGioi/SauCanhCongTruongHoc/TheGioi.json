@@ -57,8 +57,9 @@
       "role": "Bạn cùng lớp, người chứng kiến và đôi lúc tiếp tay bằng im lặng",
       "personality": "Tử tế nhưng sợ bị tách khỏi nhóm. Nhận ra chuyện không ổn song thường tự thuyết phục rằng đó chỉ là đùa. Có lúc giúp An, có lúc chọn an toàn cho bản thân.",
       "relationships": "Ngồi gần An; chơi chung nhóm với Duy và Tuấn. Là người đầu tiên cân nhắc nói rõ điều mình đã chứng kiến.",
-      "assetFolder": "",
-      "selected": true
+      "assetFolder": "nữ sinh tóc vàng 1",
+      "selected": true,
+      "asset_status": "linked"
     },
     {
       "character_id": "char_le_tuan",
@@ -66,8 +67,9 @@
       "role": "Bạn thân của Duy, người hùa theo và khuếch đại trò đùa",
       "personality": "Thích được chú ý, hay cười theo đám đông, không nghĩ mình là người bắt nạt vì ít khi khởi xướng. Dễ thay đổi thái độ khi nhận ra hậu quả có thể quay lại với mình.",
       "relationships": "Bạn thân Duy; cùng lớp với An và My.",
-      "assetFolder": "",
-      "selected": true
+      "assetFolder": "nam sinh tóc đen đeo kính 1",
+      "selected": true,
+      "asset_status": "linked"
     },
     {
       "character_id": "char_co_hanh",
@@ -166,5 +168,5 @@
   "story_folders": [
     "KhoangLangSauTiengCuoi"
   ],
-  "updated_at": "2026-11-14T17:33:30.018Z"
+  "updated_at": "2026-11-14T17:34:11.067Z"
 }
