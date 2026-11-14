@@ -655,11 +655,18 @@ function drawFrame(elapsed,st){
 function drawDialogue(w,h){
  if($('show-dialogue').checked&&$('dialogue').value.trim()){
   const text=$('dialogue').value.trim(),speakerSelect=$('speaker'),line=getCurrentLine(),speakerId=String(line?.speakerId||line?.sourceFrame?.nhan_vat||speakerSelect?.value||''),character=activeCharacterList().find(ch=>String(ch.id)===speakerId),selectedName=String(speakerSelect?.selectedOptions?.[0]?.textContent||'').trim(),name=String(line?.speaker||character?.name||selectedName||'').trim();
-  const mode=$('dialogue-width-mode')?.value||'percent',pad=w*.018,fontSize=Math.max(24,Math.round(w*.022)),percent=Number($('dialogue-width')?.value||75)/100,maxW=mode==='fit'?w*.88:w*percent;
-  ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';
-  const lines=wrapText(text,maxW-pad*2),lineH=fontSize*1.28,measured=Math.max(0,...lines.map(line=>ctx.measureText(line).width));
-  const boxW=mode==='fit'?Math.min(w*.92,measured+pad*2):maxW,boxX=(w-boxW)/2,nameH=$('show-speaker').checked&&name?fontSize*1.05:0,topPad=pad*.42,bottomPad=pad*.42;
-  const boxH=topPad+nameH+lines.length*lineH+bottomPad,bounceRoom=fontSize*.14,boxY=Math.max(0,h-boxH-h*.025-bounceRoom);
+  const mode=$('dialogue-width-mode')?.value||'percent',pad=w*.018,percent=Number($('dialogue-width')?.value||75)/100,maxW=mode==='fit'?w*.88:w*percent;
+  // Tăng cỡ chữ mặc định; tự thu nhẹ nếu câu quá dài để hộp thoại không tràn khỏi khung hình.
+  let fontSize=Math.max(28,Math.min(60,Math.round(w*.027))),lines=[],lineH=0,measured=0,nameH=0,topPad=pad*.42,bottomPad=pad*.42,boxH=0;
+  for(let attempt=0;attempt<5;attempt++){
+   ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';
+   lines=wrapText(text,maxW-pad*2);lineH=fontSize*1.28;measured=Math.max(0,...lines.map(line=>ctx.measureText(line).width));
+   nameH=$('show-speaker').checked&&name?fontSize*1.05:0;
+   boxH=topPad+nameH+lines.length*lineH+bottomPad;
+   if(boxH<=h*.40||fontSize<=24)break;
+   fontSize=Math.max(24,Math.round(fontSize*.9));
+  }
+  const boxW=mode==='fit'?Math.min(w*.92,measured+pad*2):maxW,boxX=(w-boxW)/2,bounceRoom=fontSize*.14,boxY=Math.max(0,h-boxH-h*.025-bounceRoom);
   ctx.fillStyle='rgba(5,8,17,.72)';roundRect(boxX,boxY,boxW,boxH,Math.max(12,w*.009));ctx.fill();
   ctx.textAlign='center';ctx.textBaseline='top';
   if(nameH){ctx.font='700 '+Math.round(fontSize*.75)+'px "Segoe UI",Arial,sans-serif';ctx.fillStyle='#c4b5fd';ctx.fillText(name,w/2,boxY+topPad)}
@@ -990,6 +997,8 @@ async function playPreview(){
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
 $('play-preview').addEventListener('click',()=>{if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
+// Double-click vào khung video để chạy / tạm dừng / tiếp tục xem trước.
+stage.addEventListener('dblclick',e=>{e.preventDefault();if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
 $('direct-record-button').addEventListener('click',async()=>{if(directRecording){stopPreview();await stopDirectRecorder();return}if(previewing){setStatus('Hãy dừng phát trước khi bắt đầu ghi trực tiếp.');return}if($('preview-tts-mode').value==='browser'){$('preview-tts-mode').value='render';setTtsStatus('Ghi trực tiếp dùng giọng render để thu được âm thanh đầy đủ.')}directRecordRequested=true;await playPreview()});
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
 $('stop-scene').addEventListener('click',stopAndResetPreview);
