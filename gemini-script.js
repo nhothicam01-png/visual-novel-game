@@ -161,7 +161,7 @@ async function refreshStoryLibrary(){
  if(status)status.textContent='Đã đọc trực tiếp '+G.W.story_folders.length+' file JSON từ assets/KichBan trên GitHub cho thế giới này.';
  return G.W.story_folders;
 }
-G.refreshStories=()=>refreshStoryLibrary().catch(error=>{G.say('story-library-status','Không thể tải thư viện trực tiếp từ GitHub: '+error.message,'err');throw error});
+G.refreshStories=()=>refreshStoryLibrary().catch(error=>{G.say('story-library-status','Không thể tải thư viện trực tiếp từ GitHub: '+error.message,'err');return []});
 if(storySelect)storySelect.onchange=()=>{const folder=storySelect.value;const entry=storyEntries().find(x=>x.folder===folder);$('story-title').value=entry?entry.title:'';$('story-folder').value=entry?entry.folder:'';G.draft()};
 G.resetStory=()=>{['story-title','story-folder','story-source','story-notes','story-choice-notes','story-outline','json'].forEach(id=>{if($(id))$(id).value=''});['outline-approve','approve'].forEach(id=>{if($(id))$(id).checked=false});['make-script','publish','build-outline'].forEach(id=>{if($(id))$(id).disabled=true});storyOptions=[];selectedOptions.clear();if($('story-options-list'))$('story-options-list').textContent='Chưa có phương án. Hãy nhấn “Đề xuất các hướng truyện”.';currentStoryFolder='';if(storySelect)storySelect.value='';G.draft()};
 if(storySearch)storySearch.oninput=renderStoryLibrary;
