@@ -1,0 +1,160 @@
+{
+  "project": {
+    "id": "sample-story",
+    "name": "Mika gặp Yuki",
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "duration": 18
+  },
+  "assets": {
+    "characters": [
+      {
+        "id": "char_mika",
+        "name": "Mika",
+        "image": "assets/characters/mika.png",
+        "defaultAnimation": "idle"
+      },
+      {
+        "id": "char_yuki",
+        "name": "Yuki",
+        "image": "assets/characters/yuki.png",
+        "defaultAnimation": "idle"
+      }
+    ],
+    "backgrounds": [
+      {
+        "id": "bg_room",
+        "src": "assets/backgrounds/room.png"
+      }
+    ],
+    "audio": [
+      {
+        "id": "bgm",
+        "src": "assets/audio/bgm.mp3",
+        "kind": "music"
+      },
+      {
+        "id": "line_mika",
+        "src": "assets/audio/mika.wav",
+        "kind": "voice"
+      },
+      {
+        "id": "line_yuki",
+        "src": "assets/audio/yuki.wav",
+        "kind": "voice"
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "start": 0,
+      "duration": 18,
+      "background": {
+        "id": "bg_room",
+        "effects": []
+      },
+      "music": {
+        "id": "bgm",
+        "volume": 0.25,
+        "loop": true,
+        "fadeIn": 1,
+        "fadeOut": 1
+      },
+      "camera": {
+        "type": "static",
+        "x": 0,
+        "y": 0,
+        "zoom": 1,
+        "effects": []
+      },
+      "characters": [
+        {
+          "characterId": "char_mika",
+          "start": 0,
+          "duration": 18,
+          "position": {
+            "x": 620,
+            "y": 900
+          },
+          "scale": 1,
+          "animations": [
+            {
+              "animationId": "walk",
+              "start": 0,
+              "duration": 3,
+              "loop": false
+            },
+            {
+              "animationId": "idle",
+              "start": 3,
+              "duration": 15,
+              "loop": true
+            }
+          ]
+        },
+        {
+          "characterId": "char_yuki",
+          "start": 0,
+          "duration": 18,
+          "position": {
+            "x": 1320,
+            "y": 900
+          },
+          "scale": 1,
+          "animations": [
+            {
+              "animationId": "idle",
+              "start": 0,
+              "duration": 18,
+              "loop": true
+            }
+          ]
+        }
+      ],
+      "dialogues": [
+        {
+          "id": "d1",
+          "start": 4,
+          "duration": 4,
+          "text": "Chào Yuki! Cậu đợi lâu chưa?",
+          "audio": "line_mika",
+          "speakers": [
+            {
+              "characterId": "char_mika",
+              "lipSync": true,
+              "animationId": "talk"
+            },
+            {
+              "characterId": "char_yuki",
+              "animationId": "listen"
+            }
+          ]
+        },
+        {
+          "id": "d2",
+          "start": 9,
+          "duration": 3,
+          "text": "Mình vừa mới tới thôi!",
+          "audio": "line_yuki",
+          "speakers": [
+            {
+              "characterId": "char_yuki",
+              "lipSync": true,
+              "animationId": "talk"
+            },
+            {
+              "characterId": "char_mika",
+              "animationId": "listen"
+            }
+          ]
+        }
+      ],
+      "effects": [],
+      "soundEffects": []
+    }
+  ]
+}
