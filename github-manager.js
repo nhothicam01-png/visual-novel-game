@@ -13,14 +13,14 @@
   function clearToken(){localStorage.removeItem(TOKEN_KEY);clearApiCache()}
   function getConfig(){try{return JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}')}catch(e){return {}}}
   function setConfig(config){localStorage.setItem(CONFIG_KEY,JSON.stringify(config||{}))}
-  const API_CACHE_PREFIX='vn.github.api.get.v2:',API_CACHE_TTL=180000;
+  const API_CACHE_PREFIX='vn.github.api.get.v2:',API_CACHE_TTL=15000;
   const apiPending=new Map();
   function readApiCache(key){try{const v=JSON.parse(localStorage.getItem(API_CACHE_PREFIX+key)||'null');return v&&v.at&&v.data!==undefined?v:null}catch(_){return null}}
   function writeApiCache(key,data){try{localStorage.setItem(API_CACHE_PREFIX+key,JSON.stringify({at:Date.now(),data}))}catch(_){}}
   function clearApiCache(){try{for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k&&k.startsWith(API_CACHE_PREFIX))localStorage.removeItem(k)}}catch(_){}apiPending.clear();try{window.VNSLocal?.clearApiCache?.()}catch(_){}}
   async function request(url,options={}){
     const token=getToken();if(!token)throw new Error('Chưa lưu GitHub Token. Mở github_manager.html để kết nối.');
-    const method=String(options.method||'GET').toUpperCase(),cacheable=method==='GET'&&!/\/git\/(?:blobs|commits)\//.test(url);
+    const method=String(options.method||'GET').toUpperCase(),cacheable=method==='GET'&&options.cache!=='no-store'&&!/\/git\/(?:blobs|commits)\//.test(url);
     const key=cacheable?btoa(unescape(encodeURIComponent(url))).replace(/=+$/,''): '';
     const cached=cacheable?readApiCache(key):null;
     if(cacheable){if(cached&&Date.now()-cached.at<API_CACHE_TTL)return cached.data;if(apiPending.has(key))return apiPending.get(key)}
@@ -66,14 +66,14 @@
 
   async function listCharacterFolders({owner,repo,branch='main'}){
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/trees/'+encodeURIComponent(branch)+'?recursive=1';
-    const data=await request(url);const prefix='assets/NhanVat/';
+    const data=await request(url,{cache:'no-store'});const prefix='assets/NhanVat/';
     return [...new Set((data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith(prefix)).map(x=>x.path.slice(prefix.length).split('/')[0]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'vi'));
   }
   async function listCharacterWebm({owner,repo,character,branch='main'}){
     const safe=String(character||'').trim();
     if(!safe) return [];
     const url=API+'/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/git/trees/'+encodeURIComponent(branch)+'?recursive=1';
-    const data=await request(url),prefix='assets/NhanVat/'+safe+'/';
+    const data=await request(url,{cache:'no-store'}),prefix='assets/NhanVat/'+safe+'/';
     return (data.tree||[]).filter(x=>x.type==='blob'&&x.path.startsWith(prefix)&&x.path.slice(prefix.length).indexOf('/')<0&&/\.webm$/i.test(x.path)).map(x=>({name:x.path.slice(prefix.length),path:x.path,size:x.size||0,downloadUrl:'https://raw.githubusercontent.com/'+owner+'/'+repo+'/'+branch+'/'+x.path.split('/').map(encodeURIComponent).join('/'),htmlUrl:'https://github.com/'+owner+'/'+repo+'/blob/'+branch+'/'+x.path})).sort((a,b)=>a.name.localeCompare(b.name,'vi'));
   }
   async function pushFiles({owner,repo,files,message,branch='main'}){
