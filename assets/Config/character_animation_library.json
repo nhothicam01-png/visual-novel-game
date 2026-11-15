@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-15T01:49:50.638Z",
+  "updated_at": "2026-11-15T15:42:44.447Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -73,6 +73,14 @@
       "analysis_status": "not_analyzed",
       "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
       "updated_at": "2026-11-15T01:49:50.638Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Nguoi dan ong mac vest/Nguoi dan ong mac vest-12fps-1794757330149.webm",
+      "metadata_path": "assets/NhanVat/Nguoi dan ong mac vest/Nguoi dan ong mac vest-12fps-1794757330149.webm.json",
+      "character_id": "Nguoi dan ong mac vest",
+      "analysis_status": "not_analyzed",
+      "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
+      "updated_at": "2026-11-15T15:42:44.447Z"
     }
   ]
 }
