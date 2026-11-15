@@ -58,14 +58,20 @@ $('delete-world').onclick=async()=>{try{if(!GW.P)throw Error('Hãy mở một th
 $('open-world').onclick=async()=>{let n=$('world-select').value;if(!n)return GW.say('project-status','Chọn thế giới.','err');try{let d=JSON.parse(await GW.raw('assets/TheGioi/'+n+'/TheGioi.json'));GW.worldName=d.world_name||n;if(GW.resetStory)GW.resetStory();GW.W={places:d.places||[],characters:d.characters||[],rules:d.rules||[],events:d.events||[],ideas:d.story_ideas||[],story_folders:d.story_folders||[]};GW.P='assets/TheGioi/'+n;$('world-select').value=n;GW.worldName=d.world_name||n;['genre','premise','setting','tone','extra'].forEach(id=>$(id).value=d[id]||'');['character-notes','rule-notes','event-notes'].forEach(id=>$(id).value='');$('mode').value=d.mode||'guided';$('delete-world-stories').checked=false;GW.render();if(GW.refreshStories)GW.refreshStories();$('world-state').textContent='Đang mở: '+(d.world_name||n);GW.say('project-status','Đã mở thế giới “'+(d.world_name||n)+'”. Dữ liệu thế giới trước đã được thay thế.','ok');GW.say('design-status','','');GW.say('select-status','','');GW.say('script-status','','');GW.say('direction-status','','');GW.say('publish-status','','');GW.tab('design');GW.draft()}catch(e){GW.say('project-status','Không mở được thế giới: '+e.message,'err')}};
 
 $('reload-world-full').onclick=async()=>{
- const selected=$('world-select').value;
- const slug=(GW.P&&GW.P.startsWith('assets/TheGioi/'))?GW.P.split('/').pop():selected;
+ const slug=$('world-select').value;
  if(!slug)return GW.say('project-status','Hãy chọn một thế giới đã lưu trên GitHub trước.','err');
  if(!confirm('Tải lại toàn bộ thế giới từ GitHub? Nháp chỉnh sửa thế giới hiện tại trên thiết bị sẽ bị bỏ. Dữ liệu trên GitHub và nháp nội dung truyện không bị xóa.'))return;
  const btn=$('reload-world-full');GW.lock('reload-world-full',true);
  try{
   const path='assets/TheGioi/'+slug+'/TheGioi.json';
-  const fresh=JSON.parse(await GW.raw(path));
+  const apiUrl='https://api.github.com/repos/'+O+'/'+R+'/contents/'+path.split('/').map(encodeURIComponent).join('/')+'?ref='+encodeURIComponent(B);
+  const response=await fetch(apiUrl,{cache:'no-store',headers:{'Accept':'application/vnd.github+json','Cache-Control':'no-cache'}});
+  const payload=await response.json();
+  if(!response.ok)throw Error(payload.message||'GitHub API HTTP '+response.status);
+  if(!payload.content||payload.encoding!=='base64')throw Error('GitHub không trả nội dung JSON dạng base64.');
+  const binary=atob(payload.content.replace(/\\s/g,''));
+  const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
+  const fresh=JSON.parse(new TextDecoder('utf-8').decode(bytes));
   if(!fresh||typeof fresh!=='object'||Array.isArray(fresh))throw Error('JSON thế giới trên GitHub không hợp lệ.');
   localStorage.removeItem(D);
   GW.P='assets/TheGioi/'+slug;
