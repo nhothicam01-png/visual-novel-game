@@ -411,17 +411,23 @@ async function togglePreviewFullscreen(){
   }
  }catch(err){setStatus('Không thể bật toàn màn hình: '+(err.message||err))}
 }
+const ASSET_CACHE_VERSION=Date.now();
+function freshAssetUrl(src){
+ try{const url=new URL(src,location.href);if(url.hostname==='raw.githubusercontent.com')url.searchParams.set('_vn',String(ASSET_CACHE_VERSION));return url.href}catch(_){return src}
+}
 function loadImage(src){return new Promise((resolve,reject)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('Không tải được ảnh nền: '+src));im.src=src})}
 function loadVideo(src){return new Promise((resolve,reject)=>{const v=document.createElement('video');v.crossOrigin='anonymous';v.muted=true;v.loop=true;v.playsInline=true;v.preload='auto';v.onloadeddata=()=>resolve(v);v.onerror=()=>reject(new Error('Không tải được video: '+src));v.src=src;v.load()})}
 function cachedImage(src){
  if(!src)return Promise.resolve(null);
- if(!imageAssetCache.has(src))imageAssetCache.set(src,loadImage(src).catch(err=>{imageAssetCache.delete(src);throw err}));
- return imageAssetCache.get(src);
+ const fresh=freshAssetUrl(src);
+ if(!imageAssetCache.has(fresh))imageAssetCache.set(fresh,loadImage(fresh).catch(err=>{imageAssetCache.delete(fresh);throw err}));
+ return imageAssetCache.get(fresh);
 }
 function cachedVideo(src){
  if(!src)return Promise.resolve(null);
- if(!videoAssetCache.has(src))videoAssetCache.set(src,loadVideo(src).catch(err=>{videoAssetCache.delete(src);throw err}));
- return videoAssetCache.get(src);
+ const fresh=freshAssetUrl(src);
+ if(!videoAssetCache.has(fresh))videoAssetCache.set(fresh,loadVideo(fresh).catch(err=>{videoAssetCache.delete(fresh);throw err}));
+ return videoAssetCache.get(fresh);
 }
 let sceneEffectLayers=[],sceneEffectKey='',sceneEffectLibrary=[];
 function normalizeSceneEffects(values){
