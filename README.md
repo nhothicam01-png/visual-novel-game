@@ -1,27 +1,20 @@
-# Anime 2D Animation Studio
+# Anime 2D Animation Studio — HTML/CSS/JavaScript thuần
 
-Studio hoạt hình 2D chạy trên trình duyệt. V1 tập trung vào nhập kịch bản JSON theo timeline, quản lý nhân vật theo ID, dựng nhiều nhân vật trong cùng cảnh, nền, nhạc, thoại, hiệu ứng và camera; nhập PSD để đọc layer; nhập FBX để xem trước animation 3D.
+Mở trực tiếp `index.html` bằng trình duyệt hiện đại. Không cần npm, bundler, framework hoặc thư viện ngoài.
 
-## Chạy local
-```bash
-npm install
-npm run dev
-```
-Mở URL Vite hiển thị trong terminal.
+## Đã có
+- Quản lý cảnh, nhân vật, phông nền và âm thanh.
+- Import ảnh PNG/JPG/GIF/WebP (theo khả năng trình duyệt) và audio.
+- Sắp xếp nhân vật trên sân khấu, kéo thả, chỉnh vị trí, tỉ lệ, xoay, opacity, lật, ẩn/hiện, lớp hiển thị.
+- Timeline theo thời lượng cảnh, play/pause, tua và bước từng frame.
+- Chuyển động preset metadata: idle/walk/run/jump/talk/listen.
+- Keyframe data, lời thoại theo thời gian, hiệu ứng flash cơ bản.
+- Camera zoom, grid, snapshot PNG.
+- Import/export project JSON; lưu tự động thủ công trong localStorage.
+- Xuất video WebM bằng MediaRecorder nếu trình duyệt hỗ trợ (chuột phải nút Xuất JSON).
 
-## Build
-```bash
-npm run build
-npm run preview
-```
+## Giới hạn định dạng
+Đây là ứng dụng thuần trình duyệt, không nhúng thư viện. Trình duyệt không có API gốc để giải mã cấu trúc PSD hoặc FBX. Vì vậy bản này **chưa import trực tiếp PSD/FBX** và chưa có rigging xương, retarget 3D, lip-sync tự động hay keyframe editor đầy đủ. Hãy xuất layer PSD thành PNG hoặc animation FBX thành sprite sheet/video trước khi đưa vào ứng dụng. Audio được quản lý trong thư viện; phát nhạc nền chưa được tích hợp ở bản này.
 
-## JSON story
-Xem `examples/story.sample.json` và `docs/story-format.md`. Mốc thời gian tính bằng giây tương đối với đầu scene. Mỗi speaker/character tham chiếu `characterId`, animation tham chiếu `animationId`; đường dẫn asset tương đối với project hoặc URL mà trình duyệt truy cập được.
-
-## Phạm vi V1 và giới hạn
-- Canvas 2D dựng scene từ ảnh nền/ảnh nhân vật, timeline, nhiều nhân vật, dialogue speakers, âm thanh, camera cơ bản và hiệu ứng CSS/canvas.
-- PSD đọc cấu trúc layer và hiển thị preview; layer có canvas được trích xuất thành PNG.
-- FBX được nạp bằng Three.js và có panel preview riêng. FBX là dữ liệu 3D; V1 chưa tự chuyển rig 3D thành rig 2D.
-- Tạo nhân vật từ đầu ở V1 là ghép các ảnh bộ phận (body/hair/outfit/face) theo layer; công cụ vẽ mesh/rig nâng cao và lip-sync phoneme sẽ được mở rộng sau.
-
-Ứng dụng không tải file người dùng lên server; file import được xử lý trong trình duyệt. Audio/video playback phụ thuộc quyền autoplay của trình duyệt; cần bấm Play.
+## JSON
+Project export giữ asset dưới dạng Data URL, nên ảnh/âm thanh được nhúng trong JSON và không bị mất khi tải lại project. Cấu trúc project có `assets`, `scenes`, `characters`, `dialogues`, `camera` và `effects`.

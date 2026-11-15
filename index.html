@@ -1,5 +1,30 @@
 <!doctype html>
 <html lang="vi">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#11131b"><title>Anime 2D Animation Studio</title></head>
-<body><div id="app"></div><script type="module" src="/src/main.js"></script></body>
-</html>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Anime 2D Animation Studio</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar"><div class="brand"><span class="brand-mark">✦</span><div><b>ANIME STUDIO</b><small>2D STORY ANIMATION WORKSPACE</small></div></div><div class="top-actions"><span id="projectState" class="status">Chưa lưu</span><button id="newProject" class="ghost">Dự án mới</button><button id="saveProject" class="ghost">Lưu dự án</button><button id="exportProject" class="primary">Xuất JSON</button></div></header>
+<main class="workspace">
+<aside class="left-panel">
+<section class="panel-section"><div class="section-head"><h3>Tài nguyên</h3><button id="addAsset" class="tiny">＋ Thêm</button></div><div class="tabs"><button class="tab active" data-tab="characters">Nhân vật</button><button class="tab" data-tab="backgrounds">Phông nền</button><button class="tab" data-tab="audio">Âm thanh</button></div><div id="assetList" class="asset-list"></div><div class="asset-actions"><button id="importFiles">＋ Import file</button><input id="fileInput" type="file" accept="image/*,audio/*,.json" multiple hidden></div></section>
+<section class="panel-section"><div class="section-head"><h3>Cảnh</h3><button id="addScene" class="tiny">＋</button></div><div id="sceneList" class="scene-list"></div></section>
+<section class="panel-section"><div class="section-head"><h3>Story JSON</h3></div><button id="importStory" class="wide">Import kịch bản JSON</button><input id="jsonInput" type="file" accept=".json,application/json" hidden><p class="hint">Nhập kịch bản có scene, nhân vật, lời thoại và mốc thời gian.</p></section>
+</aside>
+<section class="center-panel">
+<div class="stage-toolbar"><div><b id="sceneTitle">Scene 01</b><span id="sceneDuration" class="muted"> · 10 giây</span></div><div class="stage-tools"><button id="fitStage" title="Vừa khung">⛶</button><button id="toggleGrid" title="Lưới">▦</button><button id="snapshot">Chụp ảnh</button></div></div>
+<div class="stage-wrap"><canvas id="stage" width="1280" height="720"></canvas><div class="stage-tip">Kéo nhân vật để di chuyển · Chọn nhân vật để chỉnh sửa</div></div>
+<div class="transport"><button id="toStart">|◀</button><button id="stepBack">◀</button><button id="play" class="play">▶</button><button id="stepForward">▶</button><button id="toEnd">▶|</button><span id="timeReadout">00:00.00</span><label>Zoom <input id="timelineZoom" type="range" min="30" max="160" value="70"></label><span class="spacer"></span><button id="addKey">＋ Keyframe</button></div>
+<div class="timeline-wrap"><div class="ruler" id="ruler"></div><div id="tracks" class="tracks"></div></div>
+</section>
+<aside class="right-panel">
+<div class="panel-section"><div class="section-head"><h3>Thuộc tính</h3><span id="selectedName" class="muted">Chưa chọn</span></div><div id="inspector" class="inspector"><p class="hint">Chọn nhân vật trên sân khấu hoặc trong danh sách để chỉnh sửa.</p></div></div>
+<div class="panel-section"><div class="section-head"><h3>Lời thoại</h3><button id="addDialogue" class="tiny">＋ Thêm</button></div><div id="dialogueList"></div></div>
+<div class="panel-section"><div class="section-head"><h3>Hiệu ứng cảnh</h3></div><label class="field">Hiệu ứng<select id="sceneEffect"><option value="none">Không</option><option value="fade">Fade</option><option value="shake">Rung</option><option value="flash">Flash</option><option value="zoom">Zoom nhẹ</option></select></label><label class="field">Cường độ<input id="effectStrength" type="range" min="0" max="100" value="35"></label></div>
+</aside>
+</main>
+<footer class="footer"><span>HTML · CSS · JavaScript thuần</span><span>Autosave trên trình duyệt · Không cần cài framework</span></footer>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body></html>
