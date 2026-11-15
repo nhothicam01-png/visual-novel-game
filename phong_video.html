@@ -285,6 +285,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 
 <script src="./effects.js"></script>
 <script src="./environment-effects.js"></script>
+<script src="./world-cache.js?v=20261115-localworld1"></script>
 <script>
 (function(){
 'use strict';
@@ -1720,9 +1721,7 @@ async function loadWorldCharacterFolderMap(data,storyPath){
  try{
   const slug=String(data?.world_id||'');if(!slug)throw new Error('Kịch bản thiếu world_id; không thể tra thư mục nhân vật.');
   const base='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/',worldPath='assets/TheGioi/'+slug+'/TheGioi.json';
-  const worldResponse=await fetch(base+worldPath.split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});
-  if(!worldResponse.ok)throw new Error('Không tải được TheGioi.json từ GitHub (HTTP '+worldResponse.status+'). Không dùng assetFolder cũ trong JSON truyện.');
-  const world=await worldResponse.json(),worldCharacters=Array.isArray(world?.characters)?world.characters:[],latest=new Map(worldCharacters.filter(ch=>ch&&typeof ch==='object').map(ch=>[String(ch.character_id||ch.id||''),ch]));
+  const world=await WorldCache.load(slug,async()=>{const worldResponse=await fetch(base+worldPath.split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});if(!worldResponse.ok)throw new Error('Không tải được TheGioi.json từ GitHub (HTTP '+worldResponse.status+').');return worldResponse.json()}),worldCharacters=Array.isArray(world?.characters)?world.characters:[],latest=new Map(worldCharacters.filter(ch=>ch&&typeof ch==='object').map(ch=>[String(ch.character_id||ch.id||''),ch]));
   if(!worldCharacters.length)throw new Error('TheGioi.json không có danh sách characters hợp lệ.');
   const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});if(!response.ok)throw new Error('GitHub tree HTTP '+response.status);const tree=await response.json(),files=(tree.tree||[]).filter(x=>x.type==='blob').map(x=>x.path),webmPaths=files.filter(p=>p.startsWith('assets/NhanVat/')&&p.split('/').length===4&&p.toLowerCase().endsWith('.webm'));
   await Promise.all(webmPaths.map(async p=>{const folder=p.split('/')[2];(expressionFilesByFolder[folder]||(expressionFilesByFolder[folder]=[])).push(p);if(files.includes(p+'.json'))try{const r=await fetch(base+(p+'.json').split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});if(r.ok)characterAnimationMetadata[p]=await r.json()}catch(e){console.warn('WEBM metadata unavailable',p,e)}}));
