@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-15T15:42:44.447Z",
+  "updated_at": "2026-11-15T17:33:41.304Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -81,6 +81,14 @@
       "analysis_status": "not_analyzed",
       "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
       "updated_at": "2026-11-15T15:42:44.447Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Hihi/Hihi-24fps-1794763921739.webm",
+      "metadata_path": "assets/NhanVat/Hihi/Hihi-24fps-1794763921739.webm.json",
+      "character_id": "Hihi",
+      "analysis_status": "not_analyzed",
+      "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
+      "updated_at": "2026-11-15T17:33:41.304Z"
     }
   ]
 }
