@@ -8,7 +8,7 @@
 <header class="topbar"><div class="brand"><span class="brand-mark">✦</span><div><b>ANIME STUDIO</b><small>2D STORY ANIMATION WORKSPACE</small></div></div><div class="top-actions"><span id="projectState" class="status">Chưa lưu</span><button id="newProject" class="ghost">Dự án mới</button><button id="saveProject" class="ghost">Lưu dự án</button><button id="exportProject" class="ghost">Xuất JSON</button><button id="exportVideo" class="primary">Xuất cảnh WebM</button></div></header>
 <main class="workspace">
 <aside class="left-panel">
-<section class="panel-section"><div class="section-head"><h3>Tài nguyên</h3><button id="addAsset" class="tiny">＋ Thêm</button></div><div class="tabs"><button class="tab active" data-tab="characters">Nhân vật</button><button class="tab" data-tab="backgrounds">Phông nền</button><button class="tab" data-tab="audio">Âm thanh</button></div><div id="assetList" class="asset-list"></div><div class="asset-actions"><button id="importFiles">＋ Import file</button><input id="fileInput" type="file" accept="image/*,audio/*,.json" multiple hidden></div></section>
+<section class="panel-section"><div class="section-head"><h3>Tài nguyên</h3><button id="addAsset" class="tiny">＋ Thêm</button></div><div class="tabs"><button class="tab active" data-tab="characters">Nhân vật</button><button class="tab" data-tab="backgrounds">Phông nền</button><button class="tab" data-tab="audio">Âm thanh</button></div><div id="assetList" class="asset-list"></div><div class="asset-actions"><button id="importFiles">＋ Import ảnh/âm thanh</button><button id="importPSD" class="wide psd-import">＋ Import nhân vật PSD</button><input id="fileInput" type="file" accept="image/*,audio/*,.json" multiple hidden><input id="psdInput" type="file" accept=".psd,image/vnd.adobe.photoshop,application/photoshop" hidden></div></section>
 <section class="panel-section"><div class="section-head"><h3>Cảnh</h3><button id="addScene" class="tiny">＋</button></div><div id="sceneList" class="scene-list"></div></section>
 <section class="panel-section"><div class="section-head"><h3>Story JSON</h3></div><button id="importStory" class="wide">Import kịch bản JSON</button><input id="jsonInput" type="file" accept=".json,application/json" hidden><p class="hint">Nhập kịch bản có scene, nhân vật, lời thoại và mốc thời gian.</p></section>
 </aside>
@@ -26,5 +26,6 @@
 </main>
 <footer class="footer"><span>HTML · CSS · JavaScript thuần</span><span>Autosave trên trình duyệt · Không cần cài framework</span></footer>
 <div id="toast" class="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/ag-psd@31.0.2/dist/bundle.js"></script>
 <script src="app.js"></script>
 </body></html>

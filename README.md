@@ -1,20 +1,18 @@
-# Anime 2D Animation Studio — HTML/CSS/JavaScript thuần
+# Anime 2D Animation Studio
 
-Mở trực tiếp `index.html` bằng trình duyệt hiện đại. Không cần npm, bundler, framework hoặc thư viện ngoài.
+Mở `index.html` bằng Chrome hoặc Edge. Giao diện dùng HTML/CSS/JavaScript thuần; bộ đọc PSD `ag-psd` tải từ jsDelivr khi mở trang nên cần Internet khi import PSD.
 
-## Đã có
-- Quản lý cảnh, nhân vật, phông nền và âm thanh.
-- Import ảnh PNG/JPG/GIF/WebP (theo khả năng trình duyệt) và audio.
-- Sắp xếp nhân vật trên sân khấu, kéo thả, chỉnh vị trí, tỉ lệ, xoay, opacity, lật, ẩn/hiện, lớp hiển thị.
-- Timeline theo thời lượng cảnh, play/pause, tua và bước từng frame.
-- Chuyển động preset metadata: idle/walk/run/jump/talk/listen.
-- Keyframe data, lời thoại theo thời gian, hiệu ứng flash cơ bản.
-- Camera zoom, grid, snapshot PNG.
-- Import/export project JSON; lưu tự động thủ công trong localStorage.
-- Xuất video WebM bằng MediaRecorder nếu trình duyệt hỗ trợ (chuột phải nút Xuất JSON).
+## Nhập nhân vật PSD
+1. Bấm **Import nhân vật PSD** và chọn file.
+2. Studio đọc tên layer, cây nhóm, thứ tự, vị trí, độ mờ và trạng thái ẩn/hiện.
+3. Chọn nhân vật trong thư viện. Mục **Ngoại hình PSD** cho phép bật/tắt từng layer để đổi tóc, mắt, miệng, trang phục và phụ kiện.
+4. Đổi layer không thay đổi ID nhân vật, vị trí, keyframe hoặc motion preset.
 
-## Giới hạn định dạng
-Đây là ứng dụng thuần trình duyệt, không nhúng thư viện. Trình duyệt không có API gốc để giải mã cấu trúc PSD hoặc FBX. Vì vậy bản này **chưa import trực tiếp PSD/FBX** và chưa có rigging xương, retarget 3D, lip-sync tự động hay keyframe editor đầy đủ. Hãy xuất layer PSD thành PNG hoặc animation FBX thành sprite sheet/video trước khi đưa vào ứng dụng. Audio được quản lý trong thư viện; phát nhạc nền chưa được tích hợp ở bản này.
+## Quy ước tên layer
+Có thể dùng `eyeL`, `eyeR`, `lip`, `eyebrowL`, `eyebrowR`, `hairFront`, `hairBack`, `head`, `body`, `armL`, `armR`, `legL`, `legR`, `clothesTop`, `clothesBottom`, `dress`, `shoes`, `accessory`. Tên gốc được giữ nguyên. Nhiều phiên bản có thể đặt trong layer riêng rồi bật/tắt trong Ngoại hình PSD.
 
-## JSON
-Project export giữ asset dưới dạng Data URL, nên ảnh/âm thanh được nhúng trong JSON và không bị mất khi tải lại project. Cấu trúc project có `assets`, `scenes`, `characters`, `dialogues`, `camera` và `effects`.
+## Giới hạn
+- ag-psd hỗ trợ PSD RGB/Grayscale/Bitmap 8-bit; PSB, CMYK, 16/32-bit và một số tính năng Photoshop không được hỗ trợ đầy đủ.
+- Hiện nhập layer raster có canvas; layer chữ/vector, smart object, clipping mask, layer style và một số blend mode có thể không giống hoàn toàn Photoshop.
+- Đây là bước nhập và thay layer ngoại hình, chưa phải rig xương 2D hoàn chỉnh. Motion preset và keyframe hiện tại điều khiển toàn nhân vật; chưa có IK, deform từng khớp hay lip-sync tự động.
+- Project JSON nhúng từng layer dưới dạng PNG data URL nên có thể khá lớn.
