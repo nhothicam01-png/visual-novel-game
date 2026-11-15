@@ -469,7 +469,7 @@ async function loadSceneEffectLibrary(){
   const allPaths=new Set((data.tree||[]).filter(x=>x.type==='blob').map(x=>x.path));
   const effectPaths=[...allPaths].filter(path=>/^assets\/HieuUng\//i.test(path)&&/\.(png|jpe?g|webp|gif|avif|webm)$/i.test(path));
   sceneEffectLibrary=await Promise.all(effectPaths.map(async path=>{
-   let metadata={};try{if(allPaths.has(path+'.json')){const m=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+(path+'.json').split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(m.ok)metadata=await m.json()}}catch(e){}
+   let metadata={};try{if(allPaths.has(path+'.json')){const m=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+(path+'.json').split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});if(m.ok)metadata=await m.json()}}catch(e){}
    const scope=String(metadata.scope||metadata.user_metadata?.scope||'scene');return {path,name:path.split('/').pop(),type:/\.(png|jpe?g|webp|gif|avif)$/i.test(path)?'image':'video',metadata,scope,defaultLoop:metadata.user_metadata?.playback!=='once'};
   })).then(items=>items.filter(item=>item.scope==='scene'));
   sceneEffectLibrary.sort((a,b)=>a.name.localeCompare(b.name,'vi'));
@@ -1719,10 +1719,10 @@ async function loadWorldCharacterFolderMap(data,storyPath){
  storyCharacterFolderMap={};worldCharacterDirectory=[];expressionFilesByFolder={};characterAnimationMetadata={};
  try{
   const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});if(!response.ok)throw new Error('GitHub tree HTTP '+response.status);const tree=await response.json(),files=(tree.tree||[]).filter(x=>x.type==='blob').map(x=>x.path),webmPaths=files.filter(p=>p.startsWith('assets/NhanVat/')&&p.split('/').length===4&&p.toLowerCase().endsWith('.webm'));
-  await Promise.all(webmPaths.map(async p=>{const folder=p.split('/')[2];(expressionFilesByFolder[folder]||(expressionFilesByFolder[folder]=[])).push(p);if(files.includes(p+'.json'))try{const r=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+(p+'.json').split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(r.ok)characterAnimationMetadata[p]=await r.json()}catch(e){console.warn('WEBM metadata unavailable',p,e)}}));
+  await Promise.all(webmPaths.map(async p=>{const folder=p.split('/')[2];(expressionFilesByFolder[folder]||(expressionFilesByFolder[folder]=[])).push(p);if(files.includes(p+'.json'))try{const r=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+(p+'.json').split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});if(r.ok)characterAnimationMetadata[p]=await r.json()}catch(e){console.warn('WEBM metadata unavailable',p,e)}}));
   Object.values(expressionFilesByFolder).forEach(list=>list.sort((a,b)=>a.localeCompare(b,'en')));
   const slug=String(data?.world_id||''),worldPath=slug?'assets/TheGioi/'+slug+'/TheGioi.json':'',base='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/';
-  let world=null;if(worldPath){const r=await fetch(base+worldPath.split('/').map(encodeURIComponent).join('/'),{cache:'no-store'});if(r.ok)world=await r.json()}
+  let world=null;if(worldPath){const r=await fetch(base+worldPath.split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});if(r.ok)world=await r.json()}
   const worldCharacters=Array.isArray(world)?world:(Array.isArray(world?.characters)?world.characters:[]);const latest=new Map(worldCharacters.filter(ch=>ch&&typeof ch==='object').map(ch=>[String(ch.character_id||ch.id||''),ch]));
   characterDirectory.forEach(ch=>{const wc=latest.get(ch.id),folder=wc?String(wc.assetFolder||''):String(ch.assetFolder||'');ch.assetFolder=folder;ch.name=String(wc?.name||ch.name);if(activeStoryData?.nhan_vat?.[ch.id]){activeStoryData.nhan_vat[ch.id].assetFolder=folder;activeStoryData.nhan_vat[ch.id].ten_hien_thi=ch.name;}storyCharacterFolderMap[ch.id]=folder;worldCharacterDirectory.push({id:ch.id,name:String(wc?.name||ch.name),folder})});
   if(!worldCharacterDirectory.length)worldCharacterDirectory=characterDirectory.map(ch=>({id:ch.id,name:ch.name,folder:ch.assetFolder||''}));
