@@ -66,7 +66,7 @@ main{max-width:1400px;margin:22px auto;padding:0 16px 40px}.panel{background:lin
     <div class="group">
       <h3>3 · Tinh chỉnh Alpha</h3>
       <div class="field"><label>Co mask / Erode <output id="shrinkOut">0 px</output></label><input id="shrink" type="range" min="0" max="5" value="0"></div>
-      <div class="field"><label>Làm mềm viền <output id="featherOut">1 px</output></label><input id="feather" type="range" min="0" max="8" value="1"></div>
+      <div class="field"><label>Độ rộng làm mềm từ đường biên <output id="featherOut">1 px</output></label><div class="row"><input id="feather" type="range" min="0" max="20" value="1"><input id="featherPx" type="number" min="0" max="20" step="1" value="1" aria-label="Bán kính làm mềm viền tính bằng pixel" style="max-width:76px"></div><p class="hint">Chỉ làm mềm alpha trong vùng sát đường biên theo số pixel đã chọn; không làm nhòe màu và chi tiết bên trong ảnh.</p></div>
       <div class="field"><label>Độ sáng nhân vật <output id="brightOut">100%</output></label><input id="brightness" type="range" min="50" max="150" value="100"></div>
       <p class="hint">Co mask và feather có thể làm mất tóc mảnh nếu đặt quá cao.</p>
     </div>
@@ -147,6 +147,7 @@ const source=$('source'),sctx=source.getContext('2d',{willReadFrequently:true});
 const maskCanvas=$('maskCanvas'),mctx=maskCanvas.getContext('2d',{willReadFrequently:true});
 const eraseMask=$('eraseMask'),eraseCtx=eraseMask.getContext('2d',{willReadFrequently:true});
 const eraseOverlay=$('eraseOverlay'),overlayCtx=eraseOverlay.getContext('2d');
+const featherSource=document.createElement('canvas'),featherBlur=document.createElement('canvas');
 let eraseEnabled=false,isPainting=false,eraseStrokes=[],currentStroke=null;
 let ai=null,aiMask=null,toonSession=null,toonReady=false,toonBusy=false,processing=false,raf=0,last=0,fps=0,frames=0,recorder=null,chunks=[],sampleMode=false,videoURL=null,recording=false;
 const clamp=(v,a=0,b=255)=>Math.max(a,Math.min(b,v));
@@ -179,7 +180,7 @@ async function detectSourceFps(){
 $('fpsRef').addEventListener('change',()=>updateRangeUI(true));$('startFrame').addEventListener('change',()=>updateRangeUI());$('endFrame').addEventListener('change',()=>updateRangeUI());
 $('setStartFrame').onclick=()=>setCurrentFrame('start');$('setEndFrame').onclick=()=>setCurrentFrame('end');
 $('goStartFrame').onclick=()=>{video.pause();video.currentTime=rangeFrames().startTime;renderStill()};$('goEndFrame').onclick=()=>{video.pause();video.currentTime=Math.max(0,rangeFrames().endTime-1/refFps());renderStill()};$('resetRange').onclick=()=>updateRangeUI(true);
-function controls(){[['tolerance','tolOut',v=>v],['softness','softOut',v=>v],['spill','spillOut',v=>v+'%'],['shrink','shrinkOut',v=>v+' px'],['feather','featherOut',v=>v+' px'],['brightness','brightOut',v=>v+'%']].forEach(([a,b,f])=>$(a).addEventListener('input',()=>$(b).textContent=f($(a).value)));$('keyColor').addEventListener('input',()=>$('hexOut').textContent=$('keyColor').value.toUpperCase())}
+function controls(){[['tolerance','tolOut',v=>v],['softness','softOut',v=>v],['spill','spillOut',v=>v+'%'],['shrink','shrinkOut',v=>v+' px'],['feather','featherOut',v=>v+' px'],['brightness','brightOut',v=>v+'%']].forEach(([a,b,f])=>$(a).addEventListener('input',()=>$(b).textContent=f($(a).value)));$('feather').addEventListener('input',()=>{$('featherPx').value=$('feather').value;renderStill()});$('featherPx').addEventListener('input',()=>{const n=Math.max(0,Math.min(20,Number($('featherPx').value)||0));$('feather').value=n;$('featherOut').textContent=n+' px';renderStill()});$('keyColor').addEventListener('input',()=>$('hexOut').textContent=$('keyColor').value.toUpperCase())}
 controls();
 function loadVideoFile(f){
  if(!f)return;
@@ -298,6 +299,21 @@ function makeAlpha(imageData,maskData,autoKey){
  return imageData;
 }
 
+function applyEdgeFeather(imageData,radius){
+ if(radius<=0)return imageData;
+ const w=imageData.width,h=imageData.height;
+ if(featherSource.width!==w||featherSource.height!==h){featherSource.width=featherBlur.width=w;featherSource.height=featherBlur.height=h}
+ const srcCtx=featherSource.getContext('2d',{willReadFrequently:true});
+ const blurCtx=featherBlur.getContext('2d',{willReadFrequently:true});
+ const mask=srcCtx.createImageData(w,h),pixels=imageData.data,md=mask.data;
+ // Build an alpha-only mask. RGB pixels of the actual character are never blurred.
+ for(let i=0;i<pixels.length;i+=4){md[i]=md[i+1]=md[i+2]=255;md[i+3]=pixels[i+3]}
+ srcCtx.putImageData(mask,0,0);
+ blurCtx.clearRect(0,0,w,h);blurCtx.filter='blur('+radius+'px)';blurCtx.drawImage(featherSource,0,0);blurCtx.filter='none';
+ const softened=blurCtx.getImageData(0,0,w,h).data;
+ for(let i=0;i<pixels.length;i+=4)pixels[i+3]=softened[i+3];
+ return imageData;
+}
 function paintPoint(e){
  const r=eraseOverlay.getBoundingClientRect();
  return {x:clamp((e.clientX-r.left)/r.width*eraseOverlay.width,0,eraseOverlay.width),y:clamp((e.clientY-r.top)/r.height*eraseOverlay.height,0,eraseOverlay.height)};
@@ -348,7 +364,8 @@ function renderComposite(){
  let md=null;
  if(aiMask){mctx.clearRect(0,0,w,h);mctx.drawImage(aiMask,0,0,w,h);md=mctx.getImageData(0,0,w,h)}
  const autoKey=$('autoKey').checked && $('mode').value!=='ai' ? sampleTopLeft(image) : null;
- const result=makeAlpha(image,md,autoKey);
+ let result=makeAlpha(image,md,autoKey);
+ result=applyEdgeFeather(result,Math.max(0,Math.min(20,Number($('feather').value)||0)));
  if(eraseMask.width===w&&eraseMask.height===h){
   const eraseData=eraseCtx.getImageData(0,0,w,h).data,rd=result.data;
   for(let i=0;i<rd.length;i+=4)if(eraseData[i+3]>0)rd[i+3]=0;
@@ -358,8 +375,6 @@ function renderComposite(){
  const bg=$('bgMode').value;
  if(bg!=='transparent'){ctx.globalCompositeOperation='destination-over';ctx.fillStyle=bg==='green'?'#00ff00':bg==='white'?'#ffffff':bg==='black'?'#000000':$('bgColor').value;ctx.fillRect(0,0,w,h);ctx.globalCompositeOperation='source-over'}
  ctx.drawImage(temp,0,0);
- // feather is deliberately a visual edge option; browser canvas filter on alpha layer.
- 
 }
 async function renderStill(){if(!video.videoWidth)return;try{if($('mode').value==='toonout'){await runToonout(video)}else if(['ai','hybrid'].includes($('mode').value)){await initAI();await ai.send({image:video})}renderComposite()}catch(e){setStatus(e.message)}}
 async function tick(){if(!processing)return;const rg=rangeFrames();if(video.currentTime>=rg.endTime-0.002){stop();setStatus('Đã xử lý xong đoạn frame đã chọn.');return}try{if($('mode').value==='toonout'){await runToonout(video)}else if(['ai','hybrid'].includes($('mode').value)){await initAI();await ai.send({image:video})}renderComposite();frames++;const now=performance.now();if(now-last>1000){fps=frames*1000/(now-last);$('fps').textContent=fps.toFixed(1)+' FPS';frames=0;last=now}$('progress').textContent=(rg.endTime>rg.startTime?Math.max(0,Math.min(100,Math.round((video.currentTime-rg.startTime)/(rg.endTime-rg.startTime)*100))):0)+'%'}catch(e){setStatus('Lỗi: '+e.message);stop();return}if(!video.paused&&!video.ended)raf=requestAnimationFrame(tick);else if(video.ended){stop();setStatus('Đã xử lý xong video.')} }
