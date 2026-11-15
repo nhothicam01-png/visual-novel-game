@@ -145,22 +145,31 @@ $('publish').onclick=async()=>{if(!$('approve').checked)return G.say('publish-st
 let currentStoryFolder='';
 const storySelect=$('story-select'),storySearch=$('story-search');
 function storyEntries(){return (G.W.story_folders||[]).map(x=>({title:x.title||x.folder||'Truyện chưa đặt tên',folder:x.folder||'',json_path:x.json_path||('assets/KichBan/'+x.folder+'/'+x.folder+'.json')})).filter(x=>x.folder)}
-function renderStoryLibrary(){if(!storySelect)return;let q=(storySearch.value||'').trim().toLocaleLowerCase('vi');let entries=storyEntries().filter(x=>(x.title+' '+x.folder).toLocaleLowerCase('vi').includes(q));let previous=storySelect.value;storySelect.innerHTML='<option value="">— Chọn truyện —</option>';entries.forEach(x=>{let o=document.createElement('option');o.value=x.folder;o.textContent=x.title+' · '+x.folder;storySelect.append(o)});if(entries.some(x=>x.folder===previous))storySelect.value=previous;G.say('story-library-status','Thế giới hiện tại có '+storyEntries().length+' truyện đã đăng ký.','')}
-G.refreshStories=renderStoryLibrary;
+function renderStoryLibrary(){if(!storySelect)return;let q=(storySearch.value||'').trim().toLocaleLowerCase('vi');let entries=storyEntries().filter(x=>(x.title+' '+x.folder).toLocaleLowerCase('vi').includes(q));let previous=storySelect.value;storySelect.innerHTML='<option value="">— Chọn truyện —</option>';entries.forEach(x=>{let o=document.createElement('option');o.value=x.folder;o.textContent=x.title+' · '+x.folder;storySelect.append(o)});if(entries.some(x=>x.folder===previous))storySelect.value=previous}
+async function refreshStoryLibrary(){
+ if(!G.P)throw Error('Hãy mở một thế giới trước khi tải thư viện truyện.');
+ const status=$('story-library-status');if(status)status.textContent='Đang quét trực tiếp assets/KichBan trên GitHub…';
+ await G.loadTree();
+ const prefix='assets/KichBan/',worldId=String(G.worldData().slug||''),paths=(G.T||[]).filter(x=>x.type==='blob'&&x.path.startsWith(prefix)&&/^assets\/KichBan\/[^/]+\/[^/]+\.json$/i.test(x.path)).map(x=>x.path).filter(path=>{const parts=path.split('/');return parts[2]===parts[3].replace(/\.json$/i,'')});
+ const registered=Array.isArray(G.W.story_folders)?G.W.story_folders:[];
+ const loaded=await Promise.all(paths.map(async path=>{
+  try{const data=G.parse(await G.raw(path));if(String(data?.world_id||'')!==worldId)return null;const folder=path.split('/')[2],saved=registered.find(x=>String(x.folder||'')===folder);return {title:saved?.title||data.title||data.ten_truyen||folder,folder,path:'assets/KichBan/'+folder,json_path:path}}
+  catch(error){console.warn('Bỏ qua JSON truyện không đọc được:',path,error);return null}
+ }));
+ G.W.story_folders=loaded.filter(Boolean).sort((a,b)=>a.title.localeCompare(b.title,'vi'));
+ renderStoryLibrary();
+ if(status)status.textContent='Đã đọc trực tiếp '+G.W.story_folders.length+' file JSON từ assets/KichBan trên GitHub cho thế giới này.';
+ return G.W.story_folders;
+}
+G.refreshStories=()=>refreshStoryLibrary().catch(error=>{G.say('story-library-status','Không thể tải thư viện trực tiếp từ GitHub: '+error.message,'err');throw error});
 if(storySelect)storySelect.onchange=()=>{const folder=storySelect.value;const entry=storyEntries().find(x=>x.folder===folder);$('story-title').value=entry?entry.title:'';$('story-folder').value=entry?entry.folder:'';G.draft()};
 G.resetStory=()=>{['story-title','story-folder','story-source','story-notes','story-choice-notes','story-outline','json'].forEach(id=>{if($(id))$(id).value=''});['outline-approve','approve'].forEach(id=>{if($(id))$(id).checked=false});['make-script','publish','build-outline'].forEach(id=>{if($(id))$(id).disabled=true});storyOptions=[];selectedOptions.clear();if($('story-options-list'))$('story-options-list').textContent='Chưa có phương án. Hãy nhấn “Đề xuất các hướng truyện”.';currentStoryFolder='';if(storySelect)storySelect.value='';G.draft()};
 if(storySearch)storySearch.oninput=renderStoryLibrary;
-if($('reload-stories'))$('reload-stories').onclick=async()=>{if(!G.P)return G.say('story-library-status','Hãy mở một thế giới trước khi tải thư viện truyện.','err');G.lock('reload-stories',true);try{const response=await fetch('https://raw.githubusercontent.com/'+G.O+'/'+G.R+'/'+G.B+'/'+G.P+'/TheGioi.json?refresh='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('Không tải được hồ sơ thế giới từ GitHub (HTTP '+response.status+').');const world=await response.json();G.W.story_folders=Array.isArray(world.story_folders)?world.story_folders:[];renderStoryLibrary();G.say('story-library-status','Đã tải '+storyEntries().length+' truyện từ GitHub.','ok')}catch(e){G.say('story-library-status','Tải thư viện truyện thất bại: '+e.message,'err')}finally{G.lock('reload-stories',false)}};
+if($('reload-stories'))$('reload-stories').onclick=async()=>{G.lock('reload-stories',true);try{await refreshStoryLibrary()}catch(e){G.say('story-library-status','Tải thư viện truyện thất bại: '+e.message,'err')}finally{G.lock('reload-stories',false)}};
 if($('new-story'))$('new-story').onclick=()=>{if(!G.val('world-name'))return G.say('story-library-status','Hãy mở hoặc tạo một thế giới trước.','err');if(G.val('json')&&!confirm('Tạo truyện mới? Bản nháp hiện tại sẽ được thay khỏi màn hình. Nếu chưa lưu, hãy tải JSON dự phòng trước.'))return;G.resetStory();if(window.StudioShell&&typeof window.StudioShell.clearProject==='function')window.StudioShell.clearProject();G.say('story-library-status','Đã tạo vùng làm việc trống cho truyện mới. Thế giới và tài nguyên đang mở được giữ nguyên.','ok');$('story-title').focus()};
 if($('open-story'))$('open-story').onclick=async()=>{let folder=storySelect.value;if(!folder)return G.say('story-library-status','Hãy chọn một truyện.','err');let entry=storyEntries().find(x=>x.folder===folder);if(!entry)return G.say('story-library-status','Không tìm thấy thông tin truyện trong thế giới này.','err');if(G.val('json')&&currentStoryFolder!==folder&&!confirm('Mở truyện khác? Nội dung đang nằm trên màn hình sẽ được thay thế. Hãy tải JSON dự phòng nếu chưa lưu.'))return;G.lock('open-story',true);try{let raw=await G.raw(entry.json_path),data=G.parse(raw);$('story-title').value=entry.title;$('story-folder').value=entry.folder;$('json').value=JSON.stringify(data,null,2);$('story-source').value='';$('story-notes').value='';$('story-choice-notes').value='';$('story-outline').value='';$('outline-approve').checked=false;$('approve').checked=false;$('make-script').disabled=true;$('publish').disabled=true;storyOptions=[];selectedOptions.clear();$('story-options-list').textContent='Đã mở JSON đã lưu. Muốn lập cấu trúc mới, hãy tạo hướng truyện mới; JSON cũ vẫn được giữ đến khi bạn chủ động commit.';currentStoryFolder=folder;G.draft();G.say('story-library-status','Đã mở truyện “'+entry.title+'”. JSON đã tải vào trình chỉnh sửa.','ok');G.say('script-status','Đang chỉnh sửa bản đã lưu. Kiểm tra và duyệt lại trước khi commit thay đổi.','ok');$('json').scrollIntoView({behavior:'smooth',block:'center'})}catch(e){G.say('story-library-status','Không mở được truyện: '+e.message,'err')}finally{G.lock('open-story',false)}};
 if($('duplicate-story'))$('duplicate-story').onclick=()=>{let title=G.val('story-title'),folder=G.val('story-folder'),raw=G.val('json');if(!raw||!title||!folder)return G.say('story-library-status','Mở một truyện trước khi nhân bản.','err');let copyTitle=title+' - Bản sao',copyFolder=G.slug(copyTitle);let used=new Set(storyEntries().map(x=>x.folder));let base=copyFolder,n=2;while(used.has(copyFolder))copyFolder=base+n++;$('story-title').value=copyTitle;$('story-folder').value=copyFolder;currentStoryFolder='';$('approve').checked=false;$('publish').disabled=true;G.draft();G.say('story-library-status','Đã tạo bản sao nháp với thư mục '+copyFolder+'. Truyện gốc không thay đổi; hãy chỉnh sửa rồi duyệt và commit.','ok')};
 renderStoryLibrary();
-// Khi tải lại trang, nếu bản nháp trỏ tới truyện đã có trong thế giới,
-// tải lại JSON đã commit từ GitHub thay vì khôi phục bản chỉnh sửa cũ trong localStorage.
-const lastSavedFolder=G.val('story-folder');
-if(lastSavedFolder&&storyEntries().some(x=>x.folder===lastSavedFolder)){
- currentStoryFolder=lastSavedFolder;
- if(storySelect)storySelect.value=lastSavedFolder;
- $('open-story').click();
-}
+// Không tự mở JSON theo thư mục ghi nhớ cục bộ. Người dùng chủ động chọn
+// truyện sau khi danh sách đã được quét trực tiếp từ GitHub.
 })();
