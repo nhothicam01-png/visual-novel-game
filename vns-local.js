@@ -61,7 +61,7 @@ function openStoryDb(){
 function storyRecordKey(owner,repo,path){return String(owner||'')+'/'+String(repo||'')+'/'+String(path||'')}
 async function saveStory({owner,repo,path,name,data,commitSha=''}){
  if(!owner||!repo||!path||!data||typeof data!=='object')throw new Error('Thiếu thông tin để lưu kịch bản cục bộ.');
- const db=await openStoryDb(),record={key:storyRecordKey(owner,repo,path),owner,repo,path,name:String(name||path.split('/').at(-1).replace(/\\.json$/i,'')),data,commitSha:String(commitSha||''),updatedAt:new Date().toISOString()};
+ const db=await openStoryDb(),record={key:storyRecordKey(owner,repo,path),owner,repo,path,name:String(name||path.split('/').at(-1).slice(0,-5)),data,commitSha:String(commitSha||''),updatedAt:new Date().toISOString()};
  await new Promise((resolve,reject)=>{const tx=db.transaction(STORY_STORE,'readwrite');tx.objectStore(STORY_STORE).put(record);tx.oncomplete=()=>resolve();tx.onerror=()=>reject(tx.error||new Error('Không ghi được kịch bản vào IndexedDB.'));tx.onabort=()=>reject(tx.error||new Error('Lưu kịch bản cục bộ bị hủy.'))});
  return record;
 }
