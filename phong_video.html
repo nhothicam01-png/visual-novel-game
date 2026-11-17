@@ -831,7 +831,7 @@ function drawFrame(elapsed,st){
   // Cảnh một nhân vật lớn hơn; cảnh nhiều người thu nhỏ vừa đủ để không chồng lấn.
   const multiCharacter=charLayerVideos.length>1;
   const fit=sw&&sh?Math.min((w*(multiCharacter?.40:.78))/sw,(h*(multiCharacter?.78:.90))/sh):1;
-  const safeScale=Math.max(.1,Math.min(1.6,scale)),dw=sw*fit*safeScale,dh=sh*fit*safeScale;
+  const safeScale=Math.max(.1,Math.min(1.6,scale,(h*.92)/Math.max(1,sh*fit),(w*.96)/Math.max(1,sw*fit))),dw=sw*fit*safeScale,dh=sh*fit*safeScale;
   // Tọa độ Y là đường chân/điểm chạm sàn. Không ép mọi tư thế xuống 92% khung hình.
   // Giữ chân trong sân khấu, đồng thời tự cân lại khi đổi ngang <-> dọc.
   const bottomMargin=h*.018,topMargin=h*.025;
