@@ -875,7 +875,16 @@ function drawAnimatedPngEffect(media,item,w,h,elapsed){
  const coverCanvas=getVfxCoverCanvas(media,w,h);
  ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,Number(item.opacity??1)*alpha));ctx.translate(x,y);ctx.rotate(rotation);ctx.scale(scale,scale);ctx.drawImage(coverCanvas,-w/2,-h/2,w,h);ctx.restore();
 }
+// Lớp bảo vệ: lỗi vẽ một hiệu ứng không được phép làm chết vòng phát thoại.
+let previewRenderErrorLogged=false;
 function drawFrame(elapsed,st){
+ try{return drawFrameUnsafe(elapsed,st)}
+ catch(error){
+  if(!previewRenderErrorLogged){previewRenderErrorLogged=true;console.error('Lỗi kết xuất khung hình preview (đã cô lập, timeline vẫn tiếp tục):',error)}
+  return false;
+ }
+}
+function drawFrameUnsafe(elapsed,st){
  const w=canvas.width,h=canvas.height;
  st=st||readFrameState();
  const {bgFx,charFx,camFx,atmFx,strength}=st;
@@ -987,7 +996,11 @@ function drawFrame(elapsed,st){
  if(charLayerVideos.length)charLayerVideos.forEach((layer,index)=>renderLayers.push({kind:'character',z:Number(layer.spec?.z_index??index+1),order:1,draw:()=>drawOneCharacter(layer.media,layer.spec)}));
  else if(charVideo)renderLayers.push({kind:'character',z:1,order:1,draw:()=>drawOneCharacter(frameOverride.char||charVideo,{x:50,y:100,scale:1,z_index:1})});
  sceneEffectLayers.forEach((item,index)=>renderLayers.push({kind:'effect',z:Number(item.z_index??20+index),order:0,draw:()=>drawSceneEffectItem(item)}));
- renderLayers.sort((a,b)=>a.z-b.z||a.order-b.order).forEach(layer=>layer.draw());
+ renderLayers.sort((a,b)=>a.z-b.z||a.order-b.order).forEach(layer=>{
+  try{layer.draw()}catch(error){
+   if(!previewRenderErrorLogged){previewRenderErrorLogged=true;console.error('Bỏ qua lớp hiệu ứng/nhân vật bị lỗi để không khóa timeline:',layer.kind,error)}
+  }
+ });
  if(cameraSaved)ctx.restore();
  // Các lớp không khí được tính theo elapsed để preview và video xuất dùng cùng một timeline.
  if(atmFx.length){
