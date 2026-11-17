@@ -164,6 +164,10 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 
 </div>
 <div class="status" id="story-status">Chọn truyện trên GitHub hoặc import file JSON phiên bản 3.</div>
+<details id="animation-asset-report" class="panel" style="margin-top:10px" open>
+ <summary style="cursor:pointer;font-weight:700">🧩 Báo cáo WEBM còn thiếu <span id="animation-report-count" class="note" style="font-weight:400">Chưa có dữ liệu</span></summary>
+ <div id="animation-report-content" style="padding-top:10px"><div class="note">Chọn một kịch bản để quét các trạng thái nhân vật cần bổ sung.</div></div>
+</details>
 <div id="character-voice-list" class="grid"></div>
 <label class="field">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
 <div class="status" id="voice-fallback-status">Giọng mặc định được dùng khi nhân vật chưa có giọng riêng hoặc giọng trong JSON không hợp lệ.</div>
@@ -336,7 +340,51 @@ function renderEffectCatalogs(){
  if(env)env.innerHTML=(window.VNEnvironmentEffects?.list()||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="atm" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
 }
 function setStatus(s){$('export-status').textContent=s}
-function updateStoryAnimationWarning(){if(!activeStoryData||!$('story-status'))return;const base='Đã nạp '+activeStoryName+': '+sourceLineCount+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh.';const details=currentAnimationWarnings.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']: '+w.reason});$('story-status').textContent=base+(details.length?' · Thiếu WEBM khớp trạng thái: '+details.join('; ')+'. Đang giữ hình tĩnh để tránh diễn sai.':' · Animation khớp metadata.')}
+function renderAnimationAssetReport(){
+ const host=$('animation-report-content'),count=$('animation-report-count');if(!host||!count)return;
+ if(!activeStoryData||!scenes.length){count.textContent='Chưa có dữ liệu';host.innerHTML='<div class="note">Chọn một kịch bản để quét các trạng thái nhân vật cần bổ sung.</div>';return}
+ const missing=new Map(),lineTotal=scenes.reduce((n,scene)=>n+(scene.lines||[]).length,0);
+ scenes.forEach(scene=>(scene.lines||[]).forEach(line=>{
+  const frame=line.sourceFrame||{},raw=Array.isArray(line.visibleCharacters)?line.visibleCharacters:Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
+  const specs=raw.filter(x=>x&&typeof x==='object'&&x.id!=null);
+  const display=specs.length?specs:((frame.nhan_vat||line.speakerId)?[{id:String(frame.nhan_vat||line.speakerId),expression_id:frame.expression_id||line.expressionId||{}}]:[]);
+  display.forEach(spec=>{
+   const id=String(spec.id),folder=characterAssetFolder(id),base=normalizeSemantic(spec.expression_id||(id===String(frame.nhan_vat||line.speakerId||'')?frame.expression_id||line.expressionId:semanticFromExpression(folder,spec.bieu_cam)));
+   const semantic={...base,communication:String(line.text||frame.noi_dung||'').trim()&&id===String(frame.nhan_vat||line.speakerId||'')?'speaking':'silent'};
+   const result=resolveSemanticAnimation(folder,semantic);if(result.matched)return;
+   const fields=['communication','pose','action','emotion','direction','face_angle','view_angle','interaction_target'];
+   const normalized={};fields.forEach(k=>{if(semantic[k])normalized[k]=canonicalAnimationValue(k,semantic[k])});
+   const key=id+'|'+JSON.stringify(normalized);
+   if(!missing.has(key))missing.set(key,{id,name:worldCharacterDirectory.find(c=>c.id===id)?.name||characterDirectory.find(c=>String(c.id)===id)?.name||id,folder,semantic,reason:result.reason||'Không có clip khớp',file:result.file||'',count:0,rows:[],fields});
+   const item=missing.get(key);item.count++;if(item.rows.length<5)item.rows.push(Number(line.sourceIndex??0)+1);
+  });
+ }));
+ const items=[...missing.values()].sort((a,b)=>a.name.localeCompare(b.name,'vi')||JSON.stringify(a.semantic).localeCompare(JSON.stringify(b.semantic),'vi'));
+ count.textContent=items.length?items.length+' trạng thái cần bổ sung':'Đã đủ trạng thái';
+ if(!items.length){host.innerHTML='<div class="note" style="color:#86efac">✓ Không phát hiện trạng thái WEBM bị thiếu trong '+lineTotal+' mục thoại của kịch bản này.</div>';return}
+ const groups=new Map();items.forEach(item=>{if(!groups.has(item.id))groups.set(item.id,{name:item.name,items:[]});groups.get(item.id).items.push(item)});
+ const cards=[];
+ groups.forEach(group=>{
+  const rows=group.items.map(item=>{
+   const labels={communication:'Trạng thái nói',pose:'Tư thế',action:'Hành động',emotion:'Cảm xúc',direction:'Hướng nhìn',face_angle:'Góc mặt',view_angle:'Góc máy',interaction_target:'Đối tượng tương tác'};
+   const state=Object.entries(item.semantic).filter(([k])=>labels[k]).map(([k,v])=>labels[k]+': '+String(v)).join(' · ');
+   const metadata={user_metadata:Object.fromEntries(Object.entries(item.semantic).filter(([k])=>['communication','pose','action','emotion','direction','face_angle','view_angle','interaction_target'].includes(k)))};
+   const filename=item.name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_|_$/g,'')+'_'+Object.entries(item.semantic).map(([k,v])=>String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'_')).join('_')+'.webm';
+   return '<div style="border:1px solid #475569;border-radius:9px;padding:10px;margin:8px 0">'+
+    '<strong>'+safeText(state||'Chưa xác định trạng thái')+'</strong>'+
+    '<div class="note">Xuất hiện '+item.count+' lần · dòng '+safeText(item.rows.join(', '))+(item.rows.length===5?'…':'')+'</div>'+
+    '<div class="note">Lý do: '+safeText(item.reason)+'.</div>'+
+    '<div class="note">Tên WEBM gợi ý: <code>'+safeText(filename)+'</code></div>'+
+    '<div class="note">Thư mục: <code>assets/NhanVat/'+safeText(item.folder)+'/</code></div>'+
+    '<details style="margin-top:6px"><summary style="cursor:pointer">Xem metadata JSON cần gắn</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;background:#0b1220;padding:9px;border-radius:7px;font-size:12px">'+safeText(JSON.stringify(metadata,null,2))+'</pre><button type="button" class="btn secondary" data-copy-animation-metadata="'+safeText(JSON.stringify(metadata))+'">📋 Sao chép metadata JSON</button></details>'+
+    '</div>';
+  }).join('');
+  cards.push('<section style="margin:10px 0"><h4 style="margin:8px 0">'+safeText(group.name)+' · '+group.items.length+' trạng thái</h4>'+rows+'</section>');
+ });
+ host.innerHTML='<div class="note">Đã quét '+lineTotal+' mục thoại. Danh sách dưới đây là các tổ hợp trạng thái chưa có WEBM khớp. Tên file chỉ là gợi ý; metadata mới là căn cứ nhận diện.</div>'+cards.join('');
+ host.querySelectorAll('[data-copy-animation-metadata]').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(JSON.stringify(JSON.parse(button.dataset.copyAnimationMetadata),null,2));button.textContent='✓ Đã sao chép'}catch(error){button.textContent='Không sao chép được';console.warn(error)}}));
+}
+function updateStoryAnimationWarning(){if(!$('story-status'))return;if(!activeStoryData){renderAnimationAssetReport();return}const base='Đã nạp '+activeStoryName+': '+sourceLineCount+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh.';const details=currentAnimationWarnings.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']: '+w.reason});$('story-status').textContent=base+(details.length?' · Thiếu WEBM khớp trạng thái ở dòng hiện tại: '+details.join('; ')+'. Đang giữ hình tĩnh để tránh diễn sai.':' · Animation khớp metadata ở dòng hiện tại.');renderAnimationAssetReport();}
 
 function safeAudioDataName(value){return String(value||'KichBan').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan'}
 function manifestVoiceForLine(line){
@@ -1731,7 +1779,7 @@ function canonicalAnimationValue(field,value){
 }
 function resolveSemanticAnimation(folder,semantic){
  const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return {file:'',matched:false,reason:'Thư mục chưa có WEBM'};
- const target=normalizeSemantic(semantic),critical=['communication','pose','action'].filter(k=>target[k]),fields=['communication','pose','action','emotion','direction','face_angle','view_angle','interaction_target'];
+ const target=normalizeSemantic(semantic),critical=['communication','pose','action','emotion'].filter(k=>target[k]),fields=['communication','pose','action','emotion','direction','face_angle','view_angle','interaction_target'];
  const candidates=paths.map(path=>{
   const meta=animationMeta(path),missing=[],mismatch=[];let score=0;
   critical.forEach(k=>{const wanted=canonicalAnimationValue(k,target[k]),actual=canonicalAnimationValue(k,meta[k]);if(!meta[k])missing.push(k);else if(actual!==wanted)mismatch.push(k);else score+=100});
