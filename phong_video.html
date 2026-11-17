@@ -527,6 +527,20 @@ async function loadSceneEffectLibrary(){
   renderSceneEffectPicker();if(getCurrentScene())updateAssets();
  }catch(error){$('scene-effect-picker').innerHTML='<span class="note">Không tải được danh sách hiệu ứng: '+safeText(error.message)+'</span>'}
 }
+function semanticForVisibleCharacter(spec,frame,currentLine){
+ const folder=characterAssetFolder(spec?.id),base=normalizeSemantic(spec?.expression_id||semanticFromExpression(folder,spec?.bieu_cam));
+ const isSpeaking=!!String(frame?.noi_dung||'').trim()&&String(spec?.id)===String(frame?.nhan_vat||currentLine?.speakerId||'');
+ const semantic={...base,communication:isSpeaking?'speaking':'silent'};
+ const motion=spec?.motion&&typeof spec.motion==='object'?spec.motion:null;
+ if(motion){
+  const from=motion.from||{},to=motion.to||{},dx=Math.abs(Number(to.x??spec.x??0)-Number(from.x??spec.x??0)),dy=Math.abs(Number(to.y??spec.y??0)-Number(from.y??spec.y??0));
+  const explicitAction=canonicalAnimationValue('action',semantic.action||'');
+  if(dx>0.5||dy>0.5){
+   if(!explicitAction||explicitAction==='idle'||explicitAction==='standing still')semantic.action='walking';
+  }
+ }
+ return semantic;
+}
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
  const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
@@ -537,9 +551,7 @@ async function updateAssets(){
  if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
-   const folder=characterAssetFolder(spec.id),baseSemantic=normalizeSemantic(spec.expression_id||semanticFromExpression(folder,spec.bieu_cam));
-   const isSpeaking=!!String(frame.noi_dung||'').trim()&&String(spec.id)===String(frame.nhan_vat||currentLine?.speakerId||'');
-   const semantic={...baseSemantic,communication:isSpeaking?'speaking':'silent'};
+   const folder=characterAssetFolder(spec.id),semantic=semanticForVisibleCharacter(spec,frame,currentLine);
    const selection=resolveSemanticAnimation(folder,semantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
    let media=null;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được lớp nhân vật '+spec.id+' ('+folder+'/'+expression+'):',error)}
    return {spec:{...spec,expression_id:semantic,animationMatched:selection.matched},folder,media,index,animationMatched:selection.matched,animationReason:selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose].filter(Boolean).join(' / ')};
@@ -584,7 +596,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
   if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
   normalizeSceneEffects(row.hieu_ung_canh||[]).forEach(effect=>{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(()=>{})});
-  (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),base=normalizeSemantic(spec?.expression_id||semanticFromExpression(folder,spec?.bieu_cam)),isSpeaking=!!String(row.noi_dung||'').trim()&&String(spec?.id)===String(row.nhan_vat||''),selection=resolveSemanticAnimation(folder,{...base,communication:isSpeaking?'speaking':'silent'});if(folder&&selection.file)cachedVideo(BASE+'NhanVat/'+folder+'/'+selection.file+'.webm').catch(()=>{})});
+  (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),semantic=semanticForVisibleCharacter(spec,row,{speakerId:row.nhan_vat});const selection=resolveSemanticAnimation(folder,semantic);if(folder&&selection.file)cachedVideo(BASE+'NhanVat/'+folder+'/'+selection.file+'.webm').catch(()=>{})});
  }
 }
 $('background').addEventListener('change',updateAssets);
