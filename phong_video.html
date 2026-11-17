@@ -647,13 +647,14 @@ async function updateAssets(){
    if(!media){media=makeFallbackCharacterCanvas({...spec,name:worldCharacterDirectory.find(ch=>String(ch.id)===String(spec.id))?.name||spec.id});usedFallback=true}
    return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched&&!usedFallback},folder,media,index,animationMatched:selection.matched&&!usedFallback,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
   });
+  const safeAssetLoad=async(label,loader)=>{try{return await loader()}catch(error){console.warn('Không tải được '+label+'; tiếp tục bằng phương án dự phòng:',error);return null}};
   const [nextBg,nextChar,nextLayers,nextSceneEffects,nextObjects]=await Promise.all([
-   bgPath?(/\.mp4$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
-   charPath?cachedVideo(charPath):Promise.resolve(null),
+   bgPath?safeAssetLoad('nền '+bg,()=>/\.mp4$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
+   charPath?safeAssetLoad('WEBM nhân vật chính',()=>cachedVideo(charPath)):Promise.resolve(null),
    Promise.all(layerJobs),
    Promise.all(sceneSpecs.map(async spec=>{
     const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+spec.path.split('/').map(encodeURIComponent).join('/');
-    const media=spec.type==='image'?await cachedImage(url):await cachedVideo(url);
+    const media=await safeAssetLoad('hiệu ứng cảnh '+spec.path,()=>spec.type==='image'?cachedImage(url):cachedVideo(url));
     return {...spec,media};
    })),
    Promise.all(objectSpecs.map(async spec=>{let media=null;try{media=spec.type==='image'?await cachedImage(spec.url):await cachedVideo(spec.url)}catch(error){console.warn('Tài nguyên cảnh thiếu, dùng mô phỏng:',spec.url)}return {...spec,media:media||makeFallbackObjectCanvas(spec),isFallback:!media}}))
@@ -748,6 +749,8 @@ function drawFrame(elapsed,st){
   ctx.save();ctx.translate(w/2+bx,h/2+by);ctx.scale(bz,bz);ctx.translate(-w/2,-h/2);
   if(bgFx.includes('bg-blur'))ctx.filter='blur('+Math.round(2*strength)+'px)';
   drawCover(frameOverride.bg||bgAsset||bgVideo,w,h);ctx.filter='none';ctx.restore();
+ }else{
+  const fallbackBg=ctx.createLinearGradient(0,0,0,h);fallbackBg.addColorStop(0,'#243653');fallbackBg.addColorStop(.62,'#53677c');fallbackBg.addColorStop(1,'#182437');ctx.fillStyle=fallbackBg;ctx.fillRect(0,0,w,h);
  }
  // Phương tiện/đạo cụ: lớp độc lập, tọa độ theo %, chuyển động theo motion.keyframes.
  sceneObjectLayers.slice().sort((a,b)=>(Number(a.z_index)||0)-(Number(b.z_index)||0)).forEach(obj=>{const media=obj.media;if(!media)return;const move=obj.motion&&typeof obj.motion==='object'?obj.motion:null,duration=Math.max(.01,Number(move?.duration_seconds)||1),t=Math.max(0,Math.min(1,(elapsed-lineMotionStartElapsed)/duration)),keys=Array.isArray(move?.keyframes)?move.keyframes:[],lerp=(a,b,k)=>Number(a)+(Number(b)-Number(a))*k;let st={x:Number(obj.x??50),y:Number(obj.y??80),scale:Number(obj.scale??1),rotation_degrees:Number(obj.rotation_degrees??0),opacity:Number(obj.opacity??1)};if(keys.length){const sorted=keys.filter(k=>k&&Number.isFinite(Number(k.t))).slice().sort((a,b)=>Number(a.t)-Number(b.t));if(sorted.length){let a=sorted[0],b=sorted[sorted.length-1];for(let j=0;j<sorted.length-1;j++){if(t>=Number(sorted[j].t)&&t<=Number(sorted[j+1].t)){a=sorted[j];b=sorted[j+1];break}}const u=Math.max(0,Math.min(1,(t-Number(a.t))/Math.max(.0001,Number(b.t)-Number(a.t))));['x','y','scale','rotation_degrees','opacity'].forEach(k=>{if(a[k]!=null||b[k]!=null)st[k]=lerp(a[k]??st[k],b[k]??st[k],u)})}}const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height;if(!sw||!sh)return;const scale=Math.max(.05,Math.min(5,Number(st.scale)||1)),fit=isPortrait?h/sh:Math.min(w/sw,h/sh),dw=sw*fit*scale,dh=sh*fit*scale,x=w*Math.max(0,Math.min(100,Number(st.x)||0))/100,y=h*Math.max(0,Math.min(110,Number(st.y)||0))/100;ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,Number(st.opacity??1)));if(st.rotation_degrees){ctx.translate(x,y-dh/2);ctx.rotate(Number(st.rotation_degrees)*Math.PI/180);ctx.translate(-x,-(y-dh/2))}ctx.drawImage(media,x-dw/2,y-dh,dw,dh);ctx.restore()});
