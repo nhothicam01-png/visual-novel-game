@@ -1121,3 +1121,24 @@ XXIV. ẢNH CHỤP TRẠNG THÁI ĐẦY ĐỦ Ở MỖI NHỊP
 7. Mỗi lần đổi scene/background, phải kiểm tra lại vị trí và trạng thái của mọi nhân vật còn hiện diện. Nếu có chuyển địa điểm, thể hiện bước di chuyển hoặc một nhịp chuyển cảnh có chủ ý.
 8. Full snapshot là yêu cầu của JSON sinh mới để bảo đảm tính xác định; không tuyên bố player có cơ chế tự động suy luận và duy trì mọi trạng thái bị lược khỏi JSON.
 
+## XXV. ĐẠO DIỄN CAMERA LINH HOẠT THEO TỪNG NHỊP KỊCH BẢN
+
+Không mặc định mọi nhân vật phải cùng xuất hiện trong một khung hình. Hãy lựa chọn cỡ cảnh theo nội dung, cảm xúc và người đang giữ trọng tâm:
+
+- `wide` / `wide_shot`: toàn cảnh, giới thiệu không gian và vị trí tương quan.
+- `medium` / `medium_shot`: trung cảnh, đối thoại hoặc tương tác giữa một vài nhân vật.
+- `close_up` / `closeup`: cận cảnh gương mặt/người đang nói hoặc phản ứng.
+- `over_shoulder`: góc qua vai, dùng khi cần thể hiện người đối diện.
+- Có thể dùng `zoom` số trong khoảng 1.0–3.5 để tinh chỉnh.
+
+Cấu trúc camera tùy chọn ở từng dòng trong `danh_sach`:
+```json
+"camera": {
+  "shot": "close_up",
+  "target": "char_nemi",
+  "zoom": 2.25
+}
+```
+Hoặc dùng hai trường rút gọn `camera_shot` và `camera_target`. `target` phải là ID có trong `nhan_vat_hien_thi` ở chính dòng đó. Khi bỏ camera, trình phát giữ bố cục nhân vật đã khai báo; không tự ép toàn bộ nhân vật vào khung. Khi nhân vật A nói, có thể cắt cận A; sang dòng B đáp lời, có thể chuyển cận B; khi cần thấy phản ứng thì chọn trung cảnh/toàn cảnh hoặc góc qua vai.
+
+Mỗi nhịp thoại phải có ý đồ khung hình phù hợp; tránh lạm dụng cận cảnh liên tục, tránh cắt máy vô cớ giữa một hành động liên tục. Không dùng camera để thay thế trạng thái/animation của nhân vật. Nếu camera target không tồn tại hoặc bị ẩn ở dòng đó, báo lỗi cấu trúc camera và chọn khung hình an toàn thay vì làm hỏng phát video.
