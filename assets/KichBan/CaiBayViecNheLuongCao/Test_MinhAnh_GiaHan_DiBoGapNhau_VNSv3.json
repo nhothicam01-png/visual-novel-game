@@ -73,23 +73,25 @@
       "nhan_vat_hien_thi": [
         {
           "id": "char_pham_minh_anh",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          },
           "x": 20,
           "y": 78,
           "scale": 0.72,
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "neutral"
-          }
+          "z_index": 1
         },
         {
           "id": "char_tran_gia_han",
-          "x": 80,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "silent",
             "emotion": "neutral"
-          }
+          },
+          "x": 80,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2
         }
       ]
     },
@@ -128,13 +130,14 @@
       "nhan_vat_hien_thi": [
         {
           "id": "char_pham_minh_anh",
-          "x": 43,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "speaking",
             "emotion": "neutral"
           },
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
           "motion": {
             "duration_seconds": 4,
             "easing": "linear",
@@ -150,13 +153,14 @@
         },
         {
           "id": "char_tran_gia_han",
-          "x": 80,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "silent",
             "emotion": "neutral"
-          }
+          },
+          "x": 80,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2
         }
       ]
     },
@@ -195,23 +199,25 @@
       "nhan_vat_hien_thi": [
         {
           "id": "char_pham_minh_anh",
-          "x": 43,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "silent",
             "emotion": "neutral"
-          }
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1
         },
         {
           "id": "char_tran_gia_han",
-          "x": 58,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "speaking",
             "emotion": "neutral"
           },
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
           "motion": {
             "duration_seconds": 3.5,
             "easing": "linear",
@@ -262,23 +268,25 @@
       "nhan_vat_hien_thi": [
         {
           "id": "char_pham_minh_anh",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          },
           "x": 43,
           "y": 78,
           "scale": 0.72,
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "neutral"
-          }
+          "z_index": 1
         },
         {
           "id": "char_tran_gia_han",
-          "x": 58,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "silent",
             "emotion": "neutral"
-          }
+          },
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2
         }
       ]
     },
@@ -317,23 +325,25 @@
       "nhan_vat_hien_thi": [
         {
           "id": "char_pham_minh_anh",
-          "x": 43,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "speaking",
             "emotion": "neutral"
-          }
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1
         },
         {
           "id": "char_tran_gia_han",
-          "x": 58,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "silent",
             "emotion": "neutral"
-          }
+          },
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2
         }
       ]
     },
@@ -372,23 +382,25 @@
       "nhan_vat_hien_thi": [
         {
           "id": "char_pham_minh_anh",
-          "x": 43,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "silent",
             "emotion": "neutral"
-          }
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1
         },
         {
           "id": "char_tran_gia_han",
-          "x": 58,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "speaking",
             "emotion": "neutral"
-          }
+          },
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2
         }
       ]
     },
@@ -427,23 +439,25 @@
       "nhan_vat_hien_thi": [
         {
           "id": "char_pham_minh_anh",
-          "x": 43,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "speaking",
             "emotion": "neutral"
-          }
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1
         },
         {
           "id": "char_tran_gia_han",
-          "x": 58,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "silent",
             "emotion": "neutral"
-          }
+          },
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2
         }
       ]
     },
@@ -482,23 +496,25 @@
       "nhan_vat_hien_thi": [
         {
           "id": "char_pham_minh_anh",
-          "x": 43,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "silent",
             "emotion": "neutral"
-          }
+          },
+          "x": 43,
+          "y": 106,
+          "scale": 0.72,
+          "z_index": 1
         },
         {
           "id": "char_tran_gia_han",
-          "x": 58,
-          "y": 78,
-          "scale": 0.72,
           "expression_id": {
             "communication": "speaking",
             "emotion": "neutral"
-          }
+          },
+          "x": 58,
+          "y": 103,
+          "scale": 0.72,
+          "z_index": 2
         }
       ]
     }
