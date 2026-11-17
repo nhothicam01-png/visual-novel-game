@@ -54,7 +54,57 @@ GW.loadWorlds=async()=>{try{await GW.loadTree();let names=[...new Set(GW.T.filte
 
 // Đổi tên thế giới bằng nút riêng; chuyển toàn bộ hồ sơ thế giới sang thư mục mới trong một commit.
 $('rename-world').onclick=async()=>{try{if(!GW.P)throw Error('Hãy mở một thế giới đã lưu trước.');const oldPath=GW.P,oldSlug=oldPath.split('/').pop(),oldName=GW.worldName||oldSlug;const nextName=prompt('Tên mới của thế giới:',oldName);if(nextName===null)return;if(!nextName.trim())throw Error('Tên thế giới không được để trống.');const newSlug=GW.slug(nextName);const newPath='assets/TheGioi/'+newSlug;if(newPath!==oldPath){await GW.loadTree();if(GW.T.some(x=>x.type==='blob'&&x.path.startsWith(newPath+'/')))throw Error('Đã tồn tại một thế giới dùng thư mục '+newSlug+'. Hãy chọn tên khác.');const files=GW.T.filter(x=>x.type==='blob'&&x.path.startsWith(oldPath+'/'));if(!files.length)throw Error('Không tìm thấy dữ liệu thế giới trên GitHub.');let meta=JSON.parse(await GW.raw(oldPath+'/TheGioi.json'));meta.world_name=nextName.trim();meta.slug=newSlug;meta.updated_at=new Date().toISOString();const changes=files.filter(x=>x.path!==oldPath+'/TheGioi.json').map(x=>({path:newPath+x.path.slice(oldPath.length),sha:x.sha,mode:x.mode||'100644',type:'blob'}));const blob=await GitHubManager.createBlob({owner:O,repo:R,content:JSON.stringify(meta,null,2)});changes.push({path:newPath+'/TheGioi.json',sha:blob.sha,mode:'100644',type:'blob'});files.forEach(x=>changes.push({path:x.path,sha:null,mode:x.mode||'100644',type:'blob'}));const r=await GitHubManager.applyTreeChanges({owner:O,repo:R,branch:B,changes,message:'Rename story world: '+oldName+' -> '+nextName.trim()});GW.P=newPath;GW.worldName=nextName.trim();$('world-state').textContent='Đang mở: '+nextName.trim();GW.say('project-status','Đã đổi tên thế giới và chuyển thư mục trong một commit. Commit '+r.commitSha,'ok')}else{GW.worldName=nextName.trim();await GW.saveWorld()}await GW.loadWorlds();$('world-select').value=newSlug;GW.draft()}catch(e){GW.say('project-status',e.message,'err')}};
-$('delete-world').onclick=async()=>{try{if(!GW.P)throw Error('Hãy mở một thế giới đã lưu trước.');const path=GW.P,slug=path.split('/').pop();await GW.loadTree();const worldFilesNow=GW.T.filter(x=>x.type==='blob'&&x.path.startsWith(path+'/'));if(!worldFilesNow.length)throw Error('Không tìm thấy file của thế giới trên GitHub.');let meta=JSON.parse(await GW.raw(path+'/TheGioi.json'));const stories=Array.isArray(meta.story_folders)?meta.story_folders:[];const deleteStories=$('delete-world-stories').checked;let storyFiles=[];let folders=[];if(deleteStories){folders=[...new Set([slug,...stories.map(s=>String(s.folder||'').trim()),...stories.map(s=>String(s.path||'').replace(/\\/$/,'').split('/').pop())].filter(f=>/^[A-Za-z0-9_-]+$/.test(f)))];for(const folder of folders)storyFiles.push(...GW.T.filter(x=>x.type==='blob'&&x.path.startsWith('assets/KichBan/'+folder+'/')))}const unique=[...new Map([...worldFilesNow,...storyFiles].map(x=>[x.path,x])).values()];const detail=deleteStories?'Sẽ xóa '+worldFilesNow.length+' file hồ sơ thế giới và '+storyFiles.length+' file truyện trong các thư mục: '+(folders.length?folders.join(', '):'(không tìm thấy thư mục truyện)')+'.':'Chỉ xóa '+worldFilesNow.length+' file hồ sơ thế giới. Các truyện sẽ được giữ nguyên trên GitHub.';if(!confirm('XÓA THẾ GIỚI "'+(meta.world_name||slug)+'"?\\n\\n'+detail+'\\n\\nKhông thể hoàn tác bằng Gemini Studio. Tiếp tục?'))return;if(!confirm('Xác nhận lần cuối: xóa '+unique.length+' file khỏi GitHub?'))return;const changes=unique.map(x=>({path:x.path,sha:null,mode:x.mode||'100644',type:'blob'}));const r=await GitHubManager.applyTreeChanges({owner:O,repo:R,branch:B,changes,message:'Delete story world: '+(meta.world_name||slug)});GW.P='';GW.W={places:[],characters:[],rules:[],events:[],ideas:[],story_folders:[]};GW.worldName='';['genre','premise','setting','tone','extra'].forEach(id=>$(id).value='');if(GW.resetStory)GW.resetStory();GW.render();if(GW.refreshStories)GW.refreshStories();$('world-state').textContent='Chưa mở dự án';$('delete-world-stories').checked=true;await GW.loadWorlds();GW.say('project-status','Đã xóa '+unique.length+' file'+(deleteStories?' (bao gồm '+storyFiles.length+' file truyện)':' (giữ lại truyện)')+' trong một commit. Commit '+r.commitSha,'ok');GW.draft()}catch(e){GW.say('project-status',e.message,'err')}};
+$('delete-world').onclick=async()=>{
+ try{
+  if(!GW.P)throw Error('Hãy mở một thế giới đã lưu trước.');
+  const path=GW.P,slug=path.split('/').pop();
+  await GW.loadTree();
+  const worldFilesNow=GW.T.filter(x=>x.type==='blob'&&x.path.startsWith(path+'/'));
+  if(!worldFilesNow.length)throw Error('Không tìm thấy file của thế giới trên GitHub.');
+  const meta=JSON.parse(await GW.raw(path+'/TheGioi.json'));
+  const stories=Array.isArray(meta.story_folders)?meta.story_folders:[];
+  const deleteStories=$('delete-world-stories').checked;
+  const storyFiles=[],folders=[],preservedShared=[];
+  if(deleteStories){
+   const groups=new Map();
+   stories.forEach(s=>{
+    const jsonPath=String(s.json_path||'').trim();
+    let root=String(s.path||'').trim().replace(/\/$/,'');
+    if(!root&&s.folder)root='assets/KichBan/'+String(s.folder).trim();
+    if(!root&&jsonPath.includes('/'))root=jsonPath.slice(0,jsonPath.lastIndexOf('/'));
+    if(!root.startsWith('assets/KichBan/')||root.split('/').length!==3||root.includes('..'))return;
+    const expectedJson=jsonPath.startsWith(root+'/')?jsonPath:(root+'/'+String(s.folder||root.split('/').pop())+'.json');
+    if(!groups.has(root))groups.set(root,{jsonPaths:new Set(),entries:[]});
+    groups.get(root).jsonPaths.add(expectedJson);groups.get(root).entries.push(s);
+   });
+   for(const [root,group] of groups){
+    const files=GW.T.filter(x=>x.type==='blob'&&x.path.startsWith(root+'/'));
+    const jsonFiles=files.filter(x=>/\.json$/i.test(x.path));
+    const allJsonRegistered=jsonFiles.length>0&&jsonFiles.every(x=>group.jsonPaths.has(x.path));
+    if(allJsonRegistered){
+     storyFiles.push(...files);folders.push(root);
+    }else{
+     const exact=files.filter(x=>group.jsonPaths.has(x.path));
+     storyFiles.push(...exact);
+     if(files.length)preservedShared.push(root+' (có JSON/tài nguyên chưa được đăng ký; chỉ xóa JSON được liên kết, giữ phần còn lại)');
+    }
+   }
+  }
+  const unique=[...new Map([...worldFilesNow,...storyFiles].map(x=>[x.path,x])).values()];
+  const detail=deleteStories
+   ?'Sẽ xóa '+worldFilesNow.length+' file thế giới và '+storyFiles.length+' file truyện. Thư mục truyện xóa trọn vẹn: '+(folders.length?folders.join(', '):'(không có thư mục đủ điều kiện)')+'.'+(preservedShared.length?'\nCác thư mục dùng chung/không rõ quyền sở hữu sẽ được giữ an toàn: '+preservedShared.join('; '):'')
+   :'Chỉ xóa '+worldFilesNow.length+' file hồ sơ thế giới. Các truyện sẽ được giữ nguyên trên GitHub.';
+  if(!confirm('XÓA THẾ GIỚI "'+(meta.world_name||slug)+'"?\n\n'+detail+'\n\nKhông thể hoàn tác bằng Gemini Studio. Tiếp tục?'))return;
+  if(!confirm('Xác nhận lần cuối: xóa '+unique.length+' file khỏi GitHub?'))return;
+  const changes=unique.map(x=>({path:x.path,sha:null,mode:x.mode||'100644',type:'blob'}));
+  const r=await GitHubManager.applyTreeChanges({owner:O,repo:R,branch:B,changes,message:'Delete story world: '+(meta.world_name||slug)});
+  GW.P='';GW.W={places:[],characters:[],rules:[],events:[],ideas:[],story_folders:[]};GW.worldName='';
+  ['genre','premise','setting','tone','extra'].forEach(id=>$(id).value='');
+  if(GW.resetStory)GW.resetStory();GW.render();if(GW.refreshStories)GW.refreshStories();
+  $('world-state').textContent='Chưa mở dự án';$('delete-world-stories').checked=true;await GW.loadWorlds();
+  GW.say('project-status','Đã xóa '+unique.length+' file'+(deleteStories?' (bao gồm '+storyFiles.length+' file truyện; các thư mục dùng chung được bảo toàn)':' (giữ lại truyện)')+' trong một commit. Commit '+r.commitSha,'ok');GW.draft();
+ }catch(e){GW.say('project-status',e.message,'err')}
+};
 $('open-world').onclick=async()=>{let n=$('world-select').value;if(!n)return GW.say('project-status','Chọn thế giới.','err');try{let d=await WorldCache.load(n,async()=>JSON.parse(await GW.raw('assets/TheGioi/'+n+'/TheGioi.json')));GW.worldName=d.world_name||n;if(GW.resetStory)GW.resetStory();GW.W={places:d.places||[],characters:d.characters||[],rules:d.rules||[],events:d.events||[],ideas:d.story_ideas||[],story_folders:d.story_folders||[]};GW.P='assets/TheGioi/'+n;$('world-select').value=n;GW.worldName=d.world_name||n;['genre','premise','setting','tone','extra'].forEach(id=>$(id).value=d[id]||'');['character-notes','rule-notes','event-notes'].forEach(id=>$(id).value='');$('mode').value=d.mode||'guided';$('delete-world-stories').checked=false;GW.render();if(GW.refreshStories)GW.refreshStories();$('world-state').textContent='Đang mở: '+(d.world_name||n);GW.say('project-status','Đã mở thế giới “'+(d.world_name||n)+'”. Dữ liệu thế giới trước đã được thay thế.','ok');GW.say('design-status','','');GW.say('select-status','','');GW.say('script-status','','');GW.say('direction-status','','');GW.say('publish-status','','');GW.tab('design');GW.draft()}catch(e){GW.say('project-status','Không mở được thế giới: '+e.message,'err')}};
 
 $('reload-world-full').onclick=async()=>{
