@@ -14,8 +14,7 @@ async function loadAssets(){
  assets.backgrounds=files.filter(p=>p.startsWith('assets/Nen/')&&!p.slice(11).includes('/')&&!/\.json$/i.test(p)).map(p=>p.slice(11));
  assets.bgm=files.filter(p=>p.startsWith('assets/AmThanh/Nen/')&&!p.slice(19).includes('/')&&!/\.json$/i.test(p)).map(p=>p.slice(19));
  assets.sfx=files.filter(p=>p.startsWith('assets/AmThanh/HieuUng/')&&!p.slice(23).includes('/')&&!/\.json$/i.test(p)).map(p=>p.slice(23));
- assets.effects=files.filter(p=>p.startsWith('assets/HieuUng/')&&!p.slice(15).includes('/')).map(p=>p.slice(15));
- assets.environment=['snow','rain','petals','dust','sparkle','fog','rays','lightning','vignette','flash'];animationMetadata={};
+ assets.effects=[];assets.environment=[];try{const pair=await Promise.all([fetch(RAW+'effects.js'),fetch(RAW+'environment-effects.js')]),effectText=pair[0].ok?await pair[0].text():'',environmentText=pair[1].ok?await pair[1].text():'';assets.effects=[...effectText.matchAll(/^\s{6}([A-Za-z0-9_]+):\s*\{/gm)].map(m=>m[1]);assets.environment=[...environmentText.matchAll(/\{id:'([^']+)'/g)].map(m=>m[1])}catch(e){console.warn('Effect catalog unavailable',e)}animationMetadata={};
  const metaPaths=folders.flatMap(folder=>files.filter(p=>p.startsWith('assets/NhanVat/'+folder+'/')&&p.endsWith('.webm.json')).slice(0,18).map(path=>({folder,path})));
  for(let i=0;i<metaPaths.length;i+=8){await Promise.all(metaPaths.slice(i,i+8).map(async item=>{try{const r=await fetch(RAW+item.path.split('/').map(encodeURIComponent).join('/'));if(r.ok){const m=await r.json();(animationMetadata[item.folder]||(animationMetadata[item.folder]=[])).push({file:item.path.split('/').pop().replace(/\.webm\.json$/i,''),metadata:m.user_metadata||{},characters:m.characters||[]})}}catch(e){}}))}
  $('world-state').textContent=selected.length+' nhân vật · '+assets.backgrounds.length+' nền · '+folders.length+' thư mục animation';
