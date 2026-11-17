@@ -56,7 +56,7 @@
             "action": "walking"
           },
           "x": 43,
-          "y": 98,
+          "y": 102,
           "scale": 0.72,
           "z_index": 1,
           "motion": {
@@ -64,11 +64,11 @@
             "easing": "linear",
             "from": {
               "x": 18,
-              "y": 98
+              "y": 102
             },
             "to": {
               "x": 43,
-              "y": 98
+              "y": 102
             }
           }
         },
@@ -80,7 +80,7 @@
             "pose": "standing"
           },
           "x": 80,
-          "y": 98,
+          "y": 102,
           "scale": 0.72,
           "z_index": 2
         }
@@ -121,7 +121,7 @@
             "pose": "standing"
           },
           "x": 80,
-          "y": 98,
+          "y": 102,
           "scale": 0.76,
           "z_index": 2
         }
@@ -167,7 +167,7 @@
             "pose": "standing"
           },
           "x": 43,
-          "y": 98,
+          "y": 102,
           "scale": 0.76,
           "z_index": 1
         }
@@ -213,7 +213,7 @@
             "pose": "standing"
           },
           "x": 80,
-          "y": 98,
+          "y": 102,
           "scale": 0.76,
           "z_index": 2
         }
@@ -259,7 +259,7 @@
             "pose": "standing"
           },
           "x": 43,
-          "y": 98,
+          "y": 102,
           "scale": 0.76,
           "z_index": 1
         }
@@ -305,7 +305,7 @@
             "pose": "standing"
           },
           "x": 80,
-          "y": 98,
+          "y": 102,
           "scale": 0.76,
           "z_index": 2
         }
@@ -351,7 +351,7 @@
             "pose": "standing"
           },
           "x": 43,
-          "y": 98,
+          "y": 102,
           "scale": 0.76,
           "z_index": 1
         }
@@ -397,7 +397,7 @@
             "pose": "standing"
           },
           "x": 80,
-          "y": 98,
+          "y": 102,
           "scale": 0.76,
           "z_index": 2
         }
@@ -443,7 +443,7 @@
             "pose": "standing"
           },
           "x": 43,
-          "y": 98,
+          "y": 102,
           "scale": 0.76,
           "z_index": 1
         }
@@ -489,7 +489,7 @@
             "pose": "standing"
           },
           "x": 43,
-          "y": 98,
+          "y": 102,
           "scale": 0.72,
           "z_index": 1
         },
@@ -501,7 +501,7 @@
             "pose": "standing"
           },
           "x": 80,
-          "y": 98,
+          "y": 102,
           "scale": 0.72,
           "z_index": 2
         }
