@@ -2,13 +2,97 @@
   "schema_version": 1,
   "title": "Danh mục tài nguyên chuẩn Visual Novel Studio",
   "description": "Danh mục mở để bổ sung dần. Trạng thái được asset_inventory.html đối chiếu trực tiếp với file trên nhánh main. Các mục là thư viện đề xuất dùng chung, không bắt buộc mọi kịch bản phải sử dụng tất cả.",
-  "updated_at": "2026-11-17T18:33:40.519Z",
+  "updated_at": "2026-11-17T18:35:04.488Z",
   "categories": [
     {
       "id": "backgrounds",
       "name": "Bối cảnh / hình nền",
       "folder": "assets/Nen/",
       "items": [
+        {
+          "id": "render_video",
+          "name": "Video nền render",
+          "path": "assets/Nen/render.mp4",
+          "description": "Video nền hiện có."
+        },
+        {
+          "id": "thu_vien",
+          "name": "Thư viện",
+          "path": "assets/Nen/thu_vien.png",
+          "description": "Thư viện hiện có."
+        },
+        {
+          "id": "san_truong_dem",
+          "name": "Sân trường ban đêm",
+          "path": "assets/Nen/san_truong_dem.png",
+          "description": "Sân trường hiện có."
+        },
+        {
+          "id": "san_truong_ban_ngay",
+          "name": "Sân trường ban ngày",
+          "path": "assets/Nen/san_truong_ban_ngay.png",
+          "description": "Sân trường hiện có."
+        },
+        {
+          "id": "san_thuong_hoang_hon",
+          "name": "Sân thượng hoàng hôn",
+          "path": "assets/Nen/san_thuong_hoang_hon.png",
+          "description": "Sân thượng hiện có."
+        },
+        {
+          "id": "phong_ngu_dem",
+          "name": "Phòng ngủ ban đêm",
+          "path": "assets/Nen/phong_ngu_dem.png",
+          "description": "Phòng ngủ hiện có."
+        },
+        {
+          "id": "lop_hoc_chieu",
+          "name": "Lớp học buổi chiều",
+          "path": "assets/Nen/lop_hoc_chieu.png",
+          "description": "Lớp học hiện có."
+        },
+        {
+          "id": "lop_hoc_anh_sang_mem",
+          "name": "Lớp học ánh sáng mềm",
+          "path": "assets/Nen/lop_hoc_anh_sang_mem.png",
+          "description": "Lớp học hiện có."
+        },
+        {
+          "id": "hanhlangtruong",
+          "name": "Hành lang trường học",
+          "path": "assets/Nen/hanhlangtruong.png",
+          "description": "Hành lang trường hiện có."
+        },
+        {
+          "id": "hanh_lang_toi",
+          "name": "Hành lang tối",
+          "path": "assets/Nen/hanh_lang_toi.png",
+          "description": "Hành lang tối hiện có."
+        },
+        {
+          "id": "cong_vien_truong",
+          "name": "Công viên trường",
+          "path": "assets/Nen/cong_vien_truong.png",
+          "description": "Công viên hiện có."
+        },
+        {
+          "id": "cong_truong_anime",
+          "name": "Cổng trường anime",
+          "path": "assets/Nen/cong_truong_anime.png",
+          "description": "Cổng trường hiện có."
+        },
+        {
+          "id": "con_duong_dem",
+          "name": "Con đường ban đêm",
+          "path": "assets/Nen/con_duong_dem.png",
+          "description": "Đường phố ban đêm hiện có."
+        },
+        {
+          "id": "bg_school",
+          "name": "Nền trường học",
+          "path": "assets/Nen/bg_school.png",
+          "description": "Nền trường học hiện có."
+        },
         {
           "id": "sanh_lon",
           "name": "Sảnh lớn / đại sảnh",
@@ -555,7 +639,7 @@
         {
           "id": "paper_tear",
           "name": "Xé giấy",
-          "path": "assets/AmThanh/HieuUng/xé_giấy.wav",
+          "path": "assets/AmThanh/HieuUng/xe_giay.wav",
           "description": "Xé giấy."
         },
         {
@@ -686,6 +770,12 @@
       "folder": "assets/AmThanh/Nen/",
       "items": [
         {
+          "id": "bgm_afternoon_leaves",
+          "name": "Nhạc nền chiều giữa tán lá",
+          "path": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
+          "description": "Nhạc nền hiện có."
+        },
+        {
           "id": "bgm_happy",
           "name": "Nhạc vui tươi",
           "path": "assets/AmThanh/Nen/vui_tuoi.mp3",
@@ -756,7 +846,7 @@
           "id": "sparkle",
           "name": "Lấp lánh",
           "path": "assets/HieuUng/sparkle.png",
-          "description": "Hiện có; hiệu ứng lấp lánh."
+          "description": "Đã có file lấp lánh."
         },
         {
           "id": "dust",
