@@ -1228,3 +1228,46 @@ Quy tắc đạo diễn:
 
 
 QUY TẮC CĂN CHÂN NHÂN VẬT (BẮT BUỘC): Với nhân vật đứng/chạm sàn, mặc định tọa độ y của đường chân là 102% chiều cao sân khấu (bottom: -2%) (chừa khoảng 2% ở đáy, không để khoảng trống lớn). Runtime có thể dùng mốc 100% làm chuẩn và chỉ chừa tối đa 2% an toàn. Không tự đặt y=75–85% cho nhân vật đứng chỉ vì muốn căn giữa khung. Chỉ thay đổi y khi câu chuyện yêu cầu vị trí khác (ngồi, nằm, bay, nhảy, trên xe, địa hình cao/thấp...). Khi đổi khung ngang/dọc phải giữ đường chân gần đáy, không co nhỏ nhân vật để bù vị trí.
+
+==================================================
+XXVIII. TÍCH HỢP TRUNG TÂM QUẢN LÝ TÀI NGUYÊN – ÁP DỤNG CHO MỌI TRUYỆN MỚI
+==================================================
+
+MỤC TIÊU:
+Mọi kịch bản mới phải có thể được hệ thống Asset Inventory tổng hợp tự động cùng tất cả kịch bản khác. Không tạo danh sách tài nguyên thủ công chỉ dùng một lần cho một truyện.
+
+1. NGUYÊN TẮC ĐỊNH DANH VÀ TÁI SỬ DỤNG
+- Nhân vật luôn tham chiếu bằng character_id đã có trong hồ sơ thế giới; không tạo ID mới nếu nhân vật đã tồn tại.
+- Không tự đổi character_id hoặc assetFolder. Nếu thế giới chưa có nhân vật, chỉ tạo nhân vật mới khi nội dung thực sự cần và phải đăng ký vào TheGioi.json.
+- Không nhân bản một nhân vật chỉ vì nhân vật xuất hiện trong nhiều truyện. Asset Inventory sẽ gộp theo character_id.
+- Tài nguyên dùng chung giữa các truyện phải giữ nguyên đường dẫn file để hệ thống nhận ra và thống kê dùng chung.
+- Không coi việc có một WEBM bất kỳ là đã đủ animation. Kịch bản phải khai báo đúng communication, emotion, pose, action, direction, face_angle, view_angle và interaction_target theo nội dung cần thể hiện; báo cáo sẽ đối chiếu với WEBM và metadata hiện có.
+
+2. KHAI BÁO BỐI CẢNH
+- Mỗi dòng kịch bản phải dùng trường anh_nen theo đúng hợp đồng hiện tại của player.
+- Ưu tiên chọn bối cảnh đã có trong assets/Nen. Không tự bịa tên file và không đổi tên file hiện có.
+- Nếu câu chuyện cần bối cảnh chưa có, vẫn phải ghi rõ yêu cầu trong phần mô tả tài nguyên của kịch bản hoặc báo cáo tài nguyên đi kèm; không giả vờ rằng một bối cảnh khác là tương đương.
+- Nếu dùng tên file nền, Asset Inventory sẽ đối chiếu trong assets/Nen/. Bối cảnh chưa có file phải được đánh dấu thiếu, không được đánh dấu đã hoàn thành.
+
+3. KHAI BÁO ĐẠO CỤ VÀ PHƯƠNG TIỆN
+- Mọi đạo cụ/phương tiện có vai trò nhìn thấy được trong cảnh phải được khai báo trong mảng scene_objects của đúng dòng/cảnh theo hợp đồng player hiện hành.
+- Mỗi phần tử phải có id ổn định trong phạm vi cảnh và một trong các trường asset, path hoặc file chứa đường dẫn đầy đủ bắt đầu bằng assets/DaoCu/ hoặc assets/PhuongTien/.
+- Đường dẫn phải là đường dẫn tài nguyên dự kiến cụ thể, không dùng tên mô tả chung như "điện thoại" hoặc "xe".
+- Nếu file chưa tồn tại, vẫn khai báo đường dẫn dự kiến để Asset Inventory phát hiện mục thiếu. Không thay bằng một asset khác không đúng nội dung.
+- Không tạo scene_objects cho vật thể không xuất hiện hoặc không có tác dụng trong hình ảnh. Không cần liệt kê đồ nội thất đã được tích hợp sẵn trong ảnh nền.
+- Dùng cùng một đường dẫn cho cùng một tài nguyên giữa nhiều dòng/truyện để tránh tạo bản sao.
+
+4. KHAI BÁO ÂM THANH VÀ HIỆU ỨNG
+- Âm thanh phải được đặt trong các trường âm thanh hiện hành của JSON; khi đã có file, dùng đường dẫn assets/AmThanh/... đúng thư mục.
+- Hiệu ứng hình ảnh dùng trường anh_hieu_ung hoặc cấu trúc hieu_ung mà player hỗ trợ; không tự tạo đường dẫn giả.
+- Nếu cần âm thanh/hiệu ứng mới nhưng chưa có file, ghi rõ tài nguyên cần bổ sung trong mô tả yêu cầu, không dùng file khác chỉ vì có sẵn.
+
+5. KIỂM TRA TRƯỚC KHI PUSH
+- Đọc cây thư mục GitHub mới nhất và hồ sơ thế giới trước khi tạo JSON.
+- Tổng hợp nhân vật, bối cảnh, đạo cụ, phương tiện, âm thanh, hiệu ứng và các tổ hợp animation được yêu cầu.
+- Phân biệt ba trạng thái: ĐÃ CÓ FILE; THIẾU FILE; CÓ FILE NHƯNG THIẾU/SOẠN CHƯA ĐỦ METADATA HOẶC BIẾN THỂ ANIMATION.
+- Không tự kết luận clip có thể đáp ứng hành động chỉ từ tên file. Cần metadata WEBM phù hợp hoặc đánh dấu cần kiểm tra thủ công.
+- Sau khi push, Asset Inventory tại asset_inventory.html phải có thể quét và nhận ra truyện mới. Không sửa thủ công một danh sách tổng hợp tĩnh.
+- Không để việc thiếu asset chặn tạo JSON hoặc chặn preview nếu player có fallback; phải báo thiếu rõ ràng để người dùng bổ sung sau.
+
+==================================================
