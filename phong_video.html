@@ -334,6 +334,7 @@ const backgrounds=[
 ];
 let bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
 let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null,speechMotionSmooth=0,speechMotionFrameAt=0;
+let cancelPendingPlaybackAudio=null;
 const speechAudioSources=new WeakMap();
 let piperVoices=[];
 let previewAudio={bgm:null,tts:null,sfx:null};
@@ -1072,7 +1073,9 @@ function stopPreview(){
  // speechSynthesis.cancel() không bảo đảm phát sinh callback trên mọi trình duyệt;
  // nếu không resolve Promise, vòng playPreview sẽ treo và lần chạy sau bị đơ.
  stopBrowserSpeech();
- Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
+ // Giải phóng Promise đang chờ audio.onended khi tua hoặc dừng giữa câu.
+ if(cancelPendingPlaybackAudio){const cancel=cancelPendingPlaybackAudio;cancelPendingPlaybackAudio=null;cancel();}
+ Object.values(previewAudio).forEach(a=>{if(a){a.pause();try{a.currentTime=0}catch(_){}}});
  if(charVideo)charVideo.pause();
  charLayerVideos.forEach(x=>x.media?.pause?.());
  sceneEffectLayers.forEach(x=>x.media?.pause());
@@ -1081,6 +1084,8 @@ function stopPreview(){
 }
 async function stopAndResetPreview(){
  stopPreview();
+ // Nếu đang ghi trực tiếp, đóng recorder trước khi nạp lại cảnh đầu.
+ if(directRecording||directRecorder)await stopDirectRecorder();
  if(!scenes.length)return;
  saveCurrentLine();saveCurrentScene();
  activeSceneIndex=0;activeLineIndex=0;
@@ -1317,8 +1322,15 @@ async function playPreview(){
    if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
    else if(line.wavBlob){
     const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;speechAudioElement=audio;attachSpeechAnalyser(audio);
-    await new Promise(resolve=>{audio.onended=resolve;audio.onerror=resolve;audio.play().catch(resolve)});
-    URL.revokeObjectURL(url);previewAudio.tts=null;
+    await new Promise(resolve=>{
+     let settled=false;
+     const finish=()=>{if(settled)return;settled=true;audio.removeEventListener('ended',finish);audio.removeEventListener('error',finish);audio.removeEventListener('abort',finish);if(cancelPendingPlaybackAudio===cancel)cancelPendingPlaybackAudio=null;resolve()};
+     const cancel=()=>finish();
+     cancelPendingPlaybackAudio=cancel;
+     audio.addEventListener('ended',finish,{once:true});audio.addEventListener('error',finish,{once:true});audio.addEventListener('abort',finish,{once:true});
+     audio.play().catch(finish);
+    });
+    URL.revokeObjectURL(url);if(previewAudio.tts===audio)previewAudio.tts=null;
    }else if(text){setTtsStatus('Thiếu WAV của câu thoại: '+(line.speaker||item.sourceIndex+1));}
   }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;}
   const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0)),motionDuration=Math.max(0,...(line.sourceFrame?.nhan_vat_hien_thi||[]).map(ch=>Number(ch.motion?.duration_seconds)||0)),requestedDuration=Math.max(0,Math.min(30,Number(line.sourceFrame?.thoi_luong)||0),motionDuration),lineElapsed=(performance.now()-previewStartedAt)/1000-lineMotionStartElapsed,hold=Math.max(pause,requestedDuration-lineElapsed);
