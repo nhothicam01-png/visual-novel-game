@@ -435,7 +435,7 @@ function renderAnimationAssetReport(){
  const isRegistered=(field,value)=>{const list=registry.fields?.[field]||registry[field]||[];const wanted=canonicalAnimationValue(field,value);return list.some(v=>canonicalAnimationValue(field,v)===wanted)};
  scenes.forEach((scene,sceneIndex)=>(scene.lines||[]).forEach((line,lineIndex)=>{
   const frame=line.sourceFrame||{},raw=Array.isArray(line.visibleCharacters)?line.visibleCharacters:Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
-  const specs=raw.filter(x=>x&&typeof x==='object'&&x.id!=null),display=specs.length?specs:((frame.nhan_vat||line.speakerId)?[{id:String(frame.nhan_vat||line.speakerId),expression_id:frame.expression_id||line.expressionId||{}}]:[]);
+  const specs=raw.filter(x=>x&&typeof x==='object'&&x.id!=null&&x.visible!==false&&x.remove_from_scene!==true),display=specs.length?specs:((frame.nhan_vat||line.speakerId)?[{id:String(frame.nhan_vat||line.speakerId),expression_id:frame.expression_id||line.expressionId||{}}]:[]);
   display.forEach(spec=>{
    const id=String(spec.id),folder=characterAssetFolder(id),base=normalizeSemantic(spec.expression_id||(id===String(frame.nhan_vat||line.speakerId||'')?frame.expression_id||line.expressionId:semanticFromExpression(folder,spec.bieu_cam)));
    const semantic={...base,communication:String(line.text||frame.noi_dung||'').trim()&&id===String(frame.nhan_vat||line.speakerId||'')?'speaking':'silent'};
@@ -700,6 +700,18 @@ function makeFallbackObjectCanvas(obj){
  else{g.beginPath();g.moveTo(320,35);g.lineTo(420,145);g.lineTo(320,265);g.lineTo(220,145);g.closePath();g.fill();g.stroke()}
  g.fillStyle='#fff';g.font='bold 27px sans-serif';g.textAlign='center';g.fillText(label,320,292);return c;
 }
+function applyAutomaticCharacterLayout(layers,frame,width,height){
+ const visible=layers.filter(item=>item?.media&&item.spec?.visible!==false&&item.spec?.remove_from_scene!==true);
+ if(visible.length<2)return;
+ const config=frame?.bo_cuc_nhan_vat&&typeof frame.bo_cuc_nhan_vat==='object'?frame.bo_cuc_nhan_vat:{};
+ if(String(config.mode||'auto').toLowerCase()!=='auto')return;
+ const margin=Math.max(2,Math.min(18,Number(config.margin??6))),gap=Math.max(1,Math.min(14,Number(config.gap??5)));
+ const available=100-margin*2-gap*(visible.length-1);
+ const widths=visible.map(item=>{const media=item.media,sw=media.videoWidth||media.naturalWidth||media.width||1,sh=media.videoHeight||media.naturalHeight||media.height||1,scale=Math.max(.1,Math.min(2.5,Number(item.spec?.scale??.72)));return Math.max(7,(sw/sh)*(height/width)*scale*100)});
+ const total=widths.reduce((a,b)=>a+b,0),shrink=total>available?Math.max(.38,available/total):1;
+ let cursor=margin;
+ visible.forEach((item,index)=>{const original=Number(item.spec?.scale??.72),factor=shrink;item.spec={...item.spec,scale:Math.max(.38,Math.min(2.5,original*factor)),x:cursor+widths[index]*factor/2,layout_auto:true};cursor+=widths[index]*factor+gap});
+}
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
  const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
@@ -751,6 +763,7 @@ async function updateAssets(){
   sceneObjectLayers.forEach(old=>{if(old.media&&!nextObjects.some(item=>item.media===old.media)&&old.media.pause)old.media.pause()});
   bgVideo=isVideoBackground(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   charLayerVideos=nextLayers.filter(item=>item.media);
+  applyAutomaticCharacterLayout(charLayerVideos,frame,canvas.width,canvas.height);
   sceneObjectLayers=nextObjects.filter(item=>item.media);
   currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched||item.mirrored).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.mirrored?'Dùng WEBM ngược hướng và đã lật ngang tự động':(item.animationReason||'không có clip khớp'),mirrored:!!item.mirrored}));
   updateStoryAnimationWarning();
@@ -2239,7 +2252,7 @@ function buildEditedStoryOutput(){
   if(Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))frame.anh_hieu_ung=sceneEffects[0]?.path.split('/').pop().replace(/\.[^.]+$/,'')||'';
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
-  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
+  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
   else delete frame.nhan_vat_hien_thi;
   frame.noi_dung=String(line.text??'');
   const expression=String(line.expression||'').trim();if(expression&&!frame.expression_id)frame.expression_id=semanticFromExpression(characterAssetFolder(characterId),expression);delete frame.bieu_cam;
@@ -2356,7 +2369,7 @@ function saveCurrentLine(){
 function saveCurrentScene(){const sc=getCurrentScene();if(sc){const effects=normalizeSceneEffects(sc.visual?.sceneEffects||[]);sc.visual={...captureVisual(),sceneEffects:effects};sc.isFlashback=!!$('scene-flashback')?.checked;sc.lines.forEach(line=>{line.isFlashback=sc.isFlashback;if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.hieu_ung_canh=effects.map(x=>({...x}))})}const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
  if(!line)return;
- if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>{const folder=characterAssetFolder(item.id),expression=resolveSemanticExpression(folder,item.expression_id);return {id:String(item.id),expression_id:item.expression_id||{},bieu_cam:expression,x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
+ if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>{const folder=characterAssetFolder(item.id),expression=resolveSemanticExpression(folder,item.expression_id);return {id:String(item.id),expression_id:item.expression_id||{},bieu_cam:expression,x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
  const list=activeCharacterList(),ch=list.find(item=>item.id===String(line.speakerId||line.sourceFrame?.nhan_vat||''))||list.find(item=>normalizeCharacterName(item.name)===normalizeCharacterName(line.speaker));
  if(ch){$('character').value=ch.id;$('speaker').value=ch.id;line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.id}
  const preferred=resolveSemanticExpression(characterAssetFolder($('character').value),line.sourceFrame?.expression_id)||line.expression||'';
@@ -2431,7 +2444,7 @@ function renderVisibleCharacters(line=getCurrentLine()){
  $('visible-character-count').textContent=items.length+' nhân vật';
  host.innerHTML=items.map((item,index)=>{
   const ch=list.find(value=>String(value.id)===String(item.id)),folder=ch?.folder||'';
-  return '<div class="visible-character-item" data-visible-index="'+index+'"><div class="visible-character-head wide"><span>'+safeText(ch?.name||('Nhân vật '+item.id))+'</span><button class="btn danger" type="button" data-visible-remove="'+index+'">Xóa</button></div><label class="field wide">Nhân vật<select data-visible-field="id">'+visibleCharacterOptions(item.id)+'</select></label><label class="field wide">Biểu cảm<select data-visible-field="bieu_cam">'+expressionsForCharacter(item.id,item.bieu_cam)+'</select></label><details class="webm-picker wide"><summary>☑ Tìm và chọn WebM phù hợp ('+(expressionFilesByFolder[String(folder)]||[]).length+')</summary><input class="webm-search" type="search" data-webm-search placeholder="Tìm tên file, tư thế, cảm xúc, hành động…"><div class="webm-filter-grid">'+WEBM_FILTERS.map(([field,label])=>webmFilterSelect(folder,field,label)).join('')+'</div><div class="webm-results" data-webm-results></div><div class="note">Mỗi nhân vật chọn một WebM cho lượt thoại này. Tích checkbox để áp dụng ngay vào xem trước.</div></details><label class="field wide">Vị trí ngang X · <strong data-visible-value="x">'+Number(item.x??(index?70:30))+'%</strong><input data-visible-field="x" type="range" min="0" max="100" step="1" value="'+Number(item.x??(index?70:30))+'" style="width:100%"></label><label class="field wide">Vị trí chân Y · <strong data-visible-value="y">'+Number(item.y??100)+'%</strong><input data-visible-field="y" type="range" min="0" max="110" step="1" value="'+Number(item.y??100)+'" style="width:100%"></label><label class="field">Kích thước<input data-visible-field="scale" type="number" min="0.1" max="2.5" step="0.05" value="'+Number(item.scale??.72)+'"></label></div>';
+  return '<div class="visible-character-item" data-visible-index="'+index+'"><div class="visible-character-head wide"><span>'+safeText(ch?.name||('Nhân vật '+item.id))+'</span><button class="btn danger" type="button" data-visible-remove="'+index+'">Xóa</button></div><label class="check wide"><input data-visible-field="visible" type="checkbox" '+(item.visible!==false?'checked':'')+'> Hiển thị nhân vật trong khung hình</label><label class="field wide">Nhân vật<select data-visible-field="id">'+visibleCharacterOptions(item.id)+'</select></label><label class="field wide">Biểu cảm<select data-visible-field="bieu_cam">'+expressionsForCharacter(item.id,item.bieu_cam)+'</select></label><details class="webm-picker wide"><summary>☑ Tìm và chọn WebM phù hợp ('+(expressionFilesByFolder[String(folder)]||[]).length+')</summary><input class="webm-search" type="search" data-webm-search placeholder="Tìm tên file, tư thế, cảm xúc, hành động…"><div class="webm-filter-grid">'+WEBM_FILTERS.map(([field,label])=>webmFilterSelect(folder,field,label)).join('')+'</div><div class="webm-results" data-webm-results></div><div class="note">Mỗi nhân vật chọn một WebM cho lượt thoại này. Tích checkbox để áp dụng ngay vào xem trước.</div></details><label class="field wide">Vị trí ngang X · <strong data-visible-value="x">'+Number(item.x??(index?70:30))+'%</strong><input data-visible-field="x" type="range" min="0" max="100" step="1" value="'+Number(item.x??(index?70:30))+'" style="width:100%"></label><label class="field wide">Vị trí chân Y · <strong data-visible-value="y">'+Number(item.y??100)+'%</strong><input data-visible-field="y" type="range" min="0" max="110" step="1" value="'+Number(item.y??100)+'" style="width:100%"></label><label class="field">Kích thước<input data-visible-field="scale" type="number" min="0.1" max="2.5" step="0.05" value="'+Number(item.scale??.72)+'"></label></div>';
  }).join('');
  host.querySelectorAll('[data-visible-index]').forEach(card=>renderWebmPickerResults(card,Number(card.dataset.visibleIndex),items[Number(card.dataset.visibleIndex)]));
 }
@@ -2439,7 +2452,7 @@ function readVisibleCharactersFromEditor(){
  const previous=Array.isArray(getCurrentLine()?.visibleCharacters)?getCurrentLine().visibleCharacters:[];
  return Array.from($('visible-character-list')?.querySelectorAll('[data-visible-index]')||[]).map((card,index)=>{
   const get=name=>card.querySelector('[data-visible-field="'+name+'"]')?.value,id=String(get('id')||''),bieu_cam=String(get('bieu_cam')||''),old=previous.find(x=>String(x.id)===id),same=old&&normalizeExpression(old.bieu_cam)===normalizeExpression(bieu_cam),expression_id=same?old.expression_id:semanticFromExpression(characterAssetFolder(id),bieu_cam);
-  return {id,bieu_cam,expression_id:expression_id||{},x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:index+1,motion:old?.motion};
+  return {id,bieu_cam,expression_id:expression_id||{},x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:Number(old?.z_index??index+1),visible:card.querySelector('[data-visible-field="visible"]')?.checked!==false,remove_from_scene:old?.remove_from_scene===true,rotation_degrees:Number(old?.rotation_degrees||0),motion:old?.motion};
  }).filter(item=>item.id);
 }
 $('visible-character-add').addEventListener('click',()=>{
