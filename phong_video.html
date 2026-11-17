@@ -2444,10 +2444,12 @@ function renderVisibleCharacters(line=getCurrentLine()){
  const list=activeCharacterList(),items=Array.isArray(line?.visibleCharacters)?line.visibleCharacters:[];
  add.innerHTML='<option value="">-- Chọn nhân vật --</option>'+list.filter(ch=>!items.some(item=>String(item.id)===String(ch.id))).map(ch=>'<option value="'+safeText(ch.id)+'">'+safeText(ch.name)+'</option>').join('');
  $('visible-character-count').textContent=items.length+' nhân vật';
- host.innerHTML=items.map((item,index)=>{
+ const layoutMode=String(line?.sourceFrame?.bo_cuc_nhan_vat?.mode||'auto');
+ host.innerHTML='<label class="field wide">Bố cục khung hình<select data-character-layout-mode><option value="auto" '+(layoutMode==='auto'?'selected':'')+'>Tự động · tránh chồng lấn</option><option value="manual" '+(layoutMode==='manual'?'selected':'')+'>Thủ công · giữ vị trí X/Y</option></select></label>'+items.map((item,index)=>{
   const ch=list.find(value=>String(value.id)===String(item.id)),folder=ch?.folder||'';
   return '<div class="visible-character-item" data-visible-index="'+index+'"><div class="visible-character-head wide"><span>'+safeText(ch?.name||('Nhân vật '+item.id))+'</span><button class="btn danger" type="button" data-visible-remove="'+index+'">Xóa</button></div><label class="check wide"><input data-visible-field="visible" type="checkbox" '+(item.visible!==false?'checked':'')+'> Hiển thị nhân vật trong khung hình</label><label class="field wide">Nhân vật<select data-visible-field="id">'+visibleCharacterOptions(item.id)+'</select></label><label class="field wide">Biểu cảm<select data-visible-field="bieu_cam">'+expressionsForCharacter(item.id,item.bieu_cam)+'</select></label><details class="webm-picker wide"><summary>☑ Tìm và chọn WebM phù hợp ('+(expressionFilesByFolder[String(folder)]||[]).length+')</summary><input class="webm-search" type="search" data-webm-search placeholder="Tìm tên file, tư thế, cảm xúc, hành động…"><div class="webm-filter-grid">'+WEBM_FILTERS.map(([field,label])=>webmFilterSelect(folder,field,label)).join('')+'</div><div class="webm-results" data-webm-results></div><div class="note">Mỗi nhân vật chọn một WebM cho lượt thoại này. Tích checkbox để áp dụng ngay vào xem trước.</div></details><label class="field wide">Vị trí ngang X · <strong data-visible-value="x">'+Number(item.x??(index?70:30))+'%</strong><input data-visible-field="x" type="range" min="0" max="100" step="1" value="'+Number(item.x??(index?70:30))+'" style="width:100%"></label><label class="field wide">Vị trí chân Y · <strong data-visible-value="y">'+Number(item.y??100)+'%</strong><input data-visible-field="y" type="range" min="0" max="110" step="1" value="'+Number(item.y??100)+'" style="width:100%"></label><label class="field">Kích thước<input data-visible-field="scale" type="number" min="0.1" max="2.5" step="0.05" value="'+Number(item.scale??.72)+'"></label></div>';
  }).join('');
+ host.querySelector('[data-character-layout-mode]')?.addEventListener('change',e=>{const current=getCurrentLine();if(!current)return;const frame=current.sourceFrame||(current.sourceFrame={}),prior=frame.bo_cuc_nhan_vat||{};frame.bo_cuc_nhan_vat={...prior,mode:e.target.value,gap:Number(prior.gap??5),margin:Number(prior.margin??6)};updateAssets()});
  host.querySelectorAll('[data-visible-index]').forEach(card=>renderWebmPickerResults(card,Number(card.dataset.visibleIndex),items[Number(card.dataset.visibleIndex)]));
 }
 function readVisibleCharactersFromEditor(){
@@ -2477,6 +2479,7 @@ $('visible-character-list').addEventListener('input',e=>{
  const index=Number(card.dataset.visibleIndex);
  if(!Array.isArray(line.visibleCharacters)||!line.visibleCharacters[index])return;
  const value=Number(e.target.value);
+ if(line.sourceFrame){const prior=line.sourceFrame.bo_cuc_nhan_vat||{};line.sourceFrame.bo_cuc_nhan_vat={...prior,mode:'manual'};const modeSelect=$('visible-character-list')?.querySelector('[data-character-layout-mode]');if(modeSelect)modeSelect.value='manual'}
  line.visibleCharacters[index][field]=value;
  const label=card.querySelector('[data-visible-value="'+field+'"]');if(label)label.textContent=value+'%';
  updateAssets();
@@ -2500,6 +2503,7 @@ $('visible-character-list').addEventListener('change',e=>{
   const old=line.visibleCharacters[index],semantic=old.expression_id||semanticFromExpression(characterAssetFolder(old.id),old.bieu_cam),file=resolveSemanticExpression(ch.folder,semantic);line.visibleCharacters[index]={...old,id:ch.id,expression_id:semantic,bieu_cam:file,z_index:index+1};
   renderVisibleCharacters(line);
  }else{
+  if(['x','y','scale'].includes(field)&&line.sourceFrame){const prior=line.sourceFrame.bo_cuc_nhan_vat||{};line.sourceFrame.bo_cuc_nhan_vat={...prior,mode:'manual'};const modeSelect=$('visible-character-list')?.querySelector('[data-character-layout-mode]');if(modeSelect)modeSelect.value='manual'}
   line.visibleCharacters[index][field]=['x','y','scale'].includes(field)?Number(e.target.value):e.target.value;
   line.visibleCharacters=readVisibleCharactersFromEditor();
   renderWebmPickerResults(card,index,line.visibleCharacters[index]);
