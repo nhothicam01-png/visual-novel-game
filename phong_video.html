@@ -1085,7 +1085,7 @@ async function waitWhilePaused(run){
 }
 function stopPreview(options={}){
  // Dừng/tua/đổi truyện phải vô hiệu hóa mọi lượt chuẩn bị cũ.
- if(!options.preservePreparation){previewStartToken++;previewPreparing=false;}
+ if(!options.preservePreparation){previewStartToken++;previewPreparing=false;directRecordRequested=false;}
  previewRunId++;previewing=false;previewPaused=false;previewPauseStartedAt=0;previewLineBgmName='';previewLineSfxName='';speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;speechMotionSmooth=0;speechMotionFrameAt=0;
  // Hủy TTS đồng thời giải phóng Promise đang chờ onend/onerror.
  // speechSynthesis.cancel() không bảo đảm phát sinh callback trên mọi trình duyệt;
