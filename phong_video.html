@@ -549,7 +549,7 @@ async function updateAssets(){
    const folder=characterAssetFolder(spec.id),semantic=semanticForVisibleCharacter(spec,frame,currentLine);
    const selection=resolveSemanticAnimation(folder,semantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
    let media=null;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được lớp nhân vật '+spec.id+' ('+folder+'/'+expression+'):',error)}
-   return {spec:{...spec,expression_id:semantic,animationMatched:selection.matched},folder,media,index,animationMatched:selection.matched,animationReason:selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose].filter(Boolean).join(' / ')};
+   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched},folder,media,index,animationMatched:selection.matched,animationReason:selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
   });
   const [nextBg,nextChar,nextLayers,nextSceneEffects]=await Promise.all([
    bgPath?(/\.mp4$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
@@ -687,7 +687,7 @@ function drawFrame(elapsed,st){
   if(charFx.includes('char-enter'))ctx.translate(0,(1-Math.min(1,elapsed/1.1))*h*.22);
   if(charFx.includes('char-fade'))alpha=Math.min(1,elapsed/1.4);
   ctx.globalAlpha=alpha;
-  if(sw&&sh)ctx.drawImage(media,x-dw/2,y-dh,dw,dh);
+  if(sw&&sh){if(spec?.flipX){ctx.save();ctx.translate(x,0);ctx.scale(-1,1);ctx.translate(-x,0);ctx.drawImage(media,x-dw/2,y-dh,dw,dh);ctx.restore()}else ctx.drawImage(media,x-dw/2,y-dh,dw,dh);}
   ctx.restore();
  };
  if(charLayerVideos.length){
@@ -1780,22 +1780,33 @@ function canonicalAnimationValue(field,value){
  const maps={
   communication:{'dang noi':'speaking','noi':'speaking','speaking':'speaking','talking':'speaking','voice':'speaking','im lang':'silent','khong noi':'silent','silent':'silent','not speaking':'silent','quiet':'silent'},
   pose:{'dung':'standing','dung thang':'standing','standing':'standing','ngoi':'sitting','sitting':'sitting','nam':'lying','lying':'lying','cuoi':'crouching','crouching':'crouching'},
-  action:{'dung yen':'idle','dung im':'idle','idle':'idle','standing still':'idle','di bo':'walking','di lai':'walking','walking':'walking','walk':'walking','chay':'running','running':'running','ngoi xuong':'sitting down','sitting down':'sitting down','nam xuong':'lying down','lying down':'lying down'}
+  action:{'dung yen':'idle','dung im':'idle','idle':'idle','standing still':'idle','di bo':'walking','di lai':'walking','walking':'walking','walk':'walking','chay':'running','running':'running','ngoi xuong':'sitting down','sitting down':'sitting down','nam xuong':'lying down','lying down':'lying down'},
+  direction:{'trai':'left','sang trai':'left','huong trai':'left','left':'left','leftward':'left','phai':'right','sang phai':'right','huong phai':'right','right':'right','rightward':'right','chinh dien':'front','front':'front','nhin thang':'front','sau':'back','back':'back'}
  };
  return maps[field]?.[raw]||raw;
 }
+function oppositeHorizontalDirection(value){
+ const d=canonicalAnimationValue('direction',value);
+ if(d==='left')return 'right';if(d==='right')return 'left';return '';
+}
 function resolveSemanticAnimation(folder,semantic){
- const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return {file:'',matched:false,reason:'Thư mục chưa có WEBM'};
- const target=normalizeSemantic(semantic),critical=['communication','pose','action','emotion'].filter(k=>target[k]),fields=['communication','pose','action','emotion','direction','face_angle','view_angle','interaction_target'];
+ const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return {file:'',matched:false,mirrored:false,reason:'Thư mục chưa có WEBM'};
+ const target=normalizeSemantic(semantic),strict=['communication','pose','action','emotion','face_angle','view_angle','interaction_target'].filter(k=>target[k]);
  const candidates=paths.map(path=>{
-  const meta=animationMeta(path),missing=[],mismatch=[];let score=0;
-  critical.forEach(k=>{const wanted=canonicalAnimationValue(k,target[k]),actual=canonicalAnimationValue(k,meta[k]);if(!meta[k])missing.push(k);else if(actual!==wanted)mismatch.push(k);else score+=100});
-  fields.filter(k=>!critical.includes(k)).forEach(k=>{if(target[k]){const a=canonicalAnimationValue(k,target[k]),b=canonicalAnimationValue(k,meta[k]);if(b&&a===b)score+=12;else if(b&&(b.includes(a)||a.includes(b)))score+=5}});
-  return {path,score,matched:!missing.length&&!mismatch.length,missing,mismatch};
- }).sort((a,b)=>Number(b.matched)-Number(a.matched)||b.score-a.score);
- const chosen=candidates[0],file=chosen.path.split('/').pop().replace(/\.webm$/i,'');
+  const meta=animationMeta(path),missing=[],mismatch=[];let score=0,mirrored=false;
+  strict.forEach(k=>{const wanted=canonicalAnimationValue(k,target[k]),actual=canonicalAnimationValue(k,meta[k]);if(!actual)missing.push(k);else if(actual!==wanted)mismatch.push(k);else score+=100});
+  if(target.direction){const wanted=canonicalAnimationValue('direction',target.direction),actual=canonicalAnimationValue('direction',meta.direction);
+   if(!actual)missing.push('direction');else if(actual===wanted)score+=100;
+   else if(oppositeHorizontalDirection(wanted)===actual&&meta.mirror_safe!==false&&String(meta.mirror_safe).toLowerCase()!=='false'){mirrored=true;score+=85}
+   else mismatch.push('direction');
+  }
+  return {path,score,matched:!missing.length&&!mismatch.length,missing,mismatch,mirrored};
+ }).sort((x,y)=>Number(y.matched)-Number(x.matched)||y.score-x.score||x.path.localeCompare(y.path));
+ const best=candidates[0],pool=candidates.filter(x=>x.matched&&x.score===best.score);
+ const seed=Math.max(0,Number(activeLineIndex)||0),chosen=pool.length?pool[seed%pool.length]:best;
+ const file=chosen.path.split('/').pop().replace(/\.webm$/i,'');
  const reason=chosen.mismatch.length?'không khớp '+chosen.mismatch.join(', '):chosen.missing.length?'thiếu metadata '+chosen.missing.join(', '):'';
- return {file,matched:chosen.matched,reason};
+ return {file,matched:chosen.matched,mirrored:!!chosen.mirrored,reason,variantCount:pool.length||1};
 }
 function resolveSemanticExpression(folder,semantic){const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return '';const target=normalizeSemantic(semantic),norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[_-]+/g,' ').trim(),fields=['communication','emotion','pose','direction','face_angle','view_angle','action','interaction_target'];let scored=paths.map(path=>{const meta=animationMeta(path),name=path.split('/').pop().replace(/\.webm$/i,'').toLowerCase().replace(/[_-]+/g,' ');let score=0,comm=norm(meta.communication);if(target.communication){if(comm&&comm.includes(norm(target.communication)))score+=100;else if(name.includes(norm(target.communication)))score+=35;else if(comm)score-=80}fields.slice(1).forEach(k=>{if(target[k]){const a=norm(target[k]),b=norm(meta[k]);if(b&&b===a)score+=12;else if(b&&(b.includes(a)||a.includes(b)))score+=5;else if(name.includes(a))score+=2}});return {path,score}}).sort((a,b)=>b.score-a.score);return scored[0].path.split('/').pop().replace(/\.webm$/i,'')}
 function semanticFromExpression(folder,file){const path=(expressionFilesByFolder[String(folder||'')]||[]).find(p=>p.split('/').pop().replace(/\.webm$/i,'')===normalizeExpression(file));return path?animationMeta(path):{}}
