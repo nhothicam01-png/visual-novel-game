@@ -259,28 +259,28 @@
           "type": "image",
           "loop": true,
           "opacity": 0.72,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/la_cay_bay.png",
           "type": "image",
           "loop": true,
           "opacity": 0.82,
-          "z_index": 26
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/tia_nang.png",
           "type": "image",
           "loop": true,
           "opacity": 0.62,
-          "z_index": 27
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/sparkle.png",
           "type": "image",
           "loop": true,
           "opacity": 0.58,
-          "z_index": 28
+          "z_index": 100
         }
       ]
     },
@@ -348,28 +348,28 @@
           "type": "image",
           "loop": true,
           "opacity": 0.55,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/la_cay_bay.png",
           "type": "image",
           "loop": true,
           "opacity": 0.72,
-          "z_index": 26
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/tia_nang.png",
           "type": "image",
           "loop": true,
           "opacity": 0.62,
-          "z_index": 27
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/sparkle.png",
           "type": "image",
           "loop": true,
           "opacity": 0.7,
-          "z_index": 28
+          "z_index": 100
         }
       ]
     },
@@ -452,28 +452,28 @@
           "type": "image",
           "loop": true,
           "opacity": 0.86,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/set.png",
           "type": "image",
           "loop": true,
           "opacity": 0.95,
-          "z_index": 30
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/tia_dien.png",
           "type": "image",
           "loop": true,
           "opacity": 0.72,
-          "z_index": 31
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/khoi.png",
           "type": "image",
           "loop": true,
           "opacity": 0.62,
-          "z_index": 24
+          "z_index": -10
         }
       ]
     },
@@ -542,28 +542,28 @@
           "type": "image",
           "loop": true,
           "opacity": 0.78,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/set.png",
           "type": "image",
           "loop": true,
           "opacity": 1,
-          "z_index": 32
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/tia_dien.png",
           "type": "image",
           "loop": true,
           "opacity": 0.82,
-          "z_index": 33
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/khoi.png",
           "type": "image",
           "loop": true,
           "opacity": 0.5,
-          "z_index": 24
+          "z_index": -10
         }
       ]
     },
@@ -643,28 +643,28 @@
           "type": "image",
           "loop": true,
           "opacity": 0.82,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/set.png",
           "type": "image",
           "loop": true,
           "opacity": 0.95,
-          "z_index": 30
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/tia_dien.png",
           "type": "image",
           "loop": true,
           "opacity": 0.7,
-          "z_index": 31
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/khoi.png",
           "type": "image",
           "loop": true,
           "opacity": 0.55,
-          "z_index": 24
+          "z_index": -10
         }
       ]
     },
@@ -745,49 +745,49 @@
           "type": "image",
           "loop": true,
           "opacity": 0.72,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/vet_nut.png",
           "type": "image",
           "loop": true,
           "opacity": 0.9,
-          "z_index": 26
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/vu_no.png",
           "type": "image",
           "loop": true,
           "opacity": 0.82,
-          "z_index": 30
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/manh_vo.png",
           "type": "image",
           "loop": true,
           "opacity": 0.85,
-          "z_index": 31
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/va_cham.png",
           "type": "image",
           "loop": true,
           "opacity": 0.85,
-          "z_index": 32
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/nhoe_chuyen_dong.png",
           "type": "image",
           "loop": true,
           "opacity": 0.62,
-          "z_index": 29
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/khoi.png",
           "type": "image",
           "loop": true,
           "opacity": 0.55,
-          "z_index": 24
+          "z_index": -10
         }
       ]
     },
@@ -851,49 +851,49 @@
           "type": "image",
           "loop": true,
           "opacity": 0.5,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/vet_nut.png",
           "type": "image",
           "loop": true,
           "opacity": 0.82,
-          "z_index": 26
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/vu_no.png",
           "type": "image",
           "loop": true,
           "opacity": 0.7,
-          "z_index": 30
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/manh_vo.png",
           "type": "image",
           "loop": true,
           "opacity": 0.8,
-          "z_index": 31
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/va_cham.png",
           "type": "image",
           "loop": true,
           "opacity": 0.78,
-          "z_index": 32
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/nhoe_chuyen_dong.png",
           "type": "image",
           "loop": true,
           "opacity": 0.52,
-          "z_index": 29
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/khoi.png",
           "type": "image",
           "loop": true,
           "opacity": 0.55,
-          "z_index": 24
+          "z_index": -10
         }
       ]
     },
@@ -961,56 +961,56 @@
           "type": "image",
           "loop": true,
           "opacity": 0.45,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/vet_nut.png",
           "type": "image",
           "loop": true,
           "opacity": 0.82,
-          "z_index": 26
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/vu_no.png",
           "type": "image",
           "loop": true,
           "opacity": 0.62,
-          "z_index": 30
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/manh_vo.png",
           "type": "image",
           "loop": true,
           "opacity": 0.78,
-          "z_index": 31
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/va_cham.png",
           "type": "image",
           "loop": true,
           "opacity": 0.75,
-          "z_index": 32
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/vet_thuong.png",
           "type": "image",
           "loop": true,
           "opacity": 0.65,
-          "z_index": 34
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/nhoe_chuyen_dong.png",
           "type": "image",
           "loop": true,
           "opacity": 0.5,
-          "z_index": 29
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/khoi.png",
           "type": "image",
           "loop": true,
           "opacity": 0.5,
-          "z_index": 24
+          "z_index": -10
         }
       ]
     },
@@ -1092,21 +1092,21 @@
           "type": "image",
           "loop": true,
           "opacity": 0.9,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/hao_quang.png",
           "type": "image",
           "loop": true,
           "opacity": 0.72,
-          "z_index": 28
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/sparkle.png",
           "type": "image",
           "loop": true,
           "opacity": 0.65,
-          "z_index": 29
+          "z_index": 100
         }
       ]
     },
@@ -1175,21 +1175,21 @@
           "type": "image",
           "loop": true,
           "opacity": 0.86,
-          "z_index": 25
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/hao_quang.png",
           "type": "image",
           "loop": true,
           "opacity": 0.78,
-          "z_index": 28
+          "z_index": -10
         },
         {
           "file": "assets/HieuUng/sparkle.png",
           "type": "image",
           "loop": true,
           "opacity": 0.72,
-          "z_index": 29
+          "z_index": 100
         }
       ]
     },
@@ -1268,14 +1268,14 @@
           "type": "image",
           "loop": true,
           "opacity": 0.58,
-          "z_index": 35
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/tia_nang.png",
           "type": "image",
           "loop": true,
           "opacity": 0.5,
-          "z_index": 27
+          "z_index": -10
         }
       ]
     },
@@ -1341,14 +1341,14 @@
           "type": "image",
           "loop": true,
           "opacity": 0.45,
-          "z_index": 35
+          "z_index": 100
         },
         {
           "file": "assets/HieuUng/tia_nang.png",
           "type": "image",
           "loop": true,
           "opacity": 0.5,
-          "z_index": 27
+          "z_index": -10
         }
       ]
     }
