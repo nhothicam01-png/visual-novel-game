@@ -39,6 +39,41 @@
     {
       "path": "assets/AmThanh/Nen/afternoon_between_leaves.mp3",
       "state": "existing BGM placeholder"
+    },
+    {
+      "path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794543537080.webm",
+      "metadata_path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794543537080.webm.json",
+      "state": "standing / speaking / Trung tính / Toàn thân",
+      "duration_seconds": 5.983,
+      "fps": 60
+    },
+    {
+      "path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794544229428.webm",
+      "metadata_path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794544229428.webm.json",
+      "state": "standing / speaking / Tức giận / Toàn thân",
+      "duration_seconds": 5.983,
+      "fps": 60
+    },
+    {
+      "path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794544910520.webm",
+      "metadata_path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794544910520.webm.json",
+      "state": "standing / speaking / Vui / Bán thân",
+      "duration_seconds": 5.983,
+      "fps": 60
+    },
+    {
+      "path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794548563832.webm",
+      "metadata_path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794548563832.webm.json",
+      "state": "standing / speaking / Ngượng ngùng / Xấu hổ / Toàn thân",
+      "duration_seconds": 5.983,
+      "fps": 60
+    },
+    {
+      "path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794549025111.webm",
+      "metadata_path": "assets/NhanVat/Hầu gái/Hầu gái-60fps-1794549025111.webm.json",
+      "state": "standing / speaking / Buồn / Toàn thân",
+      "duration_seconds": 3.933,
+      "fps": 60
     }
   ],
   "missing_assets": [
@@ -131,6 +166,7 @@
   "notes": [
     "Không có ảnh nền fantasy riêng trong assets/Nen tại thời điểm quét.",
     "Ba folder nhân vật được liên kết tạm; ngoại hình cần được thay bằng artwork gốc khi có.",
-    "Các WEBM đã xác minh chỉ có trạng thái metadata nêu trên; không suy diễn thành chu kỳ đi bộ hoặc biểu cảm khác."
+    "Các WEBM đã xác minh chỉ có trạng thái metadata nêu trên; không suy diễn thành chu kỳ đi bộ hoặc biểu cảm khác.",
+    "Folder Hầu gái còn có 5 WEBM nói với metadata: trung tính, tức giận, vui, ngượng ngùng và buồn. Chúng không thay thế clip im lặng trung tính HauGai1.webm."
   ]
 }
