@@ -1,0 +1,750 @@
+{
+  "phien_ban": 3,
+  "world_id": "ViecNheLuongCao",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.5,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_pham_minh_anh": {
+      "character_id": "char_pham_minh_anh",
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profile_id": "voice_1794303742118",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Giọng bé",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
+      }
+    },
+    "char_tran_gia_han": {
+      "character_id": "char_tran_gia_han",
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profile_id": "voice_1794303742118",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Giọng bé",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
+      }
+    },
+    "char_le_quoc_bao": {
+      "character_id": "char_le_quoc_bao",
+      "ten_hien_thi": "Lê Quốc Bảo",
+      "giong_noi": {
+        "profile_id": "voice_1794267836392",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Bé trai",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
+        "gender": "male"
+      }
+    },
+    "char_do_thanh_dat": {
+      "character_id": "char_do_thanh_dat",
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profile_id": "voice_1794303817586",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Thanh niên",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
+        "gender": "male"
+      }
+    },
+    "char_co_lan": {
+      "character_id": "char_co_lan",
+      "ten_hien_thi": "Cô Lan",
+      "giong_noi": {
+        "profile_id": "voice_1794303792721",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Thiếu nữ",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
+      }
+    }
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Tháng này tiền trọ vừa tăng, học phí kỳ tới cũng đến hạn. Tôi đã gửi hồ sơ xin việc ở mấy cửa hàng quanh trường, nhưng lịch học dày quá, chỗ nào cũng bảo cần làm ca cố định.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "worried"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_tran_gia_han",
+      "noi_dung": "Minh Anh! Tớ tìm được việc rồi. Làm online tại nhà, ngày chỉ hai đến ba tiếng mà họ trả gần một triệu. Không cần kinh nghiệm luôn!",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "excited"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Có tên công ty, địa chỉ văn phòng hay hợp đồng không?",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "thinking"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Ảnh chụp màn hình thì ai cũng làm giả được. Cậu đừng vội gửi giấy tờ hay chuyển tiền nhé.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "concerned"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Sáng hôm sau, tôi thấy cùng một lời mời được dán ở bảng thông báo gần thư viện. Mức lương nổi bật đến mức người đi ngang cũng phải dừng lại.",
+      "anh_nen": "bg_school.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_do_thanh_dat",
+      "noi_dung": "Chào em, anh là Đạt, phụ trách tuyển cộng tác viên. Bên anh đang cần người làm nhiệm vụ đánh giá sản phẩm và xử lý đơn. Thu nhập từ sáu trăm nghìn đến hơn một triệu mỗi ngày.",
+      "anh_nen": "bg_school.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "friendly"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Công ty mình tên pháp lý là gì ạ? Em có thể xem mã số doanh nghiệp và mô tả công việc trước không?",
+      "anh_nen": "bg_school.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_do_thanh_dat",
+      "noi_dung": "Em hỏi kỹ quá thì sẽ bỏ lỡ đợt tuyển này đấy. Chỉ còn vài suất, anh đang ưu tiên sinh viên chăm chỉ thôi.",
+      "anh_nen": "bg_school.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "persuasive"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "nhan_vat": "char_tran_gia_han",
+      "noi_dung": "Tớ làm thử rồi! Họ chuyển cho tớ năm mươi nghìn thật. Chỉ cần bấm xác nhận mấy sản phẩm, nhanh lắm.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "excited"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "nhan_vat": "char_tran_gia_han",
+      "noi_dung": "Tớ rút được về tài khoản rồi. Sau đó quản lý bảo có nhiệm vụ ghép đơn, nạp trước ba trăm nghìn sẽ nhận lại cả vốn lẫn hoa hồng.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "hesitant"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Đó là dấu hiệu rất đáng ngờ. Công việc trả lương không nên bắt nhân viên nộp tiền để được nhận việc hoặc rút lương.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "serious"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "nhan_vat": "char_tran_gia_han",
+      "noi_dung": "Tớ lỡ chuyển ba trăm nghìn rồi. Ứng dụng báo hoàn thành, nhưng muốn rút thì phải ghép thêm đơn tám trăm nghìn.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "crying"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Gia Hân, nhìn tớ này. Tớ không trách cậu. Mình dừng lại trước đã, đừng cố nạp thêm chỉ vì muốn lấy lại số tiền đã mất.",
+      "anh_nen": "phong_ngu_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "comforting"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "nhan_vat": "char_do_thanh_dat",
+      "noi_dung": "Được, nhưng anh có cách khác. Em cho bên anh mượn tài khoản ngân hàng nhận tiền khách, chuyển tiếp xong sẽ có phí dịch vụ. Vừa đủ bù khoản đang thiếu.",
+      "anh_nen": "lop_hoc_anh_sang_mem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "persuasive"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Đỗ Thành Đạt",
+      "giong_noi": {
+        "profileId": "voice_1794303817586",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thanh niên",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Không được. Nhận tiền rồi chuyển tiếp cho người lạ có thể khiến tài khoản của cậu bị lợi dụng. Đừng đưa mật khẩu, OTP, thẻ SIM hay cho ai đăng nhập.",
+      "anh_nen": "lop_hoc_anh_sang_mem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "angry"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "nhan_vat": "char_le_quoc_bao",
+      "noi_dung": "Minh Anh nói đúng. Đừng tranh cãi thêm với họ. Chụp lại tin nhắn, đường dẫn, số tài khoản nhận tiền và biên lai; lưu cả thời gian giao dịch.",
+      "anh_nen": "lop_hoc_anh_sang_mem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Lê Quốc Bảo",
+      "giong_noi": {
+        "profileId": "voice_1794267836392",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Bé trai",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "nhan_vat": "char_tran_gia_han",
+      "noi_dung": "Tớ thấy xấu hổ quá. Tớ còn rủ một bạn cùng lớp vào nhóm nữa. Nếu bạn ấy cũng chuyển tiền thì sao?",
+      "anh_nen": "lop_hoc_anh_sang_mem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "nhan_vat": "char_co_lan",
+      "noi_dung": "Cô cảm ơn hai em đã đến sớm. Trước hết, tuyệt đối không chuyển thêm tiền và không cho mượn tài khoản. Nếu đã giao dịch, hãy liên hệ ngay ngân hàng qua kênh chính thức để hỏi cách tra soát và hỗ trợ khẩn cấp.",
+      "anh_nen": "hanhlangtruong.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Cô Lan",
+      "giong_noi": {
+        "profileId": "voice_1794303792721",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thiếu nữ",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "nhan_vat": "char_co_lan",
+      "noi_dung": "Cô không thể hứa chắc sẽ lấy lại được, nhưng báo càng sớm thì càng có cơ hội để ngân hàng tiếp nhận thông tin và hướng dẫn. Hai em cũng nên trình báo cơ quan chức năng, cung cấp đầy đủ chứng cứ.",
+      "anh_nen": "hanhlangtruong.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "serious"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Cô Lan",
+      "giong_noi": {
+        "profileId": "voice_1794303792721",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thiếu nữ",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "nhan_vat": "char_co_lan",
+      "noi_dung": "Và nhớ nhé, người bị lừa không có lỗi vì đã tin vào một lời mời được dàn dựng có chủ ý. Điều quan trọng bây giờ là dừng thiệt hại, tìm hỗ trợ và cảnh báo người khác bằng thông tin đã kiểm chứng.",
+      "anh_nen": "hanhlangtruong.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "warm"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Cô Lan",
+      "giong_noi": {
+        "profileId": "voice_1794303792721",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Thiếu nữ",
+        "lang": "vi-VN"
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Tôi nhìn Gia Hân. Lần này, chúng tôi biết phải hỏi điều gì trước khi tin vào một lời hứa.",
+      "anh_nen": "cong_truong_anime.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "determined"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      }
+    }
+  ]
+}
