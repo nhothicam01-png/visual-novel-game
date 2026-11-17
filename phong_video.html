@@ -1051,7 +1051,7 @@ function animate(){
 }
 let previewStartedAt=0,previewPauseStartedAt=0,previewRunId=0,lineMotionStartElapsed=0;
 function startRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=1;animate()}
-function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;drawFrame(0)}
+function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;lastPreviewRenderAt=0}
 
 function updatePlaybackButtons(){
  $('play-preview').textContent=previewing?(previewPaused?'▶ Tiếp tục':'⏸ Tạm dừng'):'▶ Chạy';
@@ -1323,6 +1323,7 @@ async function playPreview(){
  previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
  previewLineBgmName='';startRenderLoop();updatePlaybackButtons();
+ try{
  for(let itemIndex=0;itemIndex<items.length;itemIndex++){
   const item=items[itemIndex];
   if(!await waitWhilePaused(run))break;
@@ -1355,8 +1356,14 @@ async function playPreview(){
    const step=Math.min(80,remaining);await new Promise(resolve=>setTimeout(resolve,step));remaining-=step;
   }
  }
- if(previewing&&run===previewRunId)stopPreview();
- if(directRecording)await stopDirectRecorder();
+ }catch(err){
+  console.error('Lỗi timeline preview:',err);
+  setStatus('Timeline gặp lỗi và đã tự giải phóng: '+(err?.message||String(err)));
+ }finally{
+  // Luôn thu hồi trạng thái chạy kể cả khi lỗi xảy ra ở câu cuối hoặc lúc nạp asset.
+  if(previewing&&run===previewRunId)stopPreview();
+  if(directRecording)await stopDirectRecorder();
+ }
 }
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
