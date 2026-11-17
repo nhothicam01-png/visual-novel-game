@@ -534,6 +534,7 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
  const motion=spec?.motion&&typeof spec.motion==='object'?spec.motion:null;
  // Tọa độ chỉ điều khiển vị trí. Loại hành động phải do AI phân tích nội dung và ghi rõ trong motion.action.
  if(motion&&typeof motion.action==='string'&&motion.action.trim())semantic.action=motion.action.trim();
+ ['direction','face_angle','view_angle','pose','emotion'].forEach(k=>{if(motion&&motion[k]!=null&&String(motion[k]).trim())semantic[k]=String(motion[k]).trim()});
  return semantic;
 }
 async function updateAssets(){
