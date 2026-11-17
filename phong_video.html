@@ -709,9 +709,9 @@ function applyAutomaticCharacterLayout(layers,frame,width,height){
  const margin=Math.max(2,Math.min(18,Number(config.margin??6))),gap=Math.max(1,Math.min(14,Number(config.gap??5)));
  const available=100-margin*2-gap*(visible.length-1);
  const widths=visible.map(item=>{const media=item.media,sw=media.videoWidth||media.naturalWidth||media.width||1,sh=media.videoHeight||media.naturalHeight||media.height||1,scale=Math.max(.1,Math.min(2.5,Number(item.spec?.scale??.72)));return Math.max(7,(sw/sh)*(height/width)*scale*100)});
- const total=widths.reduce((a,b)=>a+b,0),shrink=total>available?Math.max(.38,available/total):1;
+ const total=widths.reduce((a,b)=>a+b,0),shrink=total>available?available/total:1;
  let cursor=margin+Math.max(0,(available-total*shrink)/2);
- visible.forEach((item,index)=>{const original=Number(item.spec?.scale??.72),factor=shrink;item.spec={...item.spec,scale:Math.max(.38,Math.min(2.5,original*factor)),x:cursor+widths[index]*factor/2,layout_auto:true};cursor+=widths[index]*factor+gap});
+ visible.forEach((item,index)=>{const original=Number(item.spec?.scale??.72),factor=shrink;item.spec={...item.spec,scale:Math.max(.1,Math.min(2.5,original*factor)),x:cursor+widths[index]*factor/2,layout_auto:true};cursor+=widths[index]*factor+gap});
 }
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
