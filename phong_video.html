@@ -532,13 +532,8 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
  const isSpeaking=!!String(frame?.noi_dung||'').trim()&&String(spec?.id)===String(frame?.nhan_vat||currentLine?.speakerId||'');
  const semantic={...base,communication:isSpeaking?'speaking':'silent'};
  const motion=spec?.motion&&typeof spec.motion==='object'?spec.motion:null;
- if(motion){
-  const from=motion.from||{},to=motion.to||{},dx=Math.abs(Number(to.x??spec.x??0)-Number(from.x??spec.x??0)),dy=Math.abs(Number(to.y??spec.y??0)-Number(from.y??spec.y??0));
-  const explicitAction=canonicalAnimationValue('action',semantic.action||'');
-  if(dx>0.5||dy>0.5){
-   if(!explicitAction||explicitAction==='idle'||explicitAction==='standing still')semantic.action='walking';
-  }
- }
+ // Tọa độ chỉ điều khiển vị trí. Loại hành động phải do AI phân tích nội dung và ghi rõ trong motion.action.
+ if(motion&&typeof motion.action==='string'&&motion.action.trim())semantic.action=motion.action.trim();
  return semantic;
 }
 async function updateAssets(){
