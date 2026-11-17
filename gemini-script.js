@@ -22,16 +22,18 @@ function auditAssetReferences(d){
  function check(value,root,ext,label,where){
   const raw=normalize(value);if(!raw)return;
   if(/^https?:\/\//i.test(raw)){issues.push({type:'external',where,label,path:raw,msg:'URL ngoài: chưa thể xác minh file/CORS'});return}
+  if(raw.startsWith('/')||raw.split('/').includes('..')){issues.push({type:'invalid_path',where,label,path:raw,msg:'Đường dẫn tuyệt đối hoặc vượt thư mục không được phép'});return}
   const path=raw.startsWith('assets/')?raw:(root+raw.replace(/^\/+/,''));
-  if(set.has(path)){ok.push(path);return}
   const hasExt=/\.[a-z0-9]{2,5}$/i.test(path);
+  if(hasExt&&!ext.some(e=>path.toLowerCase().endsWith(e))){issues.push({type:'invalid_extension',where,label,path:raw,msg:'Định dạng không được hỗ trợ cho loại tài nguyên này'});return}
+  if(set.has(path)){ok.push(path);return}
   if(!hasExt){
    const candidate=ext.map(e=>path+e).find(p=>set.has(p));
    if(candidate){issues.push({type:'extension',where,label,path:raw,suggestion:candidate,msg:'Thiếu đuôi file; tìm thấy file phù hợp'});return}
   }
   const insensitive=files.find(p=>p.toLocaleLowerCase('vi')===path.toLocaleLowerCase('vi'));
   if(insensitive){issues.push({type:'case',where,label,path:raw,suggestion:insensitive,msg:'Sai chữ hoa/thường trong đường dẫn'});return}
-  issues.push({type:'missing',where,label,path:raw,msg:hasExt?'Không tìm thấy file trong GitHub':'Không tìm thấy file; có thể thiếu cả phần mở rộng'});
+  issues.push({type:hasExt?'missing':'missing_extension',where,label,path:raw,msg:hasExt?'Không tìm thấy file trong GitHub':'Không tìm thấy file; đường dẫn chưa có phần mở rộng'});
  }
  (d.danh_sach||[]).forEach((line,i)=>{
   const where='Lượt '+(i+1)+(line.scene_id?' · cảnh '+line.scene_id:'');
@@ -43,14 +45,14 @@ function auditAssetReferences(d){
   objects.forEach((obj,j)=>{const asset=obj?.asset??obj?.path??obj?.file;if(!asset)return;const s=normalize(asset);const root=/^assets\/(PhuongTien|vehicles)\//i.test(s)?'assets/PhuongTien/':/^assets\/DaoCu\//i.test(s)?'assets/DaoCu/':(String(obj?.type||obj?.kind||'').toLowerCase().includes('vehicle')?'assets/PhuongTien/':'assets/DaoCu/');check(s,root,['.png','.jpg','.jpeg','.webp','.webm','.mp4'],'Đạo cụ/phương tiện',where+' · vật thể '+(j+1))});
  });
  check(d.am_thanh_mac_dinh?.nhac_nen,'assets/AmThanh/Nen/',rules[2].ext,'Nhạc nền mặc định','Thiết lập chung');
- const counts={missing:issues.filter(x=>x.type==='missing').length,extension:issues.filter(x=>x.type==='extension').length,case:issues.filter(x=>x.type==='case').length,external:issues.filter(x=>x.type==='external').length};
+ const counts={missing:issues.filter(x=>x.type==='missing').length,extension:issues.filter(x=>['extension','missing_extension'].includes(x.type)).length,invalid:issues.filter(x=>['invalid_extension','invalid_path'].includes(x.type)).length,case:issues.filter(x=>x.type==='case').length,external:issues.filter(x=>x.type==='external').length};
  return {issues,counts,checked:ok.length,treeAvailable:tree.length>0};
 }
 function assetAuditMessage(report){
  const c=report.counts,total=report.issues.length;
  if(!total)return 'Kiểm tra tài nguyên: không phát hiện đường dẫn sai hoặc file thiếu trong các trường tài nguyên đã khai báo.';
- const lines=['Kiểm tra tài nguyên: '+c.missing+' file thiếu, '+c.extension+' đường dẫn thiếu đuôi, '+c.case+' sai chữ hoa/thường, '+c.external+' URL ngoài chưa xác minh.'];
- report.issues.slice(0,35).forEach(x=>lines.push((x.type==='missing'?'❌ MISSING_ASSET':x.type==='extension'?'⚠️ MISSING_EXTENSION':x.type==='case'?'⚠️ PATH_CASE_MISMATCH':'🌐 EXTERNAL_UNVERIFIED')+' · '+x.where+' · '+x.label+'\n'+x.path+(x.suggestion?'\nGợi ý: '+x.suggestion:'')+' — '+x.msg));
+ const lines=['Kiểm tra tài nguyên: '+c.missing+' file thiếu, '+c.extension+' đường dẫn thiếu đuôi, '+c.invalid+' đường dẫn/định dạng không hợp lệ, '+c.case+' sai chữ hoa/thường, '+c.external+' URL ngoài chưa xác minh.'];
+ report.issues.slice(0,35).forEach(x=>lines.push((x.type==='missing'?'❌ MISSING_ASSET':(['extension','missing_extension'].includes(x.type))?'⚠️ MISSING_EXTENSION':x.type==='invalid_extension'?'❌ INVALID_EXTENSION':x.type==='invalid_path'?'❌ INVALID_ASSET_PATH':x.type==='case'?'⚠️ PATH_CASE_MISMATCH':'🌐 EXTERNAL_UNVERIFIED')+' · '+x.where+' · '+x.label+'\n'+x.path+(x.suggestion?'\nGợi ý: '+x.suggestion:'')+' — '+x.msg));
  if(total>35)lines.push('… và '+(total-35)+' cảnh báo khác.');
  lines.push('Các cảnh báo tài nguyên không chặn xem trước hoặc xuất JSON; file thiếu sẽ dùng fallback nếu player có hỗ trợ.');
  return lines.join('\n');
