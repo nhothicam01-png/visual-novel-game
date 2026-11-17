@@ -363,7 +363,7 @@ function renderAnimationAssetReport(){
  const host=$('animation-report-content'),count=$('animation-report-count');if(!host||!count)return;
  if(!activeStoryData||!scenes.length){count.textContent='Chưa có dữ liệu';host.innerHTML='<div class="note">Chọn một kịch bản để quét các trạng thái nhân vật cần bổ sung.</div>';return}
  const registry=animationRegistryCache||ANIMATION_REGISTRY_FALLBACK,missingWebm=new Map(),unknownValues=new Map(),lineTotal=scenes.reduce((n,scene)=>n+(scene.lines||[]).length,0),fieldLabels={communication:'Trạng thái nói',emotion:'Biểu cảm',pose:'Tư thế',action:'Hành động',direction:'Hướng',face_angle:'Góc mặt',view_angle:'Góc nhìn/góc máy',interaction_target:'Đối tượng tương tác'};
- const isRegistered=(field,value)=>{const list=registry[field]||[];const wanted=canonicalAnimationValue(field,value);return list.some(v=>canonicalAnimationValue(field,v)===wanted)};
+ const isRegistered=(field,value)=>{const list=registry.fields?.[field]||registry[field]||[];const wanted=canonicalAnimationValue(field,value);return list.some(v=>canonicalAnimationValue(field,v)===wanted)};
  scenes.forEach((scene,sceneIndex)=>(scene.lines||[]).forEach((line,lineIndex)=>{
   const frame=line.sourceFrame||{},raw=Array.isArray(line.visibleCharacters)?line.visibleCharacters:Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
   const specs=raw.filter(x=>x&&typeof x==='object'&&x.id!=null),display=specs.length?specs:((frame.nhan_vat||line.speakerId)?[{id:String(frame.nhan_vat||line.speakerId),expression_id:frame.expression_id||line.expressionId||{}}]:[]);
