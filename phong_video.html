@@ -458,24 +458,32 @@ function renderAnimationAssetReport(){
 function runCharacterLayoutCheck(){
  const host=$('character-layout-report');if(!host)return;
  if(!activeStoryData||!scenes.length){host.innerHTML='<div class="note">Chưa có kịch bản để kiểm tra.</div>';return}
- const issues=[],checked=[];
+ const issues=[],intentional=[],checked=[];
+ const interactionFor=(frame,a,b)=>((Array.isArray(frame.tuong_tac)?frame.tuong_tac:[])).find(it=>it&&it.allow_overlap===true&&Array.isArray(it.participants)&&it.participants.includes(a.id)&&it.participants.includes(b.id)&&String(it.intent||'').trim()&&String(it.phase||'').trim());
+ const xyAt=(spec,t)=>{
+  const base={x:Number(spec.x),y:Number(spec.y??78)},keys=Array.isArray(spec.motion?.keyframes)?spec.motion.keyframes.slice().filter(k=>Number.isFinite(Number(k.t))&&Number.isFinite(Number(k.x))).sort((a,b)=>Number(a.t)-Number(b.t)):[];
+  if(!keys.length)return base;
+  if(t<=Number(keys[0].t))return {x:Number(keys[0].x),y:Number(keys[0].y??base.y)};
+  for(let i=1;i<keys.length;i++){const p=keys[i-1],n=keys[i],pt=Number(p.t),nt=Number(n.t);if(t<=nt){const q=nt===pt?1:(t-pt)/(nt-pt);return{x:Number(p.x)+(Number(n.x)-Number(p.x))*q,y:Number(p.y??base.y)+(Number(n.y??base.y)-Number(p.y??base.y))*q}}}
+  const k=keys[keys.length-1];return{x:Number(k.x),y:Number(k.y??base.y)};
+ };
  scenes.forEach((scene,si)=>(scene.lines||[]).forEach((line,li)=>{
-  const frame=line.sourceFrame||{},items=Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
-  const visible=items.filter(c=>c&&c.visible!==false&&c.remove_from_scene!==true&&Number.isFinite(Number(c.x)));
+  const frame=line.sourceFrame||{},items=Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[],visible=items.filter(c=>c&&c.visible!==false&&c.remove_from_scene!==true&&Number.isFinite(Number(c.x)));
   for(let a=0;a<visible.length;a++)for(let b=a+1;b<visible.length;b++){
-   const A=visible[a],B=visible[b],ax=Number(A.x),bx=Number(B.x),ay=Number(A.y??78),by=Number(B.y??78),as=Math.max(.1,Number(A.scale)||.72),bs=Math.max(.1,Number(B.scale)||.72);
-   const minGap=24*((as+bs)/1.44),dx=Math.abs(ax-bx),dy=Math.abs(ay-by);
-   if(dx<minGap&&dy<18)issues.push({scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,a:A,b:B,dx,minGap});
-   const keys=[...(A.motion?.keyframes||[]),...(B.motion?.keyframes||[])];
-   for(const ka of (A.motion?.keyframes||[]))for(const kb of (B.motion?.keyframes||[])){
-    if(Math.abs(Number(ka.t)-Number(kb.t))<.03&&ka.x!=null&&kb.x!=null&&Math.abs(Number(ka.x)-Number(kb.x))<minGap&&Math.abs(Number(ka.y??ay)-Number(kb.y??by))<18)
-     issues.push({scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,a:A,b:B,dx:Math.abs(Number(ka.x)-Number(kb.x)),minGap,keyframe:true});
-   }
+   const A=visible[a],B=visible[b],as=Math.max(.1,Number(A.scale)||.72),bs=Math.max(.1,Number(B.scale)||.72),minGap=24*((as+bs)/1.44),intent=interactionFor(frame,A,B);
+   const times=new Set([0,1]);for(const k of [...(A.motion?.keyframes||[]),...(B.motion?.keyframes||[])])if(Number.isFinite(Number(k.t)))times.add(Math.max(0,Math.min(1,Number(k.t))));
+   let closest=null;
+   for(const t of [...times].sort((x,y)=>x-y)){const p=xyAt(A,t),q=xyAt(B,t),dx=Math.abs(p.x-q.x),dy=Math.abs(p.y-q.y);if(dx<minGap&&dy<18){closest={t,dx,dy,p,q};break}}
+   if(closest&&intent)intentional.push({scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,a:A,b:B,intent,closest});
+   else if(closest)issues.push({scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,a:A,b:B,closest,minGap});
   }
   checked.push(1);
  }));
- if(!issues.length){host.innerHTML='<div style="color:#86efac">✓ Không phát hiện cặp nhân vật có nguy cơ chồng lấn theo kiểm tra tọa độ cơ bản ('+checked.length+' dòng).</div>';return}
- host.innerHTML='<div style="color:#fca5a5;font-weight:700">Phát hiện '+issues.length+' vị trí cần xem lại:</div><ul>'+issues.slice(0,100).map(v=>'<li style="margin:7px 0">Dòng '+v.line+' · '+safeText(v.a.id||'A')+' (x='+Number(v.a.x)+') và '+safeText(v.b.id||'B')+' (x='+Number(v.b.x)+') · khoảng cách '+v.dx.toFixed(1)+'% (khuyến nghị ≥ '+v.minGap.toFixed(1)+'%). '+(v.keyframe?'Keyframe':'Vị trí tĩnh')+'</li>').join('')+'</ul><div class="note">Đây là cảnh báo hình học gần đúng; vẫn cần xem preview vì kích thước ảnh WEBM có thể khác nhau.</div>';
+ const item=v=>'<li style="margin:7px 0">'+safeText(v.a.id||'A')+' ↔ '+safeText(v.b.id||'B')+' · dòng '+v.line+' · '+(v.closest.t===0?'đầu nhịp':v.closest.t===1?'cuối nhịp':'t='+v.closest.t.toFixed(2))+' · x≈'+v.closest.p.x.toFixed(1)+' / '+v.closest.q.x.toFixed(1)+'</li>';
+ host.innerHTML='<div style="color:#cbd5e1">Đã rà '+checked.length+' dòng; kiểm tra vị trí tĩnh và các mốc keyframe. Tương tác có chủ ý chỉ được miễn cảnh báo khi JSON có tuong_tac hợp lệ, đủ participants, phase, allow_overlap và intent.</div>'+
+ '<details open style="margin:8px 0"><summary style="color:'+(issues.length?'#fca5a5':'#86efac')+';font-weight:700">⚠️ Nguy cơ chồng lấn ngoài ý muốn ('+issues.length+')</summary>'+(issues.length?'<ul>'+issues.slice(0,100).map(item).join('')+'</ul>':'<div class="note">Không phát hiện theo kiểm tra hình học gần đúng.</div>')+'</details>'+
+ '<details style="margin:8px 0"><summary style="color:#86efac;font-weight:700">✓ Chồng lớp có chủ đích được khai báo ('+intentional.length+')</summary>'+(intentional.length?'<ul>'+intentional.slice(0,100).map(v=>'<li style="margin:7px 0">Dòng '+v.line+' · '+safeText(v.a.id)+' ↔ '+safeText(v.b.id)+' · '+safeText(v.intent.type)+' / '+safeText(v.intent.phase)+' — '+safeText(v.intent.intent)+'</li>').join('')+'</ul>':'<div class="note">Không có tương tác chồng lớp được khai báo.</div>')+'</details>'+
+ '<div class="note">Đây là kiểm tra hình học gần đúng, không phân tích pixel alpha của WEBM/PNG và không tự xác nhận chất lượng rig/va chạm vật lý. Vẫn cần xem preview.</div>';
 }
 $('run-character-layout-check')?.addEventListener('click',runCharacterLayoutCheck);
 
