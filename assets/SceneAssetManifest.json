@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "purpose": "Danh mục tài nguyên phương tiện và đạo cụ dùng bởi scene_objects trong kịch bản VNS.",
+  "roots": {
+    "vehicles": "assets/PhuongTien/",
+    "props": "assets/DaoCu/"
+  },
+  "supported_formats": {
+    "images": [
+      ".png",
+      ".jpg",
+      ".jpeg",
+      ".webp"
+    ],
+    "videos": [
+      ".webm",
+      ".mp4"
+    ],
+    "note": "Ưu tiên PNG nền trong suốt cho vật thể tĩnh; WEBM nền trong suốt cho chuyển động đã dựng sẵn. Player cần trình duyệt hỗ trợ codec tương ứng."
+  },
+  "reference_contract": {
+    "field": "scene_objects[].asset",
+    "examples": [
+      "assets/PhuongTien/xe_cuu_thuong.png",
+      "assets/DaoCu/bong_hoa.png"
+    ],
+    "required": true,
+    "external_urls": "Có thể tham chiếu URL http(s), nhưng preflight không xác minh được tính sẵn sàng hoặc quyền CORS của URL ngoài."
+  },
+  "validation": {
+    "source": "GitHub recursive tree API trên nhánh main",
+    "missing_file": "MISSING_ASSET",
+    "invalid_path": "INVALID_ASSET_PATH",
+    "external_url": "EXTERNAL_UNVERIFIED",
+    "note": "Kiểm tra xác nhận file tồn tại trong repository; không đảm bảo media decode/playback thành công trong mọi trình duyệt."
+  },
+  "naming": "Dùng tên file không dấu, chữ thường, gạch dưới; giữ nguyên đường dẫn assets/ trong JSON.",
+  "folders": {
+    "vehicles": [],
+    "props": []
+  }
+}
