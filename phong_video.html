@@ -187,7 +187,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <div class="note">Bật để phủ tông màu ký ức ấm/sepia và viền mờ nhẹ lên hình ảnh của toàn cảnh. Ảnh nền gốc không bị thay đổi.</div>
 <div class="scene-effect-panel" style="margin:10px 0;padding:12px;border:1px solid #475569;border-radius:10px;background:#101a2b">
  <strong style="color:#c4b5fd">🌧️ Hiệu ứng đồ họa của cảnh</strong>
- <div class="note">Chọn PNG tĩnh hoặc WEBM trong suốt từ assets/HieuUng. Hiệu ứng áp dụng cho toàn cảnh, không phụ thuộc nhân vật đang nói.</div>
+ <div class="note">Chọn PNG tĩnh hoặc WEBM trong suốt từ assets/HieuUng. Mỗi hiệu ứng có lớp riêng: “Sau nhân vật” nằm phía sau; “Trước nhân vật” có thể phủ lên nhân vật. Các lớp được xếp theo z_index.</div>
  <div id="scene-effect-picker" class="effect-options" style="margin-top:8px"><span class="note">Đang tải thư viện hiệu ứng…</span></div>
  <label class="check" style="margin-top:8px"><input type="checkbox" id="scene-effect-loop" checked> Lặp video WEBM / MP4 (bỏ chọn cho hiệu ứng một lần như nổ / sét)</label>
  <label class="field">Độ mờ hiệu ứng <span id="scene-effect-opacity-value">100%</span><input id="scene-effect-opacity" type="range" min="10" max="100" step="5" value="100"></label>
@@ -616,14 +616,21 @@ function renderSceneEffectPicker(){
  const selectedPaths=new Set(selected.map(x=>x.path));
  if(selected.length){$('scene-effect-loop').checked=selected.filter(x=>x.type==='video').every(x=>x.loop!==false);const opacity=Math.round(selected[0].opacity*100);$('scene-effect-opacity').value=String(opacity);$('scene-effect-opacity-value').textContent=opacity+'%';$('scene-effect-status').textContent=selected.length+' hiệu ứng cảnh đang bật.'}else{$('scene-effect-status').textContent='Chưa chọn hiệu ứng cảnh.'}
  if(!sceneEffectLibrary.length){host.innerHTML='<span class="note">Chưa có ảnh / video (PNG, WEBM, MP4…) trong assets/HieuUng.</span>';return}
- host.innerHTML=sceneEffectLibrary.map(item=>'<label class="check" style="align-items:flex-start"><input type="checkbox" data-scene-effect="'+safeText(item.path)+'" '+(selectedPaths.has(item.path)?'checked':'')+'><span>'+safeText(item.name)+' <small style="opacity:.65">('+item.type.toUpperCase()+')</small></span></label>').join('');
- host.querySelectorAll('[data-scene-effect]').forEach(input=>input.addEventListener('change',()=>{
+ host.innerHTML=sceneEffectLibrary.map(item=>{
+  const current=selected.find(x=>x.path===item.path),z=Number(current?.z_index??-10),layer=z>=50?'front':'behind';
+  return '<div class="scene-effect-row" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(145px,auto);gap:8px;align-items:center;margin:5px 0"><label class="check" style="align-items:flex-start;margin:0"><input type="checkbox" data-scene-effect="'+safeText(item.path)+'" '+(selectedPaths.has(item.path)?'checked':'')+'><span>'+safeText(item.name)+' <small style="opacity:.65">('+item.type.toUpperCase()+')</small></span></label><select data-scene-effect-layer="'+safeText(item.path)+'" aria-label="Vị trí lớp '+safeText(item.name)+'"><option value="behind" '+(layer==='behind'?'selected':'')+'>Sau nhân vật</option><option value="front" '+(layer==='front'?'selected':'')+'>Trước nhân vật</option></select></div>';
+ }).join('');
+ const savePicked=()=>{
   const sc=getCurrentScene();if(!sc)return;
-  const picked=Array.from(host.querySelectorAll('[data-scene-effect]:checked')).map((el,index)=>{const item=sceneEffectLibrary.find(x=>x.path===el.dataset.sceneEffect);return {file:item.path,path:item.path,type:item.type,loop:item.type==='video'?!!$('scene-effect-loop').checked:false,opacity:Number($('scene-effect-opacity').value)/100,z_index:20+index}});
+  const picked=Array.from(host.querySelectorAll('[data-scene-effect]:checked')).map(el=>{
+   const item=sceneEffectLibrary.find(x=>x.path===el.dataset.sceneEffect),layer=host.querySelector('[data-scene-effect-layer="'+CSS.escape(el.dataset.sceneEffect)+'"]')?.value||'behind';
+   return {file:item.path,path:item.path,type:item.type,loop:item.type==='video'?!!$('scene-effect-loop').checked:false,opacity:Number($('scene-effect-opacity').value)/100,z_index:layer==='front'?100:-10};
+  });
   sc.visual={...(sc.visual||captureVisual()),sceneEffects:picked};
-  $('scene-effect-status').textContent=picked.length+' hiệu ứng cảnh đã chọn.';
+  $('scene-effect-status').textContent=picked.length+' hiệu ứng cảnh · '+picked.filter(x=>x.z_index>=50).length+' lớp trước · '+picked.filter(x=>x.z_index<50).length+' lớp sau.';
   updateAssets();
- }));
+ };
+ host.querySelectorAll('[data-scene-effect],[data-scene-effect-layer]').forEach(input=>input.addEventListener('change',savePicked));
 }
 async function loadBackgroundLibrary(){
  try{
@@ -933,9 +940,23 @@ function drawFrame(elapsed,st){
   if(sw&&sh){if(spec?.flipX){ctx.save();ctx.translate(x,0);ctx.scale(-1,1);ctx.translate(-x,0);ctx.drawImage(media,x-dw/2,y-dh,dw,dh);ctx.restore()}else ctx.drawImage(media,x-dw/2,y-dh,dw,dh);}
   ctx.restore();
  };
- if(charLayerVideos.length){
-  charLayerVideos.slice().sort((a,b)=>(Number(a.spec?.z_index)||0)-(Number(b.spec?.z_index)||0)).forEach(layer=>drawOneCharacter(layer.media,layer.spec));
- }else if(charVideo){drawOneCharacter(frameOverride.char||charVideo,{x:50,y:100,scale:1})}
+ // Hiệu ứng cảnh và nhân vật dùng chung một trục z_index.
+ // z_index thấp nằm phía sau; z_index cao nằm phía trước và có thể phủ lên nhân vật.
+ const drawSceneEffectItem=item=>{
+  const hasOverride=!!frameOverride.sceneEffects&&Object.prototype.hasOwnProperty.call(frameOverride.sceneEffects,item.path),overridden=hasOverride?frameOverride.sceneEffects[item.path]:null;
+  if(hasOverride&&overridden===null)return;
+  const media=hasOverride?overridden:item.media;
+  if(!media||(!item.loop&&item.media?.__sceneEffectFinished))return;
+  const ready=overridden?(Number(media.width||media.displayWidth)>0&&Number(media.height||media.displayHeight)>0):(item.type==='image'?(media.complete&&media.naturalWidth):(media.readyState>=2&&media.videoWidth));
+  if(!ready)return;
+  if(item.type==='image')drawAnimatedPngEffect(media,item,w,h,elapsed);
+  else{ctx.save();ctx.globalAlpha=Math.max(.05,Math.min(1,Number(item.opacity??1)));drawCover(media,w,h);ctx.restore();}
+ };
+ const renderLayers=[];
+ if(charLayerVideos.length)charLayerVideos.forEach((layer,index)=>renderLayers.push({kind:'character',z:Number(layer.spec?.z_index??index+1),order:1,draw:()=>drawOneCharacter(layer.media,layer.spec)}));
+ else if(charVideo)renderLayers.push({kind:'character',z:1,order:1,draw:()=>drawOneCharacter(frameOverride.char||charVideo,{x:50,y:100,scale:1,z_index:1})});
+ sceneEffectLayers.forEach((item,index)=>renderLayers.push({kind:'effect',z:Number(item.z_index??20+index),order:0,draw:()=>drawSceneEffectItem(item)}));
+ renderLayers.sort((a,b)=>a.z-b.z||a.order-b.order).forEach(layer=>layer.draw());
  if(cameraSaved)ctx.restore();
  // Các lớp không khí được tính theo elapsed để preview và video xuất dùng cùng một timeline.
  if(atmFx.length){
@@ -956,14 +977,7 @@ function drawFrame(elapsed,st){
   if(atmFx.includes('vignette')){const g=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.22,w/2,h/2,Math.max(w,h)*.72);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,'+(.55*strength)+')');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
   ctx.restore();
  }
- // Hiệu ứng ảnh / video PNG, WEBM, MP4 độc lập của toàn cảnh; alpha được giữ khi vẽ lên canvas.
- sceneEffectLayers.slice().sort((a,b)=>(Number(a.z_index)||0)-(Number(b.z_index)||0)).forEach(item=>{
-  const hasOverride=!!frameOverride.sceneEffects&&Object.prototype.hasOwnProperty.call(frameOverride.sceneEffects,item.path),overridden=hasOverride?frameOverride.sceneEffects[item.path]:null;if(hasOverride&&overridden===null)return;const media=hasOverride?overridden:item.media;if(!media||(!item.loop&&item.media?.__sceneEffectFinished))return;
-  const ready=overridden?(Number(media.width||media.displayWidth)>0&&Number(media.height||media.displayHeight)>0):(item.type==='image'?(media.complete&&media.naturalWidth):(media.readyState>=2&&media.videoWidth));
-  if(!ready)return;
-  if(item.type==='image')drawAnimatedPngEffect(media,item,w,h,elapsed);
-  else{ctx.save();ctx.globalAlpha=Math.max(.05,Math.min(1,Number(item.opacity??1)));drawCover(media,w,h);ctx.restore();}
- });
+ // Hiệu ứng cảnh đã được vẽ xen kẽ với nhân vật theo z_index ở trên.
  ctx.restore();
  if(st.flashback){ctx.save();ctx.globalCompositeOperation='soft-light';ctx.fillStyle='rgba(255,205,135,.34)';ctx.fillRect(0,0,w,h);ctx.globalCompositeOperation='source-over';ctx.fillStyle='rgba(255,231,185,.10)';ctx.fillRect(0,0,w,h);const memoryVignette=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.22,w/2,h/2,Math.max(w,h)*.76);memoryVignette.addColorStop(0,'rgba(90,53,25,0)');memoryVignette.addColorStop(1,'rgba(75,43,20,.24)');ctx.fillStyle=memoryVignette;ctx.fillRect(0,0,w,h);ctx.restore()}if(st.sceneTransition){const fade=Math.max(0,1-Math.max(0,Number(elapsed)||0)/.7);if(fade>0){ctx.save();ctx.fillStyle='rgba(0,0,0,'+fade+')';ctx.fillRect(0,0,w,h);ctx.restore()}}
  if(st.dialogueLayer&&!speakingCharacterId)ctx.drawImage(st.dialogueLayer,0,0);else drawDialogue(w,h);
