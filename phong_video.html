@@ -582,8 +582,9 @@ const ASSET_CACHE_VERSION=Date.now();
 function freshAssetUrl(src){
  try{const url=new URL(src,location.href);if(url.hostname==='raw.githubusercontent.com')url.searchParams.set('_vn',String(ASSET_CACHE_VERSION));return url.href}catch(_){return src}
 }
-function loadImage(src){return new Promise((resolve,reject)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>resolve(im);im.onerror=()=>reject(new Error('Không tải được ảnh nền: '+src));im.src=src})}
-function loadVideo(src){return new Promise((resolve,reject)=>{const v=document.createElement('video');v.crossOrigin='anonymous';v.muted=true;v.loop=true;v.playsInline=true;v.preload='auto';v.onloadeddata=()=>resolve(v);v.onerror=()=>reject(new Error('Không tải được video: '+src));v.src=src;v.load()})}
+const ASSET_LOAD_TIMEOUT_MS=120000;
+function loadImage(src){return new Promise((resolve,reject)=>{const im=new Image(),timer=setTimeout(()=>{im.onload=im.onerror=null;im.src='';reject(new Error('Hết thời gian tải ảnh: '+src))},ASSET_LOAD_TIMEOUT_MS);im.crossOrigin='anonymous';im.onload=()=>{clearTimeout(timer);resolve(im)};im.onerror=()=>{clearTimeout(timer);reject(new Error('Không tải được ảnh nền: '+src))};im.src=src})}
+function loadVideo(src){return new Promise((resolve,reject)=>{const v=document.createElement('video'),timer=setTimeout(()=>{v.onloadeddata=v.onerror=null;reject(new Error('Hết thời gian tải video: '+src))},ASSET_LOAD_TIMEOUT_MS);v.crossOrigin='anonymous';v.muted=true;v.loop=true;v.playsInline=true;v.preload='auto';v.onloadeddata=()=>{clearTimeout(timer);resolve(v)};v.onerror=()=>{clearTimeout(timer);reject(new Error('Không tải được video: '+src))};v.src=src;v.load()})}
 function cachedImage(src){
  if(!src)return Promise.resolve(null);
  const fresh=freshAssetUrl(src);
@@ -596,6 +597,14 @@ function cachedVideo(src){
  if(!videoAssetCache.has(fresh))videoAssetCache.set(fresh,loadVideo(fresh).catch(err=>{videoAssetCache.delete(fresh);throw err}));
  return videoAssetCache.get(fresh);
 }
+// Lớp hiệu ứng cảnh có thể là <video> hoặc <img>/<canvas> (PNG mô phỏng). Chỉ phần tử phát được
+// (có play/pause) mới được điều khiển; ảnh tĩnh không có play()/pause() nên không được gọi trực tiếp.
+const isPlayableMedia=m=>!!m&&typeof m.play==='function'&&typeof m.pause==='function';
+const pauseMedia=m=>{if(isPlayableMedia(m))m.pause()};
+const playMedia=m=>{if(isPlayableMedia(m)){const r=m.play();if(r&&typeof r.catch==='function')r.catch(()=>{})}};
+// Tên dùng để tra hồ sơ mô phỏng VFX: chỉ lấy tên file (không thư mục, không đuôi), tránh khớp nhầm
+// token "set" với "assets" trong đường dẫn assets/HieuUng/....
+const effectProfileName=item=>String(item?.base||item?.path||item?.name||'').split('/').pop().replace(/\.[^.]+$/,'').toLowerCase();
 let sceneEffectLayers=[],sceneEffectKey='',sceneEffectLibrary=[],currentAnimationWarnings=[],sceneObjectLayers=[],vfxSimulationConfig={profiles:[],defaults:{mode:'overlay',scale:.82,alpha:1}};
 function getVfxSimulationProfile(name){const key=String(name||'').toLowerCase();const profile=(vfxSimulationConfig.profiles||[]).find(p=>(p.match||[]).some(token=>key.includes(String(token).toLowerCase())));if(!profile)return {...(vfxSimulationConfig.defaults||{}),mode:'overlay'};const variants=profile.variants||[];if(!variants.length)return profile;let hash=0;for(let i=0;i<key.length;i++)hash=(hash*31+key.charCodeAt(i))>>>0;return {...profile,variant:variants[hash%variants.length]};}
 function normalizeSceneEffects(values){
@@ -774,7 +783,7 @@ async function updateAssets(){
   updateStoryAnimationWarning();
   charLayerVideos.filter(item=>!item.canPlayAnimation).forEach(item=>{if(typeof item.media.pause==='function')item.media.pause();try{item.media.currentTime=0}catch(e){}});
   if(effectKey!==sceneEffectKey){
-   sceneEffectLayers.forEach(item=>{if(item.media&&item.media.pause)item.media.pause()});
+   sceneEffectLayers.forEach(item=>pauseMedia(item.media));
    sceneEffectLayers=nextSceneEffects;
    sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;item.media.__sceneEffectFinished=false;item.media.onended=()=>{item.media.__sceneEffectFinished=true;drawFrame(0)};try{item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){} }});
    sceneEffectKey=effectKey;
@@ -844,7 +853,7 @@ function getVfxCoverCanvas(media,w,h){
  vfxCoverCache.set(media,{width:w,height:h,canvas:c});return c;
 }
 function drawAnimatedPngEffect(media,item,w,h,elapsed){
- const name=String(item.base||item.path||'').split('/').pop().replace(/\\.[^.]+$/,'').toLowerCase(),sw=media.naturalWidth||media.width,sh=media.naturalHeight||media.height;if(!sw||!sh)return;
+ const name=effectProfileName(item),sw=media.naturalWidth||media.width,sh=media.naturalHeight||media.height;if(!sw||!sh)return;
  const profile=getVfxSimulationProfile(name),variant=profile.variant||{},mode=profile.mode||'overlay',period=Math.max(.5,Number(variant.period||profile.period||3.5)),phase=((elapsed%period)+period)%period;
  const fit=Math.max(w/sw,h/sh),cover=fit;
  let scale=Number(profile.scale||1),rotation=0,alpha=Number(profile.alpha??1),x=w/2,y=h/2;
@@ -890,7 +899,7 @@ function drawFrameUnsafe(elapsed,st){
  const {bgFx,charFx,camFx,atmFx,strength}=st;
  ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
  let shakeX=0,shakeY=0,zoom=1;
- sceneEffectLayers.forEach(effect=>{if(effect.type!=='image')return;const profile=getVfxSimulationProfile(effect.base||effect.path);if(profile.mode!=='lightning')return;const variant=profile.variant||{},period=Math.max(.5,Number(variant.period||profile.period||3.5)),phase=((elapsed%period)+period)%period;let pulse=0;(variant.flashes||[.05,.18,.55]).forEach((at,index)=>{const d=Math.abs(phase-Number(at));if(d<.095)pulse=Math.max(pulse,(1-d/.095)*(index===0?1:.72))});if(pulse>0){const amount=Number(profile.cameraShake||0)*pulse;shakeX+=Math.sin(elapsed*85)*w*amount;shakeY+=Math.cos(elapsed*73)*h*amount}});
+ sceneEffectLayers.forEach(effect=>{if(effect.type!=='image')return;const profile=getVfxSimulationProfile(effectProfileName(effect));if(profile.mode!=='lightning')return;const variant=profile.variant||{},period=Math.max(.5,Number(variant.period||profile.period||3.5)),phase=((elapsed%period)+period)%period;let pulse=0;(variant.flashes||[.05,.18,.55]).forEach((at,index)=>{const d=Math.abs(phase-Number(at));if(d<.095)pulse=Math.max(pulse,(1-d/.095)*(index===0?1:.72))});if(pulse>0){const amount=Number(profile.cameraShake||0)*pulse;shakeX+=Math.sin(elapsed*85)*w*amount;shakeY+=Math.cos(elapsed*73)*h*amount}});
  if(camFx.includes('camera-shake')&&elapsed<1.5){shakeX=Math.sin(elapsed*55)*w*.008*strength;shakeY=Math.cos(elapsed*48)*h*.008*strength}
  if(camFx.includes('camera-zoom'))zoom*=1+Math.min(.10,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.10*strength);
  if(camFx.includes('camera-pull'))zoom*=1-Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08*strength);
@@ -1057,12 +1066,11 @@ function buildDialogueLayer(w,h){
  return layer;
 }
 let lastPreviewRenderAt=0;
-function animate(){
- if(!raf) return;
+function renderPreviewTick(){
  // Giới hạn preview 30 FPS để nhiều lớp VFX phủ kín màn hình không làm nghẽn GPU/CPU trên điện thoại.
- const now=performance.now();if(now-lastPreviewRenderAt<1000/30){raf=requestAnimationFrame(animate);return}lastPreviewRenderAt=now;
+ const now=performance.now();if(now-lastPreviewRenderAt<1000/30)return;lastPreviewRenderAt=now;
  // [TỐI ƯU] Đang xuất video thì không vẽ preview để khỏi tranh CPU/GPU và không đụng vào video đang seek.
- if(recording){raf=requestAnimationFrame(animate);return}
+ if(recording)return;
  // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
  const t=previewing?Math.max(0,((previewPaused?previewPauseStartedAt:performance.now())-previewStartedAt)/1000):0;
  const motionNow=performance.now(),motionDt=speechMotionFrameAt?Math.min(.08,(motionNow-speechMotionFrameAt)/1000):1/60;speechMotionFrameAt=motionNow;
@@ -1079,7 +1087,11 @@ function animate(){
  // Luôn vẽ preview lên canvas xem trước, không ghi đè canvas xuất video.
  const activeCanvas=canvas,activeCtx=ctx;canvas=previewCanvas;ctx=previewCtx;
  try{drawFrame(t)}finally{canvas=activeCanvas;ctx=activeCtx}
- raf=requestAnimationFrame(animate);
+}
+function animate(){
+ if(!raf)return;
+ // Luôn đặt lịch khung kế tiếp kể cả khi tick này ném lỗi (lỗi vẫn hiện ở console): vòng render không được chết im lặng.
+ try{renderPreviewTick()}finally{if(raf)raf=requestAnimationFrame(animate)}
 }
 let previewStartedAt=0,previewPauseStartedAt=0,previewRunId=0,lineMotionStartElapsed=0;
 function startRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=1;animate()}
@@ -1095,7 +1107,7 @@ function pausePreview(){
  previewPaused=true;previewPauseStartedAt=performance.now();
  Object.values(previewAudio).forEach(a=>{if(a&&!a.paused)a.pause()});
  pauseBrowserSpeech();
- if(charVideo)charVideo.pause();charLayerVideos.forEach(x=>x.media?.pause?.());sceneEffectLayers.forEach(x=>x.media?.pause());if(bgVideo)bgVideo.pause();
+ if(charVideo)charVideo.pause();charLayerVideos.forEach(x=>x.media?.pause?.());sceneEffectLayers.forEach(x=>pauseMedia(x.media));if(bgVideo)bgVideo.pause();
  updatePlaybackButtons();setTtsStatus('Đã tạm dừng. Nhấn Tiếp tục để chạy tiếp.');
 }
 function resumePreview(){
@@ -1108,7 +1120,7 @@ function resumePreview(){
   if(a&&a.paused&&!a.ended)a.play().catch(err=>console.warn('Khong the tiep tuc am thanh preview:',err));
  });
  resumeBrowserSpeech();
- if(charVideo)charVideo.play().catch(()=>{});charLayerVideos.forEach(x=>x.media?.play?.().catch(()=>{}));sceneEffectLayers.forEach(x=>x.media?.play().catch(()=>{}));if(bgVideo)bgVideo.play().catch(()=>{});
+ if(charVideo)charVideo.play().catch(()=>{});charLayerVideos.forEach(x=>x.media?.play?.().catch(()=>{}));sceneEffectLayers.forEach(x=>playMedia(x.media));if(bgVideo)bgVideo.play().catch(()=>{});
  updatePlaybackButtons();setTtsStatus('Đang tiếp tục chạy…');
 }
 async function waitWhilePaused(run){
@@ -1128,7 +1140,7 @@ function stopPreview(options={}){
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();try{a.currentTime=0}catch(_){}}});
  if(charVideo)charVideo.pause();
  charLayerVideos.forEach(x=>x.media?.pause?.());
- sceneEffectLayers.forEach(x=>x.media?.pause());
+ sceneEffectLayers.forEach(x=>pauseMedia(x.media));
  if(bgVideo)bgVideo.pause();
  stopRenderLoop();updatePlaybackButtons();
 }
@@ -1920,7 +1932,7 @@ async function exportVideo(){
   for(let si=0;si<prepared.length;si++){
    const pack=prepared[si];if(!pack.lines.length)continue;
    activeSceneIndex=si;applyVisual(pack.visual);await updateAssets();
-   bgVideo?.pause();charVideo?.pause();sceneEffectLayers.forEach(x=>x.media?.pause()); // seek thủ công, không để video tự chạy
+   bgVideo?.pause();charVideo?.pause();sceneEffectLayers.forEach(x=>pauseMedia(x.media)); // seek thủ công, không để video tự chạy
    lastAssetSig=$('background').value+'|'+$('character').value+'|'+normalizeExpression($('expression').value);
    let sceneElapsed=0;
    for(const entry of pack.lines){
