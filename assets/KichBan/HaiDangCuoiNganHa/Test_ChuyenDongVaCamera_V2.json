@@ -1,0 +1,1101 @@
+{
+  "phien_ban": 3,
+  "world_id": "HaiDangCuoiNganHa",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.25,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_linh_an": {
+      "character_id": "char_linh_an",
+      "ten_hien_thi": "Linh An",
+      "giong_noi": {
+        "profile_id": "voice_1794303742118",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Giọng bé",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
+      }
+    },
+    "char_khai": {
+      "character_id": "char_khai",
+      "ten_hien_thi": "Khải",
+      "giong_noi": {
+        "profile_id": "voice_1794303817586",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Thanh niên",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-NamMinhNeural",
+        "gender": "male"
+      }
+    },
+    "char_nemi": {
+      "character_id": "char_nemi",
+      "ten_hien_thi": "Bà Nemi",
+      "giong_noi": {
+        "profile_id": "voice_1794303742118",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Giọng bé",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": "afternoon_between_leaves.mp3"
+  },
+  "danh_sach": [
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_linh_an",
+      "ten_hien_thi": "Linh An",
+      "noi_dung": "Khải, hôm nay chúng ta thử các động tác trên cầu gió nhé. Nhớ nghe hiệu lệnh của tớ!",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 4,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "action": "idle"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 66,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "medium",
+        "target": "char_linh_an",
+        "zoom": 1.45
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_khai",
+      "ten_hien_thi": "Khải",
+      "noi_dung": "Rõ! Tớ sẽ chạy đến cột mốc bên kia trước!",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.5,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "walking_pose",
+        "action": "running"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 66,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "walking_pose",
+            "action": "running"
+          },
+          "motion": {
+            "duration_seconds": 3,
+            "keyframes": [
+              {
+                "t": 0,
+                "x": 66,
+                "y": 78
+              },
+              {
+                "t": 0.5,
+                "x": 58,
+                "y": 78
+              },
+              {
+                "t": 1,
+                "x": 42,
+                "y": 78
+              }
+            ]
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "wide",
+        "target": "char_khai"
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_linh_an",
+      "ten_hien_thi": "Linh An",
+      "noi_dung": "Nhanh hơn nữa! Nhưng nhớ nhìn khoảng trống phía trước!",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.2,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "action": "idle"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 66,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "determined",
+            "pose": "walking_pose",
+            "action": "running"
+          },
+          "motion": {
+            "duration_seconds": 2.5,
+            "keyframes": [
+              {
+                "t": 0,
+                "x": 42,
+                "y": 78
+              },
+              {
+                "t": 1,
+                "x": 35,
+                "y": 78
+              }
+            ]
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "over_shoulder",
+        "target": "char_linh_an",
+        "zoom": 1.8
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_khai",
+      "ten_hien_thi": "Khải",
+      "noi_dung": "Nhảy qua đây nào!",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 2.5,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "airborne",
+        "action": "jumping"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "surprised",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 66,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "airborne",
+            "action": "jumping"
+          },
+          "motion": {
+            "duration_seconds": 1.4,
+            "keyframes": [
+              {
+                "t": 0,
+                "x": 35,
+                "y": 78
+              },
+              {
+                "t": 0.45,
+                "x": 48,
+                "y": 48
+              },
+              {
+                "t": 1,
+                "x": 60,
+                "y": 78
+              }
+            ]
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "wide",
+        "target": "char_khai"
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_nemi",
+      "ten_hien_thi": "Bà Nemi",
+      "noi_dung": "Đừng quên giữ thăng bằng khi đang ở trên không.",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.5,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 66,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "afraid",
+            "pose": "airborne",
+            "action": "flying"
+          },
+          "motion": {
+            "duration_seconds": 2,
+            "keyframes": [
+              {
+                "t": 0,
+                "x": 60,
+                "y": 60
+              },
+              {
+                "t": 0.5,
+                "x": 66,
+                "y": 48
+              },
+              {
+                "t": 1,
+                "x": 72,
+                "y": 60
+              }
+            ]
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_nemi",
+        "zoom": 2.25
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_khai",
+      "ten_hien_thi": "Khải",
+      "noi_dung": "Á! Gió đổi hướng rồi!",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 2.2,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "airborne",
+        "action": "knockback"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 66,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "airborne",
+            "action": "knockback"
+          },
+          "motion": {
+            "duration_seconds": 1.1,
+            "keyframes": [
+              {
+                "t": 0,
+                "x": 72,
+                "y": 60
+              },
+              {
+                "t": 0.45,
+                "x": 78,
+                "y": 42
+              },
+              {
+                "t": 1,
+                "x": 82,
+                "y": 78
+              }
+            ]
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "medium",
+        "target": "char_khai",
+        "zoom": 1.65
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_khai",
+      "ten_hien_thi": "Khải",
+      "noi_dung": "Ui da… tớ ngã mất rồi.",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 2.8,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "lying",
+        "action": "landing"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 66,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "lying",
+            "action": "landing"
+          },
+          "motion": {
+            "duration_seconds": 0.65,
+            "keyframes": [
+              {
+                "t": 0,
+                "x": 82,
+                "y": 68
+              },
+              {
+                "t": 1,
+                "x": 82,
+                "y": 90
+              }
+            ]
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_khai",
+        "zoom": 2.1
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_linh_an",
+      "ten_hien_thi": "Linh An",
+      "noi_dung": "Đừng nhúc nhích! Cậu cứ nằm yên, nghe chưa?",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.4,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "angry",
+        "pose": "standing",
+        "action": "idle"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "angry",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 82,
+          "y": 90,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "afraid",
+            "pose": "lying",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_linh_an",
+        "zoom": 2.15
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_nemi",
+      "ten_hien_thi": "Bà Nemi",
+      "noi_dung": "Bình tĩnh nào. Ta sẽ kiểm tra trước khi em ấy đứng dậy.",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.5,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "kneeling",
+        "action": "medical_exam"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 82,
+          "y": 90,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "afraid",
+            "pose": "lying",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 74,
+          "y": 82,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "kneeling",
+            "action": "medical_exam"
+          }
+        }
+      ],
+      "scene_objects": [
+        {
+          "id": "test_crystal_marker",
+          "asset": "assets/DaoCu/coc_tinh_the_test.png",
+          "x": 70,
+          "y": 88,
+          "scale": 0.35,
+          "opacity": 1,
+          "z_index": 5
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_nemi",
+        "zoom": 2.2
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_khai",
+      "ten_hien_thi": "Khải",
+      "noi_dung": "Tớ hiểu rồi. Tớ sẽ đợi mọi người giúp.",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "lying",
+        "action": "idle"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 82,
+          "y": 90,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad",
+            "pose": "lying",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 74,
+          "y": 82,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "determined",
+            "pose": "kneeling",
+            "action": "medical_exam"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_khai",
+        "zoom": 2.2
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_nemi",
+      "ten_hien_thi": "Bà Nemi",
+      "noi_dung": "Được rồi. Bây giờ hãy chống tay và từ từ đứng lên.",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.3,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "kneeling",
+        "action": "medical_exam"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 82,
+          "y": 84,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "determined",
+            "pose": "kneeling",
+            "action": "getting_up"
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 74,
+          "y": 82,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "kneeling",
+            "action": "medical_exam"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "medium",
+        "target": "char_nemi",
+        "zoom": 1.6
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_khai",
+      "ten_hien_thi": "Khải",
+      "noi_dung": "Tớ đứng lên được rồi! Cảm ơn hai người!",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.4,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "action": "getting_up"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 82,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "getting_up"
+          },
+          "motion": {
+            "duration_seconds": 1.4,
+            "keyframes": [
+              {
+                "t": 0,
+                "x": 82,
+                "y": 90
+              },
+              {
+                "t": 0.6,
+                "x": 82,
+                "y": 83
+              },
+              {
+                "t": 1,
+                "x": 82,
+                "y": 78
+              }
+            ]
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "medium",
+        "target": "char_khai",
+        "zoom": 1.5
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_linh_an",
+      "ten_hien_thi": "Linh An",
+      "noi_dung": "Lần sau nhớ quan sát hướng gió trước khi nhảy nhé!",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.2,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "angry",
+        "pose": "standing",
+        "action": "idle"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "angry",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 82,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "embarrassed",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "over_shoulder",
+        "target": "char_linh_an",
+        "zoom": 1.8
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_khai",
+      "ten_hien_thi": "Khải",
+      "noi_dung": "Vâng, thưa đội trưởng! Tớ hứa sẽ cẩn thận hơn.",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 3.1,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "action": "waving"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 82,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "waving"
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_khai",
+        "zoom": 2.1
+      }
+    },
+    {
+      "scene_id": "TEST_V2_CAU_GIO",
+      "nhan_vat": "char_nemi",
+      "ten_hien_thi": "Bà Nemi",
+      "noi_dung": "Tốt. Buổi diễn tập kết thúc. Và lần sau, ta sẽ tập đáp xuống một cách an toàn.",
+      "anh_nen": "con_duong_dem.png",
+      "thoi_luong": 4,
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "action": "idle"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_linh_an",
+          "x": 34,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_khai",
+          "x": 82,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        },
+        {
+          "id": "char_nemi",
+          "x": 82,
+          "y": 78,
+          "scale": 0.66,
+          "z_index": 3,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle"
+          }
+        }
+      ],
+      "camera": {
+        "shot": "wide",
+        "target": "char_nemi"
+      }
+    }
+  ],
+  "test_metadata": {
+    "title": "Buổi Diễn Tập Trên Cầu Gió — TEST V2",
+    "purpose": "Kiểm tra WEBM nói chuyện, chạy, nhảy, bay, bị hất văng, tiếp đất, nằm liên tục, đứng dậy, biểu cảm tức giận, camera đa cỡ cảnh và fallback đạo cụ thiếu.",
+    "expected_missing_assets": [
+      "assets/DaoCu/coc_tinh_the_test.png"
+    ],
+    "note": "Đạo cụ tinh thể được cố ý để thiếu nhằm kiểm tra fallback; các animation WEBM cần được kiểm chứng bằng tài nguyên thực tế trong thư viện."
+  }
+}
