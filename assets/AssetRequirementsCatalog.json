@@ -884,109 +884,141 @@
           "id": "sparkle",
           "name": "Lấp lánh",
           "path": "assets/HieuUng/sparkle.png",
-          "description": "Đã có file lấp lánh."
+          "description": "Đã có file lấp lánh. Có thể mô phỏng chuyển động bằng Canvas.",
+          "fallback": "png-simulated"
         },
         {
           "id": "dust",
           "name": "Bụi bay",
-          "path": "assets/HieuUng/bui_bay.webm",
-          "description": "Bụi bay nền trong suốt."
+          "path": "assets/HieuUng/bui_bay.png",
+          "description": "Bụi bay nền trong suốt. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/bui_bay.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "smoke",
           "name": "Khói",
-          "path": "assets/HieuUng/khoi.webm",
-          "description": "Khói chuyển động."
+          "path": "assets/HieuUng/khoi.png",
+          "description": "Khói chuyển động. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/khoi.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "fire",
           "name": "Lửa",
-          "path": "assets/HieuUng/lua.webm",
-          "description": "Lửa chuyển động."
+          "path": "assets/HieuUng/lua.png",
+          "description": "Lửa chuyển động. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/lua.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "electric",
           "name": "Tia điện",
-          "path": "assets/HieuUng/tia_dien.webm",
-          "description": "Tia điện."
+          "path": "assets/HieuUng/tia_dien.png",
+          "description": "Tia điện. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/tia_dien.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "lightning",
           "name": "Sét",
-          "path": "assets/HieuUng/set.webm",
-          "description": "Tia sét."
+          "path": "assets/HieuUng/set.png",
+          "description": "Tia sét. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/set.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "rain",
           "name": "Mưa",
-          "path": "assets/HieuUng/mua.webm",
-          "description": "Mưa rơi."
+          "path": "assets/HieuUng/mua.png",
+          "description": "Mưa rơi. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/mua.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "snow",
           "name": "Tuyết",
-          "path": "assets/HieuUng/tuyet.webm",
-          "description": "Tuyết rơi."
+          "path": "assets/HieuUng/tuyet.png",
+          "description": "Tuyết rơi. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/tuyet.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "wind_leaves",
           "name": "Lá cây bay",
-          "path": "assets/HieuUng/la_cay_bay.webm",
-          "description": "Lá cây bị gió cuốn."
+          "path": "assets/HieuUng/la_cay_bay.png",
+          "description": "Lá cây bị gió cuốn. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/la_cay_bay.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "sunlight",
           "name": "Tia nắng",
           "path": "assets/HieuUng/tia_nang.png",
-          "description": "Tia nắng / light rays."
+          "description": "Tia nắng / light rays. Có thể mô phỏng chuyển động bằng Canvas.",
+          "fallback": "png-simulated"
         },
         {
           "id": "aura",
           "name": "Hào quang",
-          "path": "assets/HieuUng/hao_quang.webm",
-          "description": "Hào quang quanh nhân vật."
+          "path": "assets/HieuUng/hao_quang.png",
+          "description": "Hào quang quanh nhân vật. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/hao_quang.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "crack",
           "name": "Vết nứt",
           "path": "assets/HieuUng/vet_nut.png",
-          "description": "Vết nứt bề mặt."
+          "description": "Vết nứt bề mặt. Có thể mô phỏng chuyển động bằng Canvas.",
+          "fallback": "png-simulated"
         },
         {
           "id": "explosion",
           "name": "Vụ nổ",
-          "path": "assets/HieuUng/vu_no.webm",
-          "description": "Vụ nổ hoạt họa."
+          "path": "assets/HieuUng/vu_no.png",
+          "description": "Vụ nổ hoạt họa. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/vu_no.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "debris",
           "name": "Mảnh vỡ bay",
-          "path": "assets/HieuUng/manh_vo.webm",
-          "description": "Mảnh vỡ."
+          "path": "assets/HieuUng/manh_vo.png",
+          "description": "Mảnh vỡ. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/manh_vo.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "impact",
           "name": "Hiệu ứng va chạm",
-          "path": "assets/HieuUng/va_cham.webm",
-          "description": "Tác động hình ảnh."
+          "path": "assets/HieuUng/va_cham.png",
+          "description": "Tác động hình ảnh. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/va_cham.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "blood",
           "name": "Vết thương hoạt họa",
           "path": "assets/HieuUng/vet_thuong.png",
-          "description": "Vết thương dạng minh họa."
+          "description": "Vết thương dạng minh họa. Có thể mô phỏng chuyển động bằng Canvas.",
+          "fallback": "png-simulated"
         },
         {
           "id": "motion_blur",
           "name": "Nhòe chuyển động",
-          "path": "assets/HieuUng/nhoe_chuyen_dong.webm",
-          "description": "Motion blur."
+          "path": "assets/HieuUng/nhoe_chuyen_dong.png",
+          "description": "Motion blur. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/nhoe_chuyen_dong.webm",
+          "fallback": "png-simulated"
         },
         {
           "id": "transition",
           "name": "Hiệu ứng chuyển cảnh",
-          "path": "assets/HieuUng/chuyen_canh.webm",
-          "description": "Overlay chuyển cảnh."
+          "path": "assets/HieuUng/chuyen_canh.png",
+          "description": "Overlay chuyển cảnh. PNG là fallback mô phỏng khi thiếu WEBM; ưu tiên WEBM nếu tồn tại.",
+          "video_path": "assets/HieuUng/chuyen_canh.webm",
+          "fallback": "png-simulated"
         }
       ],
       "supported_formats": [
