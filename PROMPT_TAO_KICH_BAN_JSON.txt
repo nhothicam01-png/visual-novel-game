@@ -1107,3 +1107,17 @@ D. ĐIỀU KIỆN KIỂM ĐỊNH
 - Báo riêng các trường gắn kết parent_id/attached_to/attach_to vì player chưa hỗ trợ.
 - Không đánh dấu đã mô phỏng vật lý, đã gắn nhân vật vào xe hoặc đã dựng được nội thất phương tiện nếu chỉ có ảnh/video đối tượng độc lập.
 
+==================================================
+XXIV. ẢNH CHỤP TRẠNG THÁI ĐẦY ĐỦ Ở MỖI NHỊP
+==================================================
+
+Để tránh nhân vật tự biến mất hoặc quay về vị trí mặc định khi chuyển dòng/cảnh, JSON phải dùng nguyên tắc “full snapshot” cho nhan_vat_hien_thi:
+1. Mỗi dòng/nhịp phải khai báo đầy đủ tất cả nhân vật đang hiện diện hoặc cần được giữ trong cảnh, kể cả nhân vật không nói. Không chỉ khai báo người đang thoại.
+2. Nếu nhân vật vẫn nằm trên đường, vẫn nằm trên cáng, vẫn ngồi trong xe hoặc vẫn đứng cạnh người khác, phải ghi lại trạng thái/vị trí đó trong snapshot của dòng tiếp theo. Không trông chờ player tự đoán hoặc tự nhớ trạng thái từ một dòng trước.
+3. Nếu nhân vật tạm thời không xuất hiện trong khung hình nhưng vẫn còn ở địa điểm/cảnh, có thể đặt visible:false để ẩn lớp nhân vật; khi xuất hiện lại phải khai báo trạng thái và vị trí đúng.
+4. Khi nhân vật thực sự rời khỏi cảnh hoặc không còn tồn tại trong bố cục hiện tại, dùng remove_from_scene:true trên phần tử nhân vật ở nhịp chuyển tiếp phù hợp, hoặc bỏ khỏi snapshot sau khi đã thể hiện rõ hành động rời cảnh. Không dùng việc bỏ sót nhân vật một cách vô ý.
+5. Trạng thái giao tiếp, cảm xúc và tư thế độc lập. Ví dụ nhân vật nằm trên cáng có thể đổi communication từ silent sang speaking mà pose vẫn là lying; việc đổi lời thoại không làm nhân vật tự ngồi dậy.
+6. Sau khi lên xe, snapshot các nhịp tiếp theo phải giữ đúng trạng thái đang ở trong xe/được vận chuyển theo cách biểu diễn mà player hỗ trợ. Không được tự đưa nhân vật trở lại tọa độ hiện trường.
+7. Mỗi lần đổi scene/background, phải kiểm tra lại vị trí và trạng thái của mọi nhân vật còn hiện diện. Nếu có chuyển địa điểm, thể hiện bước di chuyển hoặc một nhịp chuyển cảnh có chủ ý.
+8. Full snapshot là yêu cầu của JSON sinh mới để bảo đảm tính xác định; không tuyên bố player có cơ chế tự động suy luận và duy trì mọi trạng thái bị lược khỏi JSON.
+
