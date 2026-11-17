@@ -73,6 +73,9 @@
       }
     }
   },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
   "danh_sach": [
     {
       "scene_id": "SC001",
@@ -104,7 +107,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC001",
@@ -136,7 +152,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 6,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tran_gia_han",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "excited"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC001",
@@ -168,7 +197,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 3,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "thinking"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC001",
@@ -200,7 +242,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "concerned"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -232,7 +287,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -264,7 +332,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Thanh niên",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_do_thanh_dat",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "friendly"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -296,7 +377,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "calm"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -328,7 +422,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Thanh niên",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_do_thanh_dat",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "persuasive"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -360,7 +467,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tran_gia_han",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "excited"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -392,7 +512,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 6,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tran_gia_han",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "hesitant"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -424,7 +557,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 6,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "serious"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -456,7 +602,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tran_gia_han",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "crying"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -488,7 +647,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 6,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "comforting"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -520,7 +692,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Thanh niên",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_do_thanh_dat",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "persuasive"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -552,7 +737,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "angry"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -584,7 +782,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Bé trai",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_le_quoc_bao",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "calm"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -616,7 +827,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tran_gia_han",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -648,7 +872,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Thiếu nữ",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_co_lan",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "calm"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -680,7 +917,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Thiếu nữ",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_co_lan",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "serious"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -712,7 +962,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Thiếu nữ",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 7,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_co_lan",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "warm"
+          }
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -744,7 +1007,20 @@
         "voiceId": "vi_VN-vais1000-medium",
         "name": "Giọng bé",
         "lang": "vi-VN"
-      }
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 50,
+          "y": 78,
+          "scale": 1,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "determined"
+          }
+        }
+      ]
     }
   ]
 }
