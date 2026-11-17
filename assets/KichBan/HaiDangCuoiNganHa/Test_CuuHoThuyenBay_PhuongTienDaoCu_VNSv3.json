@@ -415,7 +415,12 @@
           "opacity": 1,
           "z_index": 5
         }
-      ]
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_nemi",
+        "zoom": 2.25
+      }
     },
     {
       "scene_id": "TEST01_BEN_MAY",
@@ -649,7 +654,12 @@
           "opacity": 1,
           "z_index": 5
         }
-      ]
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_nemi",
+        "zoom": 2.25
+      }
     },
     {
       "scene_id": "TEST02_TRAM_HAI_DANG",
