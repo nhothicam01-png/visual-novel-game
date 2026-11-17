@@ -641,11 +641,23 @@ async function updateAssets(){
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
    const folder=characterAssetFolder(spec.id),semantic=semanticForVisibleCharacter(spec,frame,currentLine);
-   const selection=resolveSemanticAnimation(folder,semantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
-   let media=null,usedFallback=false;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được WEBM ưu tiên '+spec.id+':',error)}
+   let selection=resolveSemanticAnimation(folder,semantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
+   let isSpeakingClip=false;
+   if(String(semantic.communication||'')==='speaking'&&folder){
+    const selectedPath=(expressionFilesByFolder[String(folder)]||[]).find(path=>path.split('/').pop().replace(/\.webm$/i,'')===expression);
+    isSpeakingClip=!!selectedPath&&canonicalAnimationValue('communication',animationMeta(selectedPath).communication)==='speaking';
+    if(!isSpeakingClip){
+     const candidates=(expressionFilesByFolder[String(folder)]||[]).map(path=>({path,meta:animationMeta(path)})).filter(item=>canonicalAnimationValue('communication',item.meta.communication)==='speaking');
+     const score=item=>['pose','action','emotion','direction','face_angle','view_angle','interaction_target'].reduce((n,k)=>n+(semantic[k]&&canonicalAnimationValue(k,item.meta[k])===canonicalAnimationValue(k,semantic[k])?10:0),0);
+     candidates.sort((a,b)=>score(b)-score(a)||a.path.localeCompare(b.path));
+     if(candidates.length){expression=candidates[0].path.split('/').pop().replace(/\.webm$/i,'');url=BASE+'NhanVat/'+folder+'/'+expression+'.webm';selection={...selection,file:expression,matched:false,mirrored:false,reason:'Ưu tiên WEBM speaking gần nhất'};isSpeakingClip=true}
+    }
+   }
+   let media=null,usedFallback=false;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched&&!isSpeakingClip){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được WEBM ưu tiên '+spec.id+':',error)}
    if(!media&&folder){for(const candidate of (expressionFilesByFolder[String(folder)]||[])){try{media=await cachedVideo(BASE+'NhanVat/'+folder+'/'+candidate.split('/').pop());if(media){usedFallback=true;media.pause();try{media.currentTime=0}catch(e){}break}}catch(e){}}}
    if(!media){media=makeFallbackCharacterCanvas({...spec,name:worldCharacterDirectory.find(ch=>String(ch.id)===String(spec.id))?.name||spec.id});usedFallback=true}
-   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched&&!usedFallback},folder,media,index,animationMatched:selection.matched&&!usedFallback,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
+   const canPlayAnimation=!usedFallback&&(selection.matched||isSpeakingClip);
+   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched&&!usedFallback,canPlayAnimation},folder,media,index,animationMatched:selection.matched&&!usedFallback,canPlayAnimation,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
   });
   const safeAssetLoad=async(label,loader)=>{try{return await loader()}catch(error){console.warn('Không tải được '+label+'; tiếp tục bằng phương án dự phòng:',error);return null}};
   const [nextBg,nextChar,nextLayers,nextSceneEffects,nextObjects]=await Promise.all([
@@ -668,14 +680,14 @@ async function updateAssets(){
   sceneObjectLayers=nextObjects.filter(item=>item.media);
   currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched||item.mirrored).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.mirrored?'Dùng WEBM ngược hướng và đã lật ngang tự động':(item.animationReason||'không có clip khớp'),mirrored:!!item.mirrored}));
   updateStoryAnimationWarning();
-  charLayerVideos.filter(item=>!item.animationMatched).forEach(item=>{if(typeof item.media.pause==='function')item.media.pause();try{item.media.currentTime=0}catch(e){}});
+  charLayerVideos.filter(item=>!item.canPlayAnimation).forEach(item=>{if(typeof item.media.pause==='function')item.media.pause();try{item.media.currentTime=0}catch(e){}});
   if(effectKey!==sceneEffectKey){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.media.pause)item.media.pause()});
    sceneEffectLayers=nextSceneEffects;
    sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;item.media.__sceneEffectFinished=false;item.media.onended=()=>{item.media.__sceneEffectFinished=true;drawFrame(0)};try{item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){} }});
    sceneEffectKey=effectKey;
   }else sceneEffectLayers=nextSceneEffects;
-  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.filter(item=>item.animationMatched).map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)&&!(item.loop===false&&(item.media.__sceneEffectFinished||item.media.ended))).map(item=>item.media.play().catch(()=>{})),...sceneObjectLayers.filter(item=>item.type==='video'&&item.media).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
+  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.filter(item=>item.canPlayAnimation).map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)&&!(item.loop===false&&(item.media.__sceneEffectFinished||item.media.ended))).map(item=>item.media.play().catch(()=>{})),...sceneObjectLayers.filter(item=>item.type==='video'&&item.media).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
 }
@@ -752,6 +764,18 @@ function drawFrame(elapsed,st){
  }else{
   const fallbackBg=ctx.createLinearGradient(0,0,0,h);fallbackBg.addColorStop(0,'#243653');fallbackBg.addColorStop(.62,'#53677c');fallbackBg.addColorStop(1,'#182437');ctx.fillStyle=fallbackBg;ctx.fillRect(0,0,w,h);
  }
+ // Đạo diễn khung hình: camera có thể nhắm riêng nhân vật, không cần giữ mọi người trong khung.
+ const sourceCameraFrame=getCurrentLine()?.sourceFrame||{},cameraSpec=sourceCameraFrame.camera&&typeof sourceCameraFrame.camera==='object'?sourceCameraFrame.camera:{};
+ const shot=String(cameraSpec.shot||sourceCameraFrame.camera_shot||'').toLowerCase().replace(/[- ]+/g,'_');
+ const cameraTarget=String(cameraSpec.target||sourceCameraFrame.camera_target||speakingCharacterId||'');
+ const shotZoom=Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?2.35:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.45:shot==='over_shoulder'||shot==='qua_vai'?1.75:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0);
+ let cameraSaved=false;
+ if(shotZoom>1){
+  const targetLayer=charLayerVideos.find(item=>String(item.spec?.id||'')===cameraTarget);
+  if(targetLayer){const targetSpec=targetLayer.spec||{},tx=w*Math.max(0,Math.min(100,Number(targetSpec.x??50)))/100,ty=h*Math.max(0,Math.min(110,Number(targetSpec.y??100)))/100,tm=targetSpec.motion||{},ts=Number(targetSpec.scale)||.8,faceY=ty-h*.53*ts;
+   ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(Math.max(1,Math.min(3.5,shotZoom)),Math.max(1,Math.min(3.5,shotZoom)));ctx.translate(-tx,-faceY);
+  }
+ }
  // Phương tiện/đạo cụ: lớp độc lập, tọa độ theo %, chuyển động theo motion.keyframes.
  sceneObjectLayers.slice().sort((a,b)=>(Number(a.z_index)||0)-(Number(b.z_index)||0)).forEach(obj=>{const media=obj.media;if(!media)return;const move=obj.motion&&typeof obj.motion==='object'?obj.motion:null,duration=Math.max(.01,Number(move?.duration_seconds)||1),t=Math.max(0,Math.min(1,(elapsed-lineMotionStartElapsed)/duration)),keys=Array.isArray(move?.keyframes)?move.keyframes:[],lerp=(a,b,k)=>Number(a)+(Number(b)-Number(a))*k;let st={x:Number(obj.x??50),y:Number(obj.y??80),scale:Number(obj.scale??1),rotation_degrees:Number(obj.rotation_degrees??0),opacity:Number(obj.opacity??1)};if(keys.length){const sorted=keys.filter(k=>k&&Number.isFinite(Number(k.t))).slice().sort((a,b)=>Number(a.t)-Number(b.t));if(sorted.length){let a=sorted[0],b=sorted[sorted.length-1];for(let j=0;j<sorted.length-1;j++){if(t>=Number(sorted[j].t)&&t<=Number(sorted[j+1].t)){a=sorted[j];b=sorted[j+1];break}}const u=Math.max(0,Math.min(1,(t-Number(a.t))/Math.max(.0001,Number(b.t)-Number(a.t))));['x','y','scale','rotation_degrees','opacity'].forEach(k=>{if(a[k]!=null||b[k]!=null)st[k]=lerp(a[k]??st[k],b[k]??st[k],u)})}}const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height;if(!sw||!sh)return;const scale=Math.max(.05,Math.min(5,Number(st.scale)||1)),fit=isPortrait?h/sh:Math.min(w/sw,h/sh),dw=sw*fit*scale,dh=sh*fit*scale,x=w*Math.max(0,Math.min(100,Number(st.x)||0))/100,y=h*Math.max(0,Math.min(110,Number(st.y)||0))/100;ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,Number(st.opacity??1)));if(st.rotation_degrees){ctx.translate(x,y-dh/2);ctx.rotate(Number(st.rotation_degrees)*Math.PI/180);ctx.translate(-x,-(y-dh/2))}ctx.drawImage(media,x-dw/2,y-dh,dw,dh);ctx.restore()});
  // Nhiều nhân vật: nếu JSON có nhan_vat_hien_thi thì dựng từng lớp độc lập.
@@ -763,7 +787,7 @@ function drawFrame(elapsed,st){
   const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height,fit=sw&&sh?(isPortrait?h/sh:Math.min(w/sw,h/sh)):1,dw=sw*fit*scale,dh=sh*fit*scale;
   ctx.save();let alpha=Math.max(0,Math.min(1,st.opacity??1));
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
-  const isCurrentSpeaker=spec?.animationMatched!==false&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
+  const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
   if(isCurrentSpeaker){
    const motion=Math.max(0,Math.min(1,speechMotionSmooth));
    // Chu ky lien tuc, khong bam theo am luong hay tung am tiet nen khong bi giat.
@@ -795,6 +819,7 @@ function drawFrame(elapsed,st){
  if(charLayerVideos.length){
   charLayerVideos.slice().sort((a,b)=>(Number(a.spec?.z_index)||0)-(Number(b.spec?.z_index)||0)).forEach(layer=>drawOneCharacter(layer.media,layer.spec));
  }else if(charVideo){drawOneCharacter(frameOverride.char||charVideo,{x:50,y:100,scale:1})}
+ if(cameraSaved)ctx.restore();
  // Các lớp không khí được tính theo elapsed để preview và video xuất dùng cùng một timeline.
  if(atmFx.length){
   ctx.save();
