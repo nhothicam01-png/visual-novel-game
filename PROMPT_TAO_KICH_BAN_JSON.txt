@@ -1150,14 +1150,14 @@ Không mặc định mọi nhân vật phải cùng xuất hiện trong một kh
 - `medium` / `medium_shot`: trung cảnh, đối thoại hoặc tương tác giữa một vài nhân vật.
 - `close_up` / `closeup`: cận cảnh gương mặt/người đang nói hoặc phản ứng.
 - `over_shoulder`: góc qua vai, dùng khi cần thể hiện người đối diện.
-- Có thể dùng `zoom` số trong khoảng 1.0–3.5 để tinh chỉnh.
+- Có thể dùng `zoom` số trong khoảng 1.0–1.8 để tinh chỉnh. Mặc định cận cảnh khoảng 1.4–1.55; chỉ tăng cao hơn khi có chủ đích đặc biệt và vẫn phải giữ phần đầu, vai, thân trên trong khung.
 
 Cấu trúc camera tùy chọn ở từng dòng trong `danh_sach`:
 ```json
 "camera": {
   "shot": "close_up",
   "target": "char_nemi",
-  "zoom": 2.25
+  "zoom": 1.45
 }
 ```
 Hoặc dùng hai trường rút gọn `camera_shot` và `camera_target`. `target` phải là ID có trong `nhan_vat_hien_thi` ở chính dòng đó. Khi bỏ camera, trình phát giữ bố cục nhân vật đã khai báo; không tự ép toàn bộ nhân vật vào khung. Khi nhân vật A nói, có thể cắt cận A; sang dòng B đáp lời, có thể chuyển cận B; khi cần thấy phản ứng thì chọn trung cảnh/toàn cảnh hoặc góc qua vai.
