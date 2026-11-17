@@ -2,7 +2,7 @@
   "schema_version": 1,
   "title": "Danh mục tài nguyên chuẩn Visual Novel Studio",
   "description": "Danh mục mở để bổ sung dần. Trạng thái được asset_inventory.html đối chiếu trực tiếp với file trên nhánh main. Các mục là thư viện đề xuất dùng chung, không bắt buộc mọi kịch bản phải sử dụng tất cả.",
-  "updated_at": "2026-11-17T18:35:04.488Z",
+  "updated_at": "2026-11-18",
   "categories": [
     {
       "id": "backgrounds",
@@ -273,6 +273,14 @@
           "path": "assets/Nen/di_tich_co.png",
           "description": "Di tích / phế tích."
         }
+      ],
+      "supported_formats": [
+        "png",
+        "jpg",
+        "jpeg",
+        "webp",
+        "mp4",
+        "webm"
       ]
     },
     {
@@ -448,6 +456,14 @@
           "path": "assets/DaoCu/phong_thu.png",
           "description": "Phong thư đóng / mở."
         }
+      ],
+      "supported_formats": [
+        "png",
+        "jpg",
+        "jpeg",
+        "webp",
+        "mp4",
+        "webm"
       ]
     },
     {
@@ -527,6 +543,14 @@
           "path": "assets/PhuongTien/may_bay.png",
           "description": "Máy bay."
         }
+      ],
+      "supported_formats": [
+        "png",
+        "jpg",
+        "jpeg",
+        "webp",
+        "mp4",
+        "webm"
       ]
     },
     {
@@ -762,6 +786,13 @@
           "path": "assets/AmThanh/HieuUng/nhip_tim.wav",
           "description": "Hồi hộp."
         }
+      ],
+      "supported_formats": [
+        "mp3",
+        "wav",
+        "ogg",
+        "m4a",
+        "aac"
       ]
     },
     {
@@ -835,6 +866,13 @@
           "path": "assets/AmThanh/Nen/thu_gian.mp3",
           "description": "Thư giãn."
         }
+      ],
+      "supported_formats": [
+        "mp3",
+        "wav",
+        "ogg",
+        "m4a",
+        "aac"
       ]
     },
     {
@@ -950,6 +988,16 @@
           "path": "assets/HieuUng/chuyen_canh.webm",
           "description": "Overlay chuyển cảnh."
         }
+      ],
+      "supported_formats": [
+        "png",
+        "jpg",
+        "jpeg",
+        "webp",
+        "gif",
+        "avif",
+        "webm",
+        "mp4"
       ]
     },
     {
@@ -1005,6 +1053,13 @@
           "path": "assets/AmThanh/MoiTruong/mua_nen.wav",
           "description": "Mưa liên tục."
         }
+      ],
+      "supported_formats": [
+        "mp3",
+        "wav",
+        "ogg",
+        "m4a",
+        "aac"
       ]
     }
   ],
@@ -1105,5 +1160,14 @@
       "action": "reacting",
       "name": "Phản ứng (communication)"
     }
-  ]
+  ],
+  "character_webm_formats": [
+    "webm"
+  ],
+  "media_role_rules": {
+    "background": "assets/Nen/ — ảnh tĩnh hoặc video nền MP4/WEBM, tự động liệt kê trong hai player.",
+    "overlay_effect": "assets/HieuUng/ — ảnh PNG/JPG/WebP/GIF/AVIF hoặc video WEBM/MP4 phủ trên cảnh; video có alpha khi cần trong suốt.",
+    "character": "assets/NhanVat/<folder>/ — WEBM animation của nhân vật, không dùng làm nền.",
+    "props_and_vehicles": "assets/DaoCu/ và assets/PhuongTien/ — ảnh hoặc video đặt thành lớp riêng trong cảnh."
+  }
 }
