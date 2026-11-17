@@ -134,7 +134,7 @@
         {
           "id": "char_khai",
           "expression_id": {
-            "communication": "silent",
+            "communication": "speaking",
             "emotion": "worried",
             "pose": "walking_pose",
             "action": "walking"
@@ -258,7 +258,7 @@
         {
           "id": "char_khai",
           "expression_id": {
-            "communication": "silent",
+            "communication": "speaking",
             "emotion": "afraid",
             "pose": "lying",
             "action": "landing"
