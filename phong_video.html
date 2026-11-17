@@ -1610,7 +1610,7 @@ async function loadStoryCatalog(){
   if(!response.ok)throw new Error('GitHub trả về lỗi HTTP '+response.status);
   const treeData=await response.json();
   if(treeData.truncated)throw new Error('Danh sách tệp GitHub quá lớn, không thể quét đầy đủ.');
-  entries=(treeData.tree||[]).filter(item=>item.type==='blob'&&item.path.toLowerCase().endsWith('.json')&&(/^assets\/KichBan\/[^/]+\/[^/]+\.json$/i.test(item.path)&&item.path.split('/').at(-1).replace(/\.json$/i,'')===item.path.split('/')[2])).sort((a,b)=>a.path.localeCompare(b.path,'vi')).map(file=>({name:file.path.split('/')[2],path:file.path,url:null,source:'github'}));
+  entries=(treeData.tree||[]).filter(item=>{if(item.type!=='blob'||!/^assets\/KichBan\/[^/]+\/[^/]+\.json$/i.test(item.path))return false;const fileName=item.path.split('/').at(-1);return !/^AudioManifest\.json$/i.test(fileName)&&!/^index\.json$/i.test(fileName)}).sort((a,b)=>a.path.localeCompare(b.path,'vi')).map(file=>{const parts=file.path.split('/'),world=parts[2],fileName=parts.at(-1).replace(/\.json$/i,'');return {name:world,title:fileName,path:file.path,url:null,source:'github'}});
  }catch(err){remoteError=err.message||String(err)}
  try{
   const local=await window.VNSLocal?.listStories?.({owner:'nhothicam01-png',repo:'visual-novel-game'})||[];
@@ -1620,7 +1620,7 @@ async function loadStoryCatalog(){
  entries.sort((a,b)=>a.name.localeCompare(b.name,'vi')||a.path.localeCompare(b.path,'vi'));
  sel.innerHTML='';
  const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent=entries.length?'-- Chọn truyện --':'Chưa có kịch bản JSON';sel.appendChild(placeholder);
- entries.forEach((entry,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=entry.name+' / '+entry.path.split('/').at(-1)+(entry.source==='local'?' · lưu trên máy':'');sel.appendChild(option)});
+ entries.forEach((entry,i)=>{const option=document.createElement('option');option.value=String(i);option.textContent=(entry.title&&entry.title!==entry.name?entry.title+' · ':'')+entry.name+(entry.source==='local'?' · lưu trên máy':'');sel.appendChild(option)});
  sel._stories=entries;
  status.textContent=remoteError
   ?'Không tải được danh sách GitHub ('+remoteError+'). Đang dùng '+entries.length+' kịch bản đã lưu trên thiết bị.'
@@ -1771,7 +1771,7 @@ async function loadStory(index){
    data=await response.json();source='GitHub';
   }
   storyCache.set(entry.path,data);
-  await applyStoryData(data,entry.name,entry.path);
+  await applyStoryData(data,entry.title||entry.name,entry.path);
   $('story-status').textContent+=' · Nguồn: '+source+'.';
  }catch(err){$('story-status').textContent='Lỗi nạp truyện: '+(err.message||err);console.error(err)}
  finally{$('story-select').disabled=false}
