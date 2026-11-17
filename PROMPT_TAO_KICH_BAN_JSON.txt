@@ -1142,3 +1142,17 @@ Cấu trúc camera tùy chọn ở từng dòng trong `danh_sach`:
 Hoặc dùng hai trường rút gọn `camera_shot` và `camera_target`. `target` phải là ID có trong `nhan_vat_hien_thi` ở chính dòng đó. Khi bỏ camera, trình phát giữ bố cục nhân vật đã khai báo; không tự ép toàn bộ nhân vật vào khung. Khi nhân vật A nói, có thể cắt cận A; sang dòng B đáp lời, có thể chuyển cận B; khi cần thấy phản ứng thì chọn trung cảnh/toàn cảnh hoặc góc qua vai.
 
 Mỗi nhịp thoại phải có ý đồ khung hình phù hợp; tránh lạm dụng cận cảnh liên tục, tránh cắt máy vô cớ giữa một hành động liên tục. Không dùng camera để thay thế trạng thái/animation của nhân vật. Nếu camera target không tồn tại hoặc bị ẩn ở dòng đó, báo lỗi cấu trúc camera và chọn khung hình an toàn thay vì làm hỏng phát video.
+
+
+==================================================
+XXVI. KIỂM TRA BỐ CỤC VÀ TRÁNH NHÂN VẬT CHỒNG LẤN
+==================================================
+
+Trước khi hoàn tất JSON, bắt buộc kiểm tra bố cục nhân vật trong TỪNG dòng của danh_sach:
+1. Với mọi cặp nhân vật cùng visible (hoặc không khai báo visible:false), kiểm tra tọa độ x/y và scale. Không được vô tình gán cùng x cho hai nhân vật trong cùng khung hình.
+2. Hai nhân vật đứng cạnh nhau phải có khoảng cách ngang đủ lớn theo kích thước hiển thị. Mốc tham khảo: nhân vật có scale khoảng 0.7 nên cách nhau tối thiểu khoảng 20–25 điểm phần trăm khung hình; nếu dáng/ảnh rộng hơn thì phải tăng khoảng cách.
+3. Nếu hai nhân vật cần đứng gần để tương tác, hãy dùng bố cục so le theo chiều sâu (y và z_index phù hợp) hoặc chuyển sang medium/close_up/over_shoulder; không đặt hai ảnh cùng tâm.
+4. Không chỉ kiểm tra dòng đầu hoặc dòng cuối. Phải kiểm tra mọi dòng, mọi keyframe và vị trí sau khi motion kết thúc. Nếu keyframes đưa hai nhân vật vào cùng vùng, phải sửa đường đi.
+5. Camera zoom/crop không được dùng để che giấu việc hai nhân vật đang trùng vị trí. Camera target phải tồn tại trong dòng đó.
+6. Nếu cảnh cố ý chồng lớp (ôm, cõng, bế, đứng sau), phải ghi rõ ý đồ và thứ tự z_index; nếu không có chủ ý thì xem là lỗi.
+7. Trong báo cáo cuối, liệt kê từng dòng có nguy cơ chồng lấn với ID nhân vật, tọa độ, scale và đề xuất tọa độ sửa. Không được tuyên bố đã kiểm tra nếu chưa thực hiện phép rà soát.
