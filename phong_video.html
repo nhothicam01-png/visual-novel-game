@@ -189,7 +189,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
  <strong style="color:#c4b5fd">🌧️ Hiệu ứng đồ họa của cảnh</strong>
  <div class="note">Chọn PNG tĩnh hoặc WEBM trong suốt từ assets/HieuUng. Hiệu ứng áp dụng cho toàn cảnh, không phụ thuộc nhân vật đang nói.</div>
  <div id="scene-effect-picker" class="effect-options" style="margin-top:8px"><span class="note">Đang tải thư viện hiệu ứng…</span></div>
- <label class="check" style="margin-top:8px"><input type="checkbox" id="scene-effect-loop" checked> Lặp WEBM (bỏ chọn cho hiệu ứng một lần như nổ / sét)</label>
+ <label class="check" style="margin-top:8px"><input type="checkbox" id="scene-effect-loop" checked> Lặp video WEBM / MP4 (bỏ chọn cho hiệu ứng một lần như nổ / sét)</label>
  <label class="field">Độ mờ hiệu ứng <span id="scene-effect-opacity-value">100%</span><input id="scene-effect-opacity" type="range" min="10" max="100" step="5" value="100"></label>
  <div class="note" id="scene-effect-status">Chưa chọn hiệu ứng cảnh.</div>
 </div>
@@ -918,7 +918,7 @@ function drawFrame(elapsed,st){
   if(atmFx.includes('vignette')){const g=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.22,w/2,h/2,Math.max(w,h)*.72);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,'+(.55*strength)+')');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
   ctx.restore();
  }
- // Hiệu ứng PNG / WEBM độc lập của toàn cảnh; alpha được giữ khi vẽ lên canvas.
+ // Hiệu ứng ảnh / video PNG, WEBM, MP4 độc lập của toàn cảnh; alpha được giữ khi vẽ lên canvas.
  sceneEffectLayers.slice().sort((a,b)=>(Number(a.z_index)||0)-(Number(b.z_index)||0)).forEach(item=>{
   const hasOverride=!!frameOverride.sceneEffects&&Object.prototype.hasOwnProperty.call(frameOverride.sceneEffects,item.path),overridden=hasOverride?frameOverride.sceneEffects[item.path]:null;if(hasOverride&&overridden===null)return;const media=hasOverride?overridden:item.media;if(!media||(!item.loop&&item.media?.__sceneEffectFinished))return;
   const ready=overridden?(Number(media.width||media.displayWidth)>0&&Number(media.height||media.displayHeight)>0):(item.type==='image'?(media.complete&&media.naturalWidth):(media.readyState>=2&&media.videoWidth));
