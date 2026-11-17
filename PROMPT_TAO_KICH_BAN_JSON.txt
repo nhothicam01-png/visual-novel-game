@@ -873,3 +873,96 @@ XX. DANH MỤC CHUẨN VÀ KIỂM TOÁN TÀI NGUYÊN SAU KHI TẠO JSON
    - Phân biệt thiếu metadata, thiếu WEBM, khác hướng/góc mặt/góc nhìn và trường hợp có thể dùng WEBM lật ngang an toàn.
 7. Xuất danh sách kiểm toán riêng; không tự động tạo, chuyển mã, xóa phông hoặc thay thế hàng loạt WEBM. Việc sản xuất và xử lý WEBM do người dùng thực hiện thủ công từng tài nguyên.
 8. Không kết luận “đã đủ tài nguyên” nếu chỉ kiểm tra tên file. Phải đối chiếu metadata sidecar với các trường ngữ nghĩa cần thiết.
+
+
+==================================================
+XXI. CỔNG KIỂM ĐỊNH CHẤT LƯỢNG JSON TRƯỚC KHI LƯU
+==================================================
+
+MỤC TIÊU BẮT BUỘC:
+Tạo ra một JSON hoàn chỉnh về nội dung, cấu trúc, logic diễn biến và dữ liệu ngữ nghĩa ngay từ lần đầu. Người dùng chỉ cần bổ sung những tài nguyên thực sự chưa có (WEBM, hình nền, âm thanh, hiệu ứng...), không phải quay lại sửa từng dòng JSON vì thiếu hoặc sai mô tả hành động.
+
+NGUYÊN TẮC CỐT LÕI:
+- “Hoàn chỉnh kịch bản” và “đủ tài nguyên để phát” là hai trạng thái khác nhau.
+- Không được làm nghèo, đổi sai hoặc lược bỏ nội dung kịch bản để khớp với kho tài nguyên hiện có.
+- Khi thiếu tài nguyên, giữ nguyên ý đồ và hành động chính xác trong JSON; ghi nhận phần thiếu trong báo cáo để người dùng bổ sung sau.
+- Không được đánh dấu JSON hoàn chỉnh nếu mới chỉ tạo được phần lớn nội dung hoặc chưa qua các bước kiểm định dưới đây.
+
+A. HOÀN THIỆN NỘI DUNG TRƯỚC KHI TẠO JSON
+1. Hoàn tất bản đồ sự kiện, quan hệ nhân quả, cấu trúc chương/cảnh và trạng thái nhân vật từ đầu đến kết thúc theo các mục liên quan.
+2. Xác định rõ từng hành động nhìn thấy được trên màn hình, ai thực hiện, tác động lên ai/vật gì, hướng và kết quả của hành động.
+3. Với hành động phức hợp, phân rã thành các pha cần thiết. Ví dụ “bị đánh văng” có thể gồm: bị đánh trúng → bật/văng khỏi vị trí → bay/lộn trên không (nếu đúng nội dung) → rơi/va chạm → trạng thái sau va chạm. Không mặc định mọi trường hợp đều cần tất cả các pha; chỉ tạo những gì câu chuyện thực sự mô tả hoặc đòi hỏi.
+4. Xác định chuyển động tự chủ hay bị tác động: tự đi/chạy/nhảy/bay; bị đẩy/bị kéo/bị đánh văng; rơi/ngã; dịch chuyển tức thời; hoặc hành động khác. Không suy ra loại hành động chỉ từ thay đổi tọa độ.
+5. Xác định trạng thái đầu, diễn biến, trạng thái cuối và sự chuyển tiếp hợp lý giữa các nhịp. Không để nhân vật đột ngột đổi tư thế, vị trí, biểu cảm hoặc trạng thái giao tiếp mà không có diễn biến giải thích.
+6. Nếu nguồn truyện chưa đủ căn cứ để xác định cách thực hiện một hành động, không bịa chi tiết thành sự thật. Chọn cách thể hiện trung tính phù hợp hoặc ghi rõ điểm cần người dùng quyết định; không âm thầm bỏ qua hành động cốt lõi.
+
+B. HOÀN THIỆN DỮ LIỆU TỪNG NHÂN VẬT, TỪNG NHỊP
+1. Kiểm tra mọi nhân vật có mặt trong từng dòng/cảnh, không chỉ nhân vật đang nói.
+2. Mỗi nhân vật phải có dữ liệu phù hợp với vai trò tại đúng thời điểm: communication, emotion, pose, action, direction, face_angle, view_angle, interaction_target và motion khi cần. Chỉ bỏ trường khi schema cho phép và ngữ cảnh thực sự không xác định được; không bỏ vì lười hoặc vì thiếu WEBM.
+3. Người nói, người nghe, người quan sát, người phản ứng và người không tham gia phải có trạng thái giao tiếp phù hợp. Không để tất cả nhân vật cùng speaking.
+4. Nhân vật bị tác động phải có trạng thái phản ứng tương ứng; nhân vật gây tác động phải có hành động riêng. Ví dụ một người đánh, người kia bị đánh văng thì không gán cùng một action cho cả hai.
+5. Mọi motion phải có thông tin đủ để runtime thực hiện theo schema hiện hành: action, thời lượng, điểm bắt đầu/kết thúc, easing và đường chuyển động khi cần. Với nhảy, bay, văng, rơi hoặc chuyển động theo cung, không dùng đường ngang đi bộ để thay thế.
+6. Kiểm tra tọa độ, mặt sàn, trọng tâm, khoảng cách tương tác, thứ tự chuyển động và việc nhân vật có thực sự đến đúng vị trí hay không. Không để chân xuyên sàn, nhân vật trượt không có hành động hoặc hai nhân vật tương tác khi chưa ở vị trí hợp lý.
+7. Kiểm tra các pha liên tiếp không mâu thuẫn: đang bay không thể đồng thời đứng yên trên mặt đất; đang nằm không thể tiếp tục chạy; đã rời khỏi cảnh không được tiếp tục tương tác như thể vẫn ở đó.
+
+C. KIỂM TRA SCHEMA VÀ TÍNH HỢP LỆ JSON
+1. Đối chiếu đúng schema VNS và cấu trúc mà player hiện tại hỗ trợ; không tự ý thêm trường ngoài schema.
+2. JSON phải parse được; không có dấu phẩy thừa, comment, chuỗi chưa đóng, key trùng, giá trị sai kiểu hoặc cấu trúc mảng/object không hợp lệ.
+3. Kiểm tra các ID: duy nhất trong phạm vi yêu cầu, tham chiếu nhân vật/scene hợp lệ, không có ID mồ côi hoặc tham chiếu đến nhân vật chưa khai báo.
+4. Kiểm tra mọi scene và dòng có thứ tự, thời lượng hợp lý, trường bắt buộc đầy đủ và các giá trị enum đúng danh mục chuẩn.
+5. Kiểm tra không có dòng rỗng, nhân vật vô tình biến mất, lời thoại không có người nói, motion thiếu dữ liệu bắt buộc hoặc trường cũ không còn được player hỗ trợ.
+6. Không chỉ kiểm tra cú pháp. JSON parse thành công không đồng nghĩa kịch bản đúng logic hoặc player phát đúng.
+
+D. ĐỐI CHIẾU TÀI NGUYÊN SAU KHI JSON ĐÃ ĐÚNG
+1. Sau khi khóa nội dung và dữ liệu JSON, mới đối chiếu từng yêu cầu với thư viện tài nguyên thực tế.
+2. Với WEBM: kiểm tra đúng assetFolder, sidecar metadata, action, communication, emotion, pose, direction, face_angle, view_angle, interaction_target và mirror_safe. Không chỉ dò tên file.
+3. Với hành động chưa có trong AnimationRegistry.json: ghi vào nhóm “Thiếu/đề xuất bổ sung danh mục ngữ nghĩa”.
+4. Với hành động đã có trong registry nhưng chưa có clip tương ứng: ghi vào nhóm “Thiếu WEBM”.
+5. Với hành động có nhiều pha, báo riêng từng pha còn thiếu. Ví dụ có clip bị đánh trúng nhưng chưa có clip văng ra, rơi xuống hoặc tiếp đất thì phải liệt kê đúng các pha chưa có; không báo chung chung “thiếu animation”.
+6. Nếu có thể mô phỏng bằng chuyển động 2D hoặc hiệu ứng có sẵn, chỉ ghi là “phương án mô phỏng đề xuất”, không được báo là đã có WEBM hoặc đã triển khai mô phỏng nếu runtime chưa hỗ trợ thực tế.
+7. Không tự đổi action, pose, emotion hoặc motion để làm cho báo cáo thiếu tài nguyên ngắn hơn.
+
+E. BÁO CÁO THIẾU TÀI NGUYÊN DẠNG GOM NHÓM, CÓ THỂ HÀNH ĐỘNG
+Báo cáo phải chia nhóm rõ ràng:
+- Danh mục ngữ nghĩa cần đăng ký.
+- WEBM còn thiếu.
+- WEBM có nhưng sai/thiếu metadata.
+- Hình nền còn thiếu.
+- Hiệu ứng hình ảnh còn thiếu.
+- Âm thanh/nhạc nền còn thiếu.
+- Tài nguyên có thể tái sử dụng hoặc có phương án mô phỏng thay thế.
+- Các điểm cần người dùng quyết định do nguồn truyện không đủ căn cứ.
+
+Mỗi mục thiếu phải có:
+- Tên yêu cầu dễ hiểu và giá trị kỹ thuật tương ứng.
+- Nhóm tài nguyên và loại hành động/pha cần bổ sung.
+- Nhân vật/assetFolder liên quan.
+- Metadata cần có.
+- Số lần xuất hiện.
+- Danh sách scene_id, line/index và vị trí cụ thể.
+- Mức độ cần thiết: bắt buộc để thể hiện đúng nội dung hay tùy chọn để tăng chất lượng.
+- Phương án thay thế nếu có, kèm giới hạn rõ ràng.
+
+Gộp các yêu cầu trùng nhau khi chúng thực sự dùng chung được một tài nguyên. Không gộp hai yêu cầu khác action, pose, hướng, góc nhìn hoặc vai trò chỉ vì tên gần giống. Một WEBM dùng chung chỉ được coi là tái sử dụng được khi metadata và ngữ cảnh tương thích.
+
+F. QUY TRÌNH SỬA LỖI TRƯỚC KHI XUẤT FILE
+- Lỗi nội dung, logic, schema, ID, tham chiếu và metadata của chính JSON: tự sửa trong quá trình tạo, sau đó chạy lại toàn bộ kiểm tra liên quan.
+- Thiếu tài nguyên ngoài JSON: giữ nguyên JSON chính xác, ghi vào báo cáo để người dùng bổ sung; không bắt người dùng sửa từng dòng JSON chỉ vì tài nguyên chưa tồn tại.
+- Thiếu thông tin từ nguồn truyện làm thay đổi đáng kể ý nghĩa: chỉ hỏi người dùng đúng điểm chưa thể quyết định; không hỏi những chi tiết có thể xử lý hợp lý.
+- Sau mỗi lần sửa JSON, chạy lại kiểm tra cú pháp, schema, tính liên tục, dữ liệu nhân vật và đối chiếu tài nguyên. Không dùng kết quả kiểm tra cũ cho bản JSON đã thay đổi.
+
+G. ĐIỀU KIỆN ĐƯỢC PHÉP BÁO HOÀN THÀNH
+Chỉ báo “JSON hoàn chỉnh” khi:
+1. Toàn bộ nguồn truyện/phạm vi được yêu cầu đã được chuyển thể.
+2. Đã kiểm tra mạch truyện, nguyên nhân-kết quả, chuyển cảnh và trạng thái liên tục.
+3. Mọi nhân vật ở mọi nhịp đã được rà soát trạng thái và hành động.
+4. JSON parse hợp lệ và đúng schema player hỗ trợ.
+5. Đã kiểm tra ID, tham chiếu, motion, tọa độ và các pha hành động.
+6. Đã chạy rà soát toàn bộ tài nguyên và tạo báo cáo thiếu riêng.
+7. Đã phân biệt rõ lỗi cần sửa trong JSON với tài nguyên người dùng chỉ cần bổ sung sau.
+
+Khi bàn giao, luôn tách riêng:
+- Kịch bản JSON hoàn chỉnh.
+- Báo cáo kiểm định JSON.
+- Báo cáo tài nguyên còn thiếu để người dùng bổ sung.
+Không tuyên bố đã kiểm thử phát video trên trình duyệt nếu chưa thực sự chạy kiểm thử đó.
