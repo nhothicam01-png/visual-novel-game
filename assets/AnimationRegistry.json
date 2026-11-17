@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Danh mục chuẩn dùng để kiểm tra giá trị expression_id. Chỉ thêm mục vào đây khi chủ dự án duyệt; việc thêm danh mục không có nghĩa đã có WEBM.",
+  "description": "Danh mục chuẩn dùng mã canonical duy nhất cho metadata. Nhãn tiếng Việt chỉ hiển thị ở giao diện; không lưu song song nhãn tiếng Việt và mã tiếng Anh.",
   "fields": {
     "communication": [
       "speaking",
@@ -21,21 +21,7 @@
       "laughing",
       "worried",
       "confused",
-      "determined",
-      "Trung tính",
-      "Vui vẻ",
-      "Buồn",
-      "Tức giận",
-      "Giận dữ",
-      "Sợ hãi",
-      "Hoảng sợ",
-      "Ngạc nhiên",
-      "Xấu hổ",
-      "Khóc",
-      "Cười",
-      "Lo lắng",
-      "Bối rối",
-      "Quyết tâm"
+      "determined"
     ],
     "pose": [
       "standing",
@@ -44,13 +30,7 @@
       "crouching",
       "kneeling",
       "walking_pose",
-      "Đứng",
-      "Ngồi",
-      "Nằm",
-      "Ngồi xổm",
-      "Quỳ gối",
-      "airborne",
-      "Trên không"
+      "airborne"
     ],
     "action": [
       "idle",
@@ -69,23 +49,6 @@
       "dancing",
       "falling",
       "picking up",
-      "Đứng yên",
-      "Đi bộ",
-      "Đi bộ nhanh",
-      "Chạy",
-      "Nhảy",
-      "Bay",
-      "Bơi",
-      "Ngồi xuống",
-      "Nằm xuống",
-      "Bị đẩy",
-      "Bị kéo",
-      "Dịch chuyển tức thời",
-      "Quay người",
-      "Vẫy tay",
-      "Nhảy múa",
-      "Ngã",
-      "Nhặt đồ",
       "getting_up",
       "knockback",
       "airborne",
@@ -94,28 +57,13 @@
       "being_loaded",
       "inside_vehicle",
       "being_transported",
-      "medical_exam",
-      "Đứng dậy",
-      "Bị hất văng",
-      "Trên không",
-      "Tiếp đất",
-      "Được khiêng",
-      "Được đưa lên xe",
-      "Trong phương tiện",
-      "Được vận chuyển",
-      "Được khám"
+      "medical_exam"
     ],
     "direction": [
       "left",
       "right",
       "front",
-      "back",
-      "Trái",
-      "Phải",
-      "Chính diện",
-      "Phía sau",
-      "Sang trái",
-      "Sang phải"
+      "back"
     ],
     "face_angle": [
       "0°",
@@ -132,23 +80,12 @@
       "high angle",
       "low angle",
       "top down",
-      "over the shoulder",
-      "Toàn thân",
-      "Bán thân",
-      "Cận cảnh",
-      "Góc 3/4",
-      "Góc nghiêng",
-      "Từ trên xuống",
-      "Từ dưới lên",
-      "Qua vai"
+      "over the shoulder"
     ],
     "interaction_target": [
       "none",
       "character",
-      "object",
-      "Nhân vật",
-      "Đồ vật",
-      "Không có"
+      "object"
     ]
   }
 }
