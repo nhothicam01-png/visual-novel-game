@@ -1,0 +1,515 @@
+{
+  "phien_ban": 3,
+  "world_id": "ThanhLinhKimSa",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.25,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_tong_chi_van": {
+      "character_id": "char_tong_chi_van",
+      "ten_hien_thi": "Tống Chi Vãn"
+    },
+    "char_chu_nghien": {
+      "character_id": "char_chu_nghien",
+      "ten_hien_thi": "Chu Nghiên"
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Chu Nghiên! Đợi một chút, tôi có chuyện muốn hỏi cậu.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "concerned"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Tống Chi Vãn",
+      "thoi_luong": 3.8,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "concerned",
+            "pose": "standing"
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1,
+          "motion": {
+            "duration_seconds": 3.8,
+            "easing": "linear",
+            "from": {
+              "x": 18,
+              "y": 78
+            },
+            "to": {
+              "x": 43,
+              "y": 78
+            }
+          }
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing"
+          },
+          "x": 80,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2
+        }
+      ]
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_chu_nghien",
+      "noi_dung": "Chi Vãn? Sao cậu lại tìm tôi ở đây?",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Chu Nghiên",
+      "thoi_luong": 3.4,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing"
+          },
+          "x": 80,
+          "y": 78,
+          "scale": 0.76,
+          "z_index": 2
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_chu_nghien",
+        "zoom": 2.05
+      }
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Tôi muốn biết vì sao cậu vẫn quyết định tổ chức chuyến đi đến thung lũng Kim Sa.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "serious"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Tống Chi Vãn",
+      "thoi_luong": 4.5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "serious",
+            "pose": "standing"
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_tong_chi_van",
+        "zoom": 2.05
+      }
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_chu_nghien",
+      "noi_dung": "Tôi đã nói rồi, chỉ là một chuyến đi tìm vàng thôi. Cậu đừng làm mọi chuyện nghiêm trọng quá.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "annoyed"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Chu Nghiên",
+      "thoi_luong": 4.8,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "annoyed",
+            "pose": "standing"
+          },
+          "x": 80,
+          "y": 78,
+          "scale": 0.76,
+          "z_index": 2
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_chu_nghien",
+        "zoom": 2.05
+      }
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Khu vực đó có cảnh báo sạt lở và đá rơi. Tôi không muốn thấy ai gặp chuyện chỉ vì một video trên mạng.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "concerned"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Tống Chi Vãn",
+      "thoi_luong": 4.9,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "concerned",
+            "pose": "standing"
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_tong_chi_van",
+        "zoom": 2.05
+      }
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_chu_nghien",
+      "noi_dung": "Cậu lúc nào cũng nghĩ xấu. Mọi người đã chuẩn bị hết rồi, giờ bảo hủy thì ai chịu?",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "angry"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Chu Nghiên",
+      "thoi_luong": 4.5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "angry",
+            "pose": "standing"
+          },
+          "x": 80,
+          "y": 78,
+          "scale": 0.76,
+          "z_index": 2
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_chu_nghien",
+        "zoom": 2.05
+      }
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Tôi đã cảnh báo. Quyết định thế nào là quyền của cậu, nhưng đừng nói rằng không ai nhắc trước.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "calm"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Tống Chi Vãn",
+      "thoi_luong": 4.2,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "calm",
+            "pose": "standing"
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_tong_chi_van",
+        "zoom": 2.05
+      }
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_chu_nghien",
+      "noi_dung": "...Được. Tôi sẽ tự cân nhắc.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "uneasy"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Chu Nghiên",
+      "thoi_luong": 2.8,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "uneasy",
+            "pose": "standing"
+          },
+          "x": 80,
+          "y": 78,
+          "scale": 0.76,
+          "z_index": 2
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_chu_nghien",
+        "zoom": 2.05
+      }
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Vậy tôi đi trước. Mong cậu suy nghĩ thật kỹ.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Tống Chi Vãn",
+      "thoi_luong": 3.1,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing"
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_tong_chi_van",
+        "zoom": 2.05
+      }
+    },
+    {
+      "scene_id": "SC_TEST_WALK_TALK_CLOSEUP",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Chi Vãn dừng lại cách Chu Nghiên vài bước. Hai người không còn tranh cãi, nhưng khoảng cách giữa họ đã khác trước.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Tống Chi Vãn",
+      "thoi_luong": 2.8,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing"
+          },
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 1
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing"
+          },
+          "x": 80,
+          "y": 78,
+          "scale": 0.72,
+          "z_index": 2
+        }
+      ],
+      "camera": {
+        "shot": "wide",
+        "target": "char_tong_chi_van",
+        "zoom": 1
+      }
+    }
+  ]
+}
