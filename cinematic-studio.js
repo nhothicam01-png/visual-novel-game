@@ -42,6 +42,7 @@ function validateFilm(d){
   if(typeof x.scene_id!=='string'||!x.scene_id.trim())errors.push('Mục '+n+': thiếu scene_id');
   else if(x.scene_id!==previousScene){if(seenScenes.has(x.scene_id))errors.push('Mục '+n+': scene_id bị quay lại không liên tục '+x.scene_id);seenScenes.add(x.scene_id);previousScene=x.scene_id}
   if(!x.hieu_ung||!['nhan_vat','nen','camera','moi_truong'].every(k=>Array.isArray(x.hieu_ung[k])))errors.push('Mục '+n+': thiếu mảng hiệu ứng');
+  if(x.hieu_ung){[['nhan_vat','char_'],['nen','bg_'],['camera','camera_']].forEach(([group,prefix])=>(Array.isArray(x.hieu_ung[group])?x.hieu_ung[group]:[]).forEach(id=>{if(!assets.effects.includes(id)||!String(id).startsWith(prefix))errors.push('Mục '+n+': ID hiệu ứng '+group+' không hợp lệ: '+id)}));(Array.isArray(x.hieu_ung.moi_truong)?x.hieu_ung.moi_truong:[]).forEach(id=>{if(!assets.environment.includes(id))errors.push('Mục '+n+': hiệu ứng môi trường không tồn tại: '+id)})}
   if(!x.am_thanh||!x.am_thanh.nhac_nen||!x.am_thanh.hieu_ung_am_thanh||typeof x.am_thanh.nhac_nen.tep!=='string'||typeof x.am_thanh.hieu_ung_am_thanh.tep!=='string')errors.push('Mục '+n+': thiếu cấu trúc âm thanh');
   else{if(x.am_thanh.nhac_nen.tep&&!assets.bgm.includes(x.am_thanh.nhac_nen.tep))errors.push('Mục '+n+': BGM không tồn tại');if(x.am_thanh.hieu_ung_am_thanh.tep&&!assets.sfx.includes(x.am_thanh.hieu_ung_am_thanh.tep))errors.push('Mục '+n+': SFX không tồn tại')}
   if(x.nhan_vat_hien_thi!==undefined&&!Array.isArray(x.nhan_vat_hien_thi))errors.push('Mục '+n+': nhan_vat_hien_thi phải là mảng');
