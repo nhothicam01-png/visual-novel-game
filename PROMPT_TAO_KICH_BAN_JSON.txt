@@ -857,3 +857,19 @@ XIX. HƯỚNG NHÌN, GÓC MẶT, GÓC MÁY VÀ TÀI NGUYÊN NHIỀU BIẾN THỂ
 - Nếu chỉ tìm thấy clip cùng hành động nhưng ngược hướng trái/phải, trình phát được phép lật ngang clip để dùng thay thế khi không có clip đúng hướng. Không lật khi metadata có mirror_safe:false; không tự lật hướng chính diện/sau, không dùng lật ngang để thay thế góc mặt hoặc góc máy khác nhau. Báo cáo phải ghi rõ clip được dùng bằng lật ngang, không coi đó là clip gốc đúng hướng.
 - Nếu khác face_angle hoặc view_angle thì không tự động coi là tương đương và không lật ngang để giả lập góc camera khác. Báo thiếu đúng góc cần thiết hoặc dùng mô phỏng dự phòng đã được đánh dấu rõ.
 - Khi thiếu WEBM, báo cáo phải chỉ rõ nhân vật, cảnh, dòng JSON, action, direction, face_angle, view_angle, communication, emotion, pose, số lần xuất hiện và phương án dự phòng. Phân biệt WEBM gốc, WEBM lật ngang, mô phỏng 2D và hiệu ứng dự phòng.
+
+==================================================
+XX. DANH MỤC CHUẨN VÀ KIỂM TOÁN TÀI NGUYÊN SAU KHI TẠO JSON
+==================================================
+1. Đọc assets/AnimationRegistry.json làm nguồn danh mục chuẩn cho communication, emotion, pose, action, direction, face_angle, view_angle và interaction_target.
+2. Ưu tiên dùng đúng giá trị đã đăng ký; không tự tạo biến thể chính tả, từ đồng nghĩa hoặc cách viết khác nếu đã có giá trị chuẩn tương đương.
+3. Không được đổi một hành động thực tế thành hành động khác chỉ vì hành động kia có trong danh mục hoặc đã có WEBM. Ví dụ nội dung là bay thì không được ghi đi bộ để tránh thiếu tài nguyên.
+4. Nếu ngữ cảnh thực sự cần một giá trị chưa có trong danh mục, giữ mô tả ngữ nghĩa chính xác, không bịa tài nguyên hoặc tên file. Giá trị đó sẽ được công cụ rà soát đánh dấu là “đề xuất bổ sung danh mục”.
+5. Không được coi một giá trị đã có trong AnimationRegistry.json là bằng chứng rằng thư viện đã có WEBM. Danh mục ngữ nghĩa và kho WEBM là hai lớp độc lập.
+6. Sau khi tạo xong toàn bộ JSON, phải rà soát toàn bộ nhan_vat_hien_thi của tất cả cảnh/lượt:
+   - Liệt kê giá trị expression_id chưa có trong danh mục chuẩn theo từng trường.
+   - Liệt kê tổ hợp trạng thái đã có trong danh mục nhưng thiếu WEBM phù hợp trong đúng assetFolder của nhân vật.
+   - Gộp các yêu cầu trùng nhau, đếm số lần sử dụng và ghi rõ scene_id, dòng JSON, character_id.
+   - Phân biệt thiếu metadata, thiếu WEBM, khác hướng/góc mặt/góc nhìn và trường hợp có thể dùng WEBM lật ngang an toàn.
+7. Xuất danh sách kiểm toán riêng; không tự động tạo, chuyển mã, xóa phông hoặc thay thế hàng loạt WEBM. Việc sản xuất và xử lý WEBM do người dùng thực hiện thủ công từng tài nguyên.
+8. Không kết luận “đã đủ tài nguyên” nếu chỉ kiểm tra tên file. Phải đối chiếu metadata sidecar với các trường ngữ nghĩa cần thiết.
