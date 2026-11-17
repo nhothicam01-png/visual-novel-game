@@ -608,6 +608,26 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
  ['direction','face_angle','view_angle','pose','emotion'].forEach(k=>{if(motion&&motion[k]!=null&&String(motion[k]).trim())semantic[k]=String(motion[k]).trim()});
  return semantic;
 }
+function makeFallbackCharacterCanvas(spec){
+ const c=document.createElement('canvas');c.width=360;c.height=640;const g=c.getContext('2d');
+ const hue=(Array.from(String(spec?.id||'N')).reduce((n,ch)=>n+ch.charCodeAt(0),0)*47)%360;
+ g.fillStyle='hsla('+hue+',45%,55%,.22)';g.beginPath();g.ellipse(180,320,142,285,0,0,Math.PI*2);g.fill();
+ g.fillStyle='hsla('+hue+',38%,38%,.98)';g.beginPath();g.ellipse(180,175,91,108,0,0,Math.PI*2);g.fill();
+ g.fillStyle='#f5d5bd';g.beginPath();g.ellipse(180,190,70,82,0,0,Math.PI*2);g.fill();
+ g.fillStyle='#26334a';g.beginPath();g.ellipse(153,190,8,13,0,0,Math.PI*2);g.ellipse(207,190,8,13,0,0,Math.PI*2);g.fill();
+ g.strokeStyle='#9b5960';g.lineWidth=5;g.beginPath();g.arc(180,215,18,.15,Math.PI-.15);g.stroke();
+ g.fillStyle='hsla('+hue+',45%,43%,1)';g.beginPath();g.moveTo(105,285);g.quadraticCurveTo(180,250,255,285);g.lineTo(300,580);g.quadraticCurveTo(180,620,60,580);g.closePath();g.fill();
+ g.fillStyle='#fff';g.font='bold 25px sans-serif';g.textAlign='center';g.fillText(String(spec?.name||spec?.id||'Nhân vật'),180,615);
+ return c;
+}
+function makeFallbackObjectCanvas(obj){
+ const c=document.createElement('canvas');c.width=640;c.height=300;const g=c.getContext('2d'),id=String(obj?.id||'').toLowerCase(),label=String(obj?.name||obj?.id||'Đạo cụ');
+ g.fillStyle='rgba(15,23,42,.82)';g.strokeStyle='#c4b5fd';g.lineWidth=8;
+ if(/thuyen|skiff|boat|phuongtien|rescue/.test(id)){g.beginPath();g.moveTo(55,190);g.lineTo(585,190);g.lineTo(500,260);g.lineTo(145,260);g.closePath();g.fill();g.stroke();g.fillStyle='#c4b5fd';g.fillRect(290,65,12,130);g.beginPath();g.moveTo(302,72);g.lineTo(475,170);g.lineTo(302,170);g.closePath();g.fill()}
+ else if(/cang|stretcher|giuong/.test(id)){g.fillRect(70,105,500,90);g.strokeRect(70,105,500,90);g.beginPath();g.moveTo(105,195);g.lineTo(105,270);g.moveTo(535,195);g.lineTo(535,270);g.stroke()}
+ else{g.beginPath();g.moveTo(320,35);g.lineTo(420,145);g.lineTo(320,265);g.lineTo(220,145);g.closePath();g.fill();g.stroke()}
+ g.fillStyle='#fff';g.font='bold 27px sans-serif';g.textAlign='center';g.fillText(label,320,292);return c;
+}
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
  const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
@@ -622,8 +642,10 @@ async function updateAssets(){
   const layerJobs=displaySpecs.map(async(spec,index)=>{
    const folder=characterAssetFolder(spec.id),semantic=semanticForVisibleCharacter(spec,frame,currentLine);
    const selection=resolveSemanticAnimation(folder,semantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
-   let media=null;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được lớp nhân vật '+spec.id+' ('+folder+'/'+expression+'):',error)}
-   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched},folder,media,index,animationMatched:selection.matched,animationReason:selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
+   let media=null,usedFallback=false;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được WEBM ưu tiên '+spec.id+':',error)}
+   if(!media&&folder){for(const candidate of (expressionFilesByFolder[String(folder)]||[])){try{media=await cachedVideo(BASE+'NhanVat/'+folder+'/'+candidate.split('/').pop());if(media){usedFallback=true;media.pause();try{media.currentTime=0}catch(e){}break}}catch(e){}}}
+   if(!media){media=makeFallbackCharacterCanvas({...spec,name:worldCharacterDirectory.find(ch=>String(ch.id)===String(spec.id))?.name||spec.id});usedFallback=true}
+   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched&&!usedFallback},folder,media,index,animationMatched:selection.matched&&!usedFallback,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
   });
   const [nextBg,nextChar,nextLayers,nextSceneEffects,nextObjects]=await Promise.all([
    bgPath?(/\.mp4$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
@@ -634,18 +656,18 @@ async function updateAssets(){
     const media=spec.type==='image'?await cachedImage(url):await cachedVideo(url);
     return {...spec,media};
    })),
-   Promise.all(objectSpecs.map(async spec=>({...spec,media:spec.type==='image'?await cachedImage(spec.url):await cachedVideo(spec.url)})))
+   Promise.all(objectSpecs.map(async spec=>{let media=null;try{media=spec.type==='image'?await cachedImage(spec.url):await cachedVideo(spec.url)}catch(error){console.warn('Tài nguyên cảnh thiếu, dùng mô phỏng:',spec.url)}return {...spec,media:media||makeFallbackObjectCanvas(spec),isFallback:!media}}))
   ]);
   if(token!==assetLoadToken)return;
   if(bgVideo&&bgVideo!==nextBg)bgVideo.pause();if(charVideo&&charVideo!==nextChar)charVideo.pause();
-  charLayerVideos.forEach(old=>{if(old.media&&!nextLayers.some(item=>item.media===old.media))old.media.pause()});
+  charLayerVideos.forEach(old=>{if(old.media&&!nextLayers.some(item=>item.media===old.media)&&typeof old.media.pause==='function')old.media.pause()});
   sceneObjectLayers.forEach(old=>{if(old.media&&!nextObjects.some(item=>item.media===old.media)&&old.media.pause)old.media.pause()});
   bgVideo=/\.mp4$/i.test(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   charLayerVideos=nextLayers.filter(item=>item.media);
   sceneObjectLayers=nextObjects.filter(item=>item.media);
   currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched||item.mirrored).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.mirrored?'Dùng WEBM ngược hướng và đã lật ngang tự động':(item.animationReason||'không có clip khớp'),mirrored:!!item.mirrored}));
   updateStoryAnimationWarning();
-  charLayerVideos.filter(item=>!item.animationMatched).forEach(item=>{item.media.pause();try{item.media.currentTime=0}catch(e){}});
+  charLayerVideos.filter(item=>!item.animationMatched).forEach(item=>{if(typeof item.media.pause==='function')item.media.pause();try{item.media.currentTime=0}catch(e){}});
   if(effectKey!==sceneEffectKey){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.media.pause)item.media.pause()});
    sceneEffectLayers=nextSceneEffects;
