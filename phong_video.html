@@ -816,7 +816,7 @@ function readFrameState(){
 function drawAnimatedPngEffect(media,item,w,h,elapsed){
  const name=String(item.base||item.path||'').split('/').pop().replace(/\\.[^.]+$/,'').toLowerCase(),sw=media.naturalWidth||media.width,sh=media.naturalHeight||media.height;if(!sw||!sh)return;
  const profile=getVfxSimulationProfile(name),variant=profile.variant||{},mode=profile.mode||'overlay',period=Math.max(.5,Number(variant.period||profile.period||3.5)),phase=((elapsed%period)+period)%period;
- const fit=Math.min(w*.84/sw,h*.84/sh),cover=/^(rain|snow)$/.test(profile.particle||'')?Math.max(w/sw,h/sh):fit;
+ const fit=Math.max(w/sw,h/sh),cover=fit;
  let scale=Number(profile.scale||1),rotation=0,alpha=Number(profile.alpha??1),x=w/2,y=h/2;
  if(mode==='lightning'){
   const flashes=variant.flashes||[.05,.18,.55],duration=.095;
