@@ -711,7 +711,7 @@ function animate(){
  try{drawFrame(t)}finally{canvas=activeCanvas;ctx=activeCtx}
  raf=requestAnimationFrame(animate);
 }
-let previewStartedAt=0,previewPauseStartedAt=0,previewRunId=0;
+let previewStartedAt=0,previewPauseStartedAt=0,previewRunId=0,lineMotionStartElapsed=0;
 function startRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=1;animate()}
 function stopRenderLoop(){if(raf)cancelAnimationFrame(raf);raf=0;drawFrame(0)}
 
@@ -978,7 +978,7 @@ async function playPreview(){
   if(!await waitWhilePaused(run))break;
   if(!(firstLineReady&&itemIndex===0))await loadSourceLineForPlayback(item);
   if(!await waitWhilePaused(run))break;
-  const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;await playLineAudio(line);
+  const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;lineMotionStartElapsed=(performance.now()-previewStartedAt)/1000;await playLineAudio(line);
   const text=$('dialogue').value.trim();
   speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
   speechTextIndex=0;speechAudioElement=null;speechMotionSmooth=0;speechMotionFrameAt=0;
@@ -990,9 +990,9 @@ async function playPreview(){
     URL.revokeObjectURL(url);previewAudio.tts=null;
    }else if(text){setTtsStatus('Thiếu WAV của câu thoại: '+(line.speaker||item.sourceIndex+1));}
   }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;}
-  const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0));
-  if(directRecording){const lineEnd=(performance.now()-directRecordStartedAt)/1000;directRecordEntries.push({line,blob:line.wavBlob||null,gain:line.gain??1,sceneIndex:item.sceneIndex,duration:Math.max(.01,lineEnd-lineStart),start:lineStart,pause})}
-  let remaining=pause*1000;
+  const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0)),requestedDuration=Math.max(0,Math.min(30,Number(line.sourceFrame?.thoi_luong)||0)),lineElapsed=(performance.now()-previewStartedAt)/1000-lineMotionStartElapsed,hold=Math.max(pause,requestedDuration-lineElapsed);
+  if(directRecording){const lineEnd=(performance.now()-directRecordStartedAt)/1000;directRecordEntries.push({line,blob:line.wavBlob||null,gain:line.gain??1,sceneIndex:item.sceneIndex,duration:Math.max(.01,lineEnd-lineStart),start:lineStart,pause:hold})}
+  let remaining=hold*1000;
   while(previewing&&run===previewRunId&&remaining>0){
    if(!await waitWhilePaused(run))break;
    const step=Math.min(80,remaining);await new Promise(resolve=>setTimeout(resolve,step));remaining-=step;
@@ -1822,7 +1822,7 @@ function buildEditedStoryOutput(){
   if(Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))frame.anh_hieu_ung=sceneEffects[0]?.path.split('/').pop().replace(/\.[^.]+$/,'')||'';
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
-  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1)}});
+  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
   else delete frame.nhan_vat_hien_thi;
   frame.noi_dung=String(line.text??'');
   const expression=String(line.expression||'').trim();if(expression&&!frame.expression_id)frame.expression_id=semanticFromExpression(characterAssetFolder(characterId),expression);delete frame.bieu_cam;
@@ -2022,7 +2022,7 @@ function readVisibleCharactersFromEditor(){
  const previous=Array.isArray(getCurrentLine()?.visibleCharacters)?getCurrentLine().visibleCharacters:[];
  return Array.from($('visible-character-list')?.querySelectorAll('[data-visible-index]')||[]).map((card,index)=>{
   const get=name=>card.querySelector('[data-visible-field="'+name+'"]')?.value,id=String(get('id')||''),bieu_cam=String(get('bieu_cam')||''),old=previous.find(x=>String(x.id)===id),same=old&&normalizeExpression(old.bieu_cam)===normalizeExpression(bieu_cam),expression_id=same?old.expression_id:semanticFromExpression(characterAssetFolder(id),bieu_cam);
-  return {id,bieu_cam,expression_id:expression_id||{},x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:index+1};
+  return {id,bieu_cam,expression_id:expression_id||{},x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:index+1,motion:old?.motion};
  }).filter(item=>item.id);
 }
 $('visible-character-add').addEventListener('click',()=>{
