@@ -915,7 +915,7 @@ function pausePreview(){
  previewPaused=true;previewPauseStartedAt=performance.now();
  Object.values(previewAudio).forEach(a=>{if(a&&!a.paused)a.pause()});
  pauseBrowserSpeech();
- if(charVideo)charVideo.pause();charLayerVideos.forEach(x=>x.media?.pause());sceneEffectLayers.forEach(x=>x.media?.pause());if(bgVideo)bgVideo.pause();
+ if(charVideo)charVideo.pause();charLayerVideos.forEach(x=>x.media?.pause?.());sceneEffectLayers.forEach(x=>x.media?.pause());if(bgVideo)bgVideo.pause();
  updatePlaybackButtons();setTtsStatus('Đã tạm dừng. Nhấn Tiếp tục để chạy tiếp.');
 }
 function resumePreview(){
@@ -928,7 +928,7 @@ function resumePreview(){
   if(a&&a.paused&&!a.ended)a.play().catch(err=>console.warn('Khong the tiep tuc am thanh preview:',err));
  });
  resumeBrowserSpeech();
- if(charVideo)charVideo.play().catch(()=>{});charLayerVideos.forEach(x=>x.media?.play().catch(()=>{}));sceneEffectLayers.forEach(x=>x.media?.play().catch(()=>{}));if(bgVideo)bgVideo.play().catch(()=>{});
+ if(charVideo)charVideo.play().catch(()=>{});charLayerVideos.forEach(x=>x.media?.play?.().catch(()=>{}));sceneEffectLayers.forEach(x=>x.media?.play().catch(()=>{}));if(bgVideo)bgVideo.play().catch(()=>{});
  updatePlaybackButtons();setTtsStatus('Đang tiếp tục chạy…');
 }
 async function waitWhilePaused(run){
@@ -941,7 +941,7 @@ function stopPreview(){
  if(previewSpeech){previewSpeech=null}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();a.currentTime=0}});
  if(charVideo)charVideo.pause();
- charLayerVideos.forEach(x=>x.media?.pause());
+ charLayerVideos.forEach(x=>x.media?.pause?.());
  sceneEffectLayers.forEach(x=>x.media?.pause());
  if(bgVideo)bgVideo.pause();
  stopRenderLoop();updatePlaybackButtons();
