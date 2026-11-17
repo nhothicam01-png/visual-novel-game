@@ -819,6 +819,18 @@ XIV. CHỌN ANIMATION WEBM BẰNG METADATA (BẮT BUỘC)
 9. Mỗi nhân vật trong cùng cảnh có expression_id độc lập, kể cả khi dùng chung assetFolder.
 10. Metadata chỉ dùng để chọn animation; JSON chỉ giữ expression_id ngữ nghĩa.
 
+11. PHÂN TÍCH HÀNH ĐỘNG TỪ NỘI DUNG, KHÔNG SUY ĐOÁN TỪ TỌA ĐỘ:
+   - Phải đọc toàn bộ ngữ cảnh cảnh, lời thoại, lời dẫn, hành động trước/sau và mục tiêu của nhân vật để xác định hành động thực tế.
+   - Không được mặc định nhân vật thay đổi tọa độ là đi bộ. Tọa độ from/to chỉ mô tả đường di chuyển trong không gian, không quyết định loại hoạt ảnh.
+   - Nếu nhân vật di chuyển, thêm motion vào đúng phần tử của nhan_vat_hien_thi và ghi motion.action bằng hành động ngữ nghĩa phù hợp metadata WEBM, ví dụ: "Đi bộ", "Chạy", "Nhảy", "Bay", "Bơi", "Bị đẩy", "Bị kéo", "Dịch chuyển tức thời".
+   - Chọn hành động theo điều thực sự xảy ra trong truyện: nhân vật tự đi thì đi bộ/chạy; bật khỏi mặt đất thì nhảy; bay/lơ lửng thì bay; bị tác động thì bị đẩy/bị kéo; biến mất rồi xuất hiện nơi khác thì dịch chuyển tức thời. Không dùng một hành động thay thế chỉ vì nó có sẵn WEBM.
+   - Với chuyển động có đường đi, motion gồm action, duration_seconds, easing, from và to. Với nhảy/bay, tọa độ Y phải mô tả cung/độ cao phù hợp; không ép thành đường ngang như đi bộ.
+   - Nếu hành động không rõ hoặc nội dung chỉ nói nhân vật đến một nơi mà không mô tả cách di chuyển, không tự bịa loại chuyển động. Giữ trạng thái hiện tại hoặc đánh dấu cần làm rõ.
+   - Nếu một câu thoại chứa nhiều hành động nối tiếp (ví dụ chạy rồi nhảy), phải tách thành các nhịp/cảnh hoặc chuỗi motion riêng có thời lượng rõ ràng; không gộp thành một action duy nhất.
+   - expression_id.action của nhân vật hiển thị phải phản ánh hành động đang diễn ra tại nhịp đó. Khi kết thúc chuyển động, chuyển về action phù hợp như "Đứng yên", "Thở", "Nghe"...
+   - Kiểm tra action được chọn với metadata WEBM trong assetFolder của chính nhân vật. Nếu thiếu clip, vẫn giữ đúng action trong JSON và báo thiếu tài nguyên; tuyệt đối không đổi sang action khác chỉ để né báo thiếu.
+
+
 ==================================================
 
 ==================================================
