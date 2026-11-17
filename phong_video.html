@@ -384,7 +384,7 @@ function renderAnimationAssetReport(){
  host.innerHTML='<div class="note">Đã quét '+lineTotal+' mục thoại. Danh sách dưới đây là các tổ hợp trạng thái chưa có WEBM khớp. Tên file chỉ là gợi ý; metadata mới là căn cứ nhận diện.</div>'+cards.join('');
  host.querySelectorAll('[data-copy-animation-metadata]').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(JSON.stringify(JSON.parse(button.dataset.copyAnimationMetadata),null,2));button.textContent='✓ Đã sao chép'}catch(error){button.textContent='Không sao chép được';console.warn(error)}}));
 }
-function updateStoryAnimationWarning(){if(!$('story-status'))return;if(!activeStoryData){renderAnimationAssetReport();return}const base='Đã nạp '+activeStoryName+': '+sourceLineCount+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh.';const details=currentAnimationWarnings.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']: '+w.reason});$('story-status').textContent=base+(details.length?' · Thiếu WEBM khớp trạng thái ở dòng hiện tại: '+details.join('; ')+'. Đang giữ hình tĩnh để tránh diễn sai.':' · Animation khớp metadata ở dòng hiện tại.');renderAnimationAssetReport();}
+function updateStoryAnimationWarning(){if(!$('story-status'))return;if(!activeStoryData){renderAnimationAssetReport();return}const base='Đã nạp '+activeStoryName+': '+sourceLineCount+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh.';const missing=currentAnimationWarnings.filter(w=>!w.mirrored),mirrored=currentAnimationWarnings.filter(w=>w.mirrored),details=missing.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']: '+w.reason});const flips=mirrored.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']'});$('story-status').textContent=base+(details.length?' · Thiếu WEBM khớp trạng thái ở dòng hiện tại: '+details.join('; ')+'. Đang giữ hình tĩnh để tránh diễn sai.':' · Animation khớp metadata ở dòng hiện tại.')+(flips.length?' · Đã tự lật ngang WEBM cho hướng đối diện: '+flips.join('; ')+'.':'');renderAnimationAssetReport();}
 
 function safeAudioDataName(value){return String(value||'KichBan').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan'}
 function manifestVoiceForLine(line){
@@ -566,7 +566,7 @@ async function updateAssets(){
   charLayerVideos.forEach(old=>{if(old.media&&!nextLayers.some(item=>item.media===old.media))old.media.pause()});
   bgVideo=/\.mp4$/i.test(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   charLayerVideos=nextLayers.filter(item=>item.media);
-  currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.animationReason||'không có clip khớp'}));
+  currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched||item.mirrored).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.mirrored?'Dùng WEBM ngược hướng và đã lật ngang tự động':(item.animationReason||'không có clip khớp'),mirrored:!!item.mirrored}));
   updateStoryAnimationWarning();
   charLayerVideos.filter(item=>!item.animationMatched).forEach(item=>{item.media.pause();try{item.media.currentTime=0}catch(e){}});
   if(effectKey!==sceneEffectKey){
