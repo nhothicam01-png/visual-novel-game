@@ -454,6 +454,14 @@ NHÂN VẬT:
 - Không tự tạo `profile_id` hoặc `voice_id`. Nếu chưa có dữ liệu giọng hợp lệ, để trống để website dùng giọng được gán trong Setup cảnh; nếu nhân vật cũng chưa được gán giọng riêng, website dùng giọng mặc định.
 - Không thêm thông tin giọng nói vào từng phần tử `danh_sach`.
 
+LOẠI PHÁT NGÔN — PHÂN BIỆT THOẠI NHÂN VẬT VÀ LỜI DẪN:
+- Mỗi dòng thoại phải xác định đúng loại phát ngôn. Mặc định là thoại trực tiếp của nhân vật (`loai_phat_ngon: "character"`).
+- Khi là lời người dẫn chuyện, lời kể, voice-over hoặc độc thoại nội tâm không phát ra thành tiếng trước mặt nhân vật, đặt `loai_phat_ngon: "narration"`.
+- `nhan_vat` vẫn có thể giữ ID nhân vật kể chuyện (ví dụ Tống Chi Vãn) để xác định ngôi kể/giọng đọc; nhưng narration KHÔNG làm nhân vật đó dùng WEBM communication=speaking, không tự động mấp máy miệng.
+- Chỉ thoại trực tiếp (`loai_phat_ngon: "character"`) mới kích hoạt WEBM nói của đúng nhân vật có ID `nhan_vat`. Các nhân vật còn lại giữ animation im lặng/phản ứng phù hợp.
+- Không suy luận narration chỉ vì câu thoại dùng ngôi thứ nhất. AI phải căn cứ chức năng câu: kể cho khán giả nghe = narration; nói thành lời với người trong cảnh = character.
+- Có thể dùng alias `speaker_type` hoặc `kieu_loi_thoai` với cùng giá trị, nhưng ưu tiên `loai_phat_ngon`.
+
 ANIMATION / BIỂU CẢM:
 - Kiểm tra metadata WEBM trong assetFolder hiện tại của từng character_id.
 - JSON v3 dùng `expression_id` dạng object ngữ nghĩa; không dùng `expression_id`, không lưu basename hay filename.
