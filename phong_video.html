@@ -435,7 +435,7 @@ function renderAnimationAssetReport(){
  const isRegistered=(field,value)=>{const list=registry.fields?.[field]||registry[field]||[];const wanted=canonicalAnimationValue(field,value);return list.some(v=>canonicalAnimationValue(field,v)===wanted)};
  scenes.forEach((scene,sceneIndex)=>(scene.lines||[]).forEach((line,lineIndex)=>{
   const frame=line.sourceFrame||{},raw=Array.isArray(line.visibleCharacters)?line.visibleCharacters:Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
-  const specs=raw.filter(x=>x&&typeof x==='object'&&x.id!=null&&x.visible!==false&&x.remove_from_scene!==true),display=raw.length?specs:((frame.nhan_vat||line.speakerId)?[{id:String(frame.nhan_vat||line.speakerId),expression_id:frame.expression_id||line.expressionId||{}}]:[]);
+  const specs=raw.filter(x=>x&&typeof x==='object'&&x.id!=null&&x.visible!==false&&x.remove_from_scene!==true),hasExplicitSnapshot=Array.isArray(line.visibleCharacters)||Array.isArray(frame.nhan_vat_hien_thi),display=hasExplicitSnapshot?specs:((frame.nhan_vat||line.speakerId)?[{id:String(frame.nhan_vat||line.speakerId),expression_id:frame.expression_id||line.expressionId||{}}]:[]);
   display.forEach(spec=>{
    const id=String(spec.id),folder=characterAssetFolder(id),base=normalizeSemantic(spec.expression_id||(id===String(frame.nhan_vat||line.speakerId||'')?frame.expression_id||line.expressionId:semanticFromExpression(folder,spec.bieu_cam)));
    const semantic={...base,communication:String(line.text||frame.noi_dung||'').trim()&&id===String(frame.nhan_vat||line.speakerId||'')?'speaking':'silent'};
@@ -2252,8 +2252,8 @@ function buildEditedStoryOutput(){
   const sceneEffects=normalizeSceneEffects(scene.visual?.sceneEffects||[]);if(sceneEffects.length)frame.hieu_ung_canh=sceneEffects.map(item=>({file:item.path,type:item.type,loop:item.loop!==false,opacity:item.opacity,z_index:item.z_index}));else delete frame.hieu_ung_canh;
   if(Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))frame.anh_hieu_ung=sceneEffects[0]?.path.split('/').pop().replace(/\.[^.]+$/,'')||'';
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
-  const visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:[];
-  if(visible.length)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
+  const hasVisibleSnapshot=Array.isArray(line.visibleCharacters)||Array.isArray(frame.nhan_vat_hien_thi),visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
+  if(hasVisibleSnapshot)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
   else delete frame.nhan_vat_hien_thi;
   if(visible.filter(item=>item&&item.visible!==false&&item.remove_from_scene!==true).length>1&&!frame.bo_cuc_nhan_vat)frame.bo_cuc_nhan_vat={mode:'auto',gap:5,margin:6};
   frame.noi_dung=String(line.text??'');
