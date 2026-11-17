@@ -21,6 +21,27 @@ Các thư mục tài nguyên:
 - Hiệu ứng âm thanh: assets/AmThanh/HieuUng/
 - Thư mục chứa các truyện: assets/KichBan/
 
+==================================================
+QUY TẮC KIẾN TRÚC BẮT BUỘC – KHÔNG TỰ Ý ĐỔI CẤU TRÚC
+==================================================
+
+- Mỗi truyện có MỘT thư mục riêng trực tiếp bên dưới `assets/KichBan/`.
+- Cấu trúc chuẩn duy nhất cho truyện mới:
+  `assets/KichBan/<TEN_THU_MUC_TRUYEN>/<TEN_THU_MUC_TRUYEN>.json`
+  `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/`
+- Không đặt truyện mới vào `assets/KichBan/<TEN_THE_GIOI>/` chỉ vì tên thư mục đó trùng tên thế giới. Thư mục thế giới và thư mục truyện là hai khái niệm độc lập.
+- Quan hệ giữa thế giới và các truyện được lưu trong `assets/TheGioi/<slug>/TheGioi.json`, tại mảng `story_folders` với các trường `title`, `folder`, `path`, `json_path`. Không dùng vị trí thư mục để suy ra thế giới sở hữu truyện.
+- Quy tắc này áp dụng cho MỌI thao tác, không phân biệt tạo bằng Gemini Studio, tạo trực tiếp qua GitHub API, chỉnh sửa, nhân bản, nhập dữ liệu hay tạo theo yêu cầu của trợ lý.
+- Trước khi ghi file, bắt buộc đọc cây thư mục GitHub hiện tại và kiểm tra thư mục đích. Không tự suy luận một cấu trúc mới từ tên thế giới, tên dự án hoặc cách nhóm dữ liệu thuận tiện.
+- Nếu thư mục truyện chưa tồn tại, tạo JSON chính và `PhuDe/.gitkeep`. Nếu đã tồn tại, kiểm tra nội dung trước khi ghi; không tạo thêm JSON chính thứ hai trong cùng thư mục.
+- Nếu tên thư mục đã tồn tại nhưng đang chứa một truyện khác hoặc nhiều dữ liệu chưa xác định, tự chọn hậu tố mới an toàn; không đặt thêm truyện vào thư mục đó.
+- Khi mở/chỉnh sửa truyện cũ có đường dẫn lịch sử khác chuẩn, phải giữ nguyên đường dẫn và dữ liệu hiện hữu cho đến khi có quy trình di chuyển được xác minh. Không tự động di chuyển hoặc xóa hàng loạt.
+- Khi di chuyển một truyện cụ thể: tạo bản JSON tại thư mục chuẩn mới; tạo/giữ nguyên PhuDe; xác minh JSON mới hợp lệ và đọc lại được; cập nhật đúng một mục `story_folders` trong hồ sơ thế giới; chỉ sau khi xác minh đủ mới xóa file JSON nguồn cũ. Không xóa thư mục nguồn nếu còn truyện hoặc tài nguyên khác.
+- Không tạo `assets/PhuDe/` ở cấp gốc. Phụ đề luôn thuộc `assets/KichBan/<TEN_THU_MUC_TRUYEN>/PhuDe/`.
+- Nếu không thể xác định chắc chắn thư mục truyện hoặc quyền sở hữu file, dừng thao tác ghi/xóa và báo rõ; tuyệt đối không tự tạo cấu trúc thay thế.
+
+==================================================
+
 THƯ MỤC TRUYỆN CẦN XỬ LÝ:
 <TEN_THU_MUC_TRUYEN>
 
