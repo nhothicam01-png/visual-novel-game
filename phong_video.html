@@ -1257,8 +1257,14 @@ async function preparePreviewPlayback(items,useBrowser){
 async function playPreview(){
  saveCurrentLine();saveCurrentScene();
  const scope=$('preview-scope').value,startIndex=currentSourceIndex();
- const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
- if(!items.length)return;
+ const scopedItems=allSourceLines().filter(item=>scope==='full'||item.sceneIndex===activeSceneIndex);
+ if(!scopedItems.length){setStatus('Cảnh này chưa có câu thoại để phát.');return}
+ // Nếu tiến trình đã lưu đang ở câu cuối của phạm vi phát, phát lại từ đầu
+ // thay vì chỉ chạy câu cuối rồi kết thúc ngay.
+ const lastScopedIndex=scopedItems[scopedItems.length-1].sourceIndex;
+ const effectiveStart=startIndex>=lastScopedIndex?scopedItems[0].sourceIndex:startIndex;
+ const items=scopedItems.filter(item=>item.sourceIndex>=effectiveStart);
+ if(!items.length){setStatus('Không tìm thấy câu thoại hợp lệ trong phạm vi phát.');return}
  const useBrowser=$('preview-tts-mode').value==='browser';
  // Giọng render: tạo/kiểm tra WAV cho toàn bộ lời thoại trước khi chạy timeline.
  const shouldPrepare=directRecordRequested||!useBrowser;
@@ -1312,7 +1318,7 @@ async function playPreview(){
 }
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
-$('play-preview').addEventListener('click',()=>{if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
+$('play-preview').addEventListener('click',()=>{if(!previewing)playPreview().catch(err=>{console.error('Lỗi phát preview:',err);setStatus('Phát bị dừng do lỗi: '+(err?.message||String(err)));updatePlaybackButtons()});else if(previewPaused)resumePreview();else pausePreview()});
 // Double-click vào khung video để chạy / tạm dừng / tiếp tục xem trước.
 stage.addEventListener('dblclick',e=>{e.preventDefault();if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
 $('direct-record-button').addEventListener('click',async()=>{if(directRecording){stopPreview();await stopDirectRecorder();return}if(previewing){setStatus('Hãy dừng phát trước khi bắt đầu ghi trực tiếp.');return}if($('preview-tts-mode').value==='browser'){$('preview-tts-mode').value='render';setTtsStatus('Ghi trực tiếp dùng giọng render để thu được âm thanh đầy đủ.')}directRecordRequested=true;await playPreview()});
@@ -2075,7 +2081,7 @@ async function loadWorldCharacterFolderMap(data,storyPath){
  try{
   const slug=String(data?.world_id||'');if(!slug)throw new Error('Kịch bản thiếu world_id; không thể tra thư mục nhân vật.');
   const base='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/',worldPath='assets/TheGioi/'+slug+'/TheGioi.json';
-  const world=await WorldCache.load(slug,async()=>{const worldResponse=await fetch(base+worldPath.split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});if(!worldResponse.ok)throw new Error('Không tải được TheGioi.json từ GitHub (HTTP '+worldResponse.status+').');return worldResponse.json()}),worldCharacters=Array.isArray(world?.characters)?world.characters:[],latest=new Map(worldCharacters.filter(ch=>ch&&typeof ch==='object').map(ch=>[String(ch.character_id||ch.id||''),ch]));
+  const worldResponse=await fetch(base+worldPath.split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});if(!worldResponse.ok)throw new Error('Không tải được TheGioi.json mới nhất từ GitHub (HTTP '+worldResponse.status+').');const world=await worldResponse.json();try{WorldCache.save(slug,world)}catch(cacheError){console.warn('Không cập nhật được cache thế giới; tiếp tục dùng dữ liệu GitHub mới nhất:',cacheError)}const worldCharacters=Array.isArray(world?.characters)?world.characters:[],latest=new Map(worldCharacters.filter(ch=>ch&&typeof ch==='object').map(ch=>[String(ch.character_id||ch.id||''),ch]));
   if(!worldCharacters.length)throw new Error('TheGioi.json không có danh sách characters hợp lệ.');
   const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});if(!response.ok)throw new Error('GitHub tree HTTP '+response.status);const tree=await response.json(),files=(tree.tree||[]).filter(x=>x.type==='blob').map(x=>x.path),webmPaths=files.filter(p=>p.startsWith('assets/NhanVat/')&&p.split('/').length===4&&p.toLowerCase().endsWith('.webm'));
   await Promise.all(webmPaths.map(async p=>{const folder=p.split('/')[2];(expressionFilesByFolder[folder]||(expressionFilesByFolder[folder]=[])).push(p);if(files.includes(p+'.json'))try{const r=await fetch(base+(p+'.json').split('/').map(encodeURIComponent).join('/')+'?v='+Date.now(),{cache:'no-store'});if(r.ok)characterAnimationMetadata[p]=await r.json()}catch(e){console.warn('WEBM metadata unavailable',p,e)}}));
