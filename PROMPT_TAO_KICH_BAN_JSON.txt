@@ -1021,3 +1021,89 @@ E. KIỂM ĐỊNH TÍNH ĐẦY ĐỦ VÀ GIỚI HẠN
 5. Không tự động thay một phương tiện/đạo cụ quan trọng bằng ảnh nền tĩnh nếu việc đó làm sai hành động. Có thể đề xuất phương án dựng thay thế nhưng phải ghi rõ đó là phương án và giới hạn của nó.
 6. Kết quả bàn giao phải giúp người dùng biết chính xác họ chỉ cần bổ sung file nào, và phần nào cần nâng cấp player trước khi JSON có thể phát đúng. Tuyệt đối không đẩy lỗi thiếu tính năng runtime thành việc người dùng phải tự bổ sung WEBM.
 
+==================================================
+XXIII. CẤU TRÚC CHUYỂN ĐỘNG KEYFRAMES VÀ ĐỐI TƯỢNG CẢNH
+==================================================
+
+PHẢI TUÂN THỦ KHẢ NĂNG PLAYER ĐÃ CÓ:
+Player hiện hỗ trợ motion.from/motion.to như trước, đồng thời hỗ trợ motion.keyframes cho nhân vật và scene_objects. Keyframes dùng nội suy tuyến tính giữa các điểm; nhiều điểm trung gian có thể xấp xỉ đường cong. Đây không phải mô phỏng vật lý, va chạm, trọng lực hay ràng buộc xương.
+
+A. KEYFRAMES CHO NHÂN VẬT
+Trong từng phần tử nhan_vat_hien_thi, có thể dùng cấu trúc:
+{
+  "id": "character_id",
+  "expression_id": {
+    "communication": "silent",
+    "emotion": "afraid",
+    "pose": "lying",
+    "action": "knockback",
+    "direction": "back",
+    "face_angle": "0°",
+    "view_angle": "full body",
+    "interaction_target": "none"
+  },
+  "x": 50,
+  "y": 90,
+  "scale": 0.8,
+  "motion": {
+    "duration_seconds": 2.4,
+    "keyframes": [
+      {"t": 0, "x": 50, "y": 70, "rotation_degrees": 0, "scale": 0.8, "opacity": 1},
+      {"t": 0.25, "x": 58, "y": 52, "rotation_degrees": -18, "scale": 0.82, "opacity": 1},
+      {"t": 0.6, "x": 67, "y": 82, "rotation_degrees": 28, "scale": 0.8, "opacity": 1},
+      {"t": 1, "x": 67, "y": 90, "rotation_degrees": 0, "scale": 0.8, "opacity": 1}
+    ]
+  }
+}
+Quy tắc:
+1. t là tỷ lệ thời gian từ 0 đến 1, không phải giây; duration_seconds là tổng thời lượng của chuyển động trong dòng hiện tại.
+2. Các điểm được sắp theo t tăng dần. Mỗi điểm có thể có x, y, scale, rotation_degrees, opacity. Đơn vị x/y là phần trăm khung hình; opacity từ 0 đến 1.
+3. Dùng ít nhất 3–5 điểm khi cần mô tả quỹ đạo cong/nhảy/văng/rơi; chỉ dùng điểm thực sự cần thiết, không tạo đường cong giả cho chuyển động thẳng.
+4. Keyframes chỉ điều khiển transform hiển thị. Chúng không tự đổi pose, action, WEBM hoặc tạo hiệu ứng va chạm. Muốn đổi trạng thái, phải tạo nhịp riêng hoặc bảo đảm trạng thái tại dòng kế tiếp được mô tả đúng.
+5. Không ghi keyframes nếu chỉ đứng yên. Không dùng keyframes để che giấu việc thiếu WEBM của hành động.
+
+B. ĐỐI TƯỢNG PHƯƠNG TIỆN VÀ ĐẠO CỤ ĐỘC LẬP
+Player hỗ trợ lớp đối tượng ảnh/video độc lập qua trường scene_objects trong từng frame/dòng JSON. Mỗi đối tượng có dạng:
+{
+  "id": "ambulance_01",
+  "asset": "assets/PhuongTien/xe_cuu_thuong.png",
+  "x": 50,
+  "y": 82,
+  "scale": 0.8,
+  "rotation_degrees": 0,
+  "opacity": 1,
+  "z_index": 10,
+  "motion": {
+    "duration_seconds": 4,
+    "keyframes": [
+      {"t": 0, "x": -15, "y": 82, "scale": 0.8, "rotation_degrees": 0, "opacity": 1},
+      {"t": 0.55, "x": 50, "y": 82, "scale": 0.8, "rotation_degrees": 0, "opacity": 1},
+      {"t": 1, "x": 125, "y": 82, "scale": 0.8, "rotation_degrees": 0, "opacity": 1}
+    ]
+  }
+}
+Quy tắc:
+1. asset chấp nhận URL HTTP(S) hoặc đường dẫn repository bắt đầu bằng assets/; nếu chỉ ghi tên file thì player tìm trong assets/PhuongTien/.
+2. Hỗ trợ ảnh PNG/JPG/JPEG/WEBP/GIF/AVIF và video (ví dụ WEBM/MP4) theo khả năng trình duyệt. Tài nguyên phải tồn tại và truy cập được.
+3. x/y là phần trăm khung hình; scale là hệ số; rotation_degrees là độ; opacity từ 0 đến 1; z_index quyết định thứ tự giữa các đối tượng.
+4. Đối tượng được vẽ độc lập phía sau các lớp nhân vật trong player hiện tại. Không mặc định có thể che phía trước nhân vật bằng z_index cao hơn; thứ tự lớp hiện hành vẫn ưu tiên nhân vật ở trên.
+5. scene_objects không tự tạo chuyển động, âm thanh, đèn nhấp nháy, còi xe hoặc va chạm. Mỗi hiệu ứng cần tài nguyên/logic riêng.
+6. Không dùng trường vehicles, props, objects hoặc phuong_tien thay cho scene_objects nếu muốn player hiện tại dựng đối tượng. Không tự tạo key không được hỗ trợ.
+7. Player hiện chưa hỗ trợ parent_id/attached_to/attach_to để gắn nhân vật với phương tiện/đạo cụ. Nếu nhân vật nằm trong xe đang chạy, phải dùng cách dựng trung tính/chuyển cảnh phù hợp và ghi rõ giới hạn này trong báo cáo; không tuyên bố đã có chuyển động gắn kết thật.
+8. scene_objects là lớp trực quan độc lập, không phải một hệ thống vật lý hay một đối tượng có AI.
+
+C. ÁP DỤNG CHO CHUỖI TAI NẠN – CỨU HỘ – VẬN CHUYỂN
+Nếu truyện thực sự mô tả tai nạn và xe cứu thương, phân tích riêng từng thực thể:
+- Nhân vật bị nạn: trạng thái bị tác động, rơi, nằm, được sơ cứu, được đặt lên cáng, tiếp tục nằm khi vận chuyển.
+- Xe cứu thương: xuất hiện, đi vào khung hình, dừng, rời đi; dùng scene_objects và keyframes nếu có tài nguyên phù hợp.
+- Cáng/nhân viên y tế: chỉ tạo khi có asset và khả năng dựng tương ứng; nếu chưa có, ghi thiếu tài nguyên hoặc giới hạn runtime.
+- Bối cảnh: đường phố, trong xe, bệnh viện/phòng cấp cứu; thay đổi theo thời điểm câu chuyện.
+Không được mô tả nhân vật tự đi vào xe nếu nội dung nói nhân viên y tế đưa nhân vật lên cáng. Không được cho nhân vật xuất hiện trong xe trước khi sự kiện đưa lên xe xảy ra. Nếu player chưa thể gắn nhân vật với cáng/xe, phải ghi rõ phần này cần nâng cấp runtime, không bắt người dùng chỉ bổ sung một WEBM.
+
+D. ĐIỀU KIỆN KIỂM ĐỊNH
+- Kiểm tra keyframes có ít nhất hai điểm hợp lệ, t tăng dần sau sắp xếp, trong khoảng 0..1; duration_seconds dương.
+- Kiểm tra đường đi không vượt khỏi khung hình ngoài ý đồ (x có thể âm hoặc lớn hơn 100 khi cố ý đi vào/ra khung hình; phải có giải thích hợp lý).
+- Kiểm tra asset của scene_objects có đường dẫn/URL; nếu thiếu thì báo lỗi tài nguyên.
+- Báo riêng các trường gắn kết parent_id/attached_to/attach_to vì player chưa hỗ trợ.
+- Không đánh dấu đã mô phỏng vật lý, đã gắn nhân vật vào xe hoặc đã dựng được nội thất phương tiện nếu chỉ có ảnh/video đối tượng độc lập.
+
