@@ -1273,3 +1273,16 @@ Mọi kịch bản mới phải có thể được hệ thống Asset Inventory 
 - Không để việc thiếu asset chặn tạo JSON hoặc chặn preview nếu player có fallback; phải báo thiếu rõ ràng để người dùng bổ sung sau.
 
 ==================================================
+
+==================================================
+QUY CHUẨN BỐ CỤC NHÂN VẬT TỰ ĐỘNG (BẮT BUỘC)
+==================================================
+1. Mặc định, mọi frame có từ 2 nhân vật hiện diện trở lên phải dùng:
+   "bo_cuc_nhan_vat": { "mode": "auto", "gap": 5, "margin": 6 }
+   Player tự dàn vị trí ngang dựa trên kích thước WEBM thực tế, số nhân vật thực sự hiển thị và tỷ lệ khung hình; tự thu scale đồng đều khi cần để hạn chế chồng lấn.
+2. Chỉ dùng "mode": "manual" khi đạo diễn cần vị trí chính xác hoặc có chủ ý cho nhân vật đứng sát/chồng lớp. Khi manual, phải khai báo x, y, scale cho từng nhân vật.
+3. Cảnh ôm, hôn, nắm tay, dìu đỡ, đánh nhau hoặc tương tác cơ thể cần chồng lớp phải khai báo tuong_tac với allow_overlap:true, participants (đúng ID), type, phase và intent. Đặt mode manual để giữ blocking đã dàn.
+4. Nhân vật không xuất hiện trong khung hình nhưng vẫn thuộc cảnh phải giữ trong snapshot với visible:false. Không xóa cờ này khi nạp vào editor, chỉnh sửa, xem trước hoặc xuất JSON. Nhân vật đã rời cảnh dùng remove_from_scene:true hoặc bỏ khỏi snapshot sau nhịp rời cảnh.
+5. Nhân vật visible:false hoặc remove_from_scene:true không được tính vào số lượng để tự dàn, kiểm tra chồng lấn, báo thiếu WEBM, hoặc dựng lớp hình.
+6. Tự dàn chỉ thay đổi tọa độ runtime; không ghi đè vị trí gốc trong JSON. Khi người dùng chọn manual, phải tôn trọng nguyên vẹn tọa độ đã khai báo.
+7. Sau khi tạo JSON, kiểm tra lại mọi frame nhiều nhân vật: nếu không phải tương tác có chủ đích thì dùng auto; nếu manual thì xác minh khoảng cách thực tế và không để các sprite đè nhau ngoài ý muốn.
