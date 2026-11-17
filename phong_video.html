@@ -336,6 +336,7 @@ function renderEffectCatalogs(){
  if(env)env.innerHTML=(window.VNEnvironmentEffects?.list()||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="atm" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
 }
 function setStatus(s){$('export-status').textContent=s}
+function updateStoryAnimationWarning(){if(!activeStoryData||!$('story-status'))return;const base='Đã nạp '+activeStoryName+': '+sourceLineCount+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh.';const details=currentAnimationWarnings.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']: '+w.reason});$('story-status').textContent=base+(details.length?' · Thiếu WEBM khớp trạng thái: '+details.join('; ')+'. Đang giữ hình tĩnh để tránh diễn sai.':' · Animation khớp metadata.')}
 
 function safeAudioDataName(value){return String(value||'KichBan').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan'}
 function manifestVoiceForLine(line){
@@ -430,7 +431,7 @@ function cachedVideo(src){
  if(!videoAssetCache.has(fresh))videoAssetCache.set(fresh,loadVideo(fresh).catch(err=>{videoAssetCache.delete(fresh);throw err}));
  return videoAssetCache.get(fresh);
 }
-let sceneEffectLayers=[],sceneEffectKey='',sceneEffectLibrary=[];
+let sceneEffectLayers=[],sceneEffectKey='',sceneEffectLibrary=[],currentAnimationWarnings=[];
 function normalizeSceneEffects(values){
  const list=Array.isArray(values)?values:(values?[values]:[]);
  return list.map((value,index)=>{
@@ -480,16 +481,20 @@ async function loadSceneEffectLibrary(){
 }
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
- const bgPath=bg?BASE+'Nen/'+bg:'',charPath=character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
- const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},displaySpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
+ const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
+ const displaySpecs=rawSpecs.length?rawSpecs:((frame.nhan_vat||currentLine?.speakerId)?[{id:String(frame.nhan_vat||currentLine.speakerId),expression_id:frame.expression_id||{},x:50,y:100,scale:1,z_index:1}]:[]);
+ const bgPath=bg?BASE+'Nen/'+bg:'',charPath=!displaySpecs.length&&character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
  const activeScene=getCurrentScene(),sceneSpecs=normalizeSceneEffects(activeScene?.visual?.sceneEffects||frame.hieu_ung_canh||[]);
  const effectKey=JSON.stringify(sceneSpecs.map(x=>[x.path,x.loop,x.opacity,x.z_index]));
  if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
-   const folder=characterAssetFolder(spec.id),expression=resolveSemanticExpression(folder,spec.expression_id||semanticFromExpression(folder,spec.bieu_cam)),url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
-   let media=null;try{media=url?await cachedVideo(url):null}catch(error){console.warn('Không tải được lớp nhân vật '+spec.id+' ('+folder+'/'+expression+'):',error)}
-   return {spec:{...spec,expression_id:spec.expression_id},folder,media,index};
+   const folder=characterAssetFolder(spec.id),baseSemantic=normalizeSemantic(spec.expression_id||semanticFromExpression(folder,spec.bieu_cam));
+   const isSpeaking=!!String(frame.noi_dung||'').trim()&&String(spec.id)===String(frame.nhan_vat||currentLine?.speakerId||'');
+   const semantic={...baseSemantic,communication:isSpeaking?'speaking':'silent'};
+   const selection=resolveSemanticAnimation(folder,semantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
+   let media=null;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được lớp nhân vật '+spec.id+' ('+folder+'/'+expression+'):',error)}
+   return {spec:{...spec,expression_id:semantic,animationMatched:selection.matched},folder,media,index,animationMatched:selection.matched,animationReason:selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose].filter(Boolean).join(' / ')};
   });
   const [nextBg,nextChar,nextLayers,nextSceneEffects]=await Promise.all([
    bgPath?(/\.mp4$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
@@ -506,13 +511,16 @@ async function updateAssets(){
   charLayerVideos.forEach(old=>{if(old.media&&!nextLayers.some(item=>item.media===old.media))old.media.pause()});
   bgVideo=/\.mp4$/i.test(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   charLayerVideos=nextLayers.filter(item=>item.media);
+  currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.animationReason||'không có clip khớp'}));
+  updateStoryAnimationWarning();
+  charLayerVideos.filter(item=>!item.animationMatched).forEach(item=>{item.media.pause();try{item.media.currentTime=0}catch(e){}});
   if(effectKey!==sceneEffectKey){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.media.pause)item.media.pause()});
    sceneEffectLayers=nextSceneEffects;
    sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;item.media.__sceneEffectFinished=false;item.media.onended=()=>{item.media.__sceneEffectFinished=true;drawFrame(0)};try{item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){} }});
    sceneEffectKey=effectKey;
   }else sceneEffectLayers=nextSceneEffects;
-  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)&&!(item.loop===false&&(item.media.__sceneEffectFinished||item.media.ended))).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
+  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.filter(item=>item.animationMatched).map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)&&!(item.loop===false&&(item.media.__sceneEffectFinished||item.media.ended))).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
 }
@@ -528,7 +536,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
   if(bg){const url=BASE+'Nen/'+bg;if(/\.mp4$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
   normalizeSceneEffects(row.hieu_ung_canh||[]).forEach(effect=>{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(()=>{})});
-  (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),expr=resolveSemanticExpression(folder,spec?.expression_id||semanticFromExpression(folder,spec?.bieu_cam));if(folder&&expr)cachedVideo(BASE+'NhanVat/'+folder+'/'+expr+'.webm').catch(()=>{})});
+  (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),base=normalizeSemantic(spec?.expression_id||semanticFromExpression(folder,spec?.bieu_cam)),isSpeaking=!!String(row.noi_dung||'').trim()&&String(spec?.id)===String(row.nhan_vat||''),selection=resolveSemanticAnimation(folder,{...base,communication:isSpeaking?'speaking':'silent'});if(folder&&selection.file)cachedVideo(BASE+'NhanVat/'+folder+'/'+selection.file+'.webm').catch(()=>{})});
  }
 }
 $('background').addEventListener('change',updateAssets);
@@ -598,7 +606,7 @@ function drawFrame(elapsed,st){
   const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height,fit=sw&&sh?(isPortrait?h/sh:Math.min(w/sw,h/sh)):1,dw=sw*fit*scale,dh=sh*fit*scale;
   ctx.save();let alpha=move?Math.max(0,Math.min(1,lerp(move.from?.opacity??1,move.to?.opacity??1,ease))):1;
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
-  const isCurrentSpeaker=!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
+  const isCurrentSpeaker=spec?.animationMatched!==false&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
   if(isCurrentSpeaker){
    const motion=Math.max(0,Math.min(1,speechMotionSmooth));
    // Chu ky lien tuc, khong bam theo am luong hay tung am tiet nen khong bi giat.
@@ -1712,6 +1720,28 @@ function saveLineEffects(){
 }
 function animationMeta(path){const m=characterAnimationMetadata[path]||{},u=m.user_metadata||{},v=(Array.isArray(m.characters)?m.characters[0]:{})||{};return {communication:String(u.communication||v.communication?.state||v.communication||m.communication||''),pose:String(u.pose||v.pose||m.start_pose||''),emotion:String(u.emotion||v.emotion||''),direction:String(u.direction||v.direction||''),face_angle:String(u.face_angle||v.face_angle||''),view_angle:String(u.view_angle||v.view_angle||''),action:String(u.action||v.action||m.action||''),interaction_target:String(u.interaction_target||v.interaction_target||'')}}
 function normalizeSemantic(v){if(v&&typeof v==='object')return v;if(typeof v==='string'&&v.trim())return {emotion:v.trim()};return {}}
+function canonicalAnimationValue(field,value){
+ const raw=String(value??'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[_-]+/g,' ').replace(/\s+/g,' ');
+ const maps={
+  communication:{'dang noi':'speaking','noi':'speaking','speaking':'speaking','talking':'speaking','voice':'speaking','im lang':'silent','khong noi':'silent','silent':'silent','not speaking':'silent','quiet':'silent'},
+  pose:{'dung':'standing','dung thang':'standing','standing':'standing','ngoi':'sitting','sitting':'sitting','nam':'lying','lying':'lying','cuoi':'crouching','crouching':'crouching'},
+  action:{'dung yen':'idle','dung im':'idle','idle':'idle','standing still':'idle','di bo':'walking','di lai':'walking','walking':'walking','walk':'walking','chay':'running','running':'running','ngoi xuong':'sitting down','sitting down':'sitting down','nam xuong':'lying down','lying down':'lying down'}
+ };
+ return maps[field]?.[raw]||raw;
+}
+function resolveSemanticAnimation(folder,semantic){
+ const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return {file:'',matched:false,reason:'Thư mục chưa có WEBM'};
+ const target=normalizeSemantic(semantic),critical=['communication','pose','action'].filter(k=>target[k]),fields=['communication','pose','action','emotion','direction','face_angle','view_angle','interaction_target'];
+ const candidates=paths.map(path=>{
+  const meta=animationMeta(path),missing=[],mismatch=[];let score=0;
+  critical.forEach(k=>{const wanted=canonicalAnimationValue(k,target[k]),actual=canonicalAnimationValue(k,meta[k]);if(!meta[k])missing.push(k);else if(actual!==wanted)mismatch.push(k);else score+=100});
+  fields.filter(k=>!critical.includes(k)).forEach(k=>{if(target[k]){const a=canonicalAnimationValue(k,target[k]),b=canonicalAnimationValue(k,meta[k]);if(b&&a===b)score+=12;else if(b&&(b.includes(a)||a.includes(b)))score+=5}});
+  return {path,score,matched:!missing.length&&!mismatch.length,missing,mismatch};
+ }).sort((a,b)=>Number(b.matched)-Number(a.matched)||b.score-a.score);
+ const chosen=candidates[0],file=chosen.path.split('/').pop().replace(/\.webm$/i,'');
+ const reason=chosen.mismatch.length?'không khớp '+chosen.mismatch.join(', '):chosen.missing.length?'thiếu metadata '+chosen.missing.join(', '):'';
+ return {file,matched:chosen.matched,reason};
+}
 function resolveSemanticExpression(folder,semantic){const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return '';const target=normalizeSemantic(semantic),norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[_-]+/g,' ').trim(),fields=['communication','emotion','pose','direction','face_angle','view_angle','action','interaction_target'];let scored=paths.map(path=>{const meta=animationMeta(path),name=path.split('/').pop().replace(/\.webm$/i,'').toLowerCase().replace(/[_-]+/g,' ');let score=0,comm=norm(meta.communication);if(target.communication){if(comm&&comm.includes(norm(target.communication)))score+=100;else if(name.includes(norm(target.communication)))score+=35;else if(comm)score-=80}fields.slice(1).forEach(k=>{if(target[k]){const a=norm(target[k]),b=norm(meta[k]);if(b&&b===a)score+=12;else if(b&&(b.includes(a)||a.includes(b)))score+=5;else if(name.includes(a))score+=2}});return {path,score}}).sort((a,b)=>b.score-a.score);return scored[0].path.split('/').pop().replace(/\.webm$/i,'')}
 function semanticFromExpression(folder,file){const path=(expressionFilesByFolder[String(folder||'')]||[]).find(p=>p.split('/').pop().replace(/\.webm$/i,'')===normalizeExpression(file));return path?animationMeta(path):{}}
 function buildScenesFromJson(data){
@@ -1753,7 +1783,7 @@ async function applyStoryData(data,name,path){
  renderCharacterVoiceSetup();renderStoryCharacterSelectors(getCurrentLine()?.speakerId,getCurrentLine()?.characterAsset);renderSceneList();renderLineList();applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());
  $('speaker').readOnly=false;$('dialogue').readOnly=false;updateSeekUI(currentSourceIndex());
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(0);
- $('story-status').textContent='Đã nạp '+activeStoryName+': '+rows.length+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh. JSON gốc không bị chỉnh sửa.';
+ updateStoryAnimationWarning();$('story-status').textContent+=' JSON gốc không bị chỉnh sửa.';
  setStatus('Đã nạp kịch bản '+activeStoryName+'.');
 }
 async function loadStory(index){
