@@ -19,14 +19,14 @@ input[type=search]{flex:1;min-width:180px}
 <div id="status" class="status">Chưa quét dữ liệu.</div><div class="progress"><i id="bar"></i></div></header>
 <div class="stats" id="stats"></div>
 <nav class="tabs" id="tabs">
-<button class="tab active" data-tab="summary">Tổng quan</button><button class="tab" data-tab="characters">Nhân vật & WEBM</button><button class="tab" data-tab="backgrounds">Bối cảnh</button><button class="tab" data-tab="props">Đạo cụ & phương tiện</button><button class="tab" data-tab="audio">Âm thanh & hiệu ứng</button><button class="tab" data-tab="stories">Theo kịch bản</button><button class="tab" data-tab="allfiles">Kho tài nguyên</button>
+<button class="tab active" data-tab="summary">Tổng quan</button><button class="tab" data-tab="characters">Nhân vật & WEBM</button><button class="tab" data-tab="backgrounds">Bối cảnh</button><button class="tab" data-tab="props">Đạo cụ & phương tiện</button><button class="tab" data-tab="audio">Âm thanh & hiệu ứng</button><button class="tab" data-tab="catalog">Danh sách cần bổ sung</button><button class="tab" data-tab="stories">Theo kịch bản</button><button class="tab" data-tab="allfiles">Kho tài nguyên</button>
 </nav>
 <main id="view"><div class="panel empty">Nhấn “Quét lại GitHub” để xây dựng danh mục.</div></main>
 <script>
 (function(){
 'use strict';
 const OWNER='nhothicam01-png',REPO='visual-novel-game',BRANCH='main',API='https://api.github.com/repos/'+OWNER+'/'+REPO;
-let db=null,tab='summary';
+let db=null,tab='summary',catalog=null,scanBusy=false;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uniq=a=>[...new Set(a.filter(Boolean))];
@@ -37,11 +37,12 @@ async function getText(path){const r=await fetch(rawPath(path),{cache:'no-store'
 function walk(o,fn,path=''){if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach((v,i)=>walk(v,fn,path+'['+i+']'));return}for(const [k,v] of Object.entries(o)){fn(k,v,o,path);walk(v,fn,path?path+'.'+k:k)}}
 function status(msg,p){$('status').textContent=msg;if(p!==undefined)$('bar').style.width=p+'%'}
 async function scan(){
- $('scan').disabled=true;status('Đang đọc cây thư mục GitHub…',3);
+ if(scanBusy)return;scanBusy=true;$('scan').disabled=true;status('Đang đọc cây thư mục GitHub…',3);
  try{
  const tree=await getJson(API+'/git/trees/'+BRANCH+'?recursive=1');if(tree.truncated)throw new Error('GitHub trả cây thư mục bị cắt. Cần quét theo từng thư mục.');
  const files=tree.tree.filter(x=>x.type==='blob').map(x=>({path:x.path,size:x.size||0}));
  const fileSet=new Set(files.map(x=>x.path));
+ try{catalog=JSON.parse(await getText('assets/AssetRequirementsCatalog.json'))}catch(e){catalog={categories:[],character_webm_actions:[]};console.warn('Không đọc được danh mục chuẩn',e)}
  const worldPaths=files.filter(x=>/^assets\/TheGioi\/[^/]+\/TheGioi\.json$/i.test(x.path)).map(x=>x.path);
  const storyPaths=files.filter(x=>x.path.startsWith('assets/KichBan/')&&x.path.endsWith('.json')&&!x.path.includes('/PhuDe/')).map(x=>x.path);
  const worlds=[],stories=[];
@@ -74,6 +75,9 @@ async function scan(){
  }
  }
  const characterFolders=new Map();for(const c of Object.values(charMap))for(const f of c.folders)characterFolders.set(f,c.id);
+ // Bổ sung mọi thư mục nhân vật tìm thấy trong repository, kể cả thư mục chưa được khai báo trong hồ sơ thế giới.
+ const discoveredFolders=new Set(files.filter(x=>x.path.startsWith('assets/NhanVat/')).map(x=>x.path.split('/')[2]).filter(Boolean));
+ for(const folder of discoveredFolders){if(!characterFolders.has(folder)){const cid='asset_'+norm(folder);if(!charMap[cid])charMap[cid]={id:cid,name:folder,folders:new Set([folder]),worlds:new Set(),roles:[],stories:new Set(),discoveredFromAssets:true};characterFolders.set(folder,cid)}}
  const webmFiles=files.filter(x=>x.path.startsWith('assets/NhanVat/')&&/\.webm$/i.test(x.path));
  const sidecars=files.filter(x=>x.path.startsWith('assets/NhanVat/')&&/\.webm\.json$/i.test(x.path));
  const metaByPath={};let mi=0;
@@ -81,9 +85,9 @@ async function scan(){
  for(const [folder,cid] of characterFolders){const c=charMap[cid];c.webms=webmFiles.filter(x=>x.path.startsWith('assets/NhanVat/'+folder+'/')).map(x=>{const mp=x.path+'.json',m=metaByPath[mp];return {path:x.path,metadataPath:fileSet.has(mp)?mp:'',metadata:m?.user_metadata||m?.metadata||null}})}
  for(const c of Object.values(charMap)){c.folders=[...c.folders];c.worlds=[...c.worlds];c.stories=[...c.stories];c.webms=c.webms||[];c.requirements=(requirements[c.id]||[]).map(x=>({...x,stories:[...x.stories]}));c.images=files.filter(x=>c.folders.some(folder=>x.path.startsWith('assets/NhanVat/'+folder+'/'))&&/\\.(png|jpe?g|webp)$/i.test(x.path)).map(x=>x.path)}
  for(const x of files){const p=x.path;if(p.startsWith('assets/Nen/')&&/\\.(png|jpe?g|webp|mp4|webm)$/i.test(p))add(bgMap,p,null);else if((p.startsWith('assets/DaoCu/')||p.startsWith('assets/PhuongTien/'))&&/\\.(png|jpe?g|webp|webm|mp4)$/i.test(p))add(propMap,p,null);else if(p.startsWith('assets/AmThanh/')&&/\\.(mp3|wav|ogg|m4a|aac)$/i.test(p))add(audioMap,p,null);else if(p.startsWith('assets/HieuUng/')&&/\\.(png|jpe?g|webp|webm|mp4|gif)$/i.test(p))add(effectMap,p,null)}
- const inventory={generatedAt:new Date().toISOString(),branch:BRANCH,files,worlds:worlds.map(w=>({path:w.path,name:w.data.world_name||w.data.slug||w.path,slug:w.data.slug||'',stories:(w.data.story_folders||[]).map(x=>x.json_path||'').filter(Boolean)})),stories:Object.values(storyMap).map(s=>({...s,characters:[...s.characters],backgrounds:[...s.backgrounds],props:[...s.props],audio:[...s.audio],effects:[...s.effects]})),characters:Object.values(charMap),backgrounds:Object.values(bgMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),props:Object.values(propMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),audio:Object.values(audioMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),effects:Object.values(effectMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),webmFiles:webmFiles.map(x=>x.path),allFiles:files};
+ const inventory={generatedAt:new Date().toISOString(),branch:BRANCH,catalog,files,worlds:worlds.map(w=>({path:w.path,name:w.data.world_name||w.data.slug||w.path,slug:w.data.slug||'',stories:(w.data.story_folders||[]).map(x=>x.json_path||'').filter(Boolean)})),stories:Object.values(storyMap).map(s=>({...s,characters:[...s.characters],backgrounds:[...s.backgrounds],props:[...s.props],audio:[...s.audio],effects:[...s.effects]})),characters:Object.values(charMap),backgrounds:Object.values(bgMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),props:Object.values(propMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),audio:Object.values(audioMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),effects:Object.values(effectMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),webmFiles:webmFiles.map(x=>x.path),allFiles:files};
  db=inventory;populateFilters();render();status('Quét xong: '+stories.length+' kịch bản · '+Object.keys(charMap).length+' nhân vật · '+files.length+' file trong repo.',100);
- }catch(e){status('Không thể quét: '+e.message);console.error(e)}finally{$('scan').disabled=false}
+ }catch(e){status('Không thể quét: '+e.message);console.error(e)}finally{scanBusy=false;$('scan').disabled=false}
 }
 function populateFilters(){const w=$('world'),s=$('story');const oldW=w.value,oldS=s.value;w.innerHTML='<option value="">Tất cả thế giới</option>'+db.worlds.map(x=>'<option value="'+esc(x.slug||x.name)+'">'+esc(x.name)+'</option>').join('');s.innerHTML='<option value="">Tất cả kịch bản</option>'+db.stories.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.title)+'</option>').join('');w.value=oldW;s.value=oldS}
 function selectedStories(){if(!db)return[];const sid=$('story').value,wid=$('world').value;return db.stories.filter(s=>(!sid||s.id===sid)&&(!wid||s.world===wid||db.worlds.some(w=>(w.slug===wid||w.name===wid)&&w.stories.includes(s.id))))}
@@ -108,6 +112,26 @@ function render(){
  html='<section class="panel"><h2>Đạo cụ và phương tiện được JSON tham chiếu</h2><p class="note">Đang quét các trường asset / src / file_path trong JSON, ưu tiên assets/DaoCu và assets/PhuongTien.</p>'+rowsTable(['Tài nguyên','Trạng thái','Kịch bản sử dụng'],d.props.filter(x=>match(x.key)).map(x=>'<tr><td>'+fileStatus(x.key,x.exists)+'</td><td>'+(x.exists?'<span class="ok">Có file</span>':'<span class="bad">Thiếu file</span>')+'</td><td>'+pills(x.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p))+'</td></tr>'))+'</section>';
  }else if(tab==='audio'){
  html='<section class="panel"><h2>Âm thanh và hiệu ứng được JSON tham chiếu</h2>'+rowsTable(['Loại','Tài nguyên','Trạng thái','Kịch bản'],[...d.audio.map(x=>'<tr><td>Âm thanh</td><td><code>'+esc(x.key)+'</code></td><td>'+(x.exists?'<span class="ok">Có file</span>':'<span class="bad">Thiếu file</span>')+'</td><td>'+pills(x.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p))+'</td></tr>'),...d.effects.map(x=>'<tr><td>Hiệu ứng</td><td><code>'+esc(x.key)+'</code></td><td>'+(x.exists?'<span class="ok">Có file</span>':'<span class="bad">Thiếu file</span>')+'</td><td>'+pills(x.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p))+'</td></tr>')])+'</section>';
+ }else if(tab==='catalog'){
+ const fileSet=new Set(db.allFiles.map(x=>x.path));
+ const cats=(db.catalog?.categories||[]);
+ const categoryHtml=cats.map(cat=>{
+  const items=cat.items||[],present=items.filter(it=>fileSet.has(it.path)).length,missing=items.length-present;
+  const rows=items.filter(it=>match(it.name+' '+it.path+' '+it.description)).map(it=>'<tr><td><b>'+esc(it.name)+'</b><div class="note">'+esc(it.description||'')+'</div></td><td><code>'+esc(it.path)+'</code></td><td>'+(fileSet.has(it.path)?'<span class="ok">✓ Đã có</span>':'<span class="bad">✕ Chưa có</span>')+'</td></tr>');
+  return '<section class="panel"><h2>'+esc(cat.name)+' <span class="pill">'+present+'/'+items.length+' đã có</span> <span class="pill">'+missing+' còn thiếu</span></h2>'+rowsTable(['Tài nguyên cần bổ sung','Đường dẫn / tên file gợi ý','Trạng thái'],rows)+'</section>';
+ }).join('');
+ const actions=db.catalog?.character_webm_actions||[];
+ const actionRows=actions.filter(a=>match(a.name+' '+a.action)).map(a=>{
+  let have=0,unknown=0,missing=0;
+  for(const c of db.characters){const found=c.webms.some(w=>w.metadata&&canonical(a.action==='speaking'||a.action==='listening'||a.action==='reacting'?'communication':'action',a.action)==canonical(a.action==='speaking'||a.action==='listening'||a.action==='reacting'?'communication':'action',w.metadata[a.action==='speaking'||a.action==='listening'||a.action==='reacting'?'communication':'action']));if(found)have++;else if(c.webms.some(w=>!w.metadata))unknown++;else missing++}
+  return '<tr><td><b>'+esc(a.name)+'</b><div class="note">metadata: '+esc(a.action)+'</div></td><td><span class="ok">'+have+' nhân vật có clip được phân loại</span></td><td><span class="warn">'+unknown+' chưa xác minh</span></td><td><span class="bad">'+missing+' chưa thấy clip khớp</span></td></tr>';
+ });
+ const characterRows=db.characters.filter(c=>match(c.name+' '+c.id+' '+c.folders.join(' '))).map(c=>{
+  const total=c.webms.length,meta=c.webms.filter(w=>w.metadataPath).length,unclassified=c.webms.filter(w=>!w.metadata).length;
+  return '<tr><td><b>'+esc(c.name)+'</b><div class="note">'+esc(c.id)+'</div></td><td>'+pills(c.folders)+'</td><td>'+total+'</td><td><span class="'+(meta===total&&total?'ok':'warn')+'">'+meta+'/'+total+' có sidecar</span></td><td>'+(unclassified?'<span class="warn">'+unclassified+' WEBM chưa phân loại</span>':'<span class="ok">Metadata đã có</span>')+'</td></tr>';
+ });
+ const catalogTotal=cats.reduce((n,c)=>n+(c.items||[]).length,0),catalogHave=cats.reduce((n,c)=>n+c.items.filter(it=>fileSet.has(it.path)).length,0);
+ html='<section class="panel"><h2>Danh mục tài nguyên toàn dự án</h2><p class="note">Đây là danh sách dùng chung để bạn bổ sung dần, không phải danh sách bắt buộc cho mọi video. Trạng thái được đối chiếu theo đúng đường dẫn trên GitHub nhánh main. Khi file được thêm đúng đường dẫn, trạng thái sẽ chuyển sang “Đã có” ở lần quét kế tiếp.</p><div class="cards"><div class="card"><h3>Tài nguyên mẫu trong danh mục</h3><strong style="font-size:1.5rem">'+catalogTotal+'</strong></div><div class="card"><h3>Đã có đúng đường dẫn</h3><strong class="ok" style="font-size:1.5rem">'+catalogHave+'</strong></div><div class="card"><h3>Còn thiếu</h3><strong class="bad" style="font-size:1.5rem">'+(catalogTotal-catalogHave)+'</strong></div><div class="card"><h3>Thư mục nhân vật được quét</h3><strong style="font-size:1.5rem">'+db.characters.length+'</strong></div></div></section>'+categoryHtml+'<section class="panel"><h2>Danh sách WEBM hành động cần có cho từng nhân vật</h2><p class="note">Hệ thống quét tất cả thư mục assets/NhanVat/, kể cả nhân vật chưa liên kết trong hồ sơ thế giới. Một clip chỉ được tính là đã có khi sidecar metadata khai báo đúng action hoặc communication. Clip chưa có metadata được tính là “chưa xác minh”, không tự kết luận là thiếu.</p>'+rowsTable(['Hành động / trạng thái','Đã có','Chưa xác minh','Chưa thấy clip khớp'],actionRows)+'</section><section class="panel"><h2>Kiểm tra WEBM theo từng nhân vật</h2>'+rowsTable(['Nhân vật / thư mục','WEBM','Metadata sidecar','Cần xử lý'],characterRows)+'</section>';
  }else if(tab==='stories'){
  html='<section class="panel"><h2>Ma trận tài nguyên theo từng kịch bản</h2><div class="cards">'+d.stories.filter(s=>match(s.title+' '+s.id)).map(s=>'<article class="card"><h3>'+esc(s.title)+'</h3><div class="note">'+esc(s.world)+' · '+s.beats+' beat</div><p><b>Nhân vật ('+s.characters.length+')</b><br>'+pills(s.characters.map(id=>db.characters.find(c=>c.id===id)?.name||id))+'</p><p><b>Bối cảnh</b><br>'+pills(s.backgrounds.map(p=>p.split('/').pop()))+'</p><p><b>Đạo cụ / xe</b><br>'+pills(s.props.map(p=>p.split('/').pop()))+'</p><p><b>Âm thanh</b><br>'+pills(s.audio.map(p=>p.split('/').pop()))+'</p></article>').join('')+'</div></section>';
  }else if(tab==='allfiles'){
@@ -122,5 +146,7 @@ $('scan').addEventListener('click',scan);$('world').addEventListener('change',()
 function populateStoryFilter(){if(!db)return;const w=$('world').value,s=$('story'),old=s.value;const list=db.stories.filter(x=>!w||x.world===w||db.worlds.some(y=>(y.slug===w||y.name===w)&&y.stories.includes(x.id)));s.innerHTML='<option value="">Tất cả kịch bản</option>'+list.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.title)+'</option>').join('');if(list.some(x=>x.id===old))s.value=old}
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()});
 scan();
+// Tự quét lại định kỳ để nhận file mới trên GitHub; vẫn có nút quét thủ công để cập nhật ngay.
+setInterval(()=>{if(!document.hidden)scan()},120000);
 })();
 </script></body></html>
