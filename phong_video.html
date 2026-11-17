@@ -623,7 +623,7 @@ function renderSceneEffectPicker(){
  const savePicked=()=>{
   const sc=getCurrentScene();if(!sc)return;
   const picked=Array.from(host.querySelectorAll('[data-scene-effect]:checked')).map(el=>{
-   const item=sceneEffectLibrary.find(x=>x.path===el.dataset.sceneEffect),layer=host.querySelector('[data-scene-effect-layer="'+CSS.escape(el.dataset.sceneEffect)+'"]')?.value||'behind';
+   const item=sceneEffectLibrary.find(x=>x.path===el.dataset.sceneEffect),layer=Array.from(host.querySelectorAll('[data-scene-effect-layer]')).find(select=>select.dataset.sceneEffectLayer===el.dataset.sceneEffect)?.value||'behind';
    return {file:item.path,path:item.path,type:item.type,loop:item.type==='video'?!!$('scene-effect-loop').checked:false,opacity:Number($('scene-effect-opacity').value)/100,z_index:layer==='front'?100:-10};
   });
   sc.visual={...(sc.visual||captureVisual()),sceneEffects:picked};
