@@ -168,6 +168,10 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
  <summary style="cursor:pointer;font-weight:700">🧩 Báo cáo WEBM còn thiếu <span id="animation-report-count" class="note" style="font-weight:400">Chưa có dữ liệu</span></summary>
  <div id="animation-report-content" style="padding-top:10px"><div class="note">Chọn một kịch bản để quét các trạng thái nhân vật cần bổ sung.</div></div>
 </details>
+<details id="scene-asset-preflight" class="panel" style="margin-top:10px" open>
+ <summary style="cursor:pointer;font-weight:700">🚑 Kiểm tra phương tiện &amp; đạo cụ <span id="scene-asset-count" class="note" style="font-weight:400">Chưa kiểm tra</span></summary>
+ <div style="padding-top:10px"><div class="note">Đối chiếu mọi đường dẫn scene_objects trong kịch bản với file thực tế trên nhánh main của GitHub. File thiếu sẽ được báo trước khi dựng video.</div><button type="button" class="btn secondary" id="run-scene-asset-check">🔎 Kiểm tra tài nguyên ngay</button><div id="scene-asset-report" style="padding-top:10px"><div class="note">Chọn kịch bản rồi nhấn kiểm tra.</div></div></div>
+</details>
 <div id="character-voice-list" class="grid"></div>
 <label class="field">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
 <div class="status" id="voice-fallback-status">Giọng mặc định được dùng khi nhân vật chưa có giọng riêng hoặc giọng trong JSON không hợp lệ.</div>
@@ -360,6 +364,58 @@ function animationAuditDownload(filename,content,type='application/json'){
  const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function hasExplicitMotion(spec){const m=spec?.motion;return !!(m&&typeof m==='object'&&(m.from&&m.to||Array.isArray(m.keyframes)&&m.keyframes.length>1))}
+const sceneAssetTreeCache={paths:null,loadedAt:0};
+function normalizeSceneAssetPath(value){
+ let path=String(value||'').trim().replace(/\\\\/g,'/');
+ if(!path)return '';
+ if(/^https?:\\/\\//i.test(path))return path;
+ path=path.replace(/^\\.\\//,'').replace(/^\\/+/, '');
+ return path;
+}
+async function loadSceneAssetTree(force=false){
+ if(!force&&sceneAssetTreeCache.paths&&Date.now()-sceneAssetTreeCache.loadedAt<60000)return sceneAssetTreeCache.paths;
+ const response=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1',{cache:'no-store'});
+ if(!response.ok)throw new Error('Không đọc được danh sách file GitHub (HTTP '+response.status+').');
+ const data=await response.json();if(data.truncated)throw new Error('GitHub trả về danh sách file bị cắt cụt; không thể xác nhận đầy đủ.');
+ const paths=new Set((data.tree||[]).filter(x=>x.type==='blob').map(x=>x.path));
+ sceneAssetTreeCache.paths=paths;sceneAssetTreeCache.loadedAt=Date.now();return paths;
+}
+async function runSceneAssetPreflight(){
+ const host=$('scene-asset-report'),count=$('scene-asset-count'),button=$('run-scene-asset-check');
+ if(!host||!count)return;
+ if(!activeStoryData||!scenes.length){host.innerHTML='<div class="note">Chưa có kịch bản để kiểm tra.</div>';count.textContent='Chưa có dữ liệu';return}
+ if(button)button.disabled=true;count.textContent='Đang kiểm tra…';host.innerHTML='<div class="note">Đang đối chiếu danh sách file trên GitHub…</div>';
+ try{
+  const paths=await loadSceneAssetTree(true),refs=[];
+  scenes.forEach((scene,si)=>(scene.lines||[]).forEach((line,li)=>{
+   const frame=line.sourceFrame||{},objects=Array.isArray(line.scene_objects)?line.scene_objects:Array.isArray(line.sceneObjects)?line.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
+   objects.forEach((obj,oi)=>{
+    const raw=obj&&(obj.asset||obj.path||obj.file),path=normalizeSceneAssetPath(raw);
+    refs.push({id:String(obj?.id||('object_'+(oi+1))),scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,raw:String(raw||''),path,kind:/\\.(webm|mp4|mov)$/i.test(path)?'video':/\\.(png|jpe?g|webp|gif|avif|svg)$/i.test(path)?'image':'unknown'});
+   });
+  }));
+  const missing=[],found=[],external=[],invalid=[];
+  refs.forEach(item=>{
+   if(!item.path){invalid.push({...item,reason:'Thiếu asset/path/file'});return}
+   if(/^https?:\\/\\//i.test(item.path)){external.push({...item,reason:'URL ngoài GitHub: chưa thể xác nhận bằng danh sách file repository'});return}
+   if(!item.path.startsWith('assets/')){invalid.push({...item,reason:'Đường dẫn phải bắt đầu bằng assets/'});return}
+   if(paths.has(item.path)){found.push(item);return}
+   missing.push({...item,reason:'Không tìm thấy file này trên nhánh main'});
+  });
+  const renderItems=(items,color)=>items.length?'<ul>'+items.slice(0,100).map(x=>'<li style="margin:6px 0;color:'+color+'"><strong>'+safeText(x.path||'(chưa có đường dẫn)')+'</strong> · '+safeText(x.scene)+' / dòng '+x.line+' · '+safeText(x.reason)+'</li>').join('')+'</ul>':'<div class="note">Không có mục nào.</div>';
+  const summary=missing.length+' thiếu · '+invalid.length+' sai đường dẫn · '+found.length+' đã xác nhận · '+external.length+' URL ngoài';
+  count.textContent=summary;
+  host.innerHTML='<div class="note">Đã quét '+refs.length+' lần tham chiếu scene_objects. Đây là kiểm tra file tồn tại trên GitHub, không thay thế kiểm tra phát video trong trình duyệt.</div>'+
+   '<details open style="margin:8px 0"><summary style="color:'+(missing.length?'#fca5a5':'#86efac')+';font-weight:700">❌ File không tồn tại ('+missing.length+')</summary>'+renderItems(missing,'#fca5a5')+'</details>'+
+   '<details open style="margin:8px 0"><summary style="color:'+(invalid.length?'#fbbf24':'#86efac')+';font-weight:700">⚠️ Đường dẫn chưa hợp lệ ('+invalid.length+')</summary>'+renderItems(invalid,'#fbbf24')+'</details>'+
+   '<details style="margin:8px 0"><summary style="color:#86efac;font-weight:700">✓ File đã xác nhận ('+found.length+')</summary>'+renderItems(found,'#86efac')+'</details>'+
+   '<details style="margin:8px 0"><summary>URL ngoài chưa xác minh ('+external.length+')</summary>'+renderItems(external,'#c4b5fd')+'</details>'+
+   '<div class="note" style="margin-top:8px">'+(missing.length||invalid.length?'Chưa nên xuất video cho đến khi xử lý các mục thiếu/sai đường dẫn.':'Không phát hiện đường dẫn GitHub bị thiếu trong scene_objects.')+'</div>'+
+   '<button type="button" class="btn secondary" id="download-scene-asset-report" style="margin-top:8px">⬇ Tải báo cáo kiểm tra JSON</button>';
+  $('download-scene-asset-report')?.addEventListener('click',()=>animationAuditDownload('BaoCao_PhuongTien_DaoCu.json',JSON.stringify({schema_version:1,checked_at:new Date().toISOString(),story:activeStoryName,summary:{references:refs.length,found:found.length,missing:missing.length,invalid:invalid.length,external_unverified:external.length},found,missing,invalid,external_unverified:external},null,2)));
+ }catch(error){count.textContent='Không kiểm tra được';host.innerHTML='<div class="note" style="color:#fca5a5">'+safeText(error.message)+'</div>'}
+ finally{if(button)button.disabled=false}
+}
 function renderAnimationAssetReport(){
  const host=$('animation-report-content'),count=$('animation-report-count');if(!host||!count)return;
  if(!activeStoryData||!scenes.length){count.textContent='Chưa có dữ liệu';host.innerHTML='<div class="note">Chọn một kịch bản để quét các trạng thái nhân vật cần bổ sung.</div>';return}
@@ -385,7 +441,7 @@ function renderAnimationAssetReport(){
    const item=missingWebm.get(key);item.count++;if(item.locations.length<30)item.locations.push({scene:scene.name||('Cảnh '+(sceneIndex+1)),line:Number(line.sourceIndex??lineIndex)+1});
   });
  }));
- scenes.forEach((scene,sceneIndex)=>(scene.lines||[]).forEach((line,lineIndex)=>{const frame=line.sourceFrame||{},objects=Array.isArray(line.sceneObjects)?line.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];objects.forEach(obj=>{if(!obj||typeof obj!=='object'||!(obj.asset||obj.path||obj.file))runtimeGaps.push({scene:scene.name||('Cảnh '+(sceneIndex+1)),line:Number(line.sourceIndex??lineIndex)+1,message:'Đối tượng scene_objects thiếu asset/path/file nên player không thể tải tài nguyên.'});if(obj&&(obj.parent_id||obj.attached_to||obj.attach_to))runtimeGaps.push({scene:scene.name||('Cảnh '+(sceneIndex+1)),line:Number(line.sourceIndex??lineIndex)+1,message:'Player chưa hỗ trợ gắn kết vật lý/transform giữa nhân vật và phương tiện hoặc đạo cụ.'})});['vehicles','phuong_tien','objects','props'].forEach(key=>{const v=line[key]??frame[key];if(Array.isArray(v)&&v.length)runtimeGaps.push({scene:scene.name||('Cảnh '+(sceneIndex+1)),line:Number(line.sourceIndex??lineIndex)+1,message:'Trường '+key+' chưa được player ánh xạ. Hãy dùng scene_objects để dựng lớp ảnh/video độc lập.'})})}));
+ scenes.forEach((scene,sceneIndex)=>(scene.lines||[]).forEach((line,lineIndex)=>{const frame=line.sourceFrame||{},objects=Array.isArray(line.scene_objects)?line.scene_objects:Array.isArray(line.sceneObjects)?line.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];objects.forEach(obj=>{if(!obj||typeof obj!=='object'||!(obj.asset||obj.path||obj.file))runtimeGaps.push({scene:scene.name||('Cảnh '+(sceneIndex+1)),line:Number(line.sourceIndex??lineIndex)+1,message:'Đối tượng scene_objects thiếu asset/path/file nên player không thể tải tài nguyên.'});if(obj&&(obj.parent_id||obj.attached_to||obj.attach_to))runtimeGaps.push({scene:scene.name||('Cảnh '+(sceneIndex+1)),line:Number(line.sourceIndex??lineIndex)+1,message:'Player chưa hỗ trợ gắn kết vật lý/transform giữa nhân vật và phương tiện hoặc đạo cụ.'})});['vehicles','phuong_tien','objects','props'].forEach(key=>{const v=line[key]??frame[key];if(Array.isArray(v)&&v.length)runtimeGaps.push({scene:scene.name||('Cảnh '+(sceneIndex+1)),line:Number(line.sourceIndex??lineIndex)+1,message:'Trường '+key+' chưa được player ánh xạ. Hãy dùng scene_objects để dựng lớp ảnh/video độc lập.'})})}));
  const webmItems=[...missingWebm.values()].sort((a,b)=>a.name.localeCompare(b.name,'vi')),unknownItems=[...unknownValues.values()].sort((a,b)=>a.category.localeCompare(b.category)||String(a.value).localeCompare(String(b.value),'vi'));
  const report={schema_version:1,created_at:new Date().toISOString(),story:activeStoryName||'Kịch bản chưa đặt tên',scanned_dialogue_rows:lineTotal,summary:{unknown_catalog_values:unknownItems.length,missing_webm_combinations:webmItems.length,continuity_warnings:continuityIssues.length,runtime_gaps:runtimeGaps.length},unknown_catalog_values:unknownItems,missing_webm:webmItems,continuity_warnings:continuityIssues,runtime_gaps:runtimeGaps,workflow_note:'Bổ sung danh mục có thể thực hiện hàng loạt. WEBM phải được tạo, xử lý/xóa phông và đưa vào thư viện thủ công từng tài nguyên.'};
  count.textContent=unknownItems.length+' mục chưa có danh mục · '+webmItems.length+' tổ hợp thiếu WEBM · '+continuityIssues.length+' cảnh báo liên tục · '+runtimeGaps.length+' giới hạn runtime';
@@ -398,7 +454,7 @@ function renderAnimationAssetReport(){
  host.querySelectorAll('[data-copy-audit-meta]').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(JSON.stringify(JSON.parse(button.dataset.copyAuditMeta),null,2));button.textContent='✓ Đã sao chép'}catch(error){button.textContent='Không sao chép được'}}));
  loadAnimationRegistry().then(()=>{if(registry!==animationRegistryCache)renderAnimationAssetReport()});
 }
-function updateStoryAnimationWarning(){if(!$('story-status'))return;if(!activeStoryData){renderAnimationAssetReport();return}const base='Đã nạp '+activeStoryName+': '+sourceLineCount+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh.';const missing=currentAnimationWarnings.filter(w=>!w.mirrored),mirrored=currentAnimationWarnings.filter(w=>w.mirrored),details=missing.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']: '+w.reason});const flips=mirrored.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']'});$('story-status').textContent=base+(details.length?' · Thiếu WEBM khớp trạng thái ở dòng hiện tại: '+details.join('; ')+'. Đang giữ hình tĩnh để tránh diễn sai.':' · Animation khớp metadata ở dòng hiện tại.')+(flips.length?' · Đã tự lật ngang WEBM cho hướng đối diện: '+flips.join('; ')+'.':'');renderAnimationAssetReport();}
+$('run-scene-asset-check')?.addEventListener('click',runSceneAssetPreflight);\nfunction updateStoryAnimationWarning(){if(!$('story-status'))return;if(!activeStoryData){renderAnimationAssetReport();return}const base='Đã nạp '+activeStoryName+': '+sourceLineCount+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh.';const missing=currentAnimationWarnings.filter(w=>!w.mirrored),mirrored=currentAnimationWarnings.filter(w=>w.mirrored),details=missing.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']: '+w.reason});const flips=mirrored.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']'});$('story-status').textContent=base+(details.length?' · Thiếu WEBM khớp trạng thái ở dòng hiện tại: '+details.join('; ')+'. Đang giữ hình tĩnh để tránh diễn sai.':' · Animation khớp metadata ở dòng hiện tại.')+(flips.length?' · Đã tự lật ngang WEBM cho hướng đối diện: '+flips.join('; ')+'.':'');renderAnimationAssetReport();}
 
 function safeAudioDataName(value){return String(value||'KichBan').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').replace(/[^A-Za-z0-9_-]+/g,'_').replace(/^_+|_+$/g,'')||'KichBan'}
 function manifestVoiceForLine(line){
@@ -557,7 +613,7 @@ async function updateAssets(){
  const displaySpecs=rawSpecs.length?rawSpecs.filter(spec=>spec.visible!==false&&spec.remove_from_scene!==true):((frame.nhan_vat||currentLine?.speakerId)?[{id:String(frame.nhan_vat||currentLine.speakerId),expression_id:frame.expression_id||{},x:50,y:100,scale:1,z_index:1}]:[]);
  const bgPath=bg?BASE+'Nen/'+bg:'',charPath=!displaySpecs.length&&character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
  const activeScene=getCurrentScene(),sceneSpecs=normalizeSceneEffects(activeScene?.visual?.sceneEffects||frame.hieu_ung_canh||[]);
- const rawObjects=Array.isArray(currentLine?.sceneObjects)?currentLine.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
+ const rawObjects=Array.isArray(currentLine?.scene_objects)?currentLine.scene_objects:Array.isArray(currentLine?.sceneObjects)?currentLine.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
  const objectSpecs=rawObjects.filter(o=>o&&typeof o==='object'&&String(o.asset||o.path||o.file||'').trim()).map((o,index)=>{const file=String(o.asset||o.path||o.file).trim(),url=(file.toLowerCase().startsWith('http://')||file.toLowerCase().startsWith('https://'))?file:(file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file);return {...o,id:String(o.id||('object_'+index)),url,type:/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?'image':'video',z_index:Number(o.z_index??10+index)}});
  const effectKey=JSON.stringify(sceneSpecs.map(x=>[x.path,x.loop,x.opacity,x.z_index]));
  if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
