@@ -553,7 +553,7 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
  const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
- const displaySpecs=rawSpecs.length?rawSpecs:((frame.nhan_vat||currentLine?.speakerId)?[{id:String(frame.nhan_vat||currentLine.speakerId),expression_id:frame.expression_id||{},x:50,y:100,scale:1,z_index:1}]:[]);
+ const displaySpecs=rawSpecs.length?rawSpecs.filter(spec=>spec.visible!==false&&spec.remove_from_scene!==true):((frame.nhan_vat||currentLine?.speakerId)?[{id:String(frame.nhan_vat||currentLine.speakerId),expression_id:frame.expression_id||{},x:50,y:100,scale:1,z_index:1}]:[]);
  const bgPath=bg?BASE+'Nen/'+bg:'',charPath=!displaySpecs.length&&character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
  const activeScene=getCurrentScene(),sceneSpecs=normalizeSceneEffects(activeScene?.visual?.sceneEffects||frame.hieu_ung_canh||[]);
  const rawObjects=Array.isArray(currentLine?.sceneObjects)?currentLine.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
