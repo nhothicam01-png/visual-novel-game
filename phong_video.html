@@ -1682,7 +1682,7 @@ function mapJsonEffects(frame){
   list.forEach(value=>{
    const id=String(value||'').trim(),found=valid.find(item=>item.id.toLowerCase()===id.toLowerCase());
    if(found){effects.push(group+':'+found.id);return}
-   const aliases={camera:{shake:'camera-shake',zoom_in:'camera-zoom',zoom_out:'camera-pull',drift:'camera-drift'},bg:{zoom:'bg-zoom',left:'bg-left',right:'bg-right',float:'bg-float',blur:'bg-blur',pulse:'bg-pulse'},char:{bob:'char-bob',sway:'char-sway',shake:'char-shake',zoom:'char-zoom',float:'char-float',breathe:'char-breathe',enter:'char-enter',fade:'char-fade'}};
+   const aliases={camera:{shake:'camera-shake',zoom_in:'camera-zoom',zoom_out:'camera-pull',drift:'camera-drift',sway:'camera-drift',pan_left:'camera-drift',pan_right:'camera-drift',pan_up:'camera-drift',pan_down:'camera-drift',spin:'camera-drift',tilt_left:'camera-drift',tilt_right:'camera-drift',misty:'camera-zoom'},bg:{zoom:'bg-zoom',zoom_in:'bg-zoom',zoom_out:'bg-zoom',left:'bg-left',right:'bg-right',pan_left:'bg-left',pan_right:'bg-right',pan_up:'bg-float',pan_down:'bg-float',sway:'bg-float',float:'bg-float',blur:'bg-blur',misty:'bg-blur',pulse:'bg-pulse',dizzy_spin:'bg-pulse',earthquake:'bg-pulse'},char:{bob:'char-bob',walk_bob:'char-bob',sway:'char-sway',fear_shake:'char-shake',shake:'char-shake',zoom:'char-zoom',giant:'char-zoom',float:'char-float',breathe:'char-breathe',enter:'char-enter',fade:'char-fade'}};
    const key=id.toLowerCase().replace(/-/g,'_').replace(/^(char|character|bg|background|camera)_/,'');
    const mapped=aliases[group]?.[key];if(mapped&&valid.some(item=>item.id===mapped))effects.push(group+':'+mapped);
   });
