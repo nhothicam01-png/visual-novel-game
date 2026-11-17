@@ -366,10 +366,10 @@ function animationAuditDownload(filename,content,type='application/json'){
 function hasExplicitMotion(spec){const m=spec?.motion;return !!(m&&typeof m==='object'&&(m.from&&m.to||Array.isArray(m.keyframes)&&m.keyframes.length>1))}
 const sceneAssetTreeCache={paths:null,loadedAt:0};
 function normalizeSceneAssetPath(value){
- let path=String(value||'').trim().replace(/\\\\/g,'/');
+ let path=String(value||'').trim().replace(/\\/g,'/');
  if(!path)return '';
- if(/^https?:\\/\\//i.test(path))return path;
- path=path.replace(/^\\.\\//,'').replace(/^\\/+/, '');
+ if(/^https?:\/\//i.test(path))return path;
+ path=path.replace(/^\.\//,'').replace(/^\/+/, '');
  return path;
 }
 async function loadSceneAssetTree(force=false){
@@ -391,13 +391,13 @@ async function runSceneAssetPreflight(){
    const frame=line.sourceFrame||{},objects=Array.isArray(line.scene_objects)?line.scene_objects:Array.isArray(line.sceneObjects)?line.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
    objects.forEach((obj,oi)=>{
     const raw=obj&&(obj.asset||obj.path||obj.file),path=normalizeSceneAssetPath(raw);
-    refs.push({id:String(obj?.id||('object_'+(oi+1))),scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,raw:String(raw||''),path,kind:/\\.(webm|mp4|mov)$/i.test(path)?'video':/\\.(png|jpe?g|webp|gif|avif|svg)$/i.test(path)?'image':'unknown'});
+    refs.push({id:String(obj?.id||('object_'+(oi+1))),scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,raw:String(raw||''),path,kind:/\.(webm|mp4|mov)$/i.test(path)?'video': /\.(png|jpe?g|webp|gif|avif|svg)$/i.test(path)?'image':'unknown'});
    });
   }));
   const missing=[],found=[],external=[],invalid=[];
   refs.forEach(item=>{
    if(!item.path){invalid.push({...item,reason:'Thiếu asset/path/file'});return}
-   if(/^https?:\\/\\//i.test(item.path)){external.push({...item,reason:'URL ngoài GitHub: chưa thể xác nhận bằng danh sách file repository'});return}
+   if(/^https?:\/\//i.test(item.path)){external.push({...item,reason:'URL ngoài GitHub: chưa thể xác nhận bằng danh sách file repository'});return}
    if(!item.path.startsWith('assets/')){invalid.push({...item,reason:'Đường dẫn phải bắt đầu bằng assets/'});return}
    if(paths.has(item.path)){found.push(item);return}
    missing.push({...item,reason:'Không tìm thấy file này trên nhánh main'});
