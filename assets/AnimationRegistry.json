@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "description": "Danh mục chuẩn dùng để kiểm tra giá trị expression_id. Chỉ thêm mục vào đây khi chủ dự án duyệt; việc thêm danh mục không có nghĩa đã có WEBM.",
+  "fields": {
+    "communication": [
+      "speaking",
+      "silent",
+      "listening",
+      "reacting",
+      "idle"
+    ],
+    "emotion": [
+      "neutral",
+      "happy",
+      "sad",
+      "angry",
+      "afraid",
+      "surprised",
+      "embarrassed",
+      "crying",
+      "laughing",
+      "worried",
+      "confused",
+      "determined"
+    ],
+    "pose": [
+      "standing",
+      "sitting",
+      "lying",
+      "crouching",
+      "kneeling",
+      "walking_pose"
+    ],
+    "action": [
+      "idle",
+      "walking",
+      "running",
+      "jumping",
+      "flying",
+      "swimming",
+      "sitting down",
+      "lying down",
+      "pushing",
+      "pulling",
+      "teleporting",
+      "turning",
+      "waving",
+      "dancing",
+      "falling",
+      "picking up"
+    ],
+    "direction": [
+      "left",
+      "right",
+      "front",
+      "back"
+    ],
+    "face_angle": [
+      "0°",
+      "45°",
+      "90°",
+      "135°",
+      "180°"
+    ],
+    "view_angle": [
+      "full body",
+      "half body",
+      "close up",
+      "three quarter",
+      "high angle",
+      "low angle",
+      "top down",
+      "over the shoulder"
+    ],
+    "interaction_target": [
+      "none",
+      "character",
+      "object"
+    ]
+  }
+}
