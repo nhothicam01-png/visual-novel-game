@@ -517,7 +517,9 @@ Quy tắc:
 - Trường mới `hieu_ung_canh` có thể là mảng các object `{ file, type, loop, opacity, z_index }`. `file` phải là đường dẫn đầy đủ trong `assets/HieuUng/` và phải giữ đúng phần mở rộng `.png` hoặc `.webm`.
 - Chỉ khai báo `hieu_ung_canh` khi danh sách tài nguyên thực tế được cung cấp có đúng file phù hợp; không tự bịa tên, không tự tạo đường dẫn. Nếu không có danh sách file thì bỏ trường này để người dùng chọn trong phòng tạo video.
 - Player vẫn đọc tương thích trường cũ `anh_hieu_ung` (tên không đuôi) và sẽ dò file tương ứng trong `assets/HieuUng/`. Khi xuất JSON đã chỉnh sửa, player ghi đường dẫn chính xác vào `hieu_ung_canh`.
-- `loop: true` dành cho mưa, gió, tuyết hoặc hiệu ứng nền liên tục; `loop: false` dành cho sự kiện một lần như nổ hoặc tia sét. `opacity` nằm trong khoảng 0.05–1; `z_index` quyết định thứ tự lớp.
+- `loop: true` dành cho mưa, gió, tuyết hoặc hiệu ứng nền liên tục; `loop: false` dành cho sự kiện một lần như nổ hoặc tia sét. `opacity` nằm trong khoảng 0.05–1.
+- `z_index` dùng chung trục lớp với nhân vật trong `nhan_vat_hien_thi[].z_index`: số nhỏ được vẽ trước (nằm sau nhân vật), số lớn được vẽ sau (nằm trước và có thể phủ lên nhân vật). Quy ước đề xuất: hiệu ứng nền/sau lưng nhân vật dùng `z_index: -10`; nhân vật thường dùng `1, 2, 3...`; hiệu ứng tiền cảnh/đè lên nhân vật dùng `z_index: 100`. Có thể đặt giá trị trung gian để một hiệu ứng nằm giữa các nhân vật. Không mặc định tất cả hiệu ứng ở phía trước.
+- Phân lớp theo nội dung: mưa/tuyết xa, sương nền, bụi hậu cảnh và ánh sáng nền thường ở sau nhân vật; tia điện gần ống kính, tia sáng lóe, bụi/mảnh vỡ tiền cảnh có thể ở trước. Chỉ để hiệu ứng phủ mặt khi đó là chủ ý hình ảnh; nếu không, đặt sau nhân vật hoặc giảm opacity.
 
 ==================================================
 VI. QUY TẮC ÂM THANH – CẤU TRÚC MỚI
