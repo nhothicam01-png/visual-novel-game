@@ -814,7 +814,7 @@ function drawFrame(elapsed,st){
    const tx=w*Math.max(0,Math.min(100,Number(targetSpec.x??50)))/100;
    const ty=h*Math.max(0,Math.min(110,Number(targetSpec.y??102)))/100;
    const focusY=Math.max(targetHeight*.08,ty-targetHeight*(isPortrait?.62:.70));
-   const zoom=Math.max(1,Math.min(isPortrait?1.18:1.8,shotZoom));
+   const zoom=isPortrait&&visibleCount===1?1:Math.max(1,Math.min(1.8,shotZoom));
    ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(zoom,zoom);ctx.translate(-tx,-focusY);
   }
  }
