@@ -991,7 +991,7 @@ async function playPreview(){
     URL.revokeObjectURL(url);previewAudio.tts=null;
    }else if(text){setTtsStatus('Thiếu WAV của câu thoại: '+(line.speaker||item.sourceIndex+1));}
   }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;}
-  const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0)),requestedDuration=Math.max(0,Math.min(30,Number(line.sourceFrame?.thoi_luong)||0)),lineElapsed=(performance.now()-previewStartedAt)/1000-lineMotionStartElapsed,hold=Math.max(pause,requestedDuration-lineElapsed);
+  const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0)),motionDuration=Math.max(0,...(line.sourceFrame?.nhan_vat_hien_thi||[]).map(ch=>Number(ch.motion?.duration_seconds)||0)),requestedDuration=Math.max(0,Math.min(30,Number(line.sourceFrame?.thoi_luong)||0),motionDuration),lineElapsed=(performance.now()-previewStartedAt)/1000-lineMotionStartElapsed,hold=Math.max(pause,requestedDuration-lineElapsed);
   if(directRecording){const lineEnd=(performance.now()-directRecordStartedAt)/1000;directRecordEntries.push({line,blob:line.wavBlob||null,gain:line.gain??1,sceneIndex:item.sceneIndex,duration:Math.max(.01,lineEnd-lineStart),start:lineStart,pause:hold})}
   let remaining=hold*1000;
   while(previewing&&run===previewRunId&&remaining>0){
