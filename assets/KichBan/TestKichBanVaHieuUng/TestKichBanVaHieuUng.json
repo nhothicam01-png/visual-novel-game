@@ -1,0 +1,1102 @@
+{
+  "phien_ban": 3,
+  "world_id": "ThanhLinhKimSa",
+  "tieu_de": "Test Kịch Bản Và Hiệu Ứng",
+  "mo_ta": "Kịch bản kiểm thử độc lập cho chuyển động nhân vật, thoại trực tiếp và lời dẫn, camera nhiều cỡ cảnh, hiệu ứng môi trường, hiệu ứng PNG ở lớp sau/trước nhân vật và chuyển bối cảnh.",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.35,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_tong_chi_van": {
+      "character_id": "char_tong_chi_van",
+      "ten_hien_thi": "Tống Chi Vãn",
+      "assetFolder": "Nguoi dan ong mac vest",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_chu_nghien": {
+      "character_id": "char_chu_nghien",
+      "ten_hien_thi": "Chu Nghiên",
+      "assetFolder": "nữ sinh tóc ngắn xanh 1",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_bach_vi_vi": {
+      "character_id": "char_bach_vi_vi",
+      "ten_hien_thi": "Bạch Vi Vi",
+      "assetFolder": "Hihi",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": "afternoon_between_leaves.mp3"
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Buổi chiều ở sân trường. Chi Vãn nhìn thấy Chu Nghiên ở phía bên kia sân và bước nhanh về phía cậu ấy.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle"
+      },
+      "nhan_vat_hien_thi": [],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg_zoom_in"
+        ],
+        "camera": [],
+        "moi_truong": [
+          "dust",
+          "rays"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3,
+      "loai_phat_ngon": "narration",
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/bui_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.58,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Chu Nghiên! Đợi một chút!",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "walking_pose",
+        "action": "walking",
+        "direction": "right",
+        "face_angle": "0°",
+        "view_angle": "full body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "walking_pose",
+            "action": "walking",
+            "direction": "right",
+            "face_angle": "0°",
+            "view_angle": "full body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.72,
+          "z_index": 1,
+          "motion": {
+            "action": "walking",
+            "duration_seconds": 2.8,
+            "easing": "linear",
+            "from": {
+              "x": 14,
+              "y": 102
+            },
+            "to": {
+              "x": 42,
+              "y": 102
+            }
+          }
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char_walk_bob"
+        ],
+        "nen": [],
+        "camera": [],
+        "moi_truong": [
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3.2,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "target": "char_tong_chi_van",
+        "zoom": 1
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/bui_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.58,
+          "z_index": -10
+        }
+      ]
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Tớ có chuyện cần hỏi cậu.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 2.8,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "medium",
+        "target": "char_tong_chi_van",
+        "zoom": 1.12
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_chu_nghien",
+      "noi_dung": "Cậu gọi tớ à? Có chuyện gì vậy?",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 1,
+          "visible": false
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.76,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3.1,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_chu_nghien",
+        "zoom": 1.45
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Tớ muốn hỏi cậu đã kiểm tra cảnh báo ở thung lũng Kim Sa chưa.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.76,
+          "z_index": 1
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 2,
+          "visible": false
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_zoom_in"
+        ],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 4.2,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_tong_chi_van",
+        "zoom": 1.45
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_chu_nghien",
+      "noi_dung": "Tớ chỉ nghe nói có vài người tìm được vàng ở đó. Chưa chắc nguy hiểm đến mức ấy.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 1,
+          "visible": false
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.76,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 4,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_chu_nghien",
+        "zoom": 1.42
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Một video không đủ chứng minh nơi đó an toàn. Tớ đã lưu lại thông tin cảnh báo để mọi người có thể tự kiểm tra.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.76,
+          "z_index": 1
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 2,
+          "visible": false
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_shake"
+        ],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "over_shoulder",
+        "target": "char_tong_chi_van",
+        "zoom": 1.28
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Một luồng gió lướt qua sân trường. Bụi mịn nằm ở lớp hậu cảnh, còn vài chiếc lá bay ngang tiền cảnh để thử độ sâu của các lớp hiệu ứng.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 1,
+          "visible": false
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 2,
+          "visible": false
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg_sway"
+        ],
+        "camera": [
+          "camera_sway"
+        ],
+        "moi_truong": [
+          "dust",
+          "rays"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3.2,
+      "loai_phat_ngon": "narration",
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/bui_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.58,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/la_cay_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.24,
+          "z_index": 100
+        }
+      ],
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Hai cậu đang bàn chuyện gì vậy? Cho tớ xem với!",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "walking_pose",
+        "action": "walking",
+        "direction": "left",
+        "face_angle": "0°",
+        "view_angle": "full body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 1,
+          "visible": false
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 2,
+          "visible": false
+        },
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "walking_pose",
+            "action": "walking",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body"
+          },
+          "x": 66,
+          "y": 102,
+          "scale": 0.72,
+          "z_index": 3,
+          "motion": {
+            "action": "walking",
+            "duration_seconds": 2.6,
+            "easing": "linear",
+            "from": {
+              "x": 104,
+              "y": 102
+            },
+            "to": {
+              "x": 66,
+              "y": 102
+            }
+          }
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char_walk_bob"
+        ],
+        "nen": [],
+        "camera": [],
+        "moi_truong": [
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3.4,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "medium",
+        "target": "char_bach_vi_vi",
+        "zoom": 1.1
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/bui_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.58,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/la_cay_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.24,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC003",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Bọn tớ đang kiểm tra thông tin trước khi quyết định có nên đi hay không.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.76,
+          "z_index": 1
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 2,
+          "visible": false
+        },
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 66,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 3,
+          "visible": false
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3.8,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_tong_chi_van",
+        "zoom": 1.42
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/bui_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.58,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/la_cay_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.24,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Sau đó, cả ba chuyển vào lớp học để tiếp tục xem lại thông tin. Khung hình đổi bối cảnh và chuyển từ hiệu ứng sân trường sang ánh nắng trong lớp.",
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral"
+      },
+      "nhan_vat_hien_thi": [],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg_zoom_out"
+        ],
+        "camera": [
+          "camera_zoom_out"
+        ],
+        "moi_truong": [
+          "rays",
+          "sparkle"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3.1,
+      "loai_phat_ngon": "narration",
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/tia_nang.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.52,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/la_cay_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.24,
+          "z_index": 100
+        }
+      ],
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Được rồi, vậy mình cùng xem lại từng thông tin nhé.",
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 1,
+          "visible": false
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 2,
+          "visible": false
+        },
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 66,
+          "y": 102,
+          "scale": 0.76,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3.4,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "medium",
+        "target": "char_bach_vi_vi",
+        "zoom": 1.12
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/tia_nang.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.52,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/la_cay_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.24,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC004",
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Ổn rồi. Kịch bản đã thử chuyển động, đổi góc máy, đổi nền và hai lớp hiệu ứng trước – sau nhân vật.",
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_tong_chi_van",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.76,
+          "z_index": 1
+        },
+        {
+          "id": "char_chu_nghien",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 2,
+          "visible": false
+        },
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle"
+          },
+          "x": 66,
+          "y": 102,
+          "scale": 0.74,
+          "z_index": 3,
+          "visible": false
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_zoom_in"
+        ],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 4.2,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_tong_chi_van",
+        "zoom": 1.45
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/tia_nang.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.52,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/la_cay_bay.png",
+          "type": "image",
+          "loop": true,
+          "opacity": 0.24,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_tong_chi_van",
+      "noi_dung": "Kết thúc kiểm thử. Các lớp hiệu ứng được khai báo riêng theo z_index; những trạng thái WEBM chưa có clip khớp vẫn được ghi nhận để bổ sung, không đổi sai hành động trong JSON.",
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral"
+      },
+      "nhan_vat_hien_thi": [],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "thoi_luong": 3.2,
+      "loai_phat_ngon": "narration",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      }
+    }
+  ]
+}
