@@ -302,6 +302,13 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 (function(){
 'use strict';
 const BASE='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/';
+function backgroundAssetUrl(value){
+ const path=String(value||'').trim();
+ if(!path)return '';
+ if(/^https?:\/\//i.test(path))return path;
+ return BASE+(path.startsWith('assets/')?path.slice(7):'Nen/'+path.replace(/^\/+/, ''));
+}
+function isVideoBackground(value){return /\.(mp4|webm)(?:[?#]|$)/i.test(String(value||''));}
 const $=id=>document.getElementById(id);
 let canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
 const previewCanvas=canvas,previewCtx=ctx;
@@ -686,7 +693,7 @@ async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
  const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
  const displaySpecs=rawSpecs.length?rawSpecs.filter(spec=>spec.visible!==false&&spec.remove_from_scene!==true):((frame.nhan_vat||currentLine?.speakerId)?[{id:String(frame.nhan_vat||currentLine.speakerId),expression_id:frame.expression_id||{},x:50,y:100,scale:1,z_index:1}]:[]);
- const bgPath=bg?BASE+'Nen/'+bg:'',charPath=!displaySpecs.length&&character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
+ const bgPath=bg?backgroundAssetUrl(bg):'',charPath=!displaySpecs.length&&character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
  const activeScene=getCurrentScene(),sceneSpecs=normalizeSceneEffects(activeScene?.visual?.sceneEffects||frame.hieu_ung_canh||[]);
  const rawObjects=Array.isArray(currentLine?.scene_objects)?currentLine.scene_objects:Array.isArray(currentLine?.sceneObjects)?currentLine.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
  const objectSpecs=rawObjects.filter(o=>o&&typeof o==='object'&&String(o.asset||o.path||o.file||'').trim()).map((o,index)=>{const file=String(o.asset||o.path||o.file).trim(),url=(file.toLowerCase().startsWith('http://')||file.toLowerCase().startsWith('https://'))?file:(file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file);return {...o,id:String(o.id||('object_'+index)),url,type:/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?'image':'video',z_index:Number(o.z_index??10+index)}});
@@ -715,7 +722,7 @@ async function updateAssets(){
   });
   const safeAssetLoad=async(label,loader)=>{try{return await loader()}catch(error){console.warn('Không tải được '+label+'; tiếp tục bằng phương án dự phòng:',error);return null}};
   const [nextBg,nextChar,nextLayers,nextSceneEffects,nextObjects]=await Promise.all([
-   bgPath?safeAssetLoad('nền '+bg,()=>/\.(mp4|webm)$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
+   bgPath?safeAssetLoad('nền '+bg,()=>isVideoBackground(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
    charPath?safeAssetLoad('WEBM nhân vật chính',()=>cachedVideo(charPath)):Promise.resolve(null),
    Promise.all(layerJobs),
    Promise.all(sceneSpecs.map(async spec=>{
@@ -729,7 +736,7 @@ async function updateAssets(){
   if(bgVideo&&bgVideo!==nextBg)bgVideo.pause();if(charVideo&&charVideo!==nextChar)charVideo.pause();
   charLayerVideos.forEach(old=>{if(old.media&&!nextLayers.some(item=>item.media===old.media)&&typeof old.media.pause==='function')old.media.pause()});
   sceneObjectLayers.forEach(old=>{if(old.media&&!nextObjects.some(item=>item.media===old.media)&&old.media.pause)old.media.pause()});
-  bgVideo=/\.(mp4|webm)$/i.test(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
+  bgVideo=isVideoBackground(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   charLayerVideos=nextLayers.filter(item=>item.media);
   sceneObjectLayers=nextObjects.filter(item=>item.media);
   currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched||item.mirrored).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.mirrored?'Dùng WEBM ngược hướng và đã lật ngang tự động':(item.animationReason||'không có clip khớp'),mirrored:!!item.mirrored}));
@@ -754,7 +761,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
  const rows=activeStoryData?.danh_sach||[];
  for(let i=Math.max(0,sourceIndex);i<Math.min(rows.length,sourceIndex+count);i++){
   const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=resolveSemanticExpression(character,row.expression_id);
-  if(bg){const url=BASE+'Nen/'+bg;if(/\.(mp4|webm)$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
+  if(bg){const url=backgroundAssetUrl(bg);if(isVideoBackground(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
   normalizeSceneEffects(row.hieu_ung_canh||[]).forEach(effect=>{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(()=>{})});
   (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),semantic=semanticForVisibleCharacter(spec,row,{speakerId:row.nhan_vat});const selection=resolveSemanticAnimation(folder,semantic);if(folder&&selection.file)cachedVideo(BASE+'NhanVat/'+folder+'/'+selection.file+'.webm').catch(()=>{})});
@@ -1189,7 +1196,7 @@ async function preparePreviewPlayback(items,useBrowser){
   const line=scenes[item.sceneIndex]?.lines[item.lineIndex];if(!line)continue;
   const frame=line.sourceFrame||{},bg=String(frame.anh_nen||line.background||backgroundAtSourceIndex(item.sourceIndex)||'').trim();
   const folder=characterAssetFolder(frame.nhan_vat??line.characterAsset??line.speakerId),expression=resolveSemanticExpression(folder,frame.expression_id)||normalizeExpression(line.expression||'');
-  if(bg){const url=BASE+'Nen/'+bg;if(/\.(mp4|webm)$/i.test(bg))videoUrls.add(url);else imageUrls.add(url)}
+  if(bg){const url=backgroundAssetUrl(bg);if(isVideoBackground(bg))videoUrls.add(url);else imageUrls.add(url)}
   if(folder&&expression)videoUrls.add(BASE+'NhanVat/'+folder+'/'+expression+'.webm');
   (Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[]).forEach(spec=>{const displayFolder=characterAssetFolder(spec?.id),displayExpression=resolveSemanticExpression(displayFolder,spec?.expression_id||semanticFromExpression(displayFolder,spec?.bieu_cam));if(displayFolder&&displayExpression)videoUrls.add(BASE+'NhanVat/'+displayFolder+'/'+displayExpression+'.webm')});
  }
