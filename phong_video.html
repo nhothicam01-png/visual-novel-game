@@ -470,7 +470,7 @@ function renderAnimationAssetReport(){
 function runCharacterLayoutCheck(){
  const host=$('character-layout-report');if(!host)return;
  if(!activeStoryData||!scenes.length){host.innerHTML='<div class="note">Chưa có kịch bản để kiểm tra.</div>';return}
- const issues=[],intentional=[],checked=[];
+ const issues=[],intentional=[],checked=[];let autoLayoutCount=0;
  const interactionFor=(frame,a,b)=>((Array.isArray(frame.tuong_tac)?frame.tuong_tac:[])).find(it=>it&&it.allow_overlap===true&&Array.isArray(it.participants)&&it.participants.includes(a.id)&&it.participants.includes(b.id)&&String(it.intent||'').trim()&&String(it.phase||'').trim());
  const xyAt=(spec,t)=>{
   const base={x:Number(spec.x),y:Number(spec.y??78)},keys=Array.isArray(spec.motion?.keyframes)?spec.motion.keyframes.slice().filter(k=>Number.isFinite(Number(k.t))&&Number.isFinite(Number(k.x))).sort((a,b)=>Number(a.t)-Number(b.t)):[];
@@ -481,6 +481,7 @@ function runCharacterLayoutCheck(){
  };
  scenes.forEach((scene,si)=>(scene.lines||[]).forEach((line,li)=>{
   const frame=line.sourceFrame||{},items=Array.isArray(line.visibleCharacters)?line.visibleCharacters:Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[],visible=items.filter(c=>c&&c.visible!==false&&c.remove_from_scene!==true&&Number.isFinite(Number(c.x)));
+  if(visible.length>1&&String(frame.bo_cuc_nhan_vat?.mode||'auto').toLowerCase()==='auto'){autoLayoutCount++;checked.push(1);return;}
   for(let a=0;a<visible.length;a++)for(let b=a+1;b<visible.length;b++){
    const A=visible[a],B=visible[b],as=Math.max(.1,Number(A.scale)||.72),bs=Math.max(.1,Number(B.scale)||.72),minGap=24*((as+bs)/1.44),intent=interactionFor(frame,A,B);
    const times=new Set([0,1]);for(const k of [...(A.motion?.keyframes||[]),...(B.motion?.keyframes||[])])if(Number.isFinite(Number(k.t)))times.add(Math.max(0,Math.min(1,Number(k.t))));
@@ -492,7 +493,7 @@ function runCharacterLayoutCheck(){
   checked.push(1);
  }));
  const item=v=>'<li style="margin:7px 0">'+safeText(v.a.id||'A')+' ↔ '+safeText(v.b.id||'B')+' · dòng '+v.line+' · '+(v.closest.t===0?'đầu nhịp':v.closest.t===1?'cuối nhịp':'t='+v.closest.t.toFixed(2))+' · x≈'+v.closest.p.x.toFixed(1)+' / '+v.closest.q.x.toFixed(1)+'</li>';
- host.innerHTML='<div style="color:#cbd5e1">Đã rà '+checked.length+' dòng; kiểm tra vị trí tĩnh và các mốc keyframe. Tương tác có chủ ý chỉ được miễn cảnh báo khi JSON có tuong_tac hợp lệ, đủ participants, phase, allow_overlap và intent.</div>'+
+ host.innerHTML='<div style="color:#cbd5e1">Đã rà '+checked.length+' dòng; có '+autoLayoutCount+' dòng nhiều nhân vật dùng tự dàn runtime nên không đánh giá nhầm tọa độ gốc. Các dòng manual được kiểm tra vị trí tĩnh và keyframe. Tương tác có chủ ý chỉ được miễn cảnh báo khi JSON có tuong_tac hợp lệ, đủ participants, phase, allow_overlap và intent.</div>'+
  '<details open style="margin:8px 0"><summary style="color:'+(issues.length?'#fca5a5':'#86efac')+';font-weight:700">⚠️ Nguy cơ chồng lấn ngoài ý muốn ('+issues.length+')</summary>'+(issues.length?'<ul>'+issues.slice(0,100).map(item).join('')+'</ul>':'<div class="note">Không phát hiện theo kiểm tra hình học gần đúng.</div>')+'</details>'+
  '<details style="margin:8px 0"><summary style="color:#86efac;font-weight:700">✓ Chồng lớp có chủ đích được khai báo ('+intentional.length+')</summary>'+(intentional.length?'<ul>'+intentional.slice(0,100).map(v=>'<li style="margin:7px 0">Dòng '+v.line+' · '+safeText(v.a.id)+' ↔ '+safeText(v.b.id)+' · '+safeText(v.intent.type)+' / '+safeText(v.intent.phase)+' — '+safeText(v.intent.intent)+'</li>').join('')+'</ul>':'<div class="note">Không có tương tác chồng lớp được khai báo.</div>')+'</details>'+
  '<div class="note">Đây là kiểm tra hình học gần đúng, không phân tích pixel alpha của WEBM/PNG và không tự xác nhận chất lượng rig/va chạm vật lý. Vẫn cần xem preview.</div>';
