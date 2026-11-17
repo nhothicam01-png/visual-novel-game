@@ -852,6 +852,13 @@ function getVfxCoverCanvas(media,w,h){
  cx.drawImage(media,(w-dw)/2,(h-dh)/2,dw,dh);
  vfxCoverCache.set(media,{width:w,height:h,canvas:c});return c;
 }
+ // Tính mức phóng tối thiểu để lớp phủ luôn che kín khung sau khi xoay/dịch.
+ // Canvas nguồn đã cover khung; phép biến đổi tiếp theo không được làm lộ góc nền.
+ function getVfxMinimumCoverScale(w,h,rotation,x,y){
+  const c=Math.abs(Math.cos(rotation)),s=Math.abs(Math.sin(rotation));
+  const halfW=(c*w+s*h)/2,halfH=(s*w+c*h)/2;
+  return Math.max(1,(w/2+Math.abs(x-w/2))/Math.max(1,halfW),(h/2+Math.abs(y-h/2))/Math.max(1,halfH));
+ }
 function drawAnimatedPngEffect(media,item,w,h,elapsed){
  const name=effectProfileName(item),sw=media.naturalWidth||media.width,sh=media.naturalHeight||media.height;if(!sw||!sh)return;
  const profile=getVfxSimulationProfile(name),variant=profile.variant||{},mode=profile.mode||'overlay',period=Math.max(.5,Number(variant.period||profile.period||3.5)),phase=((elapsed%period)+period)%period;
@@ -863,6 +870,8 @@ function drawAnimatedPngEffect(media,item,w,h,elapsed){
   if(pulse<=0)return;
   scale=1+(Number(variant.zoom||1.12)-1)*pulse;
   alpha=Math.min(1,(Number(variant.flash??.8))*(.58+.42*pulse));
+  // Sét phủ toàn màn hình: luôn giữ tối thiểu 100% khung hình.
+  scale=Math.max(1,scale,getVfxMinimumCoverScale(w,h,0,x,y));
   const coverCanvas=getVfxCoverCanvas(media,w,h);
   ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,Number(item.opacity??1)*alpha));ctx.translate(x,y);ctx.scale(scale,scale);ctx.drawImage(coverCanvas,-w/2,-h/2,w,h);ctx.restore();
   if(profile.screenFlash){ctx.save();ctx.globalCompositeOperation='screen';ctx.globalAlpha=pulse*Number(variant.flash??.8)*.36;ctx.fillStyle=profile.flashColor||'rgba(210,225,255,1)';ctx.fillRect(0,0,w,h);ctx.restore()}
@@ -881,6 +890,8 @@ function drawAnimatedPngEffect(media,item,w,h,elapsed){
  else if(mode==='twinkle'){scale=1+Math.sin(elapsed*3.2)*Number(profile.pulse||.05);alpha=.55+.45*Math.abs(Math.sin(elapsed*Number(profile.frequency||4.8)))}
  else if(mode==='drift'){x=w/2+Math.sin(elapsed*Number(profile.frequency||8))*w*Number(profile.distance||.025);scale=1.02}
  else if(mode==='transition'){alpha=.35+.35*(.5+.5*Math.sin(elapsed*Number(profile.frequency||1.4)));scale=1.02+Math.sin(elapsed)*.015}
+ // Không cho hiệu ứng PNG co xuống dưới 100%; tự bù thêm khi xoay hoặc trôi lệch tâm.
+ scale=Math.max(1,scale,getVfxMinimumCoverScale(w,h,rotation,x,y));
  const coverCanvas=getVfxCoverCanvas(media,w,h);
  ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,Number(item.opacity??1)*alpha));ctx.translate(x,y);ctx.rotate(rotation);ctx.scale(scale,scale);ctx.drawImage(coverCanvas,-w/2,-h/2,w,h);ctx.restore();
 }
