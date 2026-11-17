@@ -283,6 +283,13 @@ body{background:#050811;color:#fff;font-family:'Segoe UI',Tahoma,sans-serif;min-
 (function(){
 'use strict';
 const BASE='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/';
+function backgroundAssetUrl(value){
+ const path=String(value||'').trim();
+ if(!path)return '';
+ if(/^https?:\/\//i.test(path))return path;
+ return BASE+(path.startsWith('assets/')?path.slice(7):'Nen/'+path.replace(/^\/+/, ''));
+}
+function isVideoBackground(value){return /\.(mp4|webm)(?:[?#]|$)/i.test(String(value||''));}
 const $=id=>document.getElementById(id);
 let canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
 const previewCanvas=canvas,previewCtx=ctx;
@@ -482,7 +489,7 @@ async function loadSceneEffectLibrary(){
 }
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
- const bgPath=bg?BASE+'Nen/'+bg:'',charPath=character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
+ const bgPath=bg?backgroundAssetUrl(bg):'',charPath=character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
  const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},displaySpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
  const activeScene=getCurrentScene(),sceneSpecs=normalizeSceneEffects(activeScene?.visual?.sceneEffects||frame.hieu_ung_canh||[]);
  const effectKey=JSON.stringify(sceneSpecs.map(x=>[x.path,x.loop,x.opacity,x.z_index]));
@@ -494,7 +501,7 @@ async function updateAssets(){
    return {spec:{...spec,expression_id:spec.expression_id},folder,media,index};
   });
   const [nextBg,nextChar,nextLayers,nextSceneEffects]=await Promise.all([
-   bgPath?(/\.(mp4|webm)$/i.test(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
+   bgPath?(isVideoBackground(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
    charPath?cachedVideo(charPath):Promise.resolve(null),
    Promise.all(layerJobs),
    Promise.all(sceneSpecs.map(async spec=>{
@@ -506,7 +513,7 @@ async function updateAssets(){
   if(token!==assetLoadToken)return;
   if(bgVideo&&bgVideo!==nextBg)bgVideo.pause();if(charVideo&&charVideo!==nextChar)charVideo.pause();
   charLayerVideos.forEach(old=>{if(old.media&&!nextLayers.some(item=>item.media===old.media))old.media.pause()});
-  bgVideo=/\.(mp4|webm)$/i.test(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
+  bgVideo=isVideoBackground(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   charLayerVideos=nextLayers.filter(item=>item.media);
   if(effectKey!==sceneEffectKey){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.media.pause)item.media.pause()});
@@ -527,7 +534,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
  const rows=activeStoryData?.danh_sach||[];
  for(let i=Math.max(0,sourceIndex);i<Math.min(rows.length,sourceIndex+count);i++){
   const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=resolveSemanticExpression(character,row.expression_id);
-  if(bg){const url=BASE+'Nen/'+bg;if(/\.(mp4|webm)$/i.test(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
+  if(bg){const url=backgroundAssetUrl(bg);if(isVideoBackground(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
   normalizeSceneEffects(row.hieu_ung_canh||[]).forEach(effect=>{const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(()=>{})});
   (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi:[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),expr=resolveSemanticExpression(folder,spec?.expression_id||semanticFromExpression(folder,spec?.bieu_cam));if(folder&&expr)cachedVideo(BASE+'NhanVat/'+folder+'/'+expr+'.webm').catch(()=>{})});
