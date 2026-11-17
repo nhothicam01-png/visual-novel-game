@@ -1,0 +1,1182 @@
+{
+  "phien_ban": 3,
+  "world_id": "ThanhLinhKimSa",
+  "tieu_de": "Test Hiệu Ứng Sấm Sét – Địa Chấn – Vết Nứt Thời Không",
+  "mo_ta": "Kịch bản kiểm thử trực quan theo chuỗi tăng dần: mây giông và sét đánh, địa chấn rung chuyển, mặt đất nứt vỡ, khe nứt phát sáng và biến dạng không-thời gian. Dùng tài nguyên PNG hiện có và các ID hiệu ứng đã đăng ký; không giả lập âm thanh sấm khi chưa có file SFX.",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.35,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_bach_vi_vi": {
+      "character_id": "char_bach_vi_vi",
+      "ten_hien_thi": "Bạch Vi Vi",
+      "assetFolder": "Hihi",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Gió trên thung lũng bỗng đổi hướng. Mây đen kéo đến rất nhanh, che khuất ánh chiều.",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 80,
+          "y": 102,
+          "scale": 0.58,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": [
+          "fog",
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Khoan đã... phía trên sườn núi vừa lóe lên một vệt sáng!",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 80,
+          "y": 102,
+          "scale": 0.58,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_tilt_left"
+        ],
+        "moi_truong": [
+          "lightning"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 4.5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/set.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.82,
+          "z_index": -10
+        }
+      ]
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Sét đánh xuống sau mỏm đá! Ánh chớp xé toạc cả bầu trời trong một khoảnh khắc.",
+      "anh_nen": "nui_thanh_linh.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 82,
+          "y": 102,
+          "scale": 0.56,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_shake"
+        ],
+        "moi_truong": [
+          "lightning",
+          "flash"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1.05
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/set.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.96,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/tia_dien.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.28,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Tiếng nổ dội lại từ vách núi. Mình phải tránh xa khu vực này mới được.",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 78,
+          "y": 102,
+          "scale": 0.66,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char_fear_shake"
+        ],
+        "nen": [],
+        "camera": [
+          "camera_shake"
+        ],
+        "moi_truong": [
+          "lightning"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 4.5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_bach_vi_vi",
+        "zoom": 1.42
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Mặt đất... đang rung chuyển! Đá vụn bắt đầu rơi từ sườn dốc xuống.",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 80,
+          "y": 102,
+          "scale": 0.58,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char_fear_shake"
+        ],
+        "nen": [
+          "bg_earthquake"
+        ],
+        "camera": [
+          "camera_shake"
+        ],
+        "moi_truong": [
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/manh_vo.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.5,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Không phải một cú rung đơn lẻ. Cả thung lũng đang chấn động theo từng đợt!",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 80,
+          "y": 102,
+          "scale": 0.58,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg_earthquake"
+        ],
+        "camera": [
+          "camera_shake"
+        ],
+        "moi_truong": [
+          "dust",
+          "fog"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1.02
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/manh_vo.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.42,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Nhìn dưới chân kìa! Một đường nứt vừa xuất hiện trên mặt đất!",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 84,
+          "y": 102,
+          "scale": 0.54,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg_earthquake"
+        ],
+        "camera": [
+          "camera_shake"
+        ],
+        "moi_truong": [
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 4.5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.9,
+          "z_index": -10
+        }
+      ]
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Vết nứt đang lan rộng... bên trong còn phát ra những tia sáng xanh trắng!",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 84,
+          "y": 102,
+          "scale": 0.54,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char_fear_shake"
+        ],
+        "nen": [
+          "bg_earthquake"
+        ],
+        "camera": [
+          "camera_shake"
+        ],
+        "moi_truong": [
+          "lightning",
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "medium",
+        "target": "char_bach_vi_vi",
+        "zoom": 1.12
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.98,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/tia_dien.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.42,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Đó không còn giống một vết nứt bình thường nữa. Không gian phía sau nó đang méo đi!",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 84,
+          "y": 102,
+          "scale": 0.54,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg_dizzy_spin"
+        ],
+        "camera": [
+          "camera_zoom_in"
+        ],
+        "moi_truong": [
+          "lightning"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1.08
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.98,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/hao_quang.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": 40
+        },
+        {
+          "file": "assets/HieuUng/tia_dien.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.58,
+          "z_index": 100
+        }
+      ]
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Có thứ gì đó ở phía bên kia... Ánh sáng đang hút những mảnh đá vào trong!",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 82,
+          "y": 102,
+          "scale": 0.62,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char_fear_shake"
+        ],
+        "nen": [],
+        "camera": [
+          "camera_shake",
+          "camera_tilt_right"
+        ],
+        "moi_truong": [
+          "dust",
+          "lightning"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_bach_vi_vi",
+        "zoom": 1.45
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.92,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/hao_quang.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.68,
+          "z_index": 40
+        },
+        {
+          "file": "assets/HieuUng/tia_dien.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": 100
+        },
+        {
+          "file": "assets/HieuUng/manh_vo.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.38,
+          "z_index": 110
+        }
+      ]
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Ánh sáng bùng lên! Toàn bộ đường nứt lóe sáng như một cánh cổng đang mở!",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 84,
+          "y": 102,
+          "scale": 0.54,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg_earthquake"
+        ],
+        "camera": [
+          "camera_shake",
+          "camera_spin"
+        ],
+        "moi_truong": [
+          "lightning",
+          "flash"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 4.5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1.04
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 1,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/hao_quang.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.82,
+          "z_index": 40
+        },
+        {
+          "file": "assets/HieuUng/tia_dien.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.78,
+          "z_index": 100
+        },
+        {
+          "file": "assets/HieuUng/chuyen_canh.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.48,
+          "z_index": 110
+        }
+      ]
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Những mảnh đá nhỏ lơ lửng quanh khe nứt. Mọi thứ như bị kéo lệch khỏi trọng lực.",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 82,
+          "y": 102,
+          "scale": 0.58,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_tilt_left"
+        ],
+        "moi_truong": [
+          "dust",
+          "lightning"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "medium",
+        "target": "char_bach_vi_vi",
+        "zoom": 1.15
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.95,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/hao_quang.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.64,
+          "z_index": 40
+        },
+        {
+          "file": "assets/HieuUng/tia_dien.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.58,
+          "z_index": 100
+        },
+        {
+          "file": "assets/HieuUng/manh_vo.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.52,
+          "z_index": 110
+        }
+      ]
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Rồi đột ngột, chấn động dừng lại. Chỉ còn bụi đá rơi xuống và khe nứt vẫn âm ỉ phát sáng.",
+      "anh_nen": "thung_lung_kim_sa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 80,
+          "y": 102,
+          "scale": 0.58,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": [
+          "fog",
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "wide",
+        "zoom": 1
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/hao_quang.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.28,
+          "z_index": 40
+        }
+      ]
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Vết nứt vẫn còn đó... nhưng thứ ánh sáng bên trong đang yếu dần. Mình không biết thứ gì vừa mở ra.",
+      "anh_nen": "nui_thanh_linh.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 78,
+          "y": 102,
+          "scale": 0.66,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_zoom_in"
+        ],
+        "moi_truong": [
+          "dust"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_bach_vi_vi",
+        "zoom": 1.38
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.58,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/hao_quang.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.2,
+          "z_index": 40
+        }
+      ]
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bach_vi_vi",
+      "noi_dung": "Nếu khe nứt ấy thật sự nối sang một nơi khác... thì cơn địa chấn vừa rồi có lẽ chỉ là khởi đầu.",
+      "anh_nen": "nui_thanh_linh.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bach_vi_vi",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 78,
+          "y": 102,
+          "scale": 0.66,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_misty"
+        ],
+        "moi_truong": [
+          "fog"
+        ]
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Bạch Vi Vi",
+      "thoi_luong": 5.5,
+      "loai_phat_ngon": "character",
+      "camera": {
+        "shot": "close_up",
+        "target": "char_bach_vi_vi",
+        "zoom": 1.48
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/vet_nut.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.42,
+          "z_index": -10
+        }
+      ]
+    }
+  ]
+}
