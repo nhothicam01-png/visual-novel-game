@@ -966,3 +966,58 @@ Khi bàn giao, luôn tách riêng:
 - Báo cáo kiểm định JSON.
 - Báo cáo tài nguyên còn thiếu để người dùng bổ sung.
 Không tuyên bố đã kiểm thử phát video trên trình duyệt nếu chưa thực sự chạy kiểm thử đó.
+
+==================================================
+XXII. LẬP KỊCH BẢN LINH HOẠT THEO NGỮ CẢNH VÀ ĐỐI TƯỢNG
+==================================================
+
+NGUYÊN TẮC CAO NHẤT:
+Không dùng một chuỗi hành động mẫu cố định để áp vào mọi câu chuyện. Phải đọc nội dung, suy luận quan hệ nhân quả và xác định cảnh tiếp theo cần có những nhân vật, phương tiện, đồ vật, địa điểm và thay đổi trạng thái nào. Ví dụ tai nạn có thể dẫn đến xe cứu thương, sơ cứu, cáng, xe di chuyển, phòng cấp cứu; nhưng chỉ tạo các sự kiện này khi nội dung truyện yêu cầu hoặc ngữ cảnh xác nhận hợp lý. Không tự động thêm xe cứu thương vào mọi cảnh tai nạn.
+
+A. PHÂN TÍCH NGỮ CẢNH TRƯỚC KHI CHIA NHỊP
+1. Lập bản đồ sự kiện theo trình tự thời gian: sự kiện kích hoạt → phản ứng → hậu quả → quyết định/hành động tiếp theo → kết quả → trạng thái ở cảnh sau.
+2. Với mỗi sự kiện, xác định chủ thể hành động, đối tượng chịu tác động, phương tiện/đồ vật tham gia, địa điểm, vị trí, trạng thái trước và trạng thái sau.
+3. Phân biệt rõ:
+   - Nhân vật: có tư thế, biểu cảm, giao tiếp, hành động và trạng thái riêng.
+   - Phương tiện: xe máy, ô tô, xe cứu thương, tàu, máy bay... có vị trí, hướng, trạng thái và chuyển động riêng.
+   - Đồ vật/đạo cụ: cáng, điện thoại, vũ khí, bó hoa, cửa, bàn ghế... có trạng thái và quan hệ tương tác riêng.
+   - Bối cảnh/địa điểm: đường phố, bệnh viện, phòng cấp cứu... có thể thay đổi theo diễn biến.
+   Không gán hành động của phương tiện hoặc đồ vật cho nhân vật; không coi phương tiện là một nhân vật chỉ để tận dụng bộ chọn WEBM.
+4. Không suy diễn rằng một cảnh bắt buộc phải có đủ mọi bước thường gặp ngoài đời. Chỉ thêm bước khi câu chuyện mô tả, đòi hỏi về mặt logic hoặc cần thiết để người xem hiểu diễn biến.
+5. Nếu có nhiều cách tiếp diễn hợp lý nhưng khác nhau đáng kể về nội dung, đánh dấu điểm cần quyết định thay vì tự bịa một nhánh truyện.
+
+B. DUY TRÌ TÍNH LIÊN TỤC CÓ ĐIỀU KIỆN
+1. Theo dõi trạng thái của từng nhân vật, phương tiện và đạo cụ qua các dòng và cảnh: vị trí, tư thế/trạng thái, người đang giữ hoặc ngồi trên vật, quan hệ tương tác và địa điểm hiện tại.
+2. Trạng thái được giữ qua cảnh nếu đối tượng vẫn tồn tại trong mạch truyện và chưa có sự kiện làm thay đổi. Không tự đặt lại vị trí hoặc tư thế về mặc định khi đổi cảnh.
+3. Phải phân biệt “không được nhắc lại vì không thay đổi”, “đang ở ngoài khung hình nhưng vẫn tồn tại trong cảnh”, “đã rời khỏi địa điểm”, “đã được chuyển sang phương tiện/địa điểm khác” và “đã biến mất có chủ ý”.
+4. Không tự động giữ một đối tượng hiển thị mãi mãi nếu việc vắng mặt có thể là chủ ý. Khi nhân vật rời cảnh, lên xe, vào phòng, bị che khuất hoặc không còn thuộc khung hình, phải biểu diễn đúng ý nghĩa bằng khả năng mà schema/player hiện hỗ trợ; nếu chưa có trường hỗ trợ, ghi rõ giới hạn runtime, không tự thêm key giả.
+5. Thay đổi trạng thái phải có nguyên nhân hoặc nhịp chuyển tiếp phù hợp. Ví dụ nhân vật đang nằm trên đường không thể xuất hiện ngay trên giường bệnh nếu chưa có diễn biến vận chuyển/chuyển cảnh hợp lý.
+6. Các trạng thái độc lập phải được giữ độc lập: nhân vật có thể vẫn nằm nhưng chuyển từ bất tỉnh sang tỉnh, từ im lặng sang nói, hoặc từ sợ hãi sang bình tĩnh. Thay đổi giao tiếp/biểu cảm không được tự ý làm thay đổi tư thế hay vị trí.
+
+C. CHUYỂN TIẾP GIỮA NHÂN VẬT, PHƯƠNG TIỆN, ĐẠO CỤ VÀ ĐỊA ĐIỂM
+1. Khi nội dung có phương tiện/đạo cụ quan trọng, xác định nó như một thành phần riêng của cảnh, không thay thế bằng một nhân vật đứng yên hoặc một dòng mô tả thoại.
+2. Ví dụ nếu truyện nói xe cứu thương đưa người bị nạn đến bệnh viện, bản đồ sự kiện cần thể hiện đúng các quan hệ cần thiết: xe đến hiện trường → dừng ở vị trí phù hợp → nhân viên y tế tiếp cận → nhân vật được đặt lên cáng (nếu truyện có bước này) → cáng/nhân vật được đưa vào xe → xe rời hiện trường → đến bệnh viện → chuyển nhân vật sang giường bệnh (nếu có).
+3. Không mặc định phải mô phỏng mọi thao tác trung gian nếu có thể chuyển cảnh hợp lý mà không làm mất thông tin. Tuy nhiên, không được tạo mâu thuẫn không gian/thời gian, ví dụ xe chưa đến mà nhân vật đã ở trong xe.
+4. Theo dõi quan hệ gắn kết: nhân vật đang ngồi trong xe, nằm trên cáng, cầm điện thoại, đứng cạnh cửa... Khi phương tiện/đạo cụ di chuyển hoặc thay đổi vị trí, các đối tượng gắn kết phải đi cùng trừ khi câu chuyện mô tả việc tách rời.
+5. Đối chiếu từng thành phần với khả năng biểu diễn thực tế của player. Nếu player hiện chỉ hỗ trợ lớp nhân vật và hình nền mà chưa hỗ trợ lớp phương tiện/đạo cụ độc lập, phải ghi “thiếu tính năng runtime để dựng đối tượng” và mô tả tài nguyên cần thiết. Không giả vờ rằng một key JSON mới sẽ tự được phát.
+6. Không biến hình nền thành phương tiện chuyển động nếu điều đó làm sai bản chất cảnh. Chỉ dùng video nền hoặc hiệu ứng có sẵn khi chúng thực sự thể hiện đúng chuyển động mong muốn.
+
+D. CHỌN HÀNH ĐỘNG VÀ PHA THEO Ý NGHĨA, KHÔNG THEO MẪU
+1. Phân rã hành động theo những gì thực sự diễn ra: tự di chuyển, bị tác động, được hỗ trợ, được mang/vận chuyển, lên/xuống phương tiện, chuyển địa điểm, tương tác với đạo cụ, hoặc trạng thái tĩnh kéo dài.
+2. Một hành động có thể cần một pha hoặc nhiều pha. Không ép mọi hành động thành cùng số pha; không tự thêm “đứng dậy”, “đi bộ”, “hạ cánh” nếu nội dung không có.
+3. Pha sau phải kế thừa kết quả pha trước. Ví dụ sau khi đã nằm trên cáng trong xe, nhân vật tiếp tục nằm trên cáng khi xe chạy; không quay lại tư thế nằm trên đường.
+4. Nếu cảnh sau chỉ đổi người nói, lời thoại hoặc cảm xúc, giữ nguyên các trạng thái không liên quan.
+5. Nếu chuyển động cần đường cong, gia tốc, va chạm hoặc gắn kết với phương tiện, không giả định nội suy tọa độ thẳng hiện tại đã mô phỏng được vật lý. Chỉ sử dụng khả năng runtime thực sự hỗ trợ; phần chưa hỗ trợ phải được ghi trong báo cáo.
+
+E. KIỂM ĐỊNH TÍNH ĐẦY ĐỦ VÀ GIỚI HẠN
+1. Tạo danh sách đối tượng theo từng cảnh: nhân vật, phương tiện, đạo cụ, bối cảnh và hiệu ứng cần xuất hiện.
+2. Với từng đối tượng, kiểm tra tài nguyên hình ảnh/video/âm thanh, metadata và khả năng runtime hiển thị/chuyển động/tương tác.
+3. Phân loại thiếu hụt riêng biệt:
+   - Thiếu tài nguyên hình ảnh/video/âm thanh.
+   - Thiếu metadata hoặc danh mục ngữ nghĩa.
+   - Thiếu khả năng runtime (ví dụ lớp phương tiện/đạo cụ độc lập, gắn nhân vật với phương tiện, chuyển cảnh có trạng thái, đường chuyển động cong).
+   - Thiếu dữ kiện trong nội dung cần người dùng quyết định.
+4. Không đánh đồng “đã có ảnh xe cứu thương” với “player có thể làm xe cứu thương chạy và chở nhân vật”. Phải kiểm tra cả tài nguyên lẫn khả năng dựng/chuyển động.
+5. Không tự động thay một phương tiện/đạo cụ quan trọng bằng ảnh nền tĩnh nếu việc đó làm sai hành động. Có thể đề xuất phương án dựng thay thế nhưng phải ghi rõ đó là phương án và giới hạn của nó.
+6. Kết quả bàn giao phải giúp người dùng biết chính xác họ chỉ cần bổ sung file nào, và phần nào cần nâng cấp player trước khi JSON có thể phát đúng. Tuyệt đối không đẩy lỗi thiếu tính năng runtime thành việc người dùng phải tự bổ sung WEBM.
+
