@@ -633,7 +633,8 @@ async function loadSceneEffectLibrary(){
 }
 function semanticForVisibleCharacter(spec,frame,currentLine){
  const folder=characterAssetFolder(spec?.id),base=normalizeSemantic(spec?.expression_id||semanticFromExpression(folder,spec?.bieu_cam));
- const isSpeaking=!!String(frame?.noi_dung||'').trim()&&String(spec?.id)===String(frame?.nhan_vat||currentLine?.speakerId||'');
+ const narration=!!currentLine?.isNarration||['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame?.loai_phat_ngon||frame?.speaker_type||frame?.kieu_loi_thoai||'').toLowerCase());
+ const isSpeaking=!narration&&!!String(frame?.noi_dung||'').trim()&&String(spec?.id)===String(frame?.nhan_vat||currentLine?.speakerId||'');
  const semantic={...base,communication:isSpeaking?'speaking':'silent'};
  const motion=spec?.motion&&typeof spec.motion==='object'?spec.motion:null;
  // Tọa độ chỉ điều khiển vị trí. Loại hành động phải do AI phân tích nội dung và ghi rõ trong motion.action.
@@ -1223,7 +1224,7 @@ async function playPreview(){
   if(!await waitWhilePaused(run))break;
   const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;lineMotionStartElapsed=(performance.now()-previewStartedAt)/1000;await playLineAudio(line);
   const text=$('dialogue').value.trim();
-  speakingCharacterId=text?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
+  speakingCharacterId=text&&!line.isNarration?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
   speechTextIndex=0;speechAudioElement=null;speechMotionSmooth=0;speechMotionFrameAt=0;
   try{
    if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
@@ -1995,7 +1996,7 @@ function buildScenesFromJson(data){
  rows.forEach((frame,index)=>{const rawBg=String(frame.anh_nen||'').trim();if(rawBg)lastBackground=rawBg;const characterId=inferSpeakerId(frame),charInfo=characterMap[characterId]||{},folder=characterAssetFolder(characterId),expression=resolveSemanticExpression(folder,frame.expression_id);const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim(),sceneId=String(frame.scene_id??'').trim(),flashback=frame.hoi_tuong===true,starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterId,expression,effects:mapJsonEffects(frame),sceneEffects:normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
  current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;if(Object.prototype.hasOwnProperty.call(frame,'hieu_ung_canh')||Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))current.visual.sceneEffects=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung);
- current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
+ current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,speakerType:String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'character').toLowerCase(),isNarration:['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'').toLowerCase()),text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
  if(current)out.push(current);return out;
 }
 let storyCharacterFolderMap={};
