@@ -915,6 +915,8 @@ function drawFrameUnsafe(elapsed,st){
  if(camFx.includes('camera-zoom'))zoom*=1+Math.min(.10,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.10*strength);
  if(camFx.includes('camera-pull'))zoom*=1-Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08*strength);
  if(camFx.includes('camera-drift')){shakeX+=Math.sin(elapsed*.55)*w*.012*strength;shakeY+=Math.cos(elapsed*.4)*h*.008*strength}
+ // Camera không được zoom-out dưới 100%; tự bù zoom để rung/lệch camera không lộ nền đen ở mép.
+ zoom=Math.max(1,zoom,getVfxMinimumCoverScale(w,h,0,w/2+shakeX,h/2+shakeY));
  ctx.save();ctx.translate(w/2+shakeX,h/2+shakeY);ctx.scale(zoom,zoom);ctx.translate(-w/2,-h/2);
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
  if(bgAsset||bgVideo) {
@@ -924,6 +926,8 @@ function drawFrameUnsafe(elapsed,st){
   if(bgFx.includes('bg-right'))bx+=Math.sin(elapsed*.8)*w*.025*strength;
   if(bgFx.includes('bg-float')){bz+=.035*strength;bx+=Math.sin(elapsed*.45)*w*.012*strength;by+=Math.cos(elapsed*.38)*h*.009*strength}
   if(bgFx.includes('bg-pulse'))bz+=Math.sin(elapsed*2)*.012*strength;
+  // Background luôn tối thiểu 100%; bù thêm khi pan/float để không lộ góc ảnh.
+  bz=Math.max(1,bz,getVfxMinimumCoverScale(w,h,0,w/2+bx,h/2+by));
   ctx.save();ctx.translate(w/2+bx,h/2+by);ctx.scale(bz,bz);ctx.translate(-w/2,-h/2);
   if(bgFx.includes('bg-blur'))ctx.filter='blur('+Math.round(2*strength)+'px)';
   drawCover(frameOverride.bg||bgAsset||bgVideo,w,h);ctx.filter='none';ctx.restore();
