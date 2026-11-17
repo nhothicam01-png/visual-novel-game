@@ -27,6 +27,13 @@ function auditAssetReferences(d){
   const hasExt=/\.[a-z0-9]{2,5}$/i.test(path);
   if(hasExt&&!ext.some(e=>path.toLowerCase().endsWith(e))){issues.push({type:'invalid_extension',where,label,path:raw,msg:'Định dạng không được hỗ trợ cho loại tài nguyên này'});return}
   if(set.has(path)){ok.push(path);return}
+  // Hiệu ứng WEBM có thể dùng PNG cùng tên làm fallback mô phỏng và ngược lại.
+  if(root==='assets/HieuUng/'&&hasExt){
+   const fallback=path.replace(/\.(webm|mp4)$/i,'.png');
+   const videoAlternative=path.replace(/\.png$/i,'.webm');
+   const candidate=set.has(fallback)?fallback:(set.has(videoAlternative)?videoAlternative:'');
+   if(candidate){ok.push(candidate);return}
+  }
   if(!hasExt){
    const candidate=ext.map(e=>path+e).find(p=>set.has(p));
    if(candidate){issues.push({type:'extension',where,label,path:raw,suggestion:candidate,msg:'Thiếu đuôi file; tìm thấy file phù hợp'});return}
