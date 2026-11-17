@@ -28,7 +28,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "concerned"
+        "emotion": "worried"
       },
       "hieu_ung": {
         "nhan_vat": [],
@@ -51,8 +51,9 @@
           "id": "char_tong_chi_van",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "concerned",
-            "pose": "standing"
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "walking"
           },
           "x": 43,
           "y": 78,
@@ -139,7 +140,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "serious"
+        "emotion": "determined"
       },
       "hieu_ung": {
         "nhan_vat": [],
@@ -162,7 +163,7 @@
           "id": "char_tong_chi_van",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "serious",
+            "emotion": "determined",
             "pose": "standing"
           },
           "x": 43,
@@ -185,7 +186,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "annoyed"
+        "emotion": "angry"
       },
       "hieu_ung": {
         "nhan_vat": [],
@@ -208,7 +209,7 @@
           "id": "char_chu_nghien",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "annoyed",
+            "emotion": "angry",
             "pose": "standing"
           },
           "x": 80,
@@ -231,7 +232,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "concerned"
+        "emotion": "worried"
       },
       "hieu_ung": {
         "nhan_vat": [],
@@ -254,7 +255,7 @@
           "id": "char_tong_chi_van",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "concerned",
+            "emotion": "worried",
             "pose": "standing"
           },
           "x": 43,
@@ -323,7 +324,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "calm"
+        "emotion": "neutral"
       },
       "hieu_ung": {
         "nhan_vat": [],
@@ -346,7 +347,7 @@
           "id": "char_tong_chi_van",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "calm",
+            "emotion": "neutral",
             "pose": "standing"
           },
           "x": 43,
@@ -369,7 +370,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "uneasy"
+        "emotion": "worried"
       },
       "hieu_ung": {
         "nhan_vat": [],
@@ -392,7 +393,7 @@
           "id": "char_chu_nghien",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "uneasy",
+            "emotion": "worried",
             "pose": "standing"
           },
           "x": 80,
