@@ -1,0 +1,506 @@
+{
+  "phien_ban": 3,
+  "world_id": "ViecNheLuongCao",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.25,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_pham_minh_anh": {
+      "character_id": "char_pham_minh_anh",
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profile_id": "voice_1794303742118",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Giọng bé",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
+      }
+    },
+    "char_tran_gia_han": {
+      "character_id": "char_tran_gia_han",
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profile_id": "voice_1794303742118",
+        "lang": "vi",
+        "voice_id": "vi_VN-vais1000-medium",
+        "profile_name": "Giọng bé",
+        "voiceId": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female"
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC_TEST_MEET",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Cuối buổi chiều, Minh Anh đứng chờ ở sân trường. Cô nhìn thấy Gia Hân đang ở gần cổng.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      },
+      "thoi_luong": 3,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 20,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        },
+        {
+          "id": "char_tran_gia_han",
+          "x": 80,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "SC_TEST_MEET",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Gia Hân! Chờ tớ một chút, tớ có chuyện muốn nói.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "concerned"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      },
+      "thoi_luong": 4,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral"
+          },
+          "motion": {
+            "duration_seconds": 4,
+            "easing": "linear",
+            "from": {
+              "x": 20,
+              "y": 78
+            },
+            "to": {
+              "x": 43,
+              "y": 78
+            }
+          }
+        },
+        {
+          "id": "char_tran_gia_han",
+          "x": 80,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "SC_TEST_MEET",
+      "nhan_vat": "char_tran_gia_han",
+      "noi_dung": "Tớ đây! Tớ cũng đang định đi tìm cậu.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      },
+      "thoi_luong": 3.5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        },
+        {
+          "id": "char_tran_gia_han",
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral"
+          },
+          "motion": {
+            "duration_seconds": 3.5,
+            "easing": "linear",
+            "from": {
+              "x": 80,
+              "y": 78
+            },
+            "to": {
+              "x": 58,
+              "y": 78
+            }
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "SC_TEST_MEET",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Hai người đã đến gần nhau và dừng lại. Minh Anh nhìn bạn, chờ Gia Hân kể rõ chuyện.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      },
+      "thoi_luong": 2.5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        },
+        {
+          "id": "char_tran_gia_han",
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "SC_TEST_MEET",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Bên tuyển dụng lại yêu cầu cậu nạp tiền để mở nhiệm vụ tiếp theo à?",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "concerned"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      },
+      "thoi_luong": 4,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral"
+          }
+        },
+        {
+          "id": "char_tran_gia_han",
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "SC_TEST_MEET",
+      "nhan_vat": "char_tran_gia_han",
+      "noi_dung": "Ừ. Họ còn bảo nếu muốn rút tiền thì phải chuyển thêm một khoản nữa. Tớ bắt đầu thấy sợ rồi.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        },
+        {
+          "id": "char_tran_gia_han",
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "SC_TEST_MEET",
+      "nhan_vat": "char_pham_minh_anh",
+      "noi_dung": "Đừng chuyển thêm nhé. Mình lưu lại tin nhắn và biên lai, rồi cùng đến phòng công tác sinh viên để hỏi cách xử lý.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "reassuring"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Phạm Minh Anh",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      },
+      "thoi_luong": 5,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral"
+          }
+        },
+        {
+          "id": "char_tran_gia_han",
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        }
+      ]
+    },
+    {
+      "scene_id": "SC_TEST_MEET",
+      "nhan_vat": "char_tran_gia_han",
+      "noi_dung": "Cảm ơn cậu đã đến tìm tớ. Lần này tớ sẽ không tự giải quyết một mình nữa.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "relieved"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "ten_hien_thi": "Trần Gia Hân",
+      "giong_noi": {
+        "profileId": "voice_1794303742118",
+        "voiceId": "vi_VN-vais1000-medium",
+        "name": "Giọng bé",
+        "lang": "vi-VN"
+      },
+      "thoi_luong": 4,
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pham_minh_anh",
+          "x": 43,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral"
+          }
+        },
+        {
+          "id": "char_tran_gia_han",
+          "x": 58,
+          "y": 78,
+          "scale": 0.72,
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral"
+          }
+        }
+      ]
+    }
+  ]
+}
