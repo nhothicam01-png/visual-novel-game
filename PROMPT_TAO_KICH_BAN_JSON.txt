@@ -844,3 +844,16 @@ Khi nhận treatment/cấu trúc phim đã duyệt, không được chuyển th�
 5. Có thể sáng tạo cảnh nối, nhân vật phụ, hành động và hội thoại để làm rõ logic, nhưng không thay đổi các mốc, động cơ, quan hệ, bí mật và kết thúc đã được người dùng duyệt. Không tự thêm twist làm vô hiệu treatment.
 6. Quy mô và thời lượng do lựa chọn của người dùng quyết định. Không áp đặt số phút, số cảnh, số hồi hoặc số lượt thoại cố định. Nếu người dùng chọn tự quyết định, tự đánh giá độ phức tạp và chọn độ dài tự nhiên; nếu người dùng chọn quy mô cụ thể, tuân theo lựa chọn đó.
 7. Trước khi kết thúc, tự rà soát: tất cả mốc trong treatment đã xuất hiện chưa; mỗi xung đột đã có diễn biến và giải quyết chưa; sự kiện có nguyên nhân và hậu quả chưa; có đoạn nào chỉ tóm tắt thay vì trình diễn không; kết thúc có được xây dựng qua các hành động dẫn đến nó không. Nếu thiếu, tiếp tục bổ sung trước khi xuất JSON.
+
+
+==================================================
+XIX. HƯỚNG NHÌN, GÓC MẶT, GÓC MÁY VÀ TÀI NGUYÊN NHIỀU BIẾN THỂ
+==================================================
+- Với từng nhân vật xuất hiện trong khung hình, khai báo expression_id.direction, expression_id.face_angle và expression_id.view_angle khi nội dung/cảnh quay xác định được các giá trị này. Không suy diễn góc máy không có căn cứ; nếu chưa xác định, bỏ trường hoặc dùng giá trị mặc định trung tính theo schema đang dùng.
+- direction mô tả hướng thân/nhân vật nhìn (left/right/front/back hoặc nhãn tiếng Việt tương đương); face_angle mô tả góc quay mặt (ví dụ 0°, 45°, 90°); view_angle mô tả góc quan sát/khung nhìn (toàn thân, bán thân, cận cảnh, góc 3/4...). Không dùng ba trường này thay thế lẫn nhau.
+- Khi nhân vật quay trái/phải, cập nhật direction và face_angle phù hợp trong expression_id; nếu đang di chuyển, motion.action phải mô tả đúng hành động (walking/running/jumping/flying...) và motion có thể bổ sung direction/from/to/duration_seconds.
+- Tọa độ thay đổi không đủ để kết luận đi bộ. Chỉ ghi motion.action theo nội dung và ngữ cảnh đã phân tích.
+- Nếu có nhiều WEBM cùng thỏa metadata, chúng là các biến thể hợp lệ. Không báo thiếu chỉ vì có nhiều file; trình phát có thể luân phiên các clip có cùng mức độ khớp để tăng đa dạng. Sidecar metadata của từng WEBM phải mô tả chính xác hướng, góc mặt, góc nhìn, hành động, tư thế, cảm xúc và trạng thái nói.
+- Nếu chỉ tìm thấy clip cùng hành động nhưng ngược hướng trái/phải, trình phát được phép lật ngang clip để dùng thay thế khi không có clip đúng hướng. Không lật khi metadata có mirror_safe:false; không tự lật hướng chính diện/sau, không dùng lật ngang để thay thế góc mặt hoặc góc máy khác nhau. Báo cáo phải ghi rõ clip được dùng bằng lật ngang, không coi đó là clip gốc đúng hướng.
+- Nếu khác face_angle hoặc view_angle thì không tự động coi là tương đương và không lật ngang để giả lập góc camera khác. Báo thiếu đúng góc cần thiết hoặc dùng mô phỏng dự phòng đã được đánh dấu rõ.
+- Khi thiếu WEBM, báo cáo phải chỉ rõ nhân vật, cảnh, dòng JSON, action, direction, face_angle, view_angle, communication, emotion, pose, số lần xuất hiện và phương án dự phòng. Phân biệt WEBM gốc, WEBM lật ngang, mô phỏng 2D và hiệu ứng dự phòng.
