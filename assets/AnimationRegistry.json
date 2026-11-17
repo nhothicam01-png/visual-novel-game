@@ -21,7 +21,21 @@
       "laughing",
       "worried",
       "confused",
-      "determined"
+      "determined",
+      "Trung tính",
+      "Vui vẻ",
+      "Buồn",
+      "Tức giận",
+      "Giận dữ",
+      "Sợ hãi",
+      "Hoảng sợ",
+      "Ngạc nhiên",
+      "Xấu hổ",
+      "Khóc",
+      "Cười",
+      "Lo lắng",
+      "Bối rối",
+      "Quyết tâm"
     ],
     "pose": [
       "standing",
@@ -29,7 +43,12 @@
       "lying",
       "crouching",
       "kneeling",
-      "walking_pose"
+      "walking_pose",
+      "Đứng",
+      "Ngồi",
+      "Nằm",
+      "Ngồi xổm",
+      "Quỳ gối"
     ],
     "action": [
       "idle",
@@ -47,13 +66,36 @@
       "waving",
       "dancing",
       "falling",
-      "picking up"
+      "picking up",
+      "Đứng yên",
+      "Đi bộ",
+      "Đi bộ nhanh",
+      "Chạy",
+      "Nhảy",
+      "Bay",
+      "Bơi",
+      "Ngồi xuống",
+      "Nằm xuống",
+      "Bị đẩy",
+      "Bị kéo",
+      "Dịch chuyển tức thời",
+      "Quay người",
+      "Vẫy tay",
+      "Nhảy múa",
+      "Ngã",
+      "Nhặt đồ"
     ],
     "direction": [
       "left",
       "right",
       "front",
-      "back"
+      "back",
+      "Trái",
+      "Phải",
+      "Chính diện",
+      "Phía sau",
+      "Sang trái",
+      "Sang phải"
     ],
     "face_angle": [
       "0°",
@@ -70,12 +112,23 @@
       "high angle",
       "low angle",
       "top down",
-      "over the shoulder"
+      "over the shoulder",
+      "Toàn thân",
+      "Bán thân",
+      "Cận cảnh",
+      "Góc 3/4",
+      "Góc nghiêng",
+      "Từ trên xuống",
+      "Từ dưới lên",
+      "Qua vai"
     ],
     "interaction_target": [
       "none",
       "character",
-      "object"
+      "object",
+      "Nhân vật",
+      "Đồ vật",
+      "Không có"
     ]
   }
 }
