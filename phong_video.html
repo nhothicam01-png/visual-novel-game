@@ -843,6 +843,7 @@ function drawFrame(elapsed,st){
  const {bgFx,charFx,camFx,atmFx,strength}=st;
  ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
  let shakeX=0,shakeY=0,zoom=1;
+ sceneEffectLayers.forEach(effect=>{if(effect.type!=='image')return;const profile=getVfxSimulationProfile(effect.base||effect.path);if(profile.mode!=='lightning')return;const variant=profile.variant||{},period=Math.max(.5,Number(variant.period||profile.period||3.5)),phase=((elapsed%period)+period)%period;let pulse=0;(variant.flashes||[.05,.18,.55]).forEach((at,index)=>{const d=Math.abs(phase-Number(at));if(d<.095)pulse=Math.max(pulse,(1-d/.095)*(index===0?1:.72))});if(pulse>0){const amount=Number(profile.cameraShake||0)*pulse;shakeX+=Math.sin(elapsed*85)*w*amount;shakeY+=Math.cos(elapsed*73)*h*amount}});
  if(camFx.includes('camera-shake')&&elapsed<1.5){shakeX=Math.sin(elapsed*55)*w*.008*strength;shakeY=Math.cos(elapsed*48)*h*.008*strength}
  if(camFx.includes('camera-zoom'))zoom*=1+Math.min(.10,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.10*strength);
  if(camFx.includes('camera-pull'))zoom*=1-Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08*strength);
