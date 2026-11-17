@@ -147,7 +147,35 @@ interaction_target:{'Không có':'none','Nhân vật':'character','Đồ vật':
 };
 function canonicalAnimationOption(field,value){return (animationAliases[field]||{})[String(value)]||String(value)}
 function animationOptionLabel(field,value){const labels={neutral:'Trung tính',happy:'Vui',sad:'Buồn',angry:'Tức giận',afraid:'Sợ hãi',surprised:'Ngạc nhiên',embarrassed:'Xấu hổ',crying:'Khóc',laughing:'Cười',worried:'Lo lắng',confused:'Bối rối',determined:'Quyết tâm',standing:'Đứng',sitting:'Ngồi',lying:'Nằm',crouching:'Ngồi xổm',kneeling:'Quỳ gối',walking_pose:'Tư thế đi bộ',airborne:'Trên không',walking:'Đi bộ',running:'Chạy',jumping:'Nhảy',flying:'Bay',swimming:'Bơi','sitting down':'Ngồi xuống','lying down':'Nằm xuống',pushing:'Đẩy',pulling:'Kéo',teleporting:'Dịch chuyển tức thời',turning:'Quay người',waving:'Vẫy tay',dancing:'Nhảy múa',falling:'Ngã / rơi','picking up':'Nhặt đồ',getting_up:'Đứng dậy',knockback:'Bị hất văng',landing:'Tiếp đất',being_carried:'Được khiêng',being_loaded:'Được đưa lên phương tiện',inside_vehicle:'Ở trong phương tiện',being_transported:'Được vận chuyển',medical_exam:'Được khám',left:'Trái',right:'Phải',front:'Chính diện',back:'Phía sau','0°':'Chính diện (0°)','45°':'1/4 mặt (45°)','90°':'1/2 mặt (90°)','135°':'3/4 mặt (135°)','180°':'Sau đầu (180°)','full body':'Toàn thân','half body':'Bán thân','close up':'Cận cảnh','three quarter':'Góc 3/4','high angle':'Góc cao','low angle':'Góc thấp','top down':'Từ trên xuống','over the shoulder':'Qua vai',none:'Không có',character:'Nhân vật',object:'Đồ vật',speaking:'Đang nói',silent:'Im lặng',listening:'Đang nghe',reacting:'Đang phản ứng',idle:'Nghỉ / đứng yên'};return labels[value]||value}
-async function loadAnimationRegistry(){const host=$('asset-metadata-grid');try{const r=await fetch('./assets/AnimationRegistry.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const data=await r.json();if(!data.fields)throw Error('Registry không hợp lệ');animationRegistry=data;host.innerHTML='';for(const [key,values] of Object.entries(data.fields)){if(!Array.isArray(values))continue;const wrap=document.createElement('div');wrap.className='field';const label=document.createElement('label');label.textContent=animationFieldLabels[key]||key;label.htmlFor='asset-'+key;const select=document.createElement('select');select.id='asset-'+key;const empty=document.createElement('option');empty.value='';empty.textContent='Chưa xác định';select.append(empty);const seen=new Set();for(const raw of values){const value=canonicalAnimationOption(key,raw);if(seen.has(value))continue;seen.add(value);const option=document.createElement('option');option.value=value;option.textContent=animationOptionLabel(key,value);select.append(option)}wrap.append(label,select);host.append(wrap)}return true}catch(e){host.textContent='Không tải được AnimationRegistry.json: '+e.message;return false}}
+const ANIMATION_REGISTRY_FALLBACK={fields:{
+ communication:['speaking','silent','listening','reacting','idle'],
+ emotion:['neutral','happy','sad','angry','afraid','surprised','embarrassed','crying','laughing','worried','confused','determined'],
+ pose:['standing','sitting','lying','crouching','kneeling','walking_pose','airborne'],
+ action:['idle','walking','running','jumping','flying','swimming','sitting down','lying down','pushing','pulling','teleporting','turning','waving','dancing','falling','picking up','getting_up','knockback','airborne','landing','being_carried','being_loaded','inside_vehicle','being_transported','medical_exam'],
+ direction:['left','right','front','back'],face_angle:['0°','45°','90°','135°','180°'],
+ view_angle:['full body','half body','close up','three quarter','high angle','low angle','top down','over the shoulder'],
+ interaction_target:['none','character','object']
+}};
+function renderAnimationRegistryFields(data){
+ const host=$('asset-metadata-grid');if(!host)return;
+ host.innerHTML='';
+ for(const [key,values] of Object.entries(data.fields||{})){
+  if(!Array.isArray(values))continue;
+  const wrap=document.createElement('div');wrap.className='field';
+  const label=document.createElement('label');label.textContent=animationFieldLabels[key]||key;label.htmlFor='asset-'+key;
+  const select=document.createElement('select');select.id='asset-'+key;
+  const empty=document.createElement('option');empty.value='';empty.textContent='Chưa xác định';select.append(empty);
+  const seen=new Set();
+  for(const raw of values){const value=canonicalAnimationOption(key,raw);if(seen.has(value))continue;seen.add(value);const option=document.createElement('option');option.value=value;option.textContent=animationOptionLabel(key,value);select.append(option)}
+  wrap.append(label,select);host.append(wrap);
+ }
+}
+async function loadAnimationRegistry(){
+ const host=$('asset-metadata-grid');
+ try{const r=await fetch('./assets/AnimationRegistry.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const data=await r.json();if(!data.fields)throw Error('Registry không hợp lệ');animationRegistry=data;renderAnimationRegistryFields(data);return true}
+ catch(e){animationRegistry=ANIMATION_REGISTRY_FALLBACK;renderAnimationRegistryFields(animationRegistry);if(host){const note=document.createElement('p');note.className='hint';note.textContent='Đang dùng danh mục dự phòng vì chưa tải được AnimationRegistry.json: '+e.message;host.append(note)}return false}
+}
+loadAnimationRegistry();
 
 const video=$('video'),out=$('out'),ctx=out.getContext('2d',{willReadFrequently:true});
 const source=$('source'),sctx=source.getContext('2d',{willReadFrequently:true});
@@ -596,7 +624,6 @@ $('buildFrameVideo').onclick=async()=>{if(busy||frames.length<2)return;if(!windo
  recorder.stop();await stopped;const blob=new Blob(chunks,{type:'video/webm'});if(!blob.size)throw new Error('Video tạo ra bị rỗng.');
  const videoFile=new File([blob],'png-frames-'+fps+'fps.webm',{type:'video/webm'});videoFile.__removeBgSourceFps=fps;const previewUrl=URL.createObjectURL(blob);const pv=$('framePreviewVideo');if(pv.dataset.url)URL.revokeObjectURL(pv.dataset.url);pv.dataset.url=previewUrl;pv.src=previewUrl;pv.load();$('framePreviewWrap').classList.remove('hide');$('framePreviewInfo').textContent=images.length+' frame · '+fps+' FPS · '+fmt(images.length/fps)+' giây · '+(blob.size/1024/1024).toFixed(2)+' MB';try{const dt=new DataTransfer();dt.items.add(videoFile);$('fileInput').files=dt.files}catch(_){/* Direct loader does not depend on input.files. */}if(typeof window.loadVideoFileForEditor==='function'){window.loadVideoFileForEditor(videoFile);$('frameBuildStatus').textContent='Đã ghép xong và chuyển WEBM vào trình xóa phông. Bạn có thể xem lại video ở khung xem trước.'}else{$('frameBuildStatus').textContent='Đã ghép xong và có thể xem trước, nhưng không tìm thấy bộ nạp video. Hãy chọn file WEBM thủ công.'}
  }catch(err){$('frameBuildStatus').textContent='Không thể ghép video: '+(err.message||String(err))}finally{if(stream)stream.getTracks().forEach(t=>t.stop());busy=false;update()}};
-loadAnimationRegistry();
 update();
 })();
 </script>
