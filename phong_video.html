@@ -2155,6 +2155,7 @@ resizeCanvas(false);
 loadSceneEffectLibrary();
 updateAssets();
 drawFrame(0);
+if(location.search.includes('cinematic=1')){void (async()=>{try{const raw=localStorage.getItem('vns.cinematic.pending.v1');if(!raw)return;const pending=JSON.parse(raw);if(!pending||!pending.data)throw new Error('Không tìm thấy dữ liệu phim bàn giao.');await applyStoryData(pending.data,pending.name||'Cinematic Film','assets/KichBan/Cinematic/'+String(pending.name||'film').replace(/[^A-Za-z0-9_-]+/g,'_')+'.json');localStorage.removeItem('vns.cinematic.pending.v1');$('story-status').textContent='Đã nhận phim từ Cinematic Film Studio. '+pending.data.danh_sach.length+' mục timeline · '+scenes.length+' cảnh. Hãy nhấn Chạy để xem trước hoặc Ghi trực tiếp để xuất video.';setStatus('Đã nạp kịch bản phim tự động.');}catch(e){$('story-status').textContent='Không thể nhận phim tự động: '+e.message;console.error(e)}})()}
 })();
 </script>
 <script src="./github-manager.js"></script>
