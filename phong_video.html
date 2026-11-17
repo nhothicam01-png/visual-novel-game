@@ -557,7 +557,7 @@ async function updateAssets(){
  const bgPath=bg?BASE+'Nen/'+bg:'',charPath=!displaySpecs.length&&character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
  const activeScene=getCurrentScene(),sceneSpecs=normalizeSceneEffects(activeScene?.visual?.sceneEffects||frame.hieu_ung_canh||[]);
  const rawObjects=Array.isArray(currentLine?.sceneObjects)?currentLine.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
- const objectSpecs=rawObjects.filter(o=>o&&typeof o==='object'&&String(o.asset||o.path||o.file||'').trim()).map((o,index)=>{const file=String(o.asset||o.path||o.file).trim(),url=/^https?:\\/\\//i.test(file)?file:(file.startsWith('assets/')?BASE+file:BASE+'assets/PhuongTien/'+file);return {...o,id:String(o.id||('object_'+index)),url,type:/\\.(png|jpe?g|webp|gif|avif)(\\?|$)/i.test(file)?'image':'video',z_index:Number(o.z_index??10+index)}});
+ const objectSpecs=rawObjects.filter(o=>o&&typeof o==='object'&&String(o.asset||o.path||o.file||'').trim()).map((o,index)=>{const file=String(o.asset||o.path||o.file).trim(),url=(file.toLowerCase().startsWith('http://')||file.toLowerCase().startsWith('https://'))?file:(file.startsWith('assets/')?BASE+file:BASE+'assets/PhuongTien/'+file);return {...o,id:String(o.id||('object_'+index)),url,type:/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?'image':'video',z_index:Number(o.z_index??10+index)}});
  const effectKey=JSON.stringify(sceneSpecs.map(x=>[x.path,x.loop,x.opacity,x.z_index]));
  if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
  try{
