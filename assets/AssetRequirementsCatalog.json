@@ -1,0 +1,1019 @@
+{
+  "schema_version": 1,
+  "title": "Danh mục tài nguyên chuẩn Visual Novel Studio",
+  "description": "Danh mục mở để bổ sung dần. Trạng thái được asset_inventory.html đối chiếu trực tiếp với file trên nhánh main. Các mục là thư viện đề xuất dùng chung, không bắt buộc mọi kịch bản phải sử dụng tất cả.",
+  "updated_at": "2026-11-17T18:33:40.519Z",
+  "categories": [
+    {
+      "id": "backgrounds",
+      "name": "Bối cảnh / hình nền",
+      "folder": "assets/Nen/",
+      "items": [
+        [
+          "sanh_lon",
+          "Sảnh lớn / đại sảnh",
+          "assets/Nen/sanh_lon.png",
+          "Không gian sảnh rộng, có chiều sâu."
+        ],
+        [
+          "nui_thanh_linh",
+          "Núi Thanh Lĩnh",
+          "assets/Nen/nui_thanh_linh.png",
+          "Toàn cảnh núi, có thể dùng làm nền xa."
+        ],
+        [
+          "thung_lung_kim_sa",
+          "Thung lũng Kim Sa",
+          "assets/Nen/thung_lung_kim_sa.png",
+          "Toàn cảnh thung lũng."
+        ],
+        [
+          "duong_nui",
+          "Đường núi / đường đèo",
+          "assets/Nen/duong_nui.png",
+          "Đường quanh co trên núi."
+        ],
+        [
+          "rung_cay",
+          "Rừng cây",
+          "assets/Nen/rung_cay.png",
+          "Rừng nhiều lớp cây."
+        ],
+        [
+          "rung_truc",
+          "Rừng trúc",
+          "assets/Nen/rung_truc.png",
+          "Rừng trúc, lối đi."
+        ],
+        [
+          "bo_song",
+          "Bờ sông",
+          "assets/Nen/bo_song.png",
+          "Bờ sông và mặt nước."
+        ],
+        [
+          "thac_nuoc",
+          "Thác nước",
+          "assets/Nen/thac_nuoc.png",
+          "Thác và hồ nước."
+        ],
+        [
+          "cau_go",
+          "Cầu gỗ",
+          "assets/Nen/cau_go.png",
+          "Cầu gỗ qua suối hoặc vực."
+        ],
+        [
+          "san_vuon",
+          "Sân vườn",
+          "assets/Nen/san_vuon.png",
+          "Sân vườn nhà ở."
+        ],
+        [
+          "phong_khach",
+          "Phòng khách",
+          "assets/Nen/phong_khach.png",
+          "Phòng khách gia đình."
+        ],
+        [
+          "phong_bep",
+          "Nhà bếp",
+          "assets/Nen/phong_bep.png",
+          "Không gian bếp."
+        ],
+        [
+          "phong_an",
+          "Phòng ăn",
+          "assets/Nen/phong_an.png",
+          "Bàn ăn và không gian dùng bữa."
+        ],
+        [
+          "phong_giao_vien",
+          "Phòng giáo viên",
+          "assets/Nen/phong_giao_vien.png",
+          "Phòng làm việc giáo viên."
+        ],
+        [
+          "phong_hieu_truong",
+          "Phòng hiệu trưởng",
+          "assets/Nen/phong_hieu_truong.png",
+          "Văn phòng hiệu trưởng."
+        ],
+        [
+          "phong_y_te",
+          "Phòng y tế",
+          "assets/Nen/phong_y_te.png",
+          "Phòng y tế trường học."
+        ],
+        [
+          "benh_vien",
+          "Bệnh viện",
+          "assets/Nen/benh_vien.png",
+          "Hành lang hoặc phòng bệnh viện."
+        ],
+        [
+          "van_phong",
+          "Văn phòng công ty",
+          "assets/Nen/van_phong.png",
+          "Văn phòng làm việc."
+        ],
+        [
+          "nha_hang",
+          "Nhà hàng",
+          "assets/Nen/nha_hang.png",
+          "Không gian nhà hàng."
+        ],
+        [
+          "quan_ca_phe",
+          "Quán cà phê",
+          "assets/Nen/quan_ca_phe.png",
+          "Không gian quán cà phê."
+        ],
+        [
+          "pho_ban_ngay",
+          "Đường phố ban ngày",
+          "assets/Nen/pho_ban_ngay.png",
+          "Đường phố ban ngày."
+        ],
+        [
+          "pho_ban_dem",
+          "Đường phố ban đêm",
+          "assets/Nen/pho_ban_dem.png",
+          "Đường phố lên đèn."
+        ],
+        [
+          "ben_xe",
+          "Bến xe / trạm xe",
+          "assets/Nen/ben_xe.png",
+          "Khu vực chờ phương tiện."
+        ],
+        [
+          "san_ga",
+          "Sân ga tàu",
+          "assets/Nen/san_ga.png",
+          "Nhà ga và sân ga."
+        ],
+        [
+          "san_bay",
+          "Sân bay",
+          "assets/Nen/san_bay.png",
+          "Nhà ga sân bay."
+        ],
+        [
+          "bo_bien",
+          "Bãi biển",
+          "assets/Nen/bo_bien.png",
+          "Bờ biển và đường chân trời."
+        ],
+        [
+          "dong_co",
+          "Đồng cỏ",
+          "assets/Nen/dong_co.png",
+          "Không gian đồng cỏ rộng."
+        ],
+        [
+          "canh_dong_hoa",
+          "Cánh đồng hoa",
+          "assets/Nen/canh_dong_hoa.png",
+          "Cánh đồng hoa."
+        ],
+        [
+          "nghia_trang",
+          "Nghĩa trang",
+          "assets/Nen/nghia_trang.png",
+          "Bối cảnh nghĩa trang."
+        ],
+        [
+          "di_tich_co",
+          "Di tích cổ",
+          "assets/Nen/di_tich_co.png",
+          "Di tích / phế tích."
+        ]
+      ]
+    },
+    {
+      "id": "props",
+      "name": "Đạo cụ / vật thể",
+      "folder": "assets/DaoCu/",
+      "items": [
+        [
+          "cay_but",
+          "Cây bút",
+          "assets/DaoCu/cay_but.png",
+          "Bút cầm tay, PNG nền trong suốt."
+        ],
+        [
+          "but_chi",
+          "Bút chì",
+          "assets/DaoCu/but_chi.png",
+          "Bút chì."
+        ],
+        [
+          "quyen_vo",
+          "Quyển vở",
+          "assets/DaoCu/quyen_vo.png",
+          "Vở học sinh."
+        ],
+        [
+          "quyen_sach",
+          "Quyển sách",
+          "assets/DaoCu/quyen_sach.png",
+          "Sách đóng / mở."
+        ],
+        [
+          "giay_kiem_tra",
+          "Giấy kiểm tra",
+          "assets/DaoCu/giay_kiem_tra.png",
+          "Tờ giấy kiểm tra."
+        ],
+        [
+          "tap_giay",
+          "Tập giấy",
+          "assets/DaoCu/tap_giay.png",
+          "Xấp giấy."
+        ],
+        [
+          "cap_sach",
+          "Cặp sách",
+          "assets/DaoCu/cap_sach.png",
+          "Cặp hoặc ba lô."
+        ],
+        [
+          "dien_thoai",
+          "Điện thoại",
+          "assets/DaoCu/dien_thoai.png",
+          "Điện thoại cầm tay."
+        ],
+        [
+          "laptop",
+          "Máy tính xách tay",
+          "assets/DaoCu/laptop.png",
+          "Laptop."
+        ],
+        [
+          "may_tinh_bang",
+          "Máy tính bảng",
+          "assets/DaoCu/may_tinh_bang.png",
+          "Tablet."
+        ],
+        [
+          "tai_nghe",
+          "Tai nghe",
+          "assets/DaoCu/tai_nghe.png",
+          "Tai nghe."
+        ],
+        [
+          "dong_ho",
+          "Đồng hồ",
+          "assets/DaoCu/dong_ho.png",
+          "Đồng hồ đeo tay hoặc để bàn."
+        ],
+        [
+          "chiec_chia_khoa",
+          "Chìa khóa",
+          "assets/DaoCu/chia_khoa.png",
+          "Chùm chìa khóa."
+        ],
+        [
+          "bong_hoa",
+          "Bông hoa",
+          "assets/DaoCu/bong_hoa.png",
+          "Một bông hoa đơn."
+        ],
+        [
+          "bo_hoa",
+          "Bó hoa",
+          "assets/DaoCu/bo_hoa.png",
+          "Bó hoa làm quà."
+        ],
+        [
+          "hop_qua",
+          "Hộp quà",
+          "assets/DaoCu/hop_qua.png",
+          "Hộp quà có nơ."
+        ],
+        [
+          "tui_xach",
+          "Túi xách",
+          "assets/DaoCu/tui_xach.png",
+          "Túi xách."
+        ],
+        [
+          "vali",
+          "Va li",
+          "assets/DaoCu/vali.png",
+          "Hành lý."
+        ],
+        [
+          "coc_nuoc",
+          "Cốc nước",
+          "assets/DaoCu/coc_nuoc.png",
+          "Cốc / ly nước."
+        ],
+        [
+          "chai_nuoc",
+          "Chai nước",
+          "assets/DaoCu/chai_nuoc.png",
+          "Chai nước."
+        ],
+        [
+          "o",
+          "Ô / dù",
+          "assets/DaoCu/o.png",
+          "Ô cầm tay."
+        ],
+        [
+          "khau_sung_gia",
+          "Đạo cụ sân khấu",
+          "assets/DaoCu/dao_cu_san_khau.png",
+          "Đạo cụ không nguy hiểm dùng trong cảnh diễn."
+        ],
+        [
+          "bong_ban",
+          "Quả bóng",
+          "assets/DaoCu/qua_bong.png",
+          "Bóng thể thao."
+        ],
+        [
+          "thu_bong",
+          "Thú bông",
+          "assets/DaoCu/thu_bong.png",
+          "Thú nhồi bông."
+        ],
+        [
+          "khung_anh",
+          "Khung ảnh",
+          "assets/DaoCu/khung_anh.png",
+          "Khung ảnh."
+        ],
+        [
+          "kinh_vo",
+          "Mảnh kính vỡ",
+          "assets/DaoCu/manh_kinh_vo.png",
+          "Mảnh vỡ dùng làm đạo cụ hình ảnh."
+        ],
+        [
+          "hop_thu",
+          "Hộp thư",
+          "assets/DaoCu/hop_thu.png",
+          "Hộp thư / phong thư."
+        ],
+        [
+          "phong_thu",
+          "Phong thư",
+          "assets/DaoCu/phong_thu.png",
+          "Phong thư đóng / mở."
+        ]
+      ]
+    },
+    {
+      "id": "vehicles",
+      "name": "Phương tiện",
+      "folder": "assets/PhuongTien/",
+      "items": [
+        [
+          "xe_may",
+          "Xe máy",
+          "assets/PhuongTien/xe_may.png",
+          "Ảnh xe máy tĩnh."
+        ],
+        [
+          "xe_dap",
+          "Xe đạp",
+          "assets/PhuongTien/xe_dap.png",
+          "Ảnh xe đạp."
+        ],
+        [
+          "o_to",
+          "Ô tô",
+          "assets/PhuongTien/o_to.png",
+          "Ô tô cá nhân."
+        ],
+        [
+          "taxi",
+          "Taxi",
+          "assets/PhuongTien/taxi.png",
+          "Taxi."
+        ],
+        [
+          "xe_buyt",
+          "Xe buýt",
+          "assets/PhuongTien/xe_buyt.png",
+          "Xe buýt."
+        ],
+        [
+          "xe_khach",
+          "Xe khách",
+          "assets/PhuongTien/xe_khach.png",
+          "Xe khách đường dài."
+        ],
+        [
+          "xe_cuu_thuong",
+          "Xe cứu thương",
+          "assets/PhuongTien/xe_cuu_thuong.png",
+          "Xe cứu thương."
+        ],
+        [
+          "xe_canh_sat",
+          "Xe cảnh sát",
+          "assets/PhuongTien/xe_canh_sat.png",
+          "Xe cảnh sát."
+        ],
+        [
+          "xe_tai",
+          "Xe tải",
+          "assets/PhuongTien/xe_tai.png",
+          "Xe tải."
+        ],
+        [
+          "tau_hoa",
+          "Tàu hỏa",
+          "assets/PhuongTien/tau_hoa.png",
+          "Tàu hỏa."
+        ],
+        [
+          "thuyen",
+          "Thuyền",
+          "assets/PhuongTien/thuyen.png",
+          "Thuyền / ghe."
+        ],
+        [
+          "may_bay",
+          "Máy bay",
+          "assets/PhuongTien/may_bay.png",
+          "Máy bay."
+        ]
+      ]
+    },
+    {
+      "id": "sfx",
+      "name": "Âm thanh hiệu ứng (SFX)",
+      "folder": "assets/AmThanh/HieuUng/",
+      "items": [
+        [
+          "step",
+          "Bước chân",
+          "assets/AmThanh/HieuUng/buoc_chan.wav",
+          "Bước chân đi bình thường."
+        ],
+        [
+          "run",
+          "Chạy",
+          "assets/AmThanh/HieuUng/chay.wav",
+          "Bước chân chạy."
+        ],
+        [
+          "jump",
+          "Nhảy",
+          "assets/AmThanh/HieuUng/nhay.wav",
+          "Âm thanh bật nhảy."
+        ],
+        [
+          "land",
+          "Tiếp đất",
+          "assets/AmThanh/HieuUng/tiep_dat.wav",
+          "Chân chạm đất."
+        ],
+        [
+          "fall",
+          "Rơi xuống đất",
+          "assets/AmThanh/HieuUng/roi_xuong_dat.wav",
+          "Vật hoặc nhân vật rơi."
+        ],
+        [
+          "body_fall",
+          "Ngã va xuống sàn",
+          "assets/AmThanh/HieuUng/nga_xuong_san.wav",
+          "Cú ngã thân người."
+        ],
+        [
+          "impact",
+          "Va chạm",
+          "assets/AmThanh/HieuUng/va_cham.wav",
+          "Va chạm chung."
+        ],
+        [
+          "punch",
+          "Đấm",
+          "assets/AmThanh/HieuUng/dam.wav",
+          "Cú đấm hoạt họa."
+        ],
+        [
+          "slap",
+          "Tát",
+          "assets/AmThanh/HieuUng/tat.wav",
+          "Tiếng tát hoạt họa."
+        ],
+        [
+          "glass_break",
+          "Kính vỡ",
+          "assets/AmThanh/HieuUng/kinh_vo.wav",
+          "Kính vỡ."
+        ],
+        [
+          "ceramic_break",
+          "Đồ sứ vỡ",
+          "assets/AmThanh/HieuUng/do_su_vo.wav",
+          "Bát / cốc sứ vỡ."
+        ],
+        [
+          "wood_break",
+          "Gỗ gãy",
+          "assets/AmThanh/HieuUng/go_gay.wav",
+          "Gỗ gãy."
+        ],
+        [
+          "object_drop",
+          "Vật rơi",
+          "assets/AmThanh/HieuUng/vat_roi.wav",
+          "Đồ vật rơi xuống."
+        ],
+        [
+          "pen_drop",
+          "Bút rơi",
+          "assets/AmThanh/HieuUng/but_roi.wav",
+          "Bút chạm mặt sàn."
+        ],
+        [
+          "book_drop",
+          "Sách rơi",
+          "assets/AmThanh/HieuUng/sach_roi.wav",
+          "Sách rơi xuống."
+        ],
+        [
+          "paper",
+          "Tiếng giấy sột soạt",
+          "assets/AmThanh/HieuUng/giay_sot_soat.wav",
+          "Cầm hoặc lật giấy."
+        ],
+        [
+          "page_turn",
+          "Lật trang sách",
+          "assets/AmThanh/HieuUng/lat_trang_sach.wav",
+          "Lật trang."
+        ],
+        [
+          "paper_tear",
+          "Xé giấy",
+          "assets/AmThanh/HieuUng/xé_giấy.wav",
+          "Xé giấy."
+        ],
+        [
+          "writing",
+          "Viết bằng bút",
+          "assets/AmThanh/HieuUng/viet_but.wav",
+          "Nét bút viết trên giấy."
+        ],
+        [
+          "stamp",
+          "Đóng dấu",
+          "assets/AmThanh/HieuUng/dong_dau.wav",
+          "Đóng dấu giấy tờ."
+        ],
+        [
+          "door_open",
+          "Mở cửa",
+          "assets/AmThanh/HieuUng/mo_cua.wav",
+          "Mở cửa."
+        ],
+        [
+          "door_close",
+          "Đóng cửa",
+          "assets/AmThanh/HieuUng/dong_cua.wav",
+          "Đóng cửa."
+        ],
+        [
+          "door_knock",
+          "Gõ cửa",
+          "assets/AmThanh/HieuUng/go_cua.wav",
+          "Gõ cửa."
+        ],
+        [
+          "chair",
+          "Kéo ghế",
+          "assets/AmThanh/HieuUng/keo_ghe.wav",
+          "Kéo ghế trên sàn."
+        ],
+        [
+          "phone_ring",
+          "Điện thoại reo",
+          "assets/AmThanh/HieuUng/dien_thoai_reo.wav",
+          "Chuông điện thoại."
+        ],
+        [
+          "phone_vibrate",
+          "Điện thoại rung",
+          "assets/AmThanh/HieuUng/dien_thoai_rung.wav",
+          "Rung điện thoại."
+        ],
+        [
+          "notification",
+          "Thông báo tin nhắn",
+          "assets/AmThanh/HieuUng/thong_bao_tin_nhan.wav",
+          "Âm báo tin nhắn."
+        ],
+        [
+          "engine_start",
+          "Khởi động xe",
+          "assets/AmThanh/HieuUng/khoi_dong_xe.wav",
+          "Động cơ khởi động."
+        ],
+        [
+          "brake",
+          "Phanh xe",
+          "assets/AmThanh/HieuUng/phanh_xe.wav",
+          "Tiếng phanh."
+        ],
+        [
+          "car_horn",
+          "Còi xe",
+          "assets/AmThanh/HieuUng/coi_xe.wav",
+          "Còi xe."
+        ],
+        [
+          "wind",
+          "Gió thổi",
+          "assets/AmThanh/HieuUng/gio_thoi.wav",
+          "Gió nền."
+        ],
+        [
+          "rain",
+          "Mưa rơi",
+          "assets/AmThanh/HieuUng/mua_roi.wav",
+          "Mưa."
+        ],
+        [
+          "thunder",
+          "Sấm sét",
+          "assets/AmThanh/HieuUng/sam_set.wav",
+          "Sấm."
+        ],
+        [
+          "water",
+          "Nước chảy",
+          "assets/AmThanh/HieuUng/nuoc_chay.wav",
+          "Suối / nước."
+        ],
+        [
+          "birds",
+          "Chim hót",
+          "assets/AmThanh/HieuUng/chim_hot.wav",
+          "Chim ngoài trời."
+        ],
+        [
+          "sigh",
+          "Thở dài",
+          "assets/AmThanh/HieuUng/tho_dai.wav",
+          "Nhân vật thở dài."
+        ],
+        [
+          "gasp",
+          "Giật mình / hít mạnh",
+          "assets/AmThanh/HieuUng/giat_minh.wav",
+          "Phản ứng bất ngờ."
+        ],
+        [
+          "heartbeat",
+          "Nhịp tim",
+          "assets/AmThanh/HieuUng/nhip_tim.wav",
+          "Hồi hộp."
+        ]
+      ]
+    },
+    {
+      "id": "music",
+      "name": "Nhạc nền (BGM)",
+      "folder": "assets/AmThanh/Nen/",
+      "items": [
+        [
+          "bgm_happy",
+          "Nhạc vui tươi",
+          "assets/AmThanh/Nen/vui_tuoi.mp3",
+          "Không khí vui."
+        ],
+        [
+          "bgm_sad",
+          "Nhạc buồn",
+          "assets/AmThanh/Nen/buon.mp3",
+          "Cảm xúc buồn."
+        ],
+        [
+          "bgm_romance",
+          "Nhạc lãng mạn",
+          "assets/AmThanh/Nen/lang_man.mp3",
+          "Tình cảm."
+        ],
+        [
+          "bgm_tension",
+          "Nhạc căng thẳng",
+          "assets/AmThanh/Nen/cang_thang.mp3",
+          "Căng thẳng."
+        ],
+        [
+          "bgm_mystery",
+          "Nhạc bí ẩn",
+          "assets/AmThanh/Nen/bi_an.mp3",
+          "Bí ẩn."
+        ],
+        [
+          "bgm_action",
+          "Nhạc hành động",
+          "assets/AmThanh/Nen/hanh_dong.mp3",
+          "Hành động."
+        ],
+        [
+          "bgm_comedy",
+          "Nhạc hài hước",
+          "assets/AmThanh/Nen/hai_huoc.mp3",
+          "Hài hước."
+        ],
+        [
+          "bgm_triumph",
+          "Nhạc chiến thắng",
+          "assets/AmThanh/Nen/chien_thang.mp3",
+          "Chiến thắng."
+        ],
+        [
+          "bgm_emotional",
+          "Nhạc cảm động",
+          "assets/AmThanh/Nen/cam_dong.mp3",
+          "Cảm động."
+        ],
+        [
+          "bgm_ambient",
+          "Nhạc thư giãn",
+          "assets/AmThanh/Nen/thu_gian.mp3",
+          "Thư giãn."
+        ]
+      ]
+    },
+    {
+      "id": "vfx",
+      "name": "Hiệu ứng hình ảnh",
+      "folder": "assets/HieuUng/",
+      "items": [
+        [
+          "sparkle",
+          "Lấp lánh",
+          "assets/HieuUng/sparkle.png",
+          "Hiện có; hiệu ứng lấp lánh."
+        ],
+        [
+          "dust",
+          "Bụi bay",
+          "assets/HieuUng/bui_bay.webm",
+          "Bụi bay nền trong suốt."
+        ],
+        [
+          "smoke",
+          "Khói",
+          "assets/HieuUng/khoi.webm",
+          "Khói chuyển động."
+        ],
+        [
+          "fire",
+          "Lửa",
+          "assets/HieuUng/lua.webm",
+          "Lửa chuyển động."
+        ],
+        [
+          "electric",
+          "Tia điện",
+          "assets/HieuUng/tia_dien.webm",
+          "Tia điện."
+        ],
+        [
+          "lightning",
+          "Sét",
+          "assets/HieuUng/set.webm",
+          "Tia sét."
+        ],
+        [
+          "rain",
+          "Mưa",
+          "assets/HieuUng/mua.webm",
+          "Mưa rơi."
+        ],
+        [
+          "snow",
+          "Tuyết",
+          "assets/HieuUng/tuyet.webm",
+          "Tuyết rơi."
+        ],
+        [
+          "wind_leaves",
+          "Lá cây bay",
+          "assets/HieuUng/la_cay_bay.webm",
+          "Lá cây bị gió cuốn."
+        ],
+        [
+          "sunlight",
+          "Tia nắng",
+          "assets/HieuUng/tia_nang.png",
+          "Tia nắng / light rays."
+        ],
+        [
+          "aura",
+          "Hào quang",
+          "assets/HieuUng/hao_quang.webm",
+          "Hào quang quanh nhân vật."
+        ],
+        [
+          "crack",
+          "Vết nứt",
+          "assets/HieuUng/vet_nut.png",
+          "Vết nứt bề mặt."
+        ],
+        [
+          "explosion",
+          "Vụ nổ",
+          "assets/HieuUng/vu_no.webm",
+          "Vụ nổ hoạt họa."
+        ],
+        [
+          "debris",
+          "Mảnh vỡ bay",
+          "assets/HieuUng/manh_vo.webm",
+          "Mảnh vỡ."
+        ],
+        [
+          "impact",
+          "Hiệu ứng va chạm",
+          "assets/HieuUng/va_cham.webm",
+          "Tác động hình ảnh."
+        ],
+        [
+          "blood",
+          "Vết thương hoạt họa",
+          "assets/HieuUng/vet_thuong.png",
+          "Vết thương dạng minh họa."
+        ],
+        [
+          "motion_blur",
+          "Nhòe chuyển động",
+          "assets/HieuUng/nhoe_chuyen_dong.webm",
+          "Motion blur."
+        ],
+        [
+          "transition",
+          "Hiệu ứng chuyển cảnh",
+          "assets/HieuUng/chuyen_canh.webm",
+          "Overlay chuyển cảnh."
+        ]
+      ]
+    },
+    {
+      "id": "ambience",
+      "name": "Âm thanh môi trường",
+      "folder": "assets/AmThanh/MoiTruong/",
+      "items": [
+        [
+          "school_ambience",
+          "Không khí lớp học",
+          "assets/AmThanh/MoiTruong/lop_hoc.wav",
+          "Tiếng lớp học nhẹ."
+        ],
+        [
+          "hall_ambience",
+          "Không khí sảnh lớn",
+          "assets/AmThanh/MoiTruong/sanh_lon.wav",
+          "Tiếng vang / không khí sảnh."
+        ],
+        [
+          "crowd",
+          "Đám đông",
+          "assets/AmThanh/MoiTruong/dam_dong.wav",
+          "Tiếng người trò chuyện nền."
+        ],
+        [
+          "forest_ambience",
+          "Rừng cây",
+          "assets/AmThanh/MoiTruong/rung_cay.wav",
+          "Chim và gió trong rừng."
+        ],
+        [
+          "mountain_ambience",
+          "Núi / thung lũng",
+          "assets/AmThanh/MoiTruong/nui_thung_lung.wav",
+          "Gió núi."
+        ],
+        [
+          "river_ambience",
+          "Bờ sông",
+          "assets/AmThanh/MoiTruong/bo_song.wav",
+          "Nước chảy nhẹ."
+        ],
+        [
+          "city_ambience",
+          "Đường phố",
+          "assets/AmThanh/MoiTruong/duong_pho.wav",
+          "Âm thanh thành phố."
+        ],
+        [
+          "rain_ambience",
+          "Mưa nền",
+          "assets/AmThanh/MoiTruong/mua_nen.wav",
+          "Mưa liên tục."
+        ]
+      ]
+    }
+  ],
+  "character_webm_actions": [
+    {
+      "action": "idle",
+      "name": "Đứng yên / idle"
+    },
+    {
+      "action": "walking",
+      "name": "Đi bộ"
+    },
+    {
+      "action": "running",
+      "name": "Chạy"
+    },
+    {
+      "action": "jumping",
+      "name": "Nhảy"
+    },
+    {
+      "action": "flying",
+      "name": "Bay"
+    },
+    {
+      "action": "falling",
+      "name": "Ngã / rơi"
+    },
+    {
+      "action": "landing",
+      "name": "Tiếp đất"
+    },
+    {
+      "action": "getting_up",
+      "name": "Đứng dậy"
+    },
+    {
+      "action": "sitting down",
+      "name": "Ngồi xuống"
+    },
+    {
+      "action": "lying down",
+      "name": "Nằm xuống"
+    },
+    {
+      "action": "pushing",
+      "name": "Đẩy"
+    },
+    {
+      "action": "pulling",
+      "name": "Kéo"
+    },
+    {
+      "action": "turning",
+      "name": "Quay người"
+    },
+    {
+      "action": "waving",
+      "name": "Vẫy tay"
+    },
+    {
+      "action": "dancing",
+      "name": "Nhảy múa"
+    },
+    {
+      "action": "picking up",
+      "name": "Nhặt đồ"
+    },
+    {
+      "action": "knockback",
+      "name": "Bị hất văng"
+    },
+    {
+      "action": "being_carried",
+      "name": "Được bế / cõng"
+    },
+    {
+      "action": "being_loaded",
+      "name": "Được đưa lên phương tiện"
+    },
+    {
+      "action": "inside_vehicle",
+      "name": "Ở trong phương tiện"
+    },
+    {
+      "action": "being_transported",
+      "name": "Đang được vận chuyển"
+    },
+    {
+      "action": "speaking",
+      "name": "Nói chuyện (communication)"
+    },
+    {
+      "action": "listening",
+      "name": "Lắng nghe (communication)"
+    },
+    {
+      "action": "reacting",
+      "name": "Phản ứng (communication)"
+    }
+  ]
+}
