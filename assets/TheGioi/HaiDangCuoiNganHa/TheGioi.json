@@ -1,0 +1,291 @@
+{
+  "schema_version": 2,
+  "world_name": "Hải Đăng Cuối Ngân Hà",
+  "slug": "HaiDangCuoiNganHa",
+  "genre": "Fantasy chibi, phiêu lưu, kỳ ảo, tình bạn, bí ẩn và chữa lành",
+  "premise": "Giữa một đại dương mây nơi các hòn đảo trôi theo dòng hải lưu sao, những ngọn hải đăng cổ lưu giữ ký ức của người đã đi qua. Khi ánh sáng ở ngọn hải đăng cuối cùng dần tắt, Linh An và Khải bắt đầu hành trình tìm lại ngôi sao đầu tiên để ngăn những hòn đảo và ký ức biến mất.",
+  "setting": "Kỷ nguyên Sau Vệt Sao, một thế giới trên tầng mây cao hơn mặt đất. Các đảo nổi nối với nhau bằng cầu gió, thuyền buồm bay và tuyến hải lưu ánh sáng. Công nghệ cơ khí đồng hồ tồn tại song song với phép thuật tinh thể.",
+  "tone": "Ấm áp, kỳ ảo, giàu hình ảnh, đôi lúc hài hước; bí ẩn tăng dần nhưng không u tối quá mức. Mỗi tập có một khám phá nhỏ và mở thêm bí mật về bầu trời.",
+  "extra": "Thế giới hoàn toàn hư cấu. Ký ức trong đèn chỉ lưu hình ảnh và cảm xúc, không thể thay đổi quá khứ hoặc hồi sinh người đã mất. Mỗi ngọn đèn chỉ sáng khi người giữ đèn chấp nhận sự thật trong ký ức. Không dùng phép thuật để giải quyết mọi xung đột một cách dễ dàng.",
+  "mode": "guided",
+  "history": [
+    {
+      "era": "Kỷ nguyên Mặt Trời Vỡ",
+      "description": "Một ngôi sao xanh nứt thành bảy mảnh, tạo ra đại dương mây và bảy quần đảo trôi."
+    },
+    {
+      "era": "Kỷ nguyên Hải Đăng",
+      "description": "Những người du hành dựng bảy hải đăng để định hướng thuyền bay và lưu giữ ký ức của các cộng đồng."
+    },
+    {
+      "era": "Kỷ nguyên Sau Vệt Sao",
+      "description": "Các tuyến hải lưu sao đang yếu dần. Hải đăng cuối ngân hà là ngọn duy nhất còn giữ được bản đồ đến mảnh sao đầu tiên."
+    }
+  ],
+  "world_rules": [
+    {
+      "name": "Hải lưu sao",
+      "description": "Dòng sáng trên trời quyết định hướng trôi của đảo. Không thể cưỡng ép dòng chảy lâu dài; người lái thuyền phải đọc nhịp sáng và gió."
+    },
+    {
+      "name": "Đèn ký ức",
+      "description": "Tinh thể trong đèn lưu một ký ức được người kể tự nguyện trao lại. Đèn có thể chiếu lại ký ức nhưng không thể sửa nó."
+    },
+    {
+      "name": "Cái giá của ánh sáng",
+      "description": "Mỗi lần thắp lại một hải đăng cần một người kể thành thật về điều họ đang né tránh. Không ai bị buộc phải hiến ký ức."
+    },
+    {
+      "name": "Giới hạn phép thuật",
+      "description": "Phép thuật chỉ điều khiển ánh sáng, gió nhẹ và tinh thể nhỏ; không thể tạo vật chất từ hư không hoặc điều khiển ý chí."
+    },
+    {
+      "name": "Bản đồ sống",
+      "description": "Bản đồ chỉ hiện đường đi khi người giữ nó cùng đồng ý về điểm đến. Bản đồ không tiết lộ tương lai."
+    }
+  ],
+  "culture": [
+    "Lễ Thả Đèn Gió vào đêm trăng non",
+    "Trao mảnh thủy tinh màu để cảm ơn người đã giúp đỡ",
+    "Không hỏi người khác về ký ức họ chưa sẵn sàng kể"
+  ],
+  "places": [
+    {
+      "name": "Đảo Mây Lam",
+      "description": "Hòn đảo quê nhà có bến thuyền bay, chợ nổi và những mái nhà lợp kính xanh."
+    },
+    {
+      "name": "Hải Đăng Cuối Ngân Hà",
+      "description": "Ngọn tháp cổ ở rìa bản đồ, nơi ánh sáng đang chập chờn và cất giữ bản đồ sao đầu tiên."
+    },
+    {
+      "name": "Rừng Chuông Gió",
+      "description": "Khu rừng treo lơ lửng, lá kim loại ngân lên khi hải lưu đổi hướng."
+    },
+    {
+      "name": "Chợ Đêm Sao Rơi",
+      "description": "Khu chợ trên những sàn gỗ nối bằng dây neo, bán la bàn, tinh thể và đồ sửa thuyền."
+    },
+    {
+      "name": "Vịnh Mây Ngủ",
+      "description": "Vùng mây tĩnh lặng nơi thuyền có thể neo lại để sửa chữa và nghỉ ngơi."
+    },
+    {
+      "name": "Thư Khố Trôi",
+      "description": "Thư viện trên một đảo nhỏ, sách được buộc dây để không bay khỏi giá."
+    }
+  ],
+  "characters": [
+    {
+      "character_id": "char_linh_an",
+      "name": "Linh An",
+      "role": "Nhân vật chính; người học việc bản đồ sao",
+      "personality": "Tò mò, gan dạ, giàu lòng trắc ẩn nhưng thường che giấu nỗi sợ bằng sự bướng bỉnh. Có khả năng nhận ra nhịp sáng bất thường của hải lưu.",
+      "relationships": "Bạn đồng hành thân thiết của Khải; được bà Nemi hướng dẫn về lịch sử hải đăng.",
+      "assetFolder": "Nữ tóc trắng",
+      "selected": true,
+      "asset_status": "linked",
+      "asset_note": "WEBM có thật trong thư viện; đang dùng làm hình đại diện tạm, chưa xác nhận ngoại hình trùng thiết kế Linh An."
+    },
+    {
+      "character_id": "char_khai",
+      "name": "Khải",
+      "role": "Bạn đồng hành; thợ máy trẻ sửa thuyền buồm bay",
+      "personality": "Điềm tĩnh, thực tế, thích đùa khô khan. Sợ mất những điều thân thuộc nên thường trì hoãn quyết định quan trọng.",
+      "relationships": "Bạn từ nhỏ của Linh An; từng được bà Nemi cứu khi thuyền gặp bão.",
+      "assetFolder": "Hihi",
+      "selected": true,
+      "asset_status": "linked",
+      "asset_note": "WEBM có thật trong thư viện; đang dùng làm hình đại diện tạm, chưa xác nhận ngoại hình trùng thiết kế Khải."
+    },
+    {
+      "character_id": "char_nemi",
+      "name": "Bà Nemi",
+      "role": "Người giữ hải đăng cuối cùng",
+      "personality": "Ít nói, kiên nhẫn, quan sát tinh tế. Bà giao tiếp bằng cử chỉ và những tấm thẻ ghi chú vì đã chọn giữ im lặng trong nhiều năm.",
+      "relationships": "Người hướng dẫn Linh An; có quá khứ gắn với mảnh sao đầu tiên và gia đình Khải.",
+      "assetFolder": "Hầu gái",
+      "selected": true,
+      "asset_status": "linked",
+      "asset_note": "WEBM có thật trong thư viện, metadata hiện là đứng yên/im lặng; dùng tạm làm nhân vật nền, ngoại hình chưa khớp thiết kế bà Nemi."
+    }
+  ],
+  "rules": [
+    {
+      "name": "Đảo trôi theo hải lưu",
+      "description": "Các đảo thay đổi vị trí theo mùa sao; tuyến đường cần được cập nhật bằng la bàn và bản đồ sống."
+    },
+    {
+      "name": "Ký ức không phải nhiên liệu",
+      "description": "Không ai bị lấy ký ức. Đèn chỉ sáng khi người kể tự nguyện chia sẻ và chấp nhận điều mình nhớ."
+    },
+    {
+      "name": "Không thể gọi lại người đã mất",
+      "description": "Đèn ký ức chỉ chiếu lại quá khứ, không triệu hồi linh hồn hoặc thay đổi kết quả."
+    },
+    {
+      "name": "Lời hứa có trọng lượng",
+      "description": "Một lời hứa được ghi lên bản đồ sẽ hiện thành đường chỉ bạc, nhưng chỉ khi người hứa thật sự có ý định thực hiện."
+    },
+    {
+      "name": "Bão sao",
+      "description": "Khi mảnh sao va vào tầng mây, gió đổi hướng đột ngột; thuyền phải hạ buồm và neo vào đảo gần nhất."
+    }
+  ],
+  "events": [
+    {
+      "name": "Hải đăng chớp tắt",
+      "description": "Ánh sáng của hải đăng cuối cùng bắt đầu yếu đi, khiến bản đồ sống xuất hiện một vùng trắng.",
+      "importance": "Khởi đầu hành trình."
+    },
+    {
+      "name": "La bàn quay ngược",
+      "description": "La bàn của Linh An chỉ về phía ngọn hải đăng thay vì hướng đi của thuyền.",
+      "importance": "Dấu hiệu cho thấy một ký ức bị bỏ quên."
+    },
+    {
+      "name": "Cánh cửa khóa bằng lời thật",
+      "description": "Cửa kho lưu trữ chỉ mở khi người bước vào nói ra điều mình đang sợ.",
+      "importance": "Thử thách nội tâm."
+    },
+    {
+      "name": "Bản đồ mảnh sao",
+      "description": "Linh An và Khải tìm thấy bản đồ đến mảnh sao đầu tiên nhưng phát hiện nó cần hai người cùng chọn hướng.",
+      "importance": "Cao trào và lựa chọn."
+    },
+    {
+      "name": "Ánh đèn được thắp lại",
+      "description": "Bà Nemi trao lại quyền giữ đèn; ánh sáng không khôi phục toàn bộ bản đồ nhưng mở một tuyến đường mới.",
+      "importance": "Kết thúc mở cho các tập tiếp theo."
+    }
+  ],
+  "story_ideas": [
+    {
+      "title": "Đêm Ngọn Đèn Đầu Tiên",
+      "logline": "Linh An và Khải phát hiện hải đăng cuối cùng đang tắt và tìm thấy một bản đồ chỉ hiện khi họ thành thật với nhau.",
+      "arc": "Từ tín hiệu lạ ở bến đảo, họ đến hải đăng, gặp bà Nemi, vượt qua cánh cửa ký ức và thắp lại một phần ánh sáng."
+    },
+    {
+      "title": "Chuyến Hàng Qua Rừng Chuông Gió",
+      "logline": "Một kiện tinh thể bị thất lạc khiến cả khu rừng đổi hướng giữa đêm.",
+      "arc": "Linh An đọc nhịp chuông, Khải sửa thuyền và cả hai học cách phối hợp khi kế hoạch đầu tiên thất bại."
+    },
+    {
+      "title": "Bức Thư Từ Đảo Không Tên",
+      "logline": "Một lá thư xuất hiện trong Thư Khố Trôi dù không có địa chỉ người gửi.",
+      "arc": "Nhóm lần theo dấu mực sao và khám phá một cộng đồng đã tự nguyện rời khỏi bản đồ."
+    }
+  ],
+  "story_folders": [
+    {
+      "title": "Đêm Ngọn Đèn Đầu Tiên",
+      "folder": "HaiDangCuoiNganHa",
+      "path": "assets/KichBan/HaiDangCuoiNganHa",
+      "json_path": "assets/KichBan/HaiDangCuoiNganHa/DemNgoiDenDauTien_VNSv3.json"
+    }
+  ],
+  "asset_catalog": {
+    "reused_character_folders": [
+      "Nữ tóc trắng",
+      "Hihi",
+      "Hầu gái"
+    ],
+    "reused_backgrounds": [
+      "con_duong_dem.png",
+      "san_thuong_hoang_hon.png",
+      "cong_vien_truong.png"
+    ],
+    "reused_bgm": [
+      "afternoon_between_leaves.mp3"
+    ],
+    "note": "Các tài nguyên trên là tài nguyên có thật trong repository, được dùng tạm cho bản dựng thử. Chưa phải bộ hình ảnh fantasy đồng nhất của thế giới."
+  },
+  "missing_assets": [
+    {
+      "type": "background",
+      "name": "DaoMayLam_16x9.png",
+      "purpose": "Đảo nổi quê nhà, bến thuyền bay"
+    },
+    {
+      "type": "background",
+      "name": "HaiDangCuoiNganHa_16x9.png",
+      "purpose": "Ngọn hải đăng cổ giữa đại dương mây"
+    },
+    {
+      "type": "background",
+      "name": "RungChuongGio_16x9.png",
+      "purpose": "Rừng treo với chuông lá kim loại"
+    },
+    {
+      "type": "background",
+      "name": "ChoDemSaoRoi_16x9.png",
+      "purpose": "Chợ nổi đêm trên các sàn gỗ"
+    },
+    {
+      "type": "background",
+      "name": "ThuKhoTroi_16x9.png",
+      "purpose": "Thư viện trôi giữa mây"
+    },
+    {
+      "type": "character_art",
+      "name": "LinhAn_chibi_transparent.png",
+      "purpose": "Thiết kế nhân vật gốc Linh An"
+    },
+    {
+      "type": "character_art",
+      "name": "Khai_chibi_transparent.png",
+      "purpose": "Thiết kế nhân vật gốc Khải"
+    },
+    {
+      "type": "character_art",
+      "name": "BaNemi_chibi_transparent.png",
+      "purpose": "Thiết kế nhân vật gốc bà Nemi"
+    },
+    {
+      "type": "animation",
+      "name": "LinhAn_idle_silent.webm + sidecar",
+      "purpose": "Đứng yên, im lặng, chính diện"
+    },
+    {
+      "type": "animation",
+      "name": "LinhAn_speaking_neutral.webm + sidecar",
+      "purpose": "Đứng yên, nói, chính diện"
+    },
+    {
+      "type": "animation",
+      "name": "Khai_idle_silent.webm + sidecar",
+      "purpose": "Đứng yên, im lặng, chính diện"
+    },
+    {
+      "type": "animation",
+      "name": "Khai_speaking_neutral.webm + sidecar",
+      "purpose": "Đứng yên, nói, chính diện"
+    },
+    {
+      "type": "animation",
+      "name": "BaNemi_idle_silent.webm + sidecar",
+      "purpose": "Đứng yên, im lặng, chính diện"
+    },
+    {
+      "type": "animation",
+      "name": "LinhAn_walk_forward.webm + sidecar",
+      "purpose": "Chu kỳ đi bộ tiến về phía trước"
+    },
+    {
+      "type": "animation",
+      "name": "Khai_walk_forward.webm + sidecar",
+      "purpose": "Chu kỳ đi bộ tiến về phía trước"
+    },
+    {
+      "type": "audio",
+      "name": "HaiDangCuoiNganHa_BGM.mp3",
+      "purpose": "Nhạc nền fantasy riêng cho thế giới"
+    },
+    {
+      "type": "audio",
+      "name": "ChuongGio_SFX.mp3",
+      "purpose": "Tiếng chuông gió, tiếng thuyền bay và hiệu ứng tinh thể"
+    }
+  ],
+  "updated_at": "2026-11-17T17:45:00+07:00"
+}
