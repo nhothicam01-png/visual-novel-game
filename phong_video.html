@@ -170,7 +170,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 </details>
 <details id="scene-asset-preflight" class="panel" style="margin-top:10px" open>
  <summary style="cursor:pointer;font-weight:700">🚑 Kiểm tra phương tiện &amp; đạo cụ <span id="scene-asset-count" class="note" style="font-weight:400">Chưa kiểm tra</span></summary>
- <div style="padding-top:10px"><div class="note">Đối chiếu mọi đường dẫn scene_objects trong kịch bản với file thực tế trên nhánh main của GitHub. File thiếu sẽ được báo trước khi dựng video.</div><button type="button" class="btn secondary" id="run-scene-asset-check">🔎 Kiểm tra tài nguyên ngay</button><div id="scene-asset-report" style="padding-top:10px"><div class="note">Chọn kịch bản rồi nhấn kiểm tra.</div></div></div>
+ <div style="padding-top:10px"><div class="note">Đối chiếu mọi đường dẫn scene_objects trong kịch bản với file thực tế trên nhánh main của GitHub. File thiếu sẽ được báo trước khi dựng video.</div><button type="button" class="btn secondary" id="run-scene-asset-check">🔎 Kiểm tra tài nguyên ngay</button><div id="scene-asset-report" style="padding-top:10px"><div class="note">Chọn kịch bản rồi nhấn kiểm tra.</div></div><hr style="border-color:#334155;margin:12px 0"><div class="note">Rà soát các nhân vật có nguy cơ đứng đè lên nhau trong từng dòng và keyframe.</div><button type="button" class="btn secondary" id="run-character-layout-check">🧍 Kiểm tra bố cục nhân vật</button><div id="character-layout-report" style="padding-top:10px"><div class="note">Chưa kiểm tra bố cục.</div></div></div>
 </details>
 <div id="character-voice-list" class="grid"></div>
 <label class="field">Giọng mặc định dự phòng<select id="default-voice-profile"><option value="">Chọn hồ sơ giọng mặc định…</option></select></label>
@@ -454,6 +454,31 @@ function renderAnimationAssetReport(){
  host.querySelectorAll('[data-copy-audit-meta]').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(JSON.stringify(JSON.parse(button.dataset.copyAuditMeta),null,2));button.textContent='✓ Đã sao chép'}catch(error){button.textContent='Không sao chép được'}}));
  loadAnimationRegistry().then(()=>{if(registry!==animationRegistryCache)renderAnimationAssetReport()});
 }
+
+function runCharacterLayoutCheck(){
+ const host=$('character-layout-report');if(!host)return;
+ if(!activeStoryData||!scenes.length){host.innerHTML='<div class="note">Chưa có kịch bản để kiểm tra.</div>';return}
+ const issues=[],checked=[];
+ scenes.forEach((scene,si)=>(scene.lines||[]).forEach((line,li)=>{
+  const frame=line.sourceFrame||{},items=Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
+  const visible=items.filter(c=>c&&c.visible!==false&&c.remove_from_scene!==true&&Number.isFinite(Number(c.x)));
+  for(let a=0;a<visible.length;a++)for(let b=a+1;b<visible.length;b++){
+   const A=visible[a],B=visible[b],ax=Number(A.x),bx=Number(B.x),ay=Number(A.y??78),by=Number(B.y??78),as=Math.max(.1,Number(A.scale)||.72),bs=Math.max(.1,Number(B.scale)||.72);
+   const minGap=24*((as+bs)/1.44),dx=Math.abs(ax-bx),dy=Math.abs(ay-by);
+   if(dx<minGap&&dy<18)issues.push({scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,a:A,b:B,dx,minGap});
+   const keys=[...(A.motion?.keyframes||[]),...(B.motion?.keyframes||[])];
+   for(const ka of (A.motion?.keyframes||[]))for(const kb of (B.motion?.keyframes||[])){
+    if(Math.abs(Number(ka.t)-Number(kb.t))<.03&&ka.x!=null&&kb.x!=null&&Math.abs(Number(ka.x)-Number(kb.x))<minGap&&Math.abs(Number(ka.y??ay)-Number(kb.y??by))<18)
+     issues.push({scene:scene.name||('Cảnh '+(si+1)),line:Number(line.sourceIndex??li)+1,a:A,b:B,dx:Math.abs(Number(ka.x)-Number(kb.x)),minGap,keyframe:true});
+   }
+  }
+  checked.push(1);
+ }));
+ if(!issues.length){host.innerHTML='<div style="color:#86efac">✓ Không phát hiện cặp nhân vật có nguy cơ chồng lấn theo kiểm tra tọa độ cơ bản ('+checked.length+' dòng).</div>';return}
+ host.innerHTML='<div style="color:#fca5a5;font-weight:700">Phát hiện '+issues.length+' vị trí cần xem lại:</div><ul>'+issues.slice(0,100).map(v=>'<li style="margin:7px 0">Dòng '+v.line+' · '+safeText(v.a.id||'A')+' (x='+Number(v.a.x)+') và '+safeText(v.b.id||'B')+' (x='+Number(v.b.x)+') · khoảng cách '+v.dx.toFixed(1)+'% (khuyến nghị ≥ '+v.minGap.toFixed(1)+'%). '+(v.keyframe?'Keyframe':'Vị trí tĩnh')+'</li>').join('')+'</ul><div class="note">Đây là cảnh báo hình học gần đúng; vẫn cần xem preview vì kích thước ảnh WEBM có thể khác nhau.</div>';
+}
+$('run-character-layout-check')?.addEventListener('click',runCharacterLayoutCheck);
+
 $('run-scene-asset-check')?.addEventListener('click',runSceneAssetPreflight);
 function updateStoryAnimationWarning(){if(!$('story-status'))return;if(!activeStoryData){renderAnimationAssetReport();return}const base='Đã nạp '+activeStoryName+': '+sourceLineCount+' mục thoại, '+characterDirectory.length+' nhân vật, '+scenes.length+' cảnh.';const missing=currentAnimationWarnings.filter(w=>!w.mirrored),mirrored=currentAnimationWarnings.filter(w=>w.mirrored),details=missing.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']: '+w.reason});const flips=mirrored.map(w=>{const ch=characterDirectory.find(c=>String(c.id)===w.id);return (ch?.name||w.id)+' ['+w.state+']'});$('story-status').textContent=base+(details.length?' · Thiếu WEBM khớp trạng thái ở dòng hiện tại: '+details.join('; ')+'. Đang giữ hình tĩnh để tránh diễn sai.':' · Animation khớp metadata ở dòng hiện tại.')+(flips.length?' · Đã tự lật ngang WEBM cho hướng đối diện: '+flips.join('; ')+'.':'');renderAnimationAssetReport();}
 
