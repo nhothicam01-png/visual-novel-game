@@ -808,13 +808,13 @@ function drawFrame(elapsed,st){
   const targetLayer=charLayerVideos.find(item=>String(item.spec?.id||'')===cameraTarget);
   if(targetLayer){
    const targetSpec=targetLayer.spec||{},media=targetLayer.media,sw=media?.videoWidth||media?.naturalWidth||media?.width||1,sh=media?.videoHeight||media?.naturalHeight||media?.height||1;
-   const visibleCount=Math.max(1,charLayerVideos.length),requested=Number(targetSpec.scale),targetScale=Number.isFinite(requested)?Math.max(.1,Math.min(2.5,requested)):(visibleCount>1?.72:1);
-   const targetFit=Math.min((w*(visibleCount>1?.40:.78))/sw,(h*(visibleCount>1?.78:.90))/sh);
-   const targetHeight=sh*targetFit*Math.max(.1,Math.min(1.6,targetScale));
+   const visibleCount=Math.max(1,charLayerVideos.length),requested=Number(targetSpec.scale),targetScale=visibleCount===1?1:(Number.isFinite(requested)?Math.max(.1,Math.min(2.5,requested)):.72);
+   const targetFit=visibleCount===1?h/sh:Math.min((w*.40)/sw,(h*.78)/sh);
+   const targetHeight=sh*targetFit*targetScale;
    const tx=w*Math.max(0,Math.min(100,Number(targetSpec.x??50)))/100;
-   const ty=h*Math.max(0,Math.min(110,Number(targetSpec.y??100)))/100;
-   const focusY=Math.max(targetHeight*.08,ty-targetHeight*.70);
-   const zoom=Math.max(1,Math.min(1.8,shotZoom));
+   const ty=h*Math.max(0,Math.min(110,Number(targetSpec.y??102)))/100;
+   const focusY=Math.max(targetHeight*.08,ty-targetHeight*(isPortrait?.62:.70));
+   const zoom=Math.max(1,Math.min(isPortrait?1.18:1.8,shotZoom));
    ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(zoom,zoom);ctx.translate(-tx,-focusY);
   }
  }
@@ -833,7 +833,8 @@ function drawFrame(elapsed,st){
   // Neo đáy ở bottom:-2% (đường chân tại 102% chiều cao), cho phép tràn nhẹ khỏi mép dưới.
   // Scale trong JSON vẫn được tôn trọng; không tự thu nhỏ theo số nhân vật hoặc tỷ lệ màn hình.
   const fit=sw&&sh?h/sh:1;
-  const safeScale=Math.max(.1,Math.min(2.5,scale)),dw=sw*fit*safeScale,dh=sh*fit*safeScale;
+  const effectiveScale=charLayerVideos.length===1?1:scale;
+  const safeScale=Math.max(.1,Math.min(2.5,effectiveScale)),dw=sw*fit*safeScale,dh=sh*fit*safeScale;
   y=Math.max(dh+h*.015,Math.min(h*1.02,y));
   ctx.save();let alpha=Math.max(0,Math.min(1,st.opacity??1));
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
@@ -1990,7 +1991,8 @@ function semanticFromExpression(folder,file){const path=(expressionFilesByFolder
 function buildScenesFromJson(data){
  const rows=data?.danh_sach;if(!Array.isArray(rows)||!rows.length)throw new Error('JSON không có danh_sach hợp lệ.');if(Number(data.phien_ban)!==3||!String(data.world_id||'').trim())throw new Error('Chỉ hỗ trợ JSON phiên bản 3 có world_id hợp lệ.');
  const out=[];let current=null,lastBackground='',activeBgm=String(data.am_thanh_mac_dinh?.nhac_nen||'').trim(),characterMap=data.nhan_vat||{},pauseDefault=Number(data.thiet_lap_chung?.thoi_gian_cho_giua??0.5);
- rows.forEach((frame,index)=>{const rawBg=String(frame.anh_nen||'').trim();if(rawBg)lastBackground=rawBg;const characterId=String(frame.nhan_vat??''),charInfo=characterMap[characterId]||{},folder=characterAssetFolder(characterId),expression=resolveSemanticExpression(folder,frame.expression_id);const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim(),sceneId=String(frame.scene_id??'').trim(),flashback=frame.hoi_tuong===true,starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
+ const inferSpeakerId=frame=>{const explicit=String(frame?.nhan_vat||'').trim();if(explicit)return explicit;const label=normalizeCharacterName(frame?.ten_hien_thi||'');if(label){const found=Object.entries(characterMap).find(([id,info])=>normalizeCharacterName(info?.ten_hien_thi||info?.name||id)===label);if(found)return found[0]}return ''};
+ rows.forEach((frame,index)=>{const rawBg=String(frame.anh_nen||'').trim();if(rawBg)lastBackground=rawBg;const characterId=inferSpeakerId(frame),charInfo=characterMap[characterId]||{},folder=characterAssetFolder(characterId),expression=resolveSemanticExpression(folder,frame.expression_id);const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim(),sceneId=String(frame.scene_id??'').trim(),flashback=frame.hoi_tuong===true,starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterId,expression,effects:mapJsonEffects(frame),sceneEffects:normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
  current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;if(Object.prototype.hasOwnProperty.call(frame,'hieu_ung_canh')||Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))current.visual.sceneEffects=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung);
  current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
