@@ -249,6 +249,9 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 </select></label>
 <label class="field" id="dialogue-width-control">Chiều rộng khung thoại <span id="dialogue-width-value">75%</span>
 <input id="dialogue-width" type="range" min="35" max="95" step="1" value="75"></label>
+<label class="field" id="dialogue-font-size-control">Cỡ chữ lời thoại <span id="dialogue-font-size-value">Tự động</span>
+<input id="dialogue-font-size" type="range" min="24" max="60" step="1" value="52">
+<button type="button" class="btn secondary" id="dialogue-font-size-reset" style="padding:5px 9px;font-size:.72rem">↺ Mặc định</button></label>
 </div>
 
 </details>
@@ -551,7 +554,7 @@ function resizeCanvas(portrait){
  isPortrait=!!portrait;stage.classList.toggle('portrait',isPortrait);
  stage.classList.remove('force-landscape','force-portrait');
  if(document.fullscreenElement)stage.classList.add(isPortrait?'force-portrait':'force-landscape');
- canvas.width=isPortrait?1080:1920;canvas.height=isPortrait?1920:1080;updateRatioButtons();drawFrame(0);
+ canvas.width=isPortrait?1080:1920;canvas.height=isPortrait?1920:1080;if(!dialogueFontSizeTouched){$('dialogue-font-size').value=String(Math.round(canvas.width*.027));$('dialogue-font-size-value').textContent='Tự động · '+$('dialogue-font-size').value+' px'}updateRatioButtons();drawFrame(0);
 }
 async function togglePreviewFullscreen(){
  try{
@@ -908,7 +911,7 @@ function drawDialogue(w,h){
   const text=$('dialogue').value.trim(),speakerSelect=$('speaker'),line=getCurrentLine(),speakerId=String(line?.speakerId||line?.sourceFrame?.nhan_vat||speakerSelect?.value||''),character=activeCharacterList().find(ch=>String(ch.id)===speakerId),selectedName=String(speakerSelect?.selectedOptions?.[0]?.textContent||'').trim(),name=String(line?.speaker||character?.name||selectedName||'').trim();
   const mode=$('dialogue-width-mode')?.value||'percent',pad=w*.018,percent=Number($('dialogue-width')?.value||75)/100,maxW=mode==='fit'?w*.88:w*percent;
   // Tăng cỡ chữ mặc định; tự thu nhẹ nếu câu quá dài để hộp thoại không tràn khỏi khung hình.
-  let fontSize=Math.max(28,Math.min(60,Math.round(w*.027))),lines=[],lineH=0,measured=0,nameH=0,topPad=pad*.42,bottomPad=pad*.42,boxH=0;
+  let fontSize=dialogueFontSizeTouched?Math.max(24,Math.min(60,Number($('dialogue-font-size')?.value)||Math.round(w*.027))):Math.max(24,Math.min(60,Math.round(w*.027))),lines=[],lineH=0,measured=0,nameH=0,topPad=pad*.42,bottomPad=pad*.42,boxH=0;
   for(let attempt=0;attempt<5;attempt++){
    ctx.font='600 '+fontSize+'px "Segoe UI",Arial,sans-serif';
    lines=wrapText(text,maxW-pad*2);lineH=fontSize*1.28;measured=Math.max(0,...lines.map(line=>ctx.measureText(line).width));
@@ -1566,6 +1569,10 @@ $('show-dialogue').addEventListener('change',()=>drawFrame(0));
 $('show-speaker').addEventListener('change',()=>drawFrame(0));
 $('dialogue-width-mode').addEventListener('change',()=>{const fit=$('dialogue-width-mode').value==='fit';$('dialogue-width-control').style.display=fit?'none':'flex';drawFrame(0)});
 $('dialogue-width').addEventListener('input',()=>{$('dialogue-width-value').textContent=$('dialogue-width').value+'%';if(!previewing)drawFrame(0)});
+ let dialogueFontSizeTouched=false;
+ $('dialogue-font-size').addEventListener('input',()=>{dialogueFontSizeTouched=true;$('dialogue-font-size-value').textContent=$('dialogue-font-size').value+' px';if(!previewing)drawFrame(0)});
+ $('dialogue-font-size-reset').addEventListener('click',()=>{dialogueFontSizeTouched=false;$('dialogue-font-size').value=String(Math.round(canvas.width*.027));$('dialogue-font-size-value').textContent='Tự động · '+$('dialogue-font-size').value+' px';if(!previewing)drawFrame(0)});
+ $('dialogue-font-size').value=String(Math.round(canvas.width*.027));$('dialogue-font-size-value').textContent='Tự động · '+$('dialogue-font-size').value+' px';
 $('dialogue-width-control').style.display='flex';
 document.querySelectorAll('[data-effect]').forEach(el=>el.addEventListener('change',()=>{if(!previewing)drawFrame(0)}));
  $('effect-strength').addEventListener('input',()=>{$('effect-strength-value').textContent=$('effect-strength').value+'%';if(!previewing)drawFrame(0)});
