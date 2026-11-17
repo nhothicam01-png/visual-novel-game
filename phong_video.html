@@ -726,6 +726,7 @@ async function updateAssets(){
  const objectSpecs=rawObjects.filter(o=>o&&typeof o==='object'&&String(o.asset||o.path||o.file||'').trim()).map((o,index)=>{const file=String(o.asset||o.path||o.file).trim(),url=(file.toLowerCase().startsWith('http://')||file.toLowerCase().startsWith('https://'))?file:(file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file);return {...o,id:String(o.id||('object_'+index)),url,type:/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?'image':'video',z_index:Number(o.z_index??10+index)}});
  const effectKey=JSON.stringify(sceneSpecs.map(x=>[x.path,x.loop,x.opacity,x.z_index]));
  if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
+ let assetsLoaded=false;
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
    const folder=characterAssetFolder(spec.id),semantic=semanticForVisibleCharacter(spec,frame,currentLine);
@@ -778,10 +779,10 @@ async function updateAssets(){
    sceneEffectLayers.forEach(item=>{if(item.media&&item.type==='video'){item.media.loop=item.loop!==false;item.media.muted=true;item.media.__sceneEffectFinished=false;item.media.onended=()=>{item.media.__sceneEffectFinished=true;drawFrame(0)};try{item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){} }});
    sceneEffectKey=effectKey;
   }else sceneEffectLayers=nextSceneEffects;
-  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.filter(item=>item.canPlayAnimation).map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)&&!(item.loop===false&&(item.media.__sceneEffectFinished||item.media.ended))).map(item=>item.media.play().catch(()=>{})),...sceneObjectLayers.filter(item=>item.type==='video'&&item.media).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);
+  await Promise.all([bgVideo?.play().catch(()=>{}),charVideo?.play().catch(()=>{}),...charLayerVideos.filter(item=>item.canPlayAnimation).map(item=>item.media.play().catch(()=>{})),...sceneEffectLayers.filter(item=>item.type==='video'&&item.media&&(item.loop!==false||previewing||directRecording)&&!(item.loop===false&&(item.media.__sceneEffectFinished||item.media.ended))).map(item=>item.media.play().catch(()=>{})),...sceneObjectLayers.filter(item=>item.type==='video'&&item.media).map(item=>item.media.play().catch(()=>{}))]);drawFrame(0);assetsLoaded=true;
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
- return token===assetLoadToken;
+ return assetsLoaded&&token===assetLoadToken;
 }
 function backgroundAtSourceIndex(index){
  const rows=activeStoryData?.danh_sach||[];
