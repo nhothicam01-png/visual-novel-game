@@ -156,7 +156,7 @@ $('publish').onclick=async()=>{
     dir='assets/KichBan/'+folder;jp=dir+'/'+folder+'.json';
     const inFolder=(G.T||[]).filter(x=>x.type==='blob'&&x.path.startsWith(dir+'/'));
     const hasOtherJson=inFolder.some(x=>/\.json$/i.test(x.path)&&x.path!==jp);
-    if(hasOtherJson||(!inFolder.length&&false)){folder=baseFolder+'-'+suffix++;continue}
+    if(hasOtherJson){folder=baseFolder+'-'+suffix++;continue}
     if(inFolder.length&&!inFolder.some(x=>x.path===jp)){folder=baseFolder+'-'+suffix++;continue}
     break;
    }
