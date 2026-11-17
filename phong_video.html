@@ -1257,8 +1257,14 @@ async function preparePreviewPlayback(items,useBrowser){
 async function playPreview(){
  saveCurrentLine();saveCurrentScene();
  const scope=$('preview-scope').value,startIndex=currentSourceIndex();
- const items=allSourceLines().filter(item=>item.sourceIndex>=startIndex&&(scope==='full'||item.sceneIndex===activeSceneIndex));
- if(!items.length)return;
+ const scopedItems=allSourceLines().filter(item=>scope==='full'||item.sceneIndex===activeSceneIndex);
+ if(!scopedItems.length){setStatus('Cảnh này chưa có câu thoại để phát.');return}
+ // Nếu tiến trình đã lưu đang ở câu cuối của phạm vi phát, phát lại từ đầu
+ // thay vì chỉ chạy câu cuối rồi kết thúc ngay.
+ const lastScopedIndex=scopedItems[scopedItems.length-1].sourceIndex;
+ const effectiveStart=startIndex>=lastScopedIndex?scopedItems[0].sourceIndex:startIndex;
+ const items=scopedItems.filter(item=>item.sourceIndex>=effectiveStart);
+ if(!items.length){setStatus('Không tìm thấy câu thoại hợp lệ trong phạm vi phát.');return}
  const useBrowser=$('preview-tts-mode').value==='browser';
  // Giọng render: tạo/kiểm tra WAV cho toàn bộ lời thoại trước khi chạy timeline.
  const shouldPrepare=directRecordRequested||!useBrowser;
@@ -1312,7 +1318,7 @@ async function playPreview(){
 }
 if(window.speechSynthesis){loadBrowserTtsVoices();window.speechSynthesis.addEventListener?.('voiceschanged',loadBrowserTtsVoices)}
 $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn giọng TTS của trình duyệt.'));
-$('play-preview').addEventListener('click',()=>{if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
+$('play-preview').addEventListener('click',()=>{if(!previewing)playPreview().catch(err=>{console.error('Lỗi phát preview:',err);setStatus('Phát bị dừng do lỗi: '+(err?.message||String(err)));updatePlaybackButtons()});else if(previewPaused)resumePreview();else pausePreview()});
 // Double-click vào khung video để chạy / tạm dừng / tiếp tục xem trước.
 stage.addEventListener('dblclick',e=>{e.preventDefault();if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
 $('direct-record-button').addEventListener('click',async()=>{if(directRecording){stopPreview();await stopDirectRecorder();return}if(previewing){setStatus('Hãy dừng phát trước khi bắt đầu ghi trực tiếp.');return}if($('preview-tts-mode').value==='browser'){$('preview-tts-mode').value='render';setTtsStatus('Ghi trực tiếp dùng giọng render để thu được âm thanh đầy đủ.')}directRecordRequested=true;await playPreview()});
