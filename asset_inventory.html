@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Asset Inventory – Visual Novel Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#080d18;--panel:#111c30;--line:#334155;--muted:#94a3b8;--text:#e2e8f0;--accent:#a78bfa;--ok:#86efac;--warn:#fbbf24;--bad:#fda4af}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,Segoe UI,sans-serif;padding:16px;max-width:1400px;margin:auto}
+h1{font-size:1.45rem;margin:0 0 4px}h2{font-size:1rem;margin:0 0 10px;color:#c4b5fd}.muted,.sub{color:var(--muted)}.sub{margin:0 0 16px}
+header,.panel,.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.toolbar>*{min-height:38px}
+button,select,input{background:#1e293b;color:var(--text);border:1px solid #475569;border-radius:8px;padding:8px 10px;font:inherit}
+button{cursor:pointer;background:#4f46e5;border:0;font-weight:650}button.secondary{background:#263449;border:1px solid #475569}
+input[type=search]{flex:1;min-width:180px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:12px 0}.stat{margin:0}.stat strong{font-size:1.65rem;display:block}.stat span{color:var(--muted);font-size:.78rem}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}.tab{background:#1e293b;border:1px solid #475569}.tab.active{background:#5b21b6;border-color:#a78bfa}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:9px 10px;border-bottom:1px solid #334155;vertical-align:top;font-size:.82rem}th{color:#c4b5fd;background:#0b1425;position:sticky;top:0}code{overflow-wrap:anywhere;color:#bfdbfe}.pill{display:inline-block;border-radius:99px;padding:2px 8px;font-size:.72rem;background:#263449;color:#cbd5e1;margin:2px}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}.hidden{display:none}.note{font-size:.78rem;color:var(--muted);line-height:1.5}.section{margin-top:14px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.card{background:#0b1425;border:1px solid #334155;border-radius:9px;padding:12px}.card h3{font-size:.9rem;margin:0 0 6px}.progress{height:7px;background:#334155;border-radius:8px;overflow:hidden}.progress i{display:block;height:100%;background:#8b5cf6;width:0}.right{margin-left:auto}.status{white-space:pre-wrap;color:#c4b5fd;font-size:.82rem}.empty{padding:20px;text-align:center;color:var(--muted)}
+@media(max-width:600px){body{padding:9px}.panel,header{padding:11px}.toolbar select{max-width:100%}}
+</style></head><body>
+<header><h1>🧰 Trung tâm quản lý tài nguyên</h1><p class="sub">Tự quét tất cả thế giới, kịch bản và file trong GitHub. Khi thêm kịch bản hoặc tải thêm tài nguyên, nhấn “Quét lại” để cập nhật danh mục.</p>
+<div class="toolbar"><button id="scan">↻ Quét lại GitHub</button><select id="world"><option value="">Tất cả thế giới</option></select><select id="story"><option value="">Tất cả kịch bản</option></select><input id="search" type="search" placeholder="Tìm nhân vật, WEBM, bối cảnh, đạo cụ..."><button class="secondary" id="json">Xuất JSON</button><button class="secondary" id="csv">Xuất CSV</button><a href="./phong_video.html" style="color:#c4b5fd;padding:8px">← Về Studio</a></div>
+<div id="status" class="status">Chưa quét dữ liệu.</div><div class="progress"><i id="bar"></i></div></header>
+<div class="stats" id="stats"></div>
+<nav class="tabs" id="tabs">
+<button class="tab active" data-tab="summary">Tổng quan</button><button class="tab" data-tab="characters">Nhân vật & WEBM</button><button class="tab" data-tab="backgrounds">Bối cảnh</button><button class="tab" data-tab="props">Đạo cụ & phương tiện</button><button class="tab" data-tab="audio">Âm thanh & hiệu ứng</button><button class="tab" data-tab="stories">Theo kịch bản</button><button class="tab" data-tab="allfiles">Kho tài nguyên</button>
+</nav>
+<main id="view"><div class="panel empty">Nhấn “Quét lại GitHub” để xây dựng danh mục.</div></main>
+<script>
+(function(){
+'use strict';
+const OWNER='nhothicam01-png',REPO='visual-novel-game',BRANCH='main',API='https://api.github.com/repos/'+OWNER+'/'+REPO;
+let db=null,tab='summary';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uniq=a=>[...new Set(a.filter(Boolean))];
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+const rawPath=p=>'https://raw.githubusercontent.com/'+OWNER+'/'+REPO+'/'+BRANCH+'/'+p.split('/').map(encodeURIComponent).join('/');
+async function getJson(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(r.status+' '+url);return r.json()}
+async function getText(path){const r=await fetch(rawPath(path),{cache:'no-store'});if(!r.ok)throw new Error('Không đọc được '+path);return r.text()}
+function walk(o,fn,path=''){if(!o||typeof o!=='object')return;if(Array.isArray(o)){o.forEach((v,i)=>walk(v,fn,path+'['+i+']'));return}for(const [k,v] of Object.entries(o)){fn(k,v,o,path);walk(v,fn,path?path+'.'+k:k)}}
+function status(msg,p){$('status').textContent=msg;if(p!==undefined)$('bar').style.width=p+'%'}
+async function scan(){
+ $('scan').disabled=true;status('Đang đọc cây thư mục GitHub…',3);
+ try{
+ const tree=await getJson(API+'/git/trees/'+BRANCH+'?recursive=1');if(tree.truncated)throw new Error('GitHub trả cây thư mục bị cắt. Cần quét theo từng thư mục.');
+ const files=tree.tree.filter(x=>x.type==='blob').map(x=>({path:x.path,size:x.size||0}));
+ const fileSet=new Set(files.map(x=>x.path));
+ const worldPaths=files.filter(x=>/^assets\/TheGioi\/[^/]+\/TheGioi\.json$/i.test(x.path)).map(x=>x.path);
+ const storyPaths=files.filter(x=>x.path.startsWith('assets/KichBan/')&&x.path.endsWith('.json')&&!x.path.includes('/PhuDe/')).map(x=>x.path);
+ const worlds=[],stories=[];
+ let done=0,total=worldPaths.length+storyPaths.length;
+ const load=async(path,type)=>{try{const j=JSON.parse(await getText(path));if(type==='world')worlds.push({path,data:j});else if(Array.isArray(j.danh_sach))stories.push({path,data:j});}catch(e){console.warn('Inventory skip',path,e)}done++;status('Đang phân tích '+done+'/'+total+' hồ sơ…',5+Math.round(done/Math.max(1,total)*70))};
+ for(let i=0;i<worldPaths.length;i+=6)await Promise.all(worldPaths.slice(i,i+6).map(p=>load(p,'world')));
+ for(let i=0;i<storyPaths.length;i+=6)await Promise.all(storyPaths.slice(i,i+6).map(p=>load(p,'story')));
+ status('Đang đối chiếu WEBM và metadata…',80);
+ const charMap={},storyMap={},bgMap={},propMap={},audioMap={},effectMap={};
+ const add=(map,key,story,extra={})=>{if(!key)return;let x=map[key]||(map[key]={key,stories:new Set(),...extra});if(story)x.stories.add(story)};
+ for(const w of worlds){const wid=w.data.slug||w.data.world_id||w.data.world_name||w.path;for(const c of w.data.characters||[]){const id=c.character_id||c.id;if(!id)continue;let x=charMap[id]||(charMap[id]={id,name:c.name||id,folders:new Set(),worlds:new Set(),roles:[],stories:new Set()});x.name=c.name||x.name;if(c.assetFolder)x.folders.add(c.assetFolder);x.worlds.add(wid);if(c.role)x.roles.push(c.role)}}
+ for(const s of stories){
+ const d=s.data,title=d.tieu_de||d.title||s.path.split('/').pop().replace(/\.json$/,'');const id=s.path;
+ storyMap[id]={id,title,world:d.world_id||'Chưa gán thế giới',beats:(d.danh_sach||[]).length,characters:new Set(),backgrounds:new Set(),props:new Set(),audio:new Set(),effects:new Set()};
+ const used=storyMap[id],ids=new Set();
+ for(const [cid,c] of Object.entries(d.nhan_vat||{})){if(cid.startsWith('char_'))ids.add(cid)}
+ for(const line of d.danh_sach||[]){
+ if(line.nhan_vat)ids.add(line.nhan_vat);
+ for(const v of line.nhan_vat_hien_thi||[])if(v.id)ids.add(v.id);
+ const bg=line.anh_nen;if(bg){const p=bg.startsWith('assets/')?bg:'assets/Nen/'+bg;used.backgrounds.add(p);add(bgMap,p,id)}
+ if(line.anh_hieu_ung){const p=line.anh_hieu_ung.startsWith('assets/')?line.anh_hieu_ung:'assets/HieuUng/'+line.anh_hieu_ung;used.effects.add(p);add(effectMap,p,id)}
+ walk(line,(k,v)=>{
+ if(typeof v!=='string'||!v.trim())return;
+ if((k==='asset'||k==='src'||k==='file_path')&&v.startsWith('assets/')){if(v.startsWith('assets/DaoCu/')||v.startsWith('assets/PhuongTien/')){used.props.add(v);add(propMap,v,id)}else if(v.startsWith('assets/AmThanh/')){used.audio.add(v);add(audioMap,v,id)}else if(v.startsWith('assets/HieuUng/')){used.effects.add(v);add(effectMap,v,id)}else if(v.startsWith('assets/Nen/')){used.backgrounds.add(v);add(bgMap,v,id)}}
+ if(k==='tep'&&/\.(mp3|wav|ogg|m4a|aac)$/i.test(v)){let p=v.startsWith('assets/')?v:'assets/AmThanh/'+v;used.audio.add(p);add(audioMap,p,id)}
+ });
+ for(const cid of ids){used.characters.add(cid);if(!charMap[cid])charMap[cid]={id:cid,name:d.nhan_vat?.[cid]?.ten_hien_thi||d.nhan_vat?.[cid]?.name||cid,folders:new Set(),worlds:new Set(),roles:[],stories:new Set()};charMap[cid].stories.add(id)}
+ }
+ }
+ const characterFolders=new Map();for(const c of Object.values(charMap))for(const f of c.folders)characterFolders.set(f,c.id);
+ const webmFiles=files.filter(x=>x.path.startsWith('assets/NhanVat/')&&/\.webm$/i.test(x.path));
+ const sidecars=files.filter(x=>x.path.startsWith('assets/NhanVat/')&&/\.webm\.json$/i.test(x.path));
+ const metaByPath={};let mi=0;
+ for(let i=0;i<sidecars.length;i+=8){const batch=await Promise.all(sidecars.slice(i,i+8).map(async x=>{try{return [x.path,JSON.parse(await getText(x.path))]}catch{return [x.path,null]}}));for(const [p,m] of batch)metaByPath[p]=m;mi+=batch.length;status('Đang đọc metadata '+mi+'/'+sidecars.length+'…',80+Math.round(mi/Math.max(1,sidecars.length)*15))}
+ for(const [folder,cid] of characterFolders){const c=charMap[cid];c.webms=webmFiles.filter(x=>x.path.startsWith('assets/NhanVat/'+folder+'/')).map(x=>{const mp=x.path+'.json',m=metaByPath[mp];return {path:x.path,metadataPath:fileSet.has(mp)?mp:'',metadata:m?.user_metadata||m?.metadata||null}})}
+ for(const c of Object.values(charMap)){c.folders=[...c.folders];c.worlds=[...c.worlds];c.stories=[...c.stories];c.webms=c.webms||[]}
+ const inventory={generatedAt:new Date().toISOString(),branch:BRANCH,files,worlds:worlds.map(w=>({path:w.path,name:w.data.world_name||w.data.slug||w.path,slug:w.data.slug||'',stories:(w.data.story_folders||[]).map(x=>x.json_path||'').filter(Boolean)})),stories:Object.values(storyMap).map(s=>({...s,characters:[...s.characters],backgrounds:[...s.backgrounds],props:[...s.props],audio:[...s.audio],effects:[...s.effects]})),characters:Object.values(charMap),backgrounds:Object.values(bgMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),props:Object.values(propMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),audio:Object.values(audioMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key)})),effects:Object.values(effectMap).map(x=>({...x,stories:[...x.stories],exists:fileSet.has(x.key})),webmFiles:webmFiles.map(x=>x.path),allFiles:files};
+ db=inventory;populateFilters();render();status('Quét xong: '+stories.length+' kịch bản · '+Object.keys(charMap).length+' nhân vật · '+files.length+' file trong repo.',100);
+ }catch(e){status('Không thể quét: '+e.message);console.error(e)}finally{$('scan').disabled=false}
+}
+function populateFilters(){const w=$('world'),s=$('story');const oldW=w.value,oldS=s.value;w.innerHTML='<option value="">Tất cả thế giới</option>'+db.worlds.map(x=>'<option value="'+esc(x.slug||x.name)+'">'+esc(x.name)+'</option>').join('');s.innerHTML='<option value="">Tất cả kịch bản</option>'+db.stories.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.title)+'</option>').join('');w.value=oldW;s.value=oldS}
+function selectedStories(){if(!db)return[];const sid=$('story').value,wid=$('world').value;return db.stories.filter(s=>(!sid||s.id===sid)&&(!wid||s.world===wid||db.worlds.some(w=>(w.slug===wid||w.name===wid)&&w.stories.includes(s.id))))}
+function activeData(){const ss=selectedStories(),ids=new Set(ss.map(s=>s.id));return {stories:ss,characters:db.characters.filter(c=>!ids.size||c.stories.some(s=>ids.has(s))),backgrounds:db.backgrounds.filter(x=>!ids.size||x.stories.some(s=>ids.has(s))),props:db.props.filter(x=>!ids.size||x.stories.some(s=>ids.has(s))),audio:db.audio.filter(x=>!ids.size||x.stories.some(s=>ids.has(s))),effects:db.effects.filter(x=>!ids.size||x.stories.some(s=>ids.has(s)))}}
+function rowsTable(headers,rows){return '<div class="table-wrap"><table><thead><tr>'+headers.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+(rows.length?rows.join(''):'<tr><td colspan="'+headers.length+'" class="empty">Không có dữ liệu phù hợp.</td></tr>')+'</tbody></table></div>'}
+function pills(a){return (a||[]).map(x=>'<span class="pill">'+esc(x)+'</span>').join('')}
+function fileStatus(path,exists){return '<span class="'+(exists?'ok':'bad')+'">'+(exists?'Đã có':'Thiếu')+'</span> <code>'+esc(path)+'</code>'}
+function render(){
+ if(!db)return;const d=activeData(),q=norm($('search').value),match=s=>!q||norm(s).includes(q);
+ $('stats').innerHTML=[['Kịch bản',d.stories.length],['Nhân vật',d.characters.length],['WEBM',d.characters.reduce((n,c)=>n+c.webms.length,0)],['Bối cảnh',d.backgrounds.length],['Đạo cụ / xe',d.props.length],['Âm thanh',d.audio.length+d.effects.length]].map(([a,b])=>'<div class="stat"><strong>'+b+'</strong><span>'+a+'</span></div>').join('');
+ const v=$('view');let html='';
+ if(tab==='summary'){
+ const missing=d.backgrounds.filter(x=>!x.exists).length+d.props.filter(x=>!x.exists).length+d.audio.filter(x=>!x.exists).length+d.effects.filter(x=>!x.exists).length;
+ html='<section class="panel"><h2>Tình trạng tài nguyên trong phạm vi lọc</h2><div class="cards">'+[['Kịch bản được quét',d.stories.length,'Các file JSON có mảng danh_sach'],['Nhân vật duy nhất',d.characters.length,'Gộp theo character_id'],['WEBM hiện có',d.characters.reduce((n,c)=>n+c.webms.length,0),'Tìm trong thư mục assetFolder của nhân vật'],['Tham chiếu chưa có file',missing,'Đối chiếu với cây file GitHub']].map(x=>'<div class="card"><h3>'+x[0]+'</h3><strong style="font-size:1.5rem">'+x[1]+'</strong><div class="note">'+x[2]+'</div></div>').join('')+'</div></section><section class="panel"><h2>Kịch bản đã tìm thấy</h2>'+rowsTable(['Kịch bản','Thế giới','Beat','Nhân vật','Bối cảnh'],d.stories.map(s=>'<tr><td>'+esc(s.title)+'</td><td>'+esc(s.world)+'</td><td>'+s.beats+'</td><td>'+s.characters.length+'</td><td>'+s.backgrounds.length+'</td></tr>'))+'</section><section class="panel"><h2>Quy tắc cập nhật</h2><p class="note">Trang này không lưu danh sách tĩnh. Mỗi lần quét, nó đọc lại cây thư mục main, hồ sơ thế giới, toàn bộ JSON kịch bản và metadata WEBM. Truyện mới chỉ cần được lưu vào assets/KichBan/ và liên kết thế giới theo cấu trúc hiện hành; sau đó nhấn Quét lại GitHub.</p><p class="note">Lưu ý: hệ thống chỉ có thể suy ra chính xác tài nguyên nào cần có khi JSON khai báo đường dẫn asset rõ ràng. Các đạo cụ chỉ được nhắc trong lời thoại nhưng chưa có asset path sẽ không tự biến thành file bắt buộc.</p></section>';
+ }else if(tab==='characters'){
+ html='<section class="panel"><h2>Nhân vật và WEBM</h2>'+rowsTable(['Nhân vật / ID','Thế giới','Thư mục nhân vật','WEBM đã có','Metadata','Kịch bản xuất hiện'],d.characters.filter(c=>match(c.name+' '+c.id+' '+c.folders.join(' '))).map(c=>'<tr><td><b>'+esc(c.name)+'</b><br><code>'+esc(c.id)+'</code></td><td>'+pills(c.worlds)+'</td><td>'+pills(c.folders)+'</td><td>'+ (c.webms.length?c.webms.map(w=>'<div><code>'+esc(w.path.split('/').pop())+'</code></div>').join(''):'<span class="bad">Chưa có WEBM</span>')+'</td><td>'+c.webms.map(w=>'<div class="'+(w.metadata?'ok':'warn')+'">'+(w.metadata?'Có sidecar':'Thiếu sidecar')+'</div>').join('')+'</td><td>'+pills(c.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p))+'</td></tr>'))+'</section><section class="panel"><h2>Trạng thái animation cần chuẩn bị</h2><p class="note">Danh sách trên thống kê WEBM hiện có theo thư mục. Để kiểm tra thiếu chính xác từng tổ hợp hành động/cảm xúc/góc quay, mỗi WEBM cần metadata sidecar chuẩn và mỗi dòng JSON cần expression_id đầy đủ. Hiện tại trang không tự kết luận một clip có thể diễn được hành động chỉ từ tên file.</p></section>';
+ }else if(tab==='backgrounds'){
+ html='<section class="panel"><h2>Bối cảnh theo tham chiếu trong kịch bản</h2>'+rowsTable(['Tài nguyên','Trạng thái','Kịch bản sử dụng'],d.backgrounds.filter(x=>match(x.key)).map(x=>'<tr><td>'+fileStatus(x.key,x.exists)+'</td><td>'+(x.exists?'<span class="ok">Có file</span>':'<span class="bad">Thiếu file</span>')+'</td><td>'+pills(x.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p))+'</td></tr>'))+'</section>';
+ }else if(tab==='props'){
+ html='<section class="panel"><h2>Đạo cụ và phương tiện được JSON tham chiếu</h2><p class="note">Đang quét các trường asset / src / file_path trong JSON, ưu tiên assets/DaoCu và assets/PhuongTien.</p>'+rowsTable(['Tài nguyên','Trạng thái','Kịch bản sử dụng'],d.props.filter(x=>match(x.key)).map(x=>'<tr><td>'+fileStatus(x.key,x.exists)+'</td><td>'+(x.exists?'<span class="ok">Có file</span>':'<span class="bad">Thiếu file</span>')+'</td><td>'+pills(x.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p))+'</td></tr>'))+'</section>';
+ }else if(tab==='audio'){
+ html='<section class="panel"><h2>Âm thanh và hiệu ứng được JSON tham chiếu</h2>'+rowsTable(['Loại','Tài nguyên','Trạng thái','Kịch bản'],[...d.audio.map(x=>'<tr><td>Âm thanh</td><td><code>'+esc(x.key)+'</code></td><td>'+(x.exists?'<span class="ok">Có file</span>':'<span class="bad">Thiếu file</span>')+'</td><td>'+pills(x.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p))+'</td></tr>'),...d.effects.map(x=>'<tr><td>Hiệu ứng</td><td><code>'+esc(x.key)+'</code></td><td>'+(x.exists?'<span class="ok">Có file</span>':'<span class="bad">Thiếu file</span>')+'</td><td>'+pills(x.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p))+'</td></tr>')])+'</section>';
+ }else if(tab==='stories'){
+ html='<section class="panel"><h2>Ma trận tài nguyên theo từng kịch bản</h2><div class="cards">'+d.stories.filter(s=>match(s.title+' '+s.id)).map(s=>'<article class="card"><h3>'+esc(s.title)+'</h3><div class="note">'+esc(s.world)+' · '+s.beats+' beat</div><p><b>Nhân vật ('+s.characters.length+')</b><br>'+pills(s.characters.map(id=>db.characters.find(c=>c.id===id)?.name||id))+'</p><p><b>Bối cảnh</b><br>'+pills(s.backgrounds.map(p=>p.split('/').pop()))+'</p><p><b>Đạo cụ / xe</b><br>'+pills(s.props.map(p=>p.split('/').pop()))+'</p><p><b>Âm thanh</b><br>'+pills(s.audio.map(p=>p.split('/').pop()))+'</p></article>').join('')+'</div></section>';
+ }else if(tab==='allfiles'){
+ const files=db.allFiles.filter(f=>match(f.path));html='<section class="panel"><h2>Kho file trong repository ('+files.length+')</h2>'+rowsTable(['Đường dẫn','Dung lượng'],files.slice(0,1500).map(f=>'<tr><td><code>'+esc(f.path)+'</code></td><td>'+Math.round(f.size/1024)+' KB</td></tr>'))+'<p class="note">Hiển thị tối đa 1.500 dòng để tránh làm chậm trình duyệt.</p></section>';
+ }
+ v.innerHTML=html;
+}
+function download(name,text,type){const a=document.createElement('a'),u=URL.createObjectURL(new Blob([text],{type}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function exportJson(){if(db)download('asset-inventory-'+BRANCH+'.json',JSON.stringify(db,(k,v)=>v instanceof Set?[...v]:v,2),'application/json')}
+function exportCsv(){if(!db)return;const rows=[['type','path_or_id','name','exists','stories']];for(const c of db.characters)rows.push(['character',c.id,c.name,'',c.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p).join('; ')]);for(const [type,list] of [['background',db.backgrounds],['prop',db.props],['audio',db.audio],['effect',db.effects]])for(const x of list)rows.push([type,x.key,x.key,x.exists?'yes':'no',x.stories.map(p=>db.stories.find(s=>s.id===p)?.title||p).join('; ')]);download('asset-inventory-'+BRANCH+'.csv','\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n'),'text/csv;charset=utf-8')}
+$('scan').addEventListener('click',scan);$('world').addEventListener('change',()=>{populateStoryFilter();render()});$('story').addEventListener('change',render);$('search').addEventListener('input',render);$('json').addEventListener('click',exportJson);$('csv').addEventListener('click',exportCsv);
+function populateStoryFilter(){if(!db)return;const w=$('world').value,s=$('story'),old=s.value;const list=db.stories.filter(x=>!w||x.world===w||db.worlds.some(y=>(y.slug===w||y.name===w)&&y.stories.includes(x.id)));s.innerHTML='<option value="">Tất cả kịch bản</option>'+list.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.title)+'</option>').join('');if(list.some(x=>x.id===old))s.value=old}
+$('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-tab]');if(!b)return;tab=b.dataset.tab;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));render()});
+scan();
+})();
+</script></body></html>
