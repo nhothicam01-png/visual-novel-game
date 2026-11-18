@@ -1003,17 +1003,23 @@ function drawFrameUnsafe(elapsed,st){
  const panMarker=String(lineMotionStartElapsed)+'|'+String(cameraTarget)+'|'+String(shot);
  if(panState.marker!==panMarker){
   panState.marker=panMarker;
-  panState.startX=Number.isFinite(panState.x)?panState.x:w/2;
-  panState.targetX=rawShotCamera?rawShotCamera.cx:panState.startX;
-  panState.startZoom=Number.isFinite(panState.zoom)?panState.zoom:1;
-  panState.targetZoom=rawShotCamera?rawShotCamera.zoom:1;
+  // Normalize stale preview state: camera zoom must never fall below the original background scale.
+  panState.startZoom=Math.max(1,Math.min(1.8,Number.isFinite(panState.zoom)?panState.zoom:1));
+  const startHalfW=w/(2*panState.startZoom);
+  panState.startX=Math.max(startHalfW,Math.min(w-startHalfW,Number.isFinite(panState.x)?panState.x:w/2));
+  panState.targetZoom=Math.max(1,Math.min(1.8,rawShotCamera?rawShotCamera.zoom:1));
+  panState.targetX=rawShotCamera?rawShotCamera.cx:w/2;
  }
  const panDuration=1.35;
  const panT=Math.max(0,Math.min(1,(elapsed-lineMotionStartElapsed)/panDuration));
  const panEase=panT<.5?4*panT*panT*panT:1-Math.pow(-2*panT+2,3)/2;
- const shotCamera={zoom:panState.startZoom+(panState.targetZoom-panState.startZoom)*panEase,
-  cx:panState.startX+(panState.targetX-panState.startX)*panEase,
-  cy:Number.isFinite(panState.y)?panState.y:h/2};
+ const cameraZoom=Math.max(1,panState.startZoom+(panState.targetZoom-panState.startZoom)*panEase);
+ const halfViewportW=w/(2*cameraZoom);
+ const cameraX=panState.startX+(panState.targetX-panState.startX)*panEase;
+ // Keep the viewport inside the cover-fitted background at every point of the pan.
+ const shotCamera={zoom:cameraZoom,
+  cx:Math.max(halfViewportW,Math.min(w-halfViewportW,cameraX)),
+  cy:h/2};
  panState.x=shotCamera.cx;panState.y=shotCamera.cy;panState.zoom=shotCamera.zoom;
  if(shotCamera){ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(shotCamera.zoom,shotCamera.zoom);ctx.translate(-shotCamera.cx,-shotCamera.cy)}
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
