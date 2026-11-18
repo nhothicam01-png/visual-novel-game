@@ -878,6 +878,46 @@ Khi nhận treatment/cấu trúc phim đã duyệt, không được chuyển th�
 
 
 ==================================================
+XIX-A. XÁC ĐỊNH NGƯỜI ĐỐI THOẠI VÀ HƯỚNG NHÌN CHO TỪNG LƯỢT THOẠI (BẮT BUỘC)
+
+MỤC TIÊU:
+Không được chọn direction theo vị trí nhân vật một cách máy móc hoặc mặc định mọi người nhìn về camera. Mỗi lượt thoại phải xác định rõ người nói đang nói với ai và cần hướng mặt về ai.
+
+1. LẬP BẢNG ĐỐI TƯỢNG GIAO TIẾP TRƯỚC KHI TẠO JSON
+- Với TỪNG lượt thoại của nhân vật, xác định riêng:
+  a. Người nói (speaker).
+  b. Người nghe/đối tượng được nói trực tiếp (addressee).
+  c. Hướng nhìn của người nói: nhìn trái, nhìn phải hay chính diện; nếu cần xác định cả nhóm thì hướng về vùng trung tâm của nhóm.
+  d. Những nhân vật còn lại đang nghe, quan sát hoặc phản ứng.
+- Không gộp các lượt thoại liên tiếp thành một hướng nhìn chung nếu người được nói chuyện thay đổi.
+- Một câu có thể hướng đến nhiều người. Khi đó xác định nhóm người nghe và hướng nhìn hợp lý về phía nhóm, không tùy tiện chọn một người.
+- Phân biệt người đang được nói trực tiếp với người chỉ tình cờ có mặt trong khung hình.
+- Với lời dẫn, độc thoại nội tâm hoặc voice-over không hướng đến ai, ghi nhận là không có người đối thoại; không ép nhân vật nhìn vào một người cụ thể.
+
+2. PHẢI HỎI NGƯỜI DÙNG KHI CHƯA RÕ ĐỐI TƯỢNG
+- Trước khi tạo JSON, nếu nội dung không đủ căn cứ để biết nhân vật đang nói với ai hoặc hướng vào ai, phải hỏi người dùng để xác nhận. Không tự đoán trong trường hợp có nhiều khả năng hợp lý.
+- Hỏi theo từng lượt thoại hoặc nhóm lượt thoại có cùng người nghe; nêu rõ tên người nói, câu thoại/ngữ cảnh và các đối tượng có thể được hướng đến để người dùng chọn.
+- Nếu người dùng đã nêu rõ người nghe trong yêu cầu hoặc ngữ cảnh trước đó, không hỏi lại; sử dụng thông tin đã có.
+- Nếu đối tượng giao tiếp hiển nhiên từ ngữ cảnh (ví dụ nhân vật trả lời trực tiếp câu hỏi vừa được một người khác hỏi), có thể xác định theo mạch hội thoại và ghi rõ trong bảng phân tích; không hỏi thừa.
+- Không bắt đầu ghi JSON cuối cùng khi còn lượt thoại quan trọng có đối tượng giao tiếp chưa xác định và có thể làm thay đổi hướng nhìn.
+
+3. SUY RA HƯỚNG NHÌN TỪ VỊ TRÍ NGƯỜI NGHE
+- Xác định vị trí tương đối của speaker và addressee trên sân khấu ở đúng thời điểm thoại.
+- Nếu người nghe đứng bên trái người nói: ưu tiên direction="left"; nếu đứng bên phải: direction="right".
+- Nếu người nghe ở gần chính diện/trung tâm trước mặt nhân vật: dùng direction="front" khi đúng với tư thế và WEBM sẵn có.
+- Nếu nói với nhóm ở cả hai phía: hướng về trung tâm nhóm hoặc người đang phản hồi chính; không mặc định quay ra ngoài khung hình.
+- Ví dụ: Rerin đứng bên phải, đang nói với Bubu đứng bên trái thì Rerin phải hướng trái; Bubu trả lời Rerin thì Bubu phải hướng phải. Nếu Pipun đứng giữa và hỏi cả hai người, hai người nghe hướng về Pipun hoặc vùng giữa.
+- Hướng nhìn phải nhất quán cả trong expression_id của người nói và phần tử tương ứng trong nhan_vat_hien_thi. Không để hai nơi khai báo trái ngược nhau trong cùng một lượt.
+- Khi người nghe thay đổi giữa các lượt, cập nhật direction/face_angle tương ứng cho speaker và các nhân vật phản ứng; không giữ hướng cũ chỉ vì dòng trước dùng hướng đó.
+
+4. LƯU Ý KHI CHỌN WEBM
+- Sau khi xác định đối tượng giao tiếp và hướng nhìn theo nội dung, mới chọn expression_id và WEBM.
+- direction mô tả hướng nhân vật nhìn về đối tượng giao tiếp, không phải hướng camera, hướng người xem hay hướng di chuyển trước đó.
+- Giữ quy tắc chỉ có hai nhóm face_angle: front (chính diện/0°) và angled (mọi góc nghiêng khác 0°). direction trái/phải vẫn là thuộc tính riêng.
+- Nếu WEBM đúng hướng không tồn tại, chỉ mirror khi sidecar metadata cho phép; không vì thiếu clip mà đổi hướng nhân vật trái với nội dung.
+- Kiểm tra từng lượt bằng câu hỏi: “Nếu người xem nhìn vào khung hình, có thấy nhân vật đang nói với đúng người mà lời thoại hướng đến không?”
+- Trước khi lưu, rà soát toàn bộ các lượt thoại lần cuối bằng bảng speaker → addressee → direction. Nếu có lượt quay lưng/nhìn ra ngoài không có chủ đích, phải sửa.
+
 XIX. HƯỚNG NHÌN, GÓC MẶT, GÓC MÁY VÀ TÀI NGUYÊN NHIỀU BIẾN THỂ
 ==================================================
 - Với từng nhân vật xuất hiện trong khung hình, khai báo expression_id.direction, expression_id.face_angle và expression_id.view_angle khi nội dung/cảnh quay xác định được các giá trị này. Không suy diễn góc máy không có căn cứ; nếu chưa xác định, bỏ trường hoặc dùng giá trị mặc định trung tính theo schema đang dùng.
