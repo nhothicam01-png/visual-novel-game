@@ -1,7 +1,7 @@
 import asyncio, json, os, sys, subprocess, urllib.parse, mimetypes, time
 from playwright.async_api import async_playwright
 REPO=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CHROME=os.environ.get('CHROME','/usr/bin/google-chrome')
+CHROME=os.environ.get('CHROME','')
 STORY=os.environ.get('STORY','assets/KichBan/DemTongDuyetAnhSang/DemTongDuyetAnhSang.json')
 RAW='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'
 BPS=float(os.environ.get('BPS','0'))  # bytes/sec throttle for raw files, 0 = none
@@ -18,7 +18,7 @@ async def main(scenario):
         server.terminate()
 async def _run(scenario):
     async with async_playwright() as p:
-        b=await p.chromium.launch(executable_path=CHROME,headless=True,args=['--no-sandbox','--autoplay-policy=no-user-gesture-required'])
+        launch_options={'headless':True,'args':['--no-sandbox','--autoplay-policy=no-user-gesture-required']}\n        if CHROME: launch_options['executable_path']=CHROME\n        b=await p.chromium.launch(**launch_options)
         ctx=await b.new_context(viewport={'width':412,'height':915},has_touch=True,is_mobile=True)
         await ctx.add_init_script("localStorage.setItem('vns.cinematic.pending.v1',%s)"%json.dumps(json.dumps({'data':story,'name':'Test'})))
         page=await ctx.new_page()
