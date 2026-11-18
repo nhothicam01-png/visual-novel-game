@@ -2,10 +2,10 @@ import asyncio, json, os, sys, subprocess, urllib.parse, mimetypes, time
 from playwright.async_api import async_playwright
 REPO=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHROME=os.environ.get('CHROME','/usr/bin/google-chrome')
-STORY='assets/KichBan/TestHieuUngSamSetDiaChanVetNutThoiKhong/TestHieuUngSamSetDiaChanVetNutThoiKhong.json'
+STORY=os.environ.get('STORY','assets/KichBan/TestHieuUngSamSetDiaChanVetNutThoiKhong/TestHieuUngSamSetDiaChanVetNutThoiKhong.json')
 RAW='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'
 BPS=float(os.environ.get('BPS','0'))  # bytes/sec throttle for raw files, 0 = none
-files=subprocess.check_output(['git','-C',REPO,'ls-files'],text=True).splitlines()
+files=subprocess.check_output(['git','-c','core.quotepath=false','-C',REPO,'ls-files'],text=True).splitlines()
 tree={'tree':[{'path':f,'type':'blob'} for f in files]}
 story=json.load(open(os.path.join(REPO,STORY)))
 logs=[]
