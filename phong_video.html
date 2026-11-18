@@ -845,6 +845,7 @@ async function updateAssets(){
    Promise.all(objectSpecs.map(async spec=>{let media=null;try{media=spec.type==='image'?await cachedImage(spec.url):await cachedVideo(spec.url)}catch(error){console.warn('Tài nguyên cảnh thiếu, dùng mô phỏng:',spec.url)}return {...spec,media:media||makeFallbackObjectCanvas(spec),isFallback:!media}}))
   ]);
   if(token!==assetLoadToken)return false;
+  if(bgPath&&nextBg){backgroundAssetWarning='';if($('story-status').textContent.startsWith('⚠️ Không tải được nền'))$('story-status').textContent='Đã tải nền: '+bg;}
   if(bgVideo&&bgVideo!==nextBg)bgVideo.pause();if(charVideo&&charVideo!==nextChar)charVideo.pause();
   charLayerVideos.forEach(old=>{if(old.media&&!nextLayers.some(item=>item.media===old.media)&&typeof old.media.pause==='function')old.media.pause()});
   sceneObjectLayers.forEach(old=>{if(old.media&&!nextObjects.some(item=>item.media===old.media)&&old.media.pause)old.media.pause()});
