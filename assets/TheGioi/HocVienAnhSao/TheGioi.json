@@ -100,6 +100,11 @@
       "title": "Pipun Bước Vào Lớp",
       "logline": "Pipun bước vào lớp và bắt gặp Bubu cùng Rerin đang nói chuyện bí mật; sự tò mò của cô khiến Bubu ngượng ngùng tìm cách ngăn Rerin tiết lộ.",
       "arc": "Một cuộc trò chuyện ngắn, vui nhộn trong lớp học, xoay quanh sự tò mò của Pipun và bí mật khiến Bubu xấu hổ."
+    },
+    {
+      "title": "Động Đất Và Cơn Bão Lớn",
+      "logline": "Ba người bạn trải qua động đất ở trường, rồi trú ẩn khi cơn bão dữ dội kéo đến với mưa xối xả và sấm chớp liên hồi.",
+      "arc": "Từ những rung chấn đầu tiên trong lớp học, trận động đất buộc cả nhóm tìm chỗ trú an toàn; khi dư chấn vừa qua, bão lớn ập đến và họ phải ở yên trong khu vực trú ẩn cho đến khi có thông báo an toàn."
     }
   ],
   "story_folders": [
@@ -138,6 +143,12 @@
       "folder": "KiemThuHieuUngTongHop",
       "path": "assets/KichBan/KiemThuHieuUngTongHop",
       "json_path": "assets/KichBan/KiemThuHieuUngTongHop/KiemThuHieuUngTongHop.json"
+    },
+    {
+      "title": "Động Đất Và Cơn Bão Lớn",
+      "folder": "DongDatVaBaoLon",
+      "path": "assets/KichBan/DongDatVaBaoLon",
+      "json_path": "assets/KichBan/DongDatVaBaoLon/DongDatVaBaoLon.json"
     }
   ],
   "updated_at": "2026-11-19T00:00:00+07:00"
