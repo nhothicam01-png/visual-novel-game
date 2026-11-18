@@ -606,6 +606,13 @@ const playMedia=m=>{if(isPlayableMedia(m)){const r=m.play();if(r&&typeof r.catch
 // token "set" với "assets" trong đường dẫn assets/HieuUng/....
 const effectProfileName=item=>String(item?.base||item?.path||item?.name||'').split('/').pop().replace(/\.[^.]+$/,'').toLowerCase();
 let sceneEffectLayers=[],sceneEffectKey='',sceneEffectLibrary=[],currentAnimationWarnings=[],sceneObjectLayers=[],vfxSimulationConfig={profiles:[],defaults:{mode:'overlay',scale:.82,alpha:1}};
+// Cache canvas bóng theo từng WEBM; chỉ giữ alpha silhouette để không vẽ trùng hình gốc.
+const characterShadowCanvasCache=new WeakMap();
+function getCharacterShadowCanvas(media,color){
+ const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height;if(!sw||!sh)return null;
+ let entry=characterShadowCanvasCache.get(media);if(!entry||entry.canvas.width!==sw||entry.canvas.height!==sh){const canvas=document.createElement('canvas');canvas.width=sw;canvas.height=sh;entry={canvas,ctx:canvas.getContext('2d')};characterShadowCanvasCache.set(media,entry)}
+ const c=entry.ctx;c.clearRect(0,0,sw,sh);c.globalCompositeOperation='source-over';c.drawImage(media,0,0,sw,sh);c.globalCompositeOperation='source-in';c.fillStyle=color;c.fillRect(0,0,sw,sh);c.globalCompositeOperation='source-over';return entry.canvas;
+}
 function getVfxSimulationProfile(name){const key=String(name||'').toLowerCase();const profile=(vfxSimulationConfig.profiles||[]).find(p=>(p.match||[]).some(token=>key.includes(String(token).toLowerCase())));if(!profile)return {...(vfxSimulationConfig.defaults||{}),mode:'overlay'};const variants=profile.variants||[];if(!variants.length)return profile;let hash=0;for(let i=0;i<key.length;i++)hash=(hash*31+key.charCodeAt(i))>>>0;return {...profile,variant:variants[hash%variants.length]};}
 function normalizeSceneEffects(values){
  const list=Array.isArray(values)?values:(values?[values]:[]);
@@ -1039,8 +1046,21 @@ function drawFrameUnsafe(elapsed,st){
   if(charFx.includes('char-float'))ctx.translate(Math.sin(elapsed*1.15)*w*.012*strength,Math.sin(elapsed*1.7)*h*.006*strength);
   if(charFx.includes('char-enter'))ctx.translate(0,(1-Math.min(1,elapsed/1.1))*h*.22);
   if(charFx.includes('char-fade'))alpha=Math.min(1,elapsed/1.4);
-  ctx.globalAlpha=alpha;
-  if(sw&&sh){if(spec?.flipX){ctx.save();ctx.translate(x,0);ctx.scale(-1,1);ctx.translate(-x,0);ctx.drawImage(media,x-dw/2,y-dh,dw,dh);ctx.restore()}else ctx.drawImage(media,x-dw/2,y-dh,dw,dh);}
+  const renderStyle=spec?.render_style&&typeof spec.render_style==='object'?spec.render_style:{},shadowStyle=renderStyle.shadow===false?{enabled:false}:(renderStyle.shadow&&typeof renderStyle.shadow==='object'?renderStyle.shadow:{}),grade=renderStyle.color_grade&&typeof renderStyle.color_grade==='object'?renderStyle.color_grade:{};
+  const clampStyle=(value,min,max,fallback)=>Math.max(min,Math.min(max,Number.isFinite(Number(value))?Number(value):fallback));
+  const drawCharacterLayer=(source)=>{if(spec?.flipX){ctx.save();ctx.translate(x,0);ctx.scale(-1,1);ctx.translate(-x,0);ctx.drawImage(source,x-dw/2,y-dh,dw,dh);ctx.restore()}else ctx.drawImage(source,x-dw/2,y-dh,dw,dh)};
+  if(sw&&sh){
+   // Bóng đổ lấy alpha thật của WEBM, không dùng hình chữ nhật bao quanh sprite.
+   if(shadowStyle.enabled!==false){
+    const shadowColor=String(shadowStyle.color||'rgba(7,13,25,0.62)'),shadowCanvas=getCharacterShadowCanvas(media,shadowColor);
+    if(shadowCanvas){const blur=clampStyle(shadowStyle.blur,.001,.04,.010)*h,offsetX=clampStyle(shadowStyle.offset_x,-.025,.025,.002)*w,offsetY=clampStyle(shadowStyle.offset_y,-.01,.04,.009)*h,shadowOpacity=clampStyle(shadowStyle.opacity,0,1,.58);
+     ctx.save();ctx.globalAlpha=alpha*shadowOpacity;ctx.filter='blur('+blur.toFixed(1)+'px)';ctx.drawImage(shadowCanvas,x-dw/2+offsetX,y-dh+offsetY,dw,dh);ctx.restore();
+    }
+   }
+   // Cân sáng, tương phản, độ bão hòa và sắc độ ở mức nhẹ để sprite bớt tách khỏi nền.
+   const brightness=clampStyle(grade.brightness,.7,1.3,.97),contrast=clampStyle(grade.contrast,.7,1.4,1.05),saturation=clampStyle(grade.saturation,0,1.5,.90),sepia=clampStyle(grade.sepia,0,1,.045),hue=clampStyle(grade.hue_rotate,-45,45,0);
+   ctx.save();ctx.globalAlpha=alpha;ctx.filter='brightness('+brightness+') contrast('+contrast+') saturate('+saturation+') sepia('+sepia+') hue-rotate('+hue+'deg)';drawCharacterLayer(media);ctx.restore();
+  }
   ctx.restore();
  };
  // Hiệu ứng cảnh và nhân vật dùng chung một trục z_index.
@@ -2353,7 +2373,7 @@ function buildEditedStoryOutput(){
   if(Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))frame.anh_hieu_ung=sceneEffects[0]?.path.split('/').pop().replace(/\.[^.]+$/,'')||'';
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const hasVisibleSnapshot=Array.isArray(line.visibleCharacters)||Array.isArray(frame.nhan_vat_hien_thi),visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
-  if(hasVisibleSnapshot)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
+  if(hasVisibleSnapshot)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined,render_style:item.render_style?JSON.parse(JSON.stringify(item.render_style)):undefined}});
   else delete frame.nhan_vat_hien_thi;
   if(visible.filter(item=>item&&item.visible!==false&&item.remove_from_scene!==true).length>1&&!frame.bo_cuc_nhan_vat)frame.bo_cuc_nhan_vat={mode:'auto',gap:5,margin:6};
   frame.noi_dung=String(line.text??'');
@@ -2471,7 +2491,7 @@ function saveCurrentLine(){
 function saveCurrentScene(){const sc=getCurrentScene();if(sc){const effects=normalizeSceneEffects(sc.visual?.sceneEffects||[]);sc.visual={...captureVisual(),sceneEffects:effects};sc.isFlashback=!!$('scene-flashback')?.checked;sc.lines.forEach(line=>{line.isFlashback=sc.isFlashback;if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.hieu_ung_canh=effects.map(x=>({...x}))})}const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
  if(!line)return;
- if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>{const folder=characterAssetFolder(item.id),expression=resolveSemanticExpression(folder,item.expression_id);return {id:String(item.id),expression_id:item.expression_id||{},bieu_cam:expression,x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined}});
+ if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>{const folder=characterAssetFolder(item.id),expression=resolveSemanticExpression(folder,item.expression_id);return {id:String(item.id),expression_id:item.expression_id||{},bieu_cam:expression,x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined,render_style:item.render_style?JSON.parse(JSON.stringify(item.render_style)):undefined}});
  const list=activeCharacterList(),ch=list.find(item=>item.id===String(line.speakerId||line.sourceFrame?.nhan_vat||''))||list.find(item=>normalizeCharacterName(item.name)===normalizeCharacterName(line.speaker));
  if(ch){$('character').value=ch.id;$('speaker').value=ch.id;line.speaker=ch.name;line.speakerId=ch.id;line.characterAsset=ch.id}
  const preferred=resolveSemanticExpression(characterAssetFolder($('character').value),line.sourceFrame?.expression_id)||line.expression||'';
@@ -2556,7 +2576,7 @@ function readVisibleCharactersFromEditor(){
  const previous=Array.isArray(getCurrentLine()?.visibleCharacters)?getCurrentLine().visibleCharacters:[];
  return Array.from($('visible-character-list')?.querySelectorAll('[data-visible-index]')||[]).map((card,index)=>{
   const get=name=>card.querySelector('[data-visible-field="'+name+'"]')?.value,id=String(get('id')||''),bieu_cam=String(get('bieu_cam')||''),old=previous.find(x=>String(x.id)===id),same=old&&normalizeExpression(old.bieu_cam)===normalizeExpression(bieu_cam),expression_id=same?old.expression_id:semanticFromExpression(characterAssetFolder(id),bieu_cam);
-  return {id,bieu_cam,expression_id:expression_id||{},x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:Number(old?.z_index??index+1),visible:card.querySelector('[data-visible-field="visible"]')?.checked!==false,remove_from_scene:card.querySelector('[data-visible-field="visible"]')?.checked===false?old?.remove_from_scene===true:false,rotation_degrees:Number(old?.rotation_degrees||0),motion:old?.motion};
+  return {id,bieu_cam,expression_id:expression_id||{},x:Math.max(0,Math.min(100,Number(get('x')??(index?70:30)))),y:Math.max(0,Math.min(110,Number(get('y')??100))),scale:Math.max(.1,Math.min(2.5,Number(get('scale')??.72))),z_index:Number(old?.z_index??index+1),visible:card.querySelector('[data-visible-field="visible"]')?.checked!==false,remove_from_scene:card.querySelector('[data-visible-field="visible"]')?.checked===false?old?.remove_from_scene===true:false,rotation_degrees:Number(old?.rotation_degrees||0),motion:old?.motion,render_style:old?.render_style?JSON.parse(JSON.stringify(old.render_style)):undefined};
  }).filter(item=>item.id);
 }
 $('visible-character-add').addEventListener('click',()=>{
