@@ -1,0 +1,104 @@
+{
+  "schema_version": 2,
+  "world_name": "Học Viện Ánh Sao",
+  "slug": "HocVienAnhSao",
+  "genre": "Học đường, tình bạn, kỳ ảo nhẹ, thử nghiệm hiệu ứng",
+  "premise": "Bubu, Pipun và Rerin là ba người bạn cùng chuẩn bị tiết mục ánh sáng cho lễ hội trường. Một buổi thử bất ngờ gặp mưa giông khiến họ phải bình tĩnh xử lý, phối hợp và kiểm tra lại từng hiệu ứng.",
+  "setting": "Một học viện hiện đại với lớp học, sân trường ban đêm và thư viện. Các câu chuyện xoay quanh tình bạn, hoạt động câu lạc bộ và những thử nghiệm sáng tạo an toàn.",
+  "tone": "Tươi sáng, dí dỏm, có chút hồi hộp; nhấn mạnh sự phối hợp và tinh thần an toàn.",
+  "extra": "Đây là thế giới thử nghiệm riêng dành cho Bubu, Pipun và Rerin. Không dùng nhân vật từ thế giới khác. Các hiệu ứng chỉ là minh họa hình ảnh trong câu chuyện.",
+  "mode": "guided",
+  "places": [
+    {
+      "name": "Lớp học buổi chiều",
+      "description": "Nơi ba người bạn chuẩn bị chiếc đèn thử nghiệm cho lễ hội trường."
+    },
+    {
+      "name": "Sân trường ban đêm",
+      "description": "Khu vực ngoài trời xuất hiện mưa, gió và ánh chớp trong buổi thử đầu tiên."
+    },
+    {
+      "name": "Thư viện",
+      "description": "Không gian khô ráo để kiểm tra lại góc nhìn, chuyển động và hiệu ứng một cách có kiểm soát."
+    }
+  ],
+  "characters": [
+    {
+      "character_id": "char_bubu_char_01",
+      "name": "Bubu",
+      "role": "Người khởi xướng buổi thử nghiệm",
+      "personality": "Nhiệt tình, nhanh nhẹn, dễ hào hứng và đôi khi hơi hấp tấp; biết lắng nghe khi bạn bè nhắc nhở.",
+      "relationships": "Bạn thân của Pipun và Rerin; thường tạo không khí vui vẻ cho nhóm.",
+      "assetFolder": "Bubu",
+      "selected": true,
+      "asset_status": "linked"
+    },
+    {
+      "character_id": "char_pipun_char_02",
+      "name": "Pipun",
+      "role": "Người cẩn thận theo dõi thiết bị và ghi chú",
+      "personality": "Chu đáo, thực tế, biết quan sát rủi ro và thường nhắc cả nhóm làm từng bước.",
+      "relationships": "Bạn thân của Bubu và Rerin; giữ vai trò cân bằng khi nhóm quá phấn khích.",
+      "assetFolder": "Pipun",
+      "selected": true,
+      "asset_status": "linked"
+    },
+    {
+      "character_id": "char_rerin_char_03",
+      "name": "Rerin",
+      "role": "Người kiểm tra kỹ thuật và điều phối",
+      "personality": "Bình tĩnh, quyết đoán, có trách nhiệm; ưu tiên an toàn và suy nghĩ có trình tự.",
+      "relationships": "Bạn thân của Bubu và Pipun; thường đưa ra quyết định khi có sự cố.",
+      "assetFolder": "Rerin",
+      "selected": true,
+      "asset_status": "linked"
+    }
+  ],
+  "rules": [
+    {
+      "name": "Nhóm nhân vật",
+      "description": "Chỉ Bubu, Pipun và Rerin là nhân vật chính của thế giới này; mỗi người giữ character_id riêng và assetFolder tương ứng."
+    },
+    {
+      "name": "Nguyên tắc an toàn",
+      "description": "Khi có mưa giông hoặc thiết bị ướt, nhân vật không chạm vào thiết bị; họ lùi ra xa và chờ điều kiện an toàn."
+    },
+    {
+      "name": "Thử hiệu ứng",
+      "description": "Các hiệu ứng được thử lần lượt, không bật chồng quá nhiều hiệu ứng mạnh cùng lúc; ưu tiên giữ rõ mặt nhân vật và lời thoại."
+    }
+  ],
+  "events": [
+    {
+      "name": "Chuẩn bị đèn lễ hội",
+      "description": "Bubu giới thiệu chiếc đèn thử nghiệm, Pipun kiểm tra và Rerin hướng dẫn cả nhóm.",
+      "importance": "Giới thiệu bộ ba và kiểm tra hội thoại."
+    },
+    {
+      "name": "Mưa giông bất ngờ",
+      "description": "Mưa và chớp xuất hiện ở sân trường; nhóm dừng thử, giữ khoảng cách và ngắt nguồn an toàn.",
+      "importance": "Kiểm thử môi trường, hiệu ứng hình ảnh và phản ứng cảm xúc."
+    },
+    {
+      "name": "Thử lại trong thư viện",
+      "description": "Ba người kiểm tra hướng nhìn, chuyển động, zoom và rung camera theo từng bước.",
+      "importance": "Kiểm thử animation, biểu cảm, camera và hiệu ứng nền."
+    }
+  ],
+  "story_ideas": [
+    {
+      "title": "Đêm Tổng Duyệt Ánh Sáng",
+      "logline": "Ba người bạn thử chiếc đèn cho lễ hội trường, nhưng một cơn mưa giông bất ngờ khiến họ phải phối hợp để xử lý an toàn.",
+      "arc": "Từ buổi chuẩn bị trong lớp, sự cố mưa giông ở sân trường đến buổi thử lại trong thư viện; kết thúc bằng việc cả nhóm hoàn thiện quy trình thử hiệu ứng."
+    }
+  ],
+  "story_folders": [
+    {
+      "title": "Đêm Tổng Duyệt Ánh Sáng",
+      "folder": "DemTongDuyetAnhSang",
+      "path": "assets/KichBan/DemTongDuyetAnhSang",
+      "json_path": "assets/KichBan/DemTongDuyetAnhSang/DemTongDuyetAnhSang.json"
+    }
+  ],
+  "updated_at": "2026-11-18T21:00:00+07:00"
+}
