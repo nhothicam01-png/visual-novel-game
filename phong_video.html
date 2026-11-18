@@ -996,7 +996,7 @@ function drawFrameUnsafe(elapsed,st){
  if(camFx.includes('camera-shake')&&elapsed<1.5){shakeX=Math.sin(elapsed*55)*w*.008*strength;shakeY=Math.cos(elapsed*48)*h*.008*strength}
  if(camFx.includes('camera-zoom'))zoom*=1+Math.min(.10,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.10*strength);
  if(camFx.includes('camera-pull'))zoom*=1-Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08*strength);
- if(camFx.includes('camera-drift')){shakeX+=Math.sin(elapsed*.55)*w*.012*strength;shakeY+=Math.cos(elapsed*.4)*h*.008*strength}
+ if(camFx.includes('camera-drift')){shakeX+=Math.sin(elapsed*.28)*w*.0035*strength}
  // Camera không được zoom-out dưới 100%; tự bù zoom để rung/lệch camera không lộ nền đen ở mép.
  zoom=Math.max(1,zoom,getVfxMinimumCoverScale(w,h,0,w/2+shakeX,h/2+shakeY));
  ctx.save();ctx.translate(w/2+shakeX,h/2+shakeY);ctx.scale(zoom,zoom);ctx.translate(-w/2,-h/2);
@@ -1020,9 +1020,24 @@ function drawFrameUnsafe(elapsed,st){
  const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.52:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.18:shot==='over_shoulder'||shot==='qua_vai'?1.32:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
  const rawShotCamera=shot==='group'?null:computeShotCamera(w,h,shotZoom,cameraTarget,charLayerVideos,isPortrait,shot);
- // Lia máy mượt từ khung trung tâm đến chủ thể trong 0,48 giây; không di chuyển sprite.
- const panT=Math.max(0,Math.min(1,(elapsed-lineMotionStartElapsed)/.48)),panEase=panT*panT*(3-2*panT);
- const shotCamera=rawShotCamera?{zoom:1+(rawShotCamera.zoom-1)*panEase,cx:w/2+(rawShotCamera.cx-w/2)*panEase,cy:h/2+(rawShotCamera.cy-h/2)*panEase}:null;
+ // Camera pan: luôn bắt đầu từ vị trí camera hiện tại, chỉ lia ngang.
+ // Không kéo camera về tâm toàn cảnh ở mỗi câu; chuyển động chậm, có tăng/giảm tốc.
+ const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startZoom:1,targetX:null,targetZoom:1});
+ const panMarker=String(lineMotionStartElapsed)+'|'+String(cameraTarget)+'|'+String(shot);
+ if(panState.marker!==panMarker){
+  panState.marker=panMarker;
+  panState.startX=Number.isFinite(panState.x)?panState.x:w/2;
+  panState.targetX=rawShotCamera?rawShotCamera.cx:panState.startX;
+  panState.startZoom=Number.isFinite(panState.zoom)?panState.zoom:1;
+  panState.targetZoom=rawShotCamera?rawShotCamera.zoom:1;
+ }
+ const panDuration=1.35;
+ const panT=Math.max(0,Math.min(1,(elapsed-lineMotionStartElapsed)/panDuration));
+ const panEase=panT<.5?4*panT*panT*panT:1-Math.pow(-2*panT+2,3)/2;
+ const shotCamera={zoom:panState.startZoom+(panState.targetZoom-panState.startZoom)*panEase,
+  cx:panState.startX+(panState.targetX-panState.startX)*panEase,
+  cy:Number.isFinite(panState.y)?panState.y:h/2};
+ panState.x=shotCamera.cx;panState.y=shotCamera.cy;panState.zoom=shotCamera.zoom;
  if(shotCamera){ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(shotCamera.zoom,shotCamera.zoom);ctx.translate(-shotCamera.cx,-shotCamera.cy)}
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
  if(bgAsset||bgVideo) {
