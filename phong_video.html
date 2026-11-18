@@ -326,6 +326,14 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 (function(){
 'use strict';
 const BASE='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/assets/';
+function ensureBackgroundOption(value){
+ const path=String(value||'').trim(),select=$('background');
+ if(!path||!select)return path;
+ if(!Array.from(select.options).some(option=>option.value===path)){
+  const option=document.createElement('option');option.value=path;option.textContent='Nền từ kịch bản: '+path.split('/').pop();select.add(option);
+ }
+ select.value=path;return path;
+}
 function backgroundAssetUrl(value){
  const path=String(value||'').trim();
  if(!path)return '';
@@ -359,7 +367,7 @@ const backgrounds=[
  ['thu_vien.png','Thư viện'],
  ['render.mp4','Video nền render.mp4']
 ];
-let bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewPreparing=false,previewStartToken=0,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
+let backgroundAssetWarning='',bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewPreparing=false,previewStartToken=0,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
 let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null,speechMotionSmooth=0,speechMotionFrameAt=0;
 let cancelPendingPlaybackAudio=null;
 const speechAudioSources=new WeakMap();
@@ -754,11 +762,12 @@ function applyAutomaticCharacterLayout(layers,frame,width,height){
  });
 }
 async function updateAssets(){
- const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
- const currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},hasExplicitSpecs=Array.isArray(currentLine?.visibleCharacters)||Array.isArray(frame.nhan_vat_hien_thi),rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
+ const token=++assetLoadToken,currentLine=getCurrentLine(),frame=currentLine?.sourceFrame||{},activeScene=getCurrentScene();
+ const bg=ensureBackgroundOption(currentLine?.background||frame.anh_nen||activeScene?.visual?.background||$('background').value),characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
+ const hasExplicitSpecs=Array.isArray(currentLine?.visibleCharacters)||Array.isArray(frame.nhan_vat_hien_thi),rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
  const displaySpecs=hasExplicitSpecs?rawSpecs.filter(spec=>spec.visible!==false&&spec.remove_from_scene!==true):((frame.nhan_vat||currentLine?.speakerId)?[{id:String(frame.nhan_vat||currentLine.speakerId),expression_id:frame.expression_id||{},x:50,y:100,scale:1,z_index:1}]:[]);
  const bgPath=bg?backgroundAssetUrl(bg):'',charPath=!hasExplicitSpecs&&!displaySpecs.length&&character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
- const activeScene=getCurrentScene(),rowSceneEffects=Array.isArray(frame.hieu_ung_canh)&&frame.hieu_ung_canh.length?frame.hieu_ung_canh:null,sceneSpecs=normalizeSceneEffects(rowSceneEffects||activeScene?.visual?.sceneEffects||[]);
+ const rowSceneEffects=Array.isArray(frame.hieu_ung_canh)&&frame.hieu_ung_canh.length?frame.hieu_ung_canh:null,sceneSpecs=normalizeSceneEffects(rowSceneEffects||activeScene?.visual?.sceneEffects||[]);
  const rawObjects=Array.isArray(currentLine?.scene_objects)?currentLine.scene_objects:Array.isArray(currentLine?.sceneObjects)?currentLine.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
  const objectSpecs=rawObjects.filter(o=>o&&typeof o==='object'&&String(o.asset||o.path||o.file||'').trim()).map((o,index)=>{const file=String(o.asset||o.path||o.file).trim(),url=(file.toLowerCase().startsWith('http://')||file.toLowerCase().startsWith('https://'))?file:(file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file);return {...o,id:String(o.id||('object_'+index)),url,type:/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?'image':'video',z_index:Number(o.z_index??10+index)}});
  const effectKey=JSON.stringify(sceneSpecs.map(x=>[x.id,x.opacity,x.z_index,x.config]));
@@ -827,9 +836,9 @@ async function updateAssets(){
    if(motionEndMedia)layerSpec.motionEndMedia=motionEndMedia;
    return {spec:layerSpec,folder,media,index,motionEndMedia,motionEndSelection,animationMatched:(selection.matched||selection.speakingFallback)&&!usedFallback,canPlayAnimation,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
   });
-  const safeAssetLoad=async(label,loader)=>{try{return await loader()}catch(error){console.warn('Không tải được '+label+'; tiếp tục bằng phương án dự phòng:',error);return null}};
+  const safeAssetLoad=async(label,loader,onError)=>{try{return await loader()}catch(error){console.warn('Không tải được '+label+'; tiếp tục bằng phương án dự phòng:',error);if(typeof onError==='function')onError(error);return null}};
   const [nextBg,nextChar,nextLayers,nextSceneEffects,nextObjects]=await Promise.all([
-   bgPath?safeAssetLoad('nền '+bg,()=>isVideoBackground(bg)?cachedVideo(bgPath):cachedImage(bgPath)):Promise.resolve(null),
+   bgPath?safeAssetLoad('nền '+bg,()=>isVideoBackground(bg)?cachedVideo(bgPath):cachedImage(bgPath),error=>{if(token===assetLoadToken){backgroundAssetWarning='Không tải được nền “'+bg+'” ở cảnh '+(activeSceneIndex+1)+': '+(error?.message||'lỗi tải tài nguyên');$('story-status').textContent='⚠️ '+backgroundAssetWarning;}}):Promise.resolve(null),
    charPath?safeAssetLoad('WEBM nhân vật chính',()=>cachedVideo(charPath)):Promise.resolve(null),
    Promise.all(layerJobs),
    Promise.all(sceneSpecs.map(async spec=>({...spec,media:null,type:'code'}))),
@@ -859,9 +868,13 @@ async function updateAssets(){
  return assetsLoaded&&token===assetLoadToken;
 }
 function backgroundAtSourceIndex(index){
- const rows=activeStoryData?.danh_sach||[];
- for(let i=Math.min(index,rows.length-1);i>=0;i--){const bg=String(rows[i]?.anh_nen||'').trim();if(bg)return bg}
- return '';
+ const rows=activeStoryData?.danh_sach||[],targetScene=String(rows[index]?.scene_id||'').trim();
+ for(let i=Math.min(index,rows.length-1);i>=0;i--){
+  const row=rows[i]||{},rowScene=String(row.scene_id||'').trim();
+  if(i<index&&targetScene&&rowScene&&rowScene!==targetScene)break;
+  const bg=String(row.anh_nen||'').trim();if(bg)return bg;
+ }
+ return String(getCurrentScene()?.visual?.background||'').trim();
 }
 function preloadAdjacentAssets(sourceIndex,count=3){
  const rows=activeStoryData?.danh_sach||[];
@@ -1469,7 +1482,7 @@ async function loadSourceLineForPlayback(item){
  if(line.sourceIndex!==undefined){
   $('character').value=String(frame.nhan_vat??line.characterAsset??line.speakerId??'');
   $('expression').value=resolveSemanticExpression(characterAssetFolder($('character').value),frame.expression_id)||normalizeExpression(line.expression);
-  $('background').value=backgroundAtSourceIndex(line.sourceIndex)||getCurrentScene().visual.background;
+  ensureBackgroundOption(backgroundAtSourceIndex(line.sourceIndex)||line.background||getCurrentScene().visual.background);
  }
  loadLineToEditor(line);renderSceneList();renderLineList();applyLineEffects(line);updateSeekUI(line.sourceIndex??0);
  // updateAssets dùng latest-request-wins. Nếu lượt nạp bị lượt khác thay thế,
