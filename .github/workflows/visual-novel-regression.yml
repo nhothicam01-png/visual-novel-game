@@ -1,0 +1,31 @@
+name: Visual Novel Regression
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+workflow_dispatch:
+jobs:
+  browser-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Check Python test syntax
+        run: python -m py_compile tests/*.py
+      - name: Test playback controls
+        run: python tests/preview_regression.py
+      - name: Test semantic WEBM playback
+        run: python tests/animation_webm_regression.py
+      - name: Test camera invariants
+        run: python tests/camera_invariants.py
+      - name: Test character layout
+        run: python tests/layout_checks.py
