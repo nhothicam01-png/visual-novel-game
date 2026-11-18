@@ -90,6 +90,11 @@
       "title": "Đêm Tổng Duyệt Ánh Sáng",
       "logline": "Ba người bạn thử chiếc đèn cho lễ hội trường, nhưng một cơn mưa giông bất ngờ khiến họ phải phối hợp để xử lý an toàn.",
       "arc": "Từ buổi chuẩn bị trong lớp, sự cố mưa giông ở sân trường đến buổi thử lại trong thư viện; kết thúc bằng việc cả nhóm hoàn thiện quy trình thử hiệu ứng."
+    },
+    {
+      "title": "Chuyện Đêm Qua Của Bubu",
+      "logline": "Bubu tức giận kể Rerin nghe chuyện gặp một kẻ biến thái tối qua, nhưng bị Rerin trêu chọc bằng một câu đùa phũ phàng.",
+      "arc": "Một cuộc trò chuyện đời thường giữa hai người bạn chuyển từ nghiêm túc sang ngạc nhiên, chọc ghẹo và giận dỗi hài hước."
     }
   ],
   "story_folders": [
@@ -98,7 +103,13 @@
       "folder": "DemTongDuyetAnhSang",
       "path": "assets/KichBan/DemTongDuyetAnhSang",
       "json_path": "assets/KichBan/DemTongDuyetAnhSang/DemTongDuyetAnhSang.json"
+    },
+    {
+      "title": "Chuyện Đêm Qua Của Bubu",
+      "folder": "ChuyenDemQuaCuaBubu",
+      "path": "assets/KichBan/ChuyenDemQuaCuaBubu",
+      "json_path": "assets/KichBan/ChuyenDemQuaCuaBubu/ChuyenDemQuaCuaBubu.json"
     }
   ],
-  "updated_at": "2026-11-18T21:00:00+07:00"
+  "updated_at": "2026-11-18T21:30:00+07:00"
 }
