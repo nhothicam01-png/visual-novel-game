@@ -95,6 +95,11 @@
       "title": "Chuyện Đêm Qua Của Bubu",
       "logline": "Bubu tức giận kể Rerin nghe chuyện gặp một kẻ biến thái tối qua, nhưng bị Rerin trêu chọc bằng một câu đùa phũ phàng.",
       "arc": "Một cuộc trò chuyện đời thường giữa hai người bạn chuyển từ nghiêm túc sang ngạc nhiên, chọc ghẹo và giận dỗi hài hước."
+    },
+    {
+      "title": "Pipun Bước Vào Lớp",
+      "logline": "Pipun bước vào lớp và bắt gặp Bubu cùng Rerin đang nói chuyện bí mật; sự tò mò của cô khiến Bubu ngượng ngùng tìm cách ngăn Rerin tiết lộ.",
+      "arc": "Một cuộc trò chuyện ngắn, vui nhộn trong lớp học, xoay quanh sự tò mò của Pipun và bí mật khiến Bubu xấu hổ."
     }
   ],
   "story_folders": [
@@ -109,6 +114,12 @@
       "folder": "ChuyenDemQuaCuaBubu",
       "path": "assets/KichBan/ChuyenDemQuaCuaBubu",
       "json_path": "assets/KichBan/ChuyenDemQuaCuaBubu/ChuyenDemQuaCuaBubu.json"
+    },
+    {
+      "title": "Pipun Bước Vào Lớp",
+      "folder": "PipunBuocVaoLop",
+      "path": "assets/KichBan/PipunBuocVaoLop",
+      "json_path": "assets/KichBan/PipunBuocVaoLop/PipunBuocVaoLop.json"
     }
   ],
   "updated_at": "2026-11-18T21:30:00+07:00"
