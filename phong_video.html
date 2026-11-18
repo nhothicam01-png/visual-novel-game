@@ -2304,6 +2304,7 @@ function resolveSemanticAnimation(folder,semantic){
   const pool=candidates.filter(x=>x.matched&&x.score===exact.score),seed=Math.max(0,Number(activeLineIndex)||0),chosen=pool[seed%pool.length];
   return {file:chosen.path.split('/').pop().replace(/\.webm$/i,''),matched:true,mirrored:!!chosen.mirrored,reason:'',variantCount:pool.length};
  }
+ const neutralWords=new Set(['neutral','normal','calm','binh thuong','trung tinh']);
  // Nếu không có biến thể speaking khớp biểu cảm, tuyệt đối không rơi thẳng về WEBM silent.
  // Ưu tiên clip SPEAKING cùng tư thế/hành động/hướng/nhóm góc mặt; chỉ nới lỏng emotion.
  if(canonicalAnimationValue('communication',target.communication)==='speaking'){
@@ -2337,7 +2338,6 @@ function resolveSemanticAnimation(folder,semantic){
   }
  }
  // Fallback cuối cùng mới dùng WEBM silent/listening trung tính.
- const neutralWords=new Set(['neutral','normal','calm','binh thuong','trung tinh']);
  const neutralCandidates=paths.map(path=>{
   const meta=animationMeta(path),comm=canonicalAnimationValue('communication',meta.communication),
    pose=canonicalAnimationValue('pose',meta.pose),action=canonicalAnimationValue('action',meta.action),
