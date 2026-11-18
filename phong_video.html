@@ -713,17 +713,50 @@ function makeFallbackObjectCanvas(obj){
  else{g.beginPath();g.moveTo(320,35);g.lineTo(420,145);g.lineTo(320,265);g.lineTo(220,145);g.closePath();g.fill();g.stroke()}
  g.fillStyle='#fff';g.font='bold 27px sans-serif';g.textAlign='center';g.fillText(label,320,292);return c;
 }
+// Số ngẫu nhiên xác định theo (id,salt) trong [0,1): cùng nhân vật luôn cho cùng kết quả giữa các lần phát/xuất.
+function hashUnit(text,salt){let n=2166136261;const s=String(text)+':'+salt;for(let i=0;i<s.length;i++){n^=s.charCodeAt(i);n=Math.imul(n,16777619)}return ((n>>>0)%10007)/10007}
+// WEBM bán thân (không có chân) bị cắt ngang ở mép dưới khung. Mép cắt phải nằm tại/ngoài đáy màn hình,
+// nếu không nó lộ ra như người bị cắt lơ lửng. Đọc vài hàng pixel cuối của khung hình đầu, kết quả được nhớ lại.
+const spriteBottomCutCache=new WeakMap();
+function spriteIsBottomCut(media){
+ if(!media)return false;
+ if(spriteBottomCutCache.has(media))return spriteBottomCutCache.get(media);
+ const sw=media.videoWidth||media.naturalWidth||media.width||0,sh=media.videoHeight||media.naturalHeight||media.height||0;
+ if(!sw||!sh||(typeof media.readyState==='number'&&media.readyState<2))return false; // chưa có khung hình: chưa kết luận, không nhớ
+ let cut=false;
+ try{
+  const c=document.createElement('canvas');c.width=64;c.height=64;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(media,0,0,64,64);
+  const d=g.getImageData(0,61,64,3).data;let opaque=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)opaque++;
+  cut=opaque/(64*3)>.08;
+ }catch(error){console.warn('Không đọc được pixel đáy sprite (coi như nguyên thân):',error)}
+ spriteBottomCutCache.set(media,cut);return cut;
+}
 function applyAutomaticCharacterLayout(layers,frame,width,height){
  const visible=layers.filter(item=>item?.media&&item.spec?.visible!==false&&item.spec?.remove_from_scene!==true);
  if(visible.length<2)return;
  const config=frame?.bo_cuc_nhan_vat&&typeof frame.bo_cuc_nhan_vat==='object'?frame.bo_cuc_nhan_vat:{};
  if(String(config.mode||'auto').toLowerCase()!=='auto')return;
- const margin=Math.max(2,Math.min(18,Number(config.margin??6))),gap=Math.max(1,Math.min(14,Number(config.gap??5)));
- const available=100-margin*2-gap*(visible.length-1);
- const widths=visible.map(item=>{const media=item.media,sw=media.videoWidth||media.naturalWidth||media.width||1,sh=media.videoHeight||media.naturalHeight||media.height||1,scale=Math.max(.1,Math.min(2.5,Number(item.spec?.scale??.72)));return Math.max(7,(sw/sh)*(height/width)*scale*100)});
+ // variation:"natural" (mặc định) phá hàng ngang đều tăm tắp: người đang nói to hơn và đứng trước, người khác lệch nhẹ về
+ // cỡ/vị trí, nhóm đứng sát hơn. variation:"none" giữ cách xếp đều cũ.
+ const natural=String(config.variation||'natural').toLowerCase()!=='none';
+ const margin=Math.max(2,Math.min(18,Number(config.margin??6))),gap=Math.max(1,Math.min(14,Number(config.gap??5))),gapEff=natural?gap*.3:gap;
+ const speakerId=String(frame?.nhan_vat??'');
+ const mults=visible.map(item=>{if(!natural)return 1;const id=String(item.spec?.id??'');return id&&id===speakerId?1.2:.9+.16*hashUnit(id,'scale')});
+ const available=100-margin*2-gapEff*(visible.length-1);
+ const widths=visible.map((item,index)=>{const media=item.media,sw=media.videoWidth||media.naturalWidth||media.width||1,sh=media.videoHeight||media.naturalHeight||media.height||1,scale=Math.max(.1,Math.min(2.5,Number(item.spec?.scale??.72)*mults[index]));return Math.max(7,(sw/sh)*(height/width)*scale*100)});
  const total=widths.reduce((a,b)=>a+b,0),shrink=total>available?available/total:1;
  let cursor=margin+Math.max(0,(available-total*shrink)/2);
- visible.forEach((item,index)=>{const original=Number(item.spec?.scale??.72),factor=shrink;item.spec={...item.spec,scale:Math.max(.1,Math.min(2.5,original*factor)),x:cursor+widths[index]*factor/2,layout_auto:true};cursor+=widths[index]*factor+gap});
+ const order=visible.map((item,index)=>({index,size:mults[index]*(Number(item.spec?.scale??.72))})).sort((a,b)=>a.size-b.size||a.index-b.index);
+ visible.forEach((item,index)=>{
+  const original=Number(item.spec?.scale??.72)*mults[index],id=String(item.spec?.id??''),w=widths[index]*shrink;
+  let x=cursor+w/2;
+  if(natural)x+=(hashUnit(id,'x')-.5)*gap*1.2;
+  x=Math.max(Math.min(4+w/2,50),Math.min(96-w/2,x));
+  const next={...item.spec,scale:Math.max(.1,Math.min(2.5,original*shrink)),x,layout_auto:true};
+  // Người to hơn/đang nói đứng trước. Dải z 1..30 để không đè lên lớp hiệu ứng "trước nhân vật" (z>=40).
+  if(natural)next.z_index=1+order.findIndex(o=>o.index===index)+(id&&id===speakerId?20:0);
+  item.spec=next;cursor+=w+gapEff;
+ });
 }
 async function updateAssets(){
  const token=++assetLoadToken,bg=$('background').value,characterId=$('character').value,character=characterAssetFolder(characterId),expr=normalizeExpression($('expression').value);
@@ -777,6 +810,7 @@ async function updateAssets(){
   sceneObjectLayers.forEach(old=>{if(old.media&&!nextObjects.some(item=>item.media===old.media)&&old.media.pause)old.media.pause()});
   bgVideo=isVideoBackground(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   charLayerVideos=nextLayers.filter(item=>item.media);
+  charLayerVideos.forEach(item=>{if(spriteIsBottomCut(item.media)){const y=Number(item.spec?.y);item.spec={...item.spec,y:Number.isFinite(y)?Math.max(y,102):102,bottomCut:true}}});
   applyAutomaticCharacterLayout(charLayerVideos,frame,canvas.width,canvas.height);
   sceneObjectLayers=nextObjects.filter(item=>item.media);
   currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched||item.mirrored).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.mirrored?'Dùng WEBM ngược hướng và đã lật ngang tự động':(item.animationReason||'không có clip khớp'),mirrored:!!item.mirrored}));
