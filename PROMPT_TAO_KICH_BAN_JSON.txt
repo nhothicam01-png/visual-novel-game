@@ -1448,3 +1448,21 @@ Mục tiêu: tạo cảm giác sân khấu được dàn dựng có chủ ý, c�
 7. Khi cần tọa độ có chủ ý, khai báo x/y/scale rõ ràng và dùng bo_cuc_nhan_vat.mode="manual" để player giữ nguyên blocking. Chỉ dùng mode="auto" khi thực sự muốn player tự phân bổ các nhân vật chưa có tọa độ; không khai báo x/y giả định rồi mong auto tự thay đổi chúng.
 8. Camera vẫn là lớp độc lập: camera lia ngang từ vị trí hiện tại đến người nói, không di chuyển sprite, không đổi bố cục sân khấu và không đưa người nói về giữa bằng cách sửa tọa độ nhân vật.
 9. Trước khi lưu, xem lại từng cảnh nhóm: bố cục có tạo chiều sâu không, các nhân vật có nhìn đúng người đang tương tác không, có khoảng trống cho phụ đề/chữ không, có sprite chồng lấn hoặc che mặt không. Nếu cảnh chỉ có hai người đối thoại, không ép tạo chiều sâu phức tạp; ưu tiên blocking rõ ràng và tự nhiên.
+
+
+==================================================
+HỆ THỐNG HIỆU ỨNG MÔI TRƯỜNG THUẦN CODE — QUY CHUẨN MỚI
+==================================================
+- Không sử dụng, tạo mới hoặc tham chiếu file ảnh/video trong assets/HieuUng/. Thư viện tài nguyên HieuUng đã được thay bằng hiệu ứng Canvas procedural tích hợp trong player.
+- Hiệu ứng toàn cảnh khai báo bằng ID trong hieu_ung_canh hoặc visual.sceneEffects, ví dụ:
+  {"id":"rain","type":"code","opacity":0.7,"z_index":-10}
+- ID hợp lệ: rain, snow, lightning, leaves, dust, fog, fire, sunlight, aura, impact, cracks, wound, sparkles, motion_blur, transition, explosion.
+- Không khai báo file/path/extension cho hiệu ứng code. Không tạo URL hay tải media cho các hiệu ứng này.
+- Hiệu ứng có thể cấu hình bằng config nếu player hỗ trợ; không tự ý thêm thuộc tính chưa được engine hỗ trợ.
+- Chọn lớp z_index theo yêu cầu cảnh: số âm hoặc dưới 50 đặt sau nhân vật; từ 50 trở lên đặt trước nhân vật. Mặc định ưu tiên phía sau để không che mặt.
+- Mưa/tuyết/lá/bụi phải được sinh hạt bằng code; sét phải được vẽ thành tia phân nhánh, chớp sáng ngắn và không dùng ảnh phủ toàn màn hình.
+- Hiệu ứng phải chạy theo cùng timeline preview/xuất video, có thể pause/resume/seek bằng elapsed time; không tạo requestAnimationFrame hoặc timer riêng cho từng hiệu ứng.
+- Không để hiệu ứng nặng làm dừng timeline; giới hạn số hạt và bọc lỗi từng lớp vẽ.
+- Khi chỉnh sửa player, giữ tương thích dữ liệu cũ bằng cách ánh xạ tên file hiệu ứng lịch sử sang ID code, nhưng JSON mới chỉ được ghi ID code.
+- Trước khi hoàn tất kịch bản, xác thực mọi id thuộc danh sách hợp lệ, opacity trong 0..1, z_index là số hữu hạn; không còn đường dẫn assets/HieuUng/.
+==================================================
