@@ -793,10 +793,10 @@ async function updateAssets(){
      if(candidates.length){expression=candidates[0].path.split('/').pop().replace(/\.webm$/i,'');url=BASE+'NhanVat/'+folder+'/'+expression+'.webm';selection={...selection,file:expression,matched:false,mirrored:false,reason:'Ưu tiên WEBM speaking gần nhất'};isSpeakingClip=true}
     }
    }
-   let media=null,usedFallback=false;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched&&!isSpeakingClip&&!selection.neutralFallback){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được WEBM ưu tiên '+spec.id+':',error)}
+   let media=null,usedFallback=false;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched&&!isSpeakingClip&&!selection.speakingFallback&&!selection.neutralFallback){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được WEBM ưu tiên '+spec.id+':',error)}
    if(!media&&folder){for(const candidate of (expressionFilesByFolder[String(folder)]||[])){try{media=await cachedVideo(BASE+'NhanVat/'+folder+'/'+candidate.split('/').pop());if(media){usedFallback=true;media.pause();try{media.currentTime=0}catch(e){}break}}catch(e){}}}
    if(!media){media=makeFallbackCharacterCanvas({...spec,name:worldCharacterDirectory.find(ch=>String(ch.id)===String(spec.id))?.name||spec.id});usedFallback=true}
-   const canPlayAnimation=!usedFallback&&(selection.matched||isSpeakingClip||selection.neutralFallback);
+   const canPlayAnimation=!usedFallback&&(selection.matched||isSpeakingClip||selection.speakingFallback||selection.neutralFallback);
    let motionEndMedia=null,motionEndSelection=null;
    const motionEndSemantic=spec?.motion?.end_expression_id;
    if(!usedFallback&&folder&&motionEndSemantic&&typeof motionEndSemantic==='object'){
@@ -806,9 +806,9 @@ async function updateAssets(){
      catch(error){console.warn('Không tải được WEBM sau khi kết thúc chuyển động '+spec.id+':',error);motionEndMedia=null}
     }
    }
-   const layerSpec={...spec,expression_id:semantic,flipX:!!selection.mirrored,neutralFallback:!!selection.neutralFallback,animationMatched:selection.matched&&!usedFallback,canPlayAnimation};
+   const layerSpec={...spec,expression_id:semantic,flipX:!!selection.mirrored,neutralFallback:!!selection.neutralFallback,speakingFallback:!!selection.speakingFallback,animationMatched:(selection.matched||selection.speakingFallback)&&!usedFallback,canPlayAnimation};
    if(motionEndMedia)layerSpec.motionEndMedia=motionEndMedia;
-   return {spec:layerSpec,folder,media,index,motionEndMedia,motionEndSelection,animationMatched:selection.matched&&!usedFallback,canPlayAnimation,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':(selection.neutralFallback?selection.reason:selection.reason),animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
+   return {spec:layerSpec,folder,media,index,motionEndMedia,motionEndSelection,animationMatched:(selection.matched||selection.speakingFallback)&&!usedFallback,canPlayAnimation,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
   });
   const safeAssetLoad=async(label,loader)=>{try{return await loader()}catch(error){console.warn('Không tải được '+label+'; tiếp tục bằng phương án dự phòng:',error);return null}};
   const [nextBg,nextChar,nextLayers,nextSceneEffects,nextObjects]=await Promise.all([
@@ -2304,7 +2304,39 @@ function resolveSemanticAnimation(folder,semantic){
   const pool=candidates.filter(x=>x.matched&&x.score===exact.score),seed=Math.max(0,Number(activeLineIndex)||0),chosen=pool[seed%pool.length];
   return {file:chosen.path.split('/').pop().replace(/\.webm$/i,''),matched:true,mirrored:!!chosen.mirrored,reason:'',variantCount:pool.length};
  }
- // Fallback ưu tiên WEBM thật: đứng thẳng, trung tính, silent/listening và đúng hướng/góc mặt.
+ // Nếu không có biến thể speaking khớp biểu cảm, tuyệt đối không rơi thẳng về WEBM silent.
+ // Ưu tiên clip SPEAKING cùng tư thế/hành động/hướng/nhóm góc mặt; chỉ nới lỏng emotion.
+ if(canonicalAnimationValue('communication',target.communication)==='speaking'){
+  const speakingCandidates=paths.map(path=>{
+   const meta=animationMeta(path),comm=canonicalAnimationValue('communication',meta.communication),
+    pose=canonicalAnimationValue('pose',meta.pose),action=canonicalAnimationValue('action',meta.action),
+    emotion=canonicalAnimationValue('emotion',meta.emotion);
+   if(comm!=='speaking')return null;
+   if(target.pose&&pose!==canonicalAnimationValue('pose',target.pose))return null;
+   if(target.action&&action!==canonicalAnimationValue('action',target.action))return null;
+   let mirrored=false,score=0;
+   if(target.direction){
+    const wanted=canonicalAnimationValue('direction',target.direction),actual=canonicalAnimationValue('direction',meta.direction);
+    if(actual===wanted)score+=100;
+    else if(oppositeHorizontalDirection(wanted)===actual&&meta.mirror_safe!==false&&String(meta.mirror_safe).toLowerCase()!=='false'){mirrored=true;score+=85}
+    else return null;
+   }
+   if(target.face_angle){
+    if(!meta.face_angle||canonicalAnimationValue('face_angle',meta.face_angle)!==canonicalAnimationValue('face_angle',target.face_angle))return null;
+    score+=100;
+   }
+   if(target.pose)score+=80;
+   if(target.action)score+=80;
+   if(emotion===canonicalAnimationValue('emotion',target.emotion))score+=20;
+   else if(neutralWords.has(emotion))score+=10;
+   return {path,meta,score,mirrored};
+  }).filter(Boolean).sort((a,b)=>b.score-a.score||a.path.localeCompare(b.path));
+  if(speakingCandidates.length){
+   const chosen=speakingCandidates[0];
+   return {file:chosen.path.split('/').pop().replace(/\\.webm$/i,''),matched:false,speakingFallback:true,mirrored:!!chosen.mirrored,reason:'Không có WEBM speaking đúng biểu cảm; dùng WEBM speaking cùng tư thế/hướng/góc mặt',variantCount:1};
+  }
+ }
+ // Fallback cuối cùng mới dùng WEBM silent/listening trung tính.
  const neutralWords=new Set(['neutral','normal','calm','binh thuong','trung tinh']);
  const neutralCandidates=paths.map(path=>{
   const meta=animationMeta(path),comm=canonicalAnimationValue('communication',meta.communication),
