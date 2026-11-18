@@ -341,21 +341,6 @@
           "y": 102,
           "scale": 0.7,
           "z_index": 1
-        },
-        {
-          "id": "char_test_binh",
-          "expression_id": {
-            "communication": "silent",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "front",
-            "face_angle": "0°",
-            "view_angle": "half body"
-          },
-          "x": 70,
-          "y": 102,
-          "scale": 0.7,
-          "z_index": 1
         }
       ],
       "hieu_ung": {
