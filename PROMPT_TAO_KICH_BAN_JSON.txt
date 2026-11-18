@@ -562,6 +562,18 @@ Quy tắc:
 - Player ánh xạ tên file lịch sử sang ID code để tương thích truyện cũ; JSON mới chỉ ghi ID.
 
 
+ĐẠO DIỄN SỰ KIỆN ĐỘNG ĐẤT — BẮT BUỘC TỰ ĐỘNG HÓA
+- Khi truyện/mô tả cảnh có động đất, rung chấn, dư chấn hoặc mặt đất rung chuyển, AI phải tự chuyển mô tả đó thành hiệu ứng hình ảnh thực sự chạy khi phát video; tuyệt đối không chỉ kể bằng lời thoại.
+- Dùng các ID đã có trong effects.js:
+  - `nen: ["bg_earthquake"]` để nền rung ngang/dọc và nghiêng nhẹ.
+  - `camera: ["camera-shake"]` để toàn khung hình rung theo nhịp địa chấn.
+  - `nhan_vat: ["char_fear_shake"]` cho nhân vật đang hoảng sợ/mất thăng bằng; chỉ áp dụng ở các lượt phù hợp, không bắt buộc mọi nhân vật rung liên tục.
+- Khi bắt đầu động đất, bật các hiệu ứng phù hợp ngay tại lượt bắt đầu; duy trì chúng ở các lượt tiếp theo trong toàn bộ khoảng thời gian động đất. Khi động đất chấm dứt, bỏ các hiệu ứng rung ở lượt kế tiếp và thể hiện dư chấn nhẹ nếu nội dung có.
+- Phân biệt cường độ: rung nhẹ dùng camera/nền vừa phải; động đất mạnh kết hợp nền + camera + phản ứng nhân vật; dư chấn giảm cường độ hoặc chỉ giữ rung nhẹ. Không lạm dụng zoom, xoay camera hay di chuyển vị trí sprite.
+- Nếu động đất làm đồ vật rơi, tường nứt hoặc bụi văng, chỉ dùng hiệu ứng Canvas tương ứng khi phù hợp và có ID hợp lệ; không tự bịa đạo cụ/tài nguyên.
+- Không tạo ID mới như `earthquake` nếu danh mục không có. Các ID cụ thể ở trên là ID phải dùng cho hiệu ứng động đất.
+- Trước khi lưu, kiểm tra toàn bộ đoạn sự kiện: hiệu ứng phải bắt đầu đúng lúc, không tự biến mất giữa các câu thoại khi địa chấn vẫn đang diễn ra, và phải tắt khi sự kiện kết thúc.
+
 QUY TRÌNH KIỂM TRA HIỆU ỨNG CODE
 - Chỉ dùng ID thuộc danh mục hiệu ứng Canvas đã nêu; không kiểm kê hoặc tham chiếu file ảnh/video hiệu ứng.
 - Xác thực id hợp lệ, opacity trong 0..1, z_index hữu hạn, đúng thời điểm bắt đầu/kết thúc và đúng lớp trước/sau nhân vật.
