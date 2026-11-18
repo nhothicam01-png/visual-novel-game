@@ -1612,7 +1612,7 @@ function buildScenesFromJson(data){
  if(current)out.push(current);return out;
 }
 let storyCharacterFolderMap={};
-function normalizeCharacterName(value){return String(value??'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
+function normalizeCharacterName(value){return String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
 async function loadWorldCharacterFolderMap(data,storyPath){
  storyCharacterFolderMap={};worldCharacterDirectory=[];expressionFilesByFolder={};characterAnimationMetadata={};
  try{
@@ -1839,7 +1839,7 @@ function visibleCharacterOptions(selected=''){
 }
 function expressionsForCharacter(id,selected=''){
  const ch=activeCharacterList().find(item=>item.id===String(id)),files=ch?(expressionFilesByFolder[String(ch.folder)]||[]):[];
- const names=files.map(path=>path.split('/').pop().replace(/\\.webm$/i,''));
+ const names=files.map(path=>path.split('/').pop().replace(/\.webm$/i,''));
  const current=normalizeExpression(selected||names[0]||'say_hello_bieu_cam_binh_thuong');
  if(!names.includes(current))names.unshift(current);
  return names.map(name=>'<option value="'+safeText(name)+'" '+(name===current?'selected':'')+'>'+safeText(name)+'</option>').join('');
@@ -1868,7 +1868,7 @@ $('visible-character-add').addEventListener('click',()=>{
  const list=activeCharacterList(),speaker=list.find(ch=>ch.id===String(line.speakerId||$('speaker').value));
  if(!line.visibleCharacters.length&&speaker)line.visibleCharacters.push({id:speaker.id,bieu_cam:line.expression||line.sourceFrame?.bieu_cam||'',x:30,y:100,scale:.72,z_index:1});
  const ch=list.find(item=>item.id===id);if(!ch||line.visibleCharacters.some(item=>String(item.id)===id))return;
- const files=expressionFilesByFolder[String(ch.folder)]||[],first=files[0]?.split('/').pop().replace(/\\.webm$/i,'')||'';
+ const files=expressionFilesByFolder[String(ch.folder)]||[],first=files[0]?.split('/').pop().replace(/\.webm$/i,'')||'';
  line.visibleCharacters.push({id:ch.id,bieu_cam:first,expression_id:semanticFromExpression(ch.folder,first),x:70,y:100,scale:.72,z_index:line.visibleCharacters.length+1});
  renderVisibleCharacters(line);updateAssets();
 });
