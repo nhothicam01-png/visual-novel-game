@@ -1275,6 +1275,25 @@ Mọi kịch bản mới phải có thể được hệ thống Asset Inventory 
 ==================================================
 
 ==================================================
+
+
+==================================================
+QUY CHUẨN HÒA TRỘN NHÂN VẬT VÀO BỐI CẢNH (BẮT BUỘC)
+==================================================
+1. Player tự động dựng bóng đổ mềm theo alpha thực của WEBM nhân vật; không tạo bóng hình chữ nhật. Mặc định bóng tối dịu, hơi lệch xuống dưới và được làm mờ để tạo cảm giác nhân vật đứng trong không gian của nền.
+2. Player tự động cân chỉnh hình ảnh nhân vật ở mức nhẹ (brightness, contrast, saturation, sepia/hue) để giảm cảm giác sprite bị dán lên nền. Không dùng bộ lọc quá mạnh làm sai màu tóc, da, trang phục hoặc biểu cảm.
+3. Có thể ghi đè riêng cho từng phần tử nhan_vat_hien_thi bằng trường render_style. Cấu trúc tùy chọn:
+   {
+     "render_style": {
+       "shadow": { "enabled": true, "color": "rgba(7,13,25,0.62)", "blur": 0.010, "offset_x": 0.002, "offset_y": 0.009, "opacity": 0.58 },
+       "color_grade": { "brightness": 0.97, "contrast": 1.05, "saturation": 0.90, "sepia": 0.045, "hue_rotate": 0 }
+     }
+   }
+4. blur, offset_x, offset_y là tỷ lệ theo kích thước khung hình; brightness/contrast/saturation là hệ số; sepia nằm trong 0..1; hue_rotate tính bằng độ. Bỏ render_style thì player dùng mặc định tự nhiên. Dùng "shadow": false để tắt bóng trong trường hợp đặc biệt.
+5. Khi nhập, chỉnh sửa, xem trước, lưu hoặc xuất JSON, phải giữ nguyên render_style của từng nhân vật; không được xóa trường này khi chuẩn hóa snapshot.
+6. Bóng đổ và cân màu chỉ tác động lên lớp nhân vật, không làm tối nền, khung thoại, hiệu ứng cảnh hoặc UI. Phải giữ nguyên alpha trong suốt của WEBM và không làm nhân vật bị viền đen.
+7. Ưu tiên mặc định tinh tế; chỉ tăng bóng/độ ấm/lạnh khi ánh sáng cảnh yêu cầu. Không tự ý đổi màu nhân vật thành tông khác biệt với thiết kế gốc.
+
 QUY CHUẨN BỐ CỤC NHÂN VẬT TỰ ĐỘNG (BẮT BUỘC)
 ==================================================
 1. Mặc định, mọi frame có từ 2 nhân vật hiện diện trở lên phải dùng:
