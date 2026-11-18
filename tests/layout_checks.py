@@ -6,8 +6,7 @@ import harness
 fails=[]
 async def sc(page):
     for row in (8,18,21,10):
-        info=await page.evaluate("""r=>__dbg(`(async()=>{const lines=allSourceLines();const it=lines[Math.min(Math.max(0,Number(${r})||0),lines.length-1)];if(!it)throw new Error('Timeline không có dòng để kiểm tra; count='+lines.length);await loadSourceLineForPlayback(it);
-          return charLayerVideos.map(l=>({id:l.spec.id,y:l.spec.y,scale:l.spec.scale,x:l.spec.x,z:l.spec.z_index,cut:!!l.spec.bottomCut}))})()`)""",row)
+        info=await page.evaluate("""r=>__dbg(`(async()=>{const lines=scenes.flatMap((scene,sceneIndex)=>scene.lines.map((line,lineIndex)=>({sceneIndex,lineIndex})));if(!lines.length)throw new Error('Không có timeline để kiểm tra bố cục');const it=lines[Math.min(Math.max(0,Number(r)||0),lines.length-1)];activeSceneIndex=it.sceneIndex;activeLineIndex=it.lineIndex;applyVisual(getCurrentScene().visual);await updateAssets();return charLayerVideos.map(l=>({id:l.spec.id,y:l.spec.y,scale:l.spec.scale,x:l.spec.x,z:l.spec.z_index,cut:!!l.spec.bottomCut}))})()`)""",row)
         print('row',row,[(c['id'][-6:],round(c['x'],1),round(c['scale'],3),c['y'],c['z'],c['cut']) for c in info])
         if len(info)<2: fails.append(('no layers',row)); continue
         if any(c['cut'] and c['y']<102 for c in info): fails.append(('half-body sprite floats above bottom',row))
