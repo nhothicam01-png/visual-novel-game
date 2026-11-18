@@ -1436,6 +1436,9 @@ QUY CHUẨN DÀN NHÂN VẬT VÀ ĐẠO DIỄN CAMERA TỰ ĐỘNG (BẮT BUỘC
 4. Player mặc định tự đạo diễn luân phiên các cỡ cảnh theo nhịp thoại: cận mặt (close_up) → bán thân (bust) → cận mặt → toàn thân (full_body) → bán thân → toàn cảnh nhóm (group), rồi lặp lại/điều chỉnh tự nhiên theo độ dài cảnh. Không phải dòng nào cũng cận người nói.
 5. Ở cỡ cận/bán thân/toàn thân, camera có thể nhắm người đang nói và đưa người đó vào giữa khung hình. Ở cỡ toàn cảnh nhóm, camera trở về khung tổng thể, thấy tất cả nhân vật hiện diện cùng lúc; không zoom/target riêng một người.
 6. Chuyển động lia camera phải có easing mượt, không giật/cắt đột ngột. Khi đổi shot, chỉ thay đổi viewport (pan/zoom/focus); vị trí tương đối giữa các nhân vật luôn được giữ nguyên.
+6.1. Nền phải được cover-fit theo kích thước gốc của sân khấu trước khi áp dụng camera. Cỡ cảnh rộng là viewport ở mức nền gốc, không được scale ảnh nền nhỏ hơn mức đủ phủ kín khung hình.
+6.2. Mọi zoom/pan camera phải dùng chung một hệ tọa độ với nền và toàn bộ nhân vật. Giới hạn camera zoom tối thiểu là 1.0; khi lia, tâm viewport phải được giới hạn trong vùng nền hợp lệ để không lộ viền đen. Khi chuyển từ cận cảnh về toàn cảnh, chỉ mở rộng viewport về mốc gốc, không thu nhỏ nền.
+6.3. Nếu dịch nền do hiệu ứng môi trường, phải tính bù cover theo cả độ dịch nền và vị trí viewport camera; không giả định tâm camera luôn ở giữa sân khấu.
 7. Camera JSON có thể khai báo "director": "manual" khi đạo diễn muốn kiểm soát thủ công. Khi đó mới dùng camera.shot, camera.target và camera.zoom được khai báo rõ. Nếu không khai báo director hoặc dùng "auto", player áp dụng đạo diễn tự động.
 8. Tên shot được hỗ trợ trong chế độ tự động: close_up, bust, full_body, group. Các shot khác có thể dùng trong chế độ manual nếu player hỗ trợ.
 9. Không dùng hiệu ứng char-zoom để thay thế camera zoom. char-zoom/char-breathe chỉ là chuyển động vi mô của sprite, không phải thao tác cỡ cảnh.
