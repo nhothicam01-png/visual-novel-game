@@ -605,9 +605,6 @@ function cachedVideo(src){
 const isPlayableMedia=m=>!!m&&typeof m.play==='function'&&typeof m.pause==='function';
 const pauseMedia=m=>{if(isPlayableMedia(m))m.pause()};
 const playMedia=m=>{if(isPlayableMedia(m)){const r=m.play();if(r&&typeof r.catch==='function')r.catch(()=>{})}};
-// Tên dùng để tra hồ sơ mô phỏng VFX: chỉ lấy tên file (không thư mục, không đuôi), tránh khớp nhầm
-// token "set" với "assets" trong đường dẫn assets/HieuUng/....
-const effectProfileName=item=>String(item?.base||item?.path||item?.name||'').split('/').pop().replace(/\.[^.]+$/,'').toLowerCase();
 let sceneEffectLayers=[],sceneEffectKey='',sceneEffectLibrary=[],currentAnimationWarnings=[],sceneObjectLayers=[];
 // Cache canvas bóng theo từng WEBM; chỉ giữ alpha silhouette để không vẽ trùng hình gốc.
 const characterShadowCanvasCache=new WeakMap();
