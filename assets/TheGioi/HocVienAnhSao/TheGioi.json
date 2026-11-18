@@ -110,6 +110,11 @@
       "title": "Thử Nghiệm Thư Viện Hiệu Ứng Canvas",
       "logline": "Ba người bạn thử thư viện hiệu ứng Canvas, từ thời tiết và ánh sáng đến camera, chuyển động nhân vật và đồng bộ timeline.",
       "arc": "Lần lượt kiểm tra 10 hiệu ứng môi trường, phối hợp nhiều lớp, thử chuyển động nhân vật/camera và xác nhận phát, dừng, tua."
+    },
+    {
+      "title": "Vượt Qua Vạch Đích: Kỳ Thi, Chuyến Đi Và Trận Động Đất",
+      "logline": "Ba người bạn cạnh tranh trong kỳ thi học thuật rồi cùng đi du lịch; động đất và bão giông buộc họ phải đặt tình bạn, sự bình tĩnh và an toàn lên trên thành tích.",
+      "arc": "Từ áp lực ôn thi và ganh đua, đến chấp nhận kết quả, tận hưởng chuyến đi, sơ tán an toàn khi động đất xảy ra, trú ẩn trước mưa giông và sấm sét, rồi trở về với tình bạn gắn bó hơn."
     }
   ],
   "story_folders": [
@@ -160,7 +165,13 @@
       "folder": "ThuVienHieuUngCanvas",
       "path": "assets/KichBan/ThuVienHieuUngCanvas",
       "json_path": "assets/KichBan/ThuVienHieuUngCanvas/ThuVienHieuUngCanvas.json"
+    },
+    {
+      "title": "Vượt Qua Vạch Đích: Kỳ Thi, Chuyến Đi Và Trận Động Đất",
+      "folder": "CanhTranhKyThiVaChuyenDuBaoDongDat",
+      "path": "assets/KichBan/CanhTranhKyThiVaChuyenDuBaoDongDat",
+      "json_path": "assets/KichBan/CanhTranhKyThiVaChuyenDuBaoDongDat/CanhTranhKyThiVaChuyenDuBaoDongDat.json"
     }
   ],
-  "updated_at": "2026-11-19T00:00:00+07:00"
+  "updated_at": "2026-11-18T19:09:59.590Z"
 }
