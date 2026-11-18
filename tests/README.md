@@ -14,12 +14,14 @@ Chrome mặc định: `/usr/bin/google-chrome`. Có thể đặt `CHROME` để 
 ## Chạy kiểm thử
 
 ```bash
+python3 tests/story_contract.py
 python3 tests/preview_regression.py
 python3 tests/animation_webm_regression.py
 python3 tests/camera_invariants.py
 python3 tests/layout_checks.py
 ```
 
+- `story_contract.py`: kiểm tra toàn bộ JSON truyện, nhân vật, bối cảnh, hiệu ứng, âm thanh, đạo cụ và keyframes có tham chiếu hợp lệ.
 - `preview_regression.py`: Chạy / tạm dừng / tiếp tục / dừng / chạy lại và kiểm tra timeline.
 - `animation_webm_regression.py`: xác nhận Pipun dùng đúng WEBM im lặng khi narration, URL không bị nhân đôi đuôi và currentTime thực sự tăng.
 - `camera_invariants.py`: kiểm tra vùng camera và đường chân trên mọi dòng của `DemTongDuyetAnhSang`.
