@@ -1,11 +1,28 @@
 # Kiểm thử trình phát (Chrome headless)
 
-Chạy hồi quy cho nút Chạy / Tạm dừng / Tiếp tục / Dừng và chuyển cảnh trên kịch bản có sấm sét:
+Các bài test dùng kịch bản đang có trong repository, không phụ thuộc fixture đã xóa.
 
-    pip install playwright
-    python3 tests/preview_regression.py          # mạng nhanh
-    BPS=800000 python3 tests/preview_regression.py   # giả lập mạng chậm (byte/giây) cho assets/HieuUng
-    LOADING=1 BPS=250000 python3 tests/preview_regression.py  # bấm Chạy khi hiệu ứng còn đang tải
+## Cài đặt
 
-Biến môi trường: `CHROME` (đường dẫn Chrome, mặc định /usr/bin/google-chrome), `PAGE` (trang cần thử).
-Mạng ngoài bị chặn; tài nguyên GitHub được phục vụ từ chính thư mục repo. Ở chế độ LOADING=1 kiểm tra đầu tiên ("fx layers present") dự kiến FAIL vì hiệu ứng cố ý chưa nạp xong.
+```bash
+pip install playwright
+python3 -m playwright install chromium
+```
+
+Chrome mặc định: `/usr/bin/google-chrome`. Có thể đặt `CHROME` để dùng đường dẫn khác.
+
+## Chạy kiểm thử
+
+```bash
+python3 tests/preview_regression.py
+python3 tests/animation_webm_regression.py
+python3 tests/camera_invariants.py
+python3 tests/layout_checks.py
+```
+
+- `preview_regression.py`: Chạy / tạm dừng / tiếp tục / dừng / chạy lại và kiểm tra timeline.
+- `animation_webm_regression.py`: xác nhận Pipun dùng đúng WEBM im lặng khi narration, URL không bị nhân đôi đuôi và currentTime thực sự tăng.
+- `camera_invariants.py`: kiểm tra vùng camera và đường chân trên mọi dòng của `DemTongDuyetAnhSang`.
+- `layout_checks.py`: kiểm tra bố cục đa nhân vật trên các dòng đại diện của cùng kịch bản.
+
+Có thể ghi đè kịch bản bằng biến môi trường `STORY`, trang player bằng `PAGE`, và tốc độ giả lập tải hiệu ứng bằng `BPS` (byte/giây).
