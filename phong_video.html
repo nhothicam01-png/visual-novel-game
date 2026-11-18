@@ -783,7 +783,7 @@ async function updateAssets(){
    const folder=characterAssetFolder(spec.id),semantic=semanticForVisibleCharacter(spec,frame,currentLine);
    let selection=resolveSemanticAnimation(folder,semantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
    let isSpeakingClip=false;
-   if(String(semantic.communication||'')==='speaking'&&folder){
+   if(String(semantic.communication||'')==='speaking'&&folder&&!selection.neutralFallback){
     const selectedPath=(expressionFilesByFolder[String(folder)]||[]).find(path=>path.split('/').pop().replace(/\.webm$/i,'')===expression);
     isSpeakingClip=!!selectedPath&&canonicalAnimationValue('communication',animationMeta(selectedPath).communication)==='speaking';
     if(!isSpeakingClip){
@@ -793,11 +793,11 @@ async function updateAssets(){
      if(candidates.length){expression=candidates[0].path.split('/').pop().replace(/\.webm$/i,'');url=BASE+'NhanVat/'+folder+'/'+expression+'.webm';selection={...selection,file:expression,matched:false,mirrored:false,reason:'Ưu tiên WEBM speaking gần nhất'};isSpeakingClip=true}
     }
    }
-   let media=null,usedFallback=false;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched&&!isSpeakingClip){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được WEBM ưu tiên '+spec.id+':',error)}
+   let media=null,usedFallback=false;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched&&!isSpeakingClip&&!selection.neutralFallback){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được WEBM ưu tiên '+spec.id+':',error)}
    if(!media&&folder){for(const candidate of (expressionFilesByFolder[String(folder)]||[])){try{media=await cachedVideo(BASE+'NhanVat/'+folder+'/'+candidate.split('/').pop());if(media){usedFallback=true;media.pause();try{media.currentTime=0}catch(e){}break}}catch(e){}}}
    if(!media){media=makeFallbackCharacterCanvas({...spec,name:worldCharacterDirectory.find(ch=>String(ch.id)===String(spec.id))?.name||spec.id});usedFallback=true}
-   const canPlayAnimation=!usedFallback&&(selection.matched||isSpeakingClip);
-   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched&&!usedFallback,canPlayAnimation},folder,media,index,animationMatched:selection.matched&&!usedFallback,canPlayAnimation,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':selection.reason,animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
+   const canPlayAnimation=!usedFallback&&(selection.matched||isSpeakingClip||selection.neutralFallback);
+   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched&&!usedFallback,canPlayAnimation},folder,media,index,animationMatched:selection.matched&&!usedFallback,canPlayAnimation,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':(selection.neutralFallback?selection.reason:selection.reason),animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
   });
   const safeAssetLoad=async(label,loader)=>{try{return await loader()}catch(error){console.warn('Không tải được '+label+'; tiếp tục bằng phương án dự phòng:',error);return null}};
   const [nextBg,nextChar,nextLayers,nextSceneEffects,nextObjects]=await Promise.all([
@@ -2258,7 +2258,8 @@ function oppositeHorizontalDirection(value){
  if(d==='left')return 'right';if(d==='right')return 'left';return '';
 }
 function resolveSemanticAnimation(folder,semantic){
- const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return {file:'',matched:false,mirrored:false,reason:'Thư mục chưa có WEBM'};
+ const paths=expressionFilesByFolder[String(folder||'')]||[];
+ if(!paths.length)return {file:'',matched:false,mirrored:false,reason:'Thư mục chưa có WEBM'};
  const target=normalizeSemantic(semantic),strict=['communication','pose','action','emotion','face_angle','interaction_target'].filter(k=>target[k]);
  const candidates=paths.map(path=>{
   const meta=animationMeta(path),missing=[],mismatch=[];let score=0,mirrored=false;
@@ -2268,13 +2269,43 @@ function resolveSemanticAnimation(folder,semantic){
    else if(oppositeHorizontalDirection(wanted)===actual&&meta.mirror_safe!==false&&String(meta.mirror_safe).toLowerCase()!=='false'){mirrored=true;score+=85}
    else mismatch.push('direction');
   }
-  return {path,score,matched:!missing.length&&!mismatch.length,missing,mismatch,mirrored};
+  return {path,score,matched:!missing.length&&!mismatch.length,missing,mismatch,mirrored,meta};
  }).sort((x,y)=>Number(y.matched)-Number(x.matched)||y.score-x.score||x.path.localeCompare(y.path));
- const best=candidates[0],pool=candidates.filter(x=>x.matched&&x.score===best.score);
- const seed=Math.max(0,Number(activeLineIndex)||0),chosen=pool.length?pool[seed%pool.length]:best;
- const file=chosen.path.split('/').pop().replace(/\.webm$/i,'');
- const reason=chosen.mismatch.length?'không khớp '+chosen.mismatch.join(', '):chosen.missing.length?'thiếu metadata '+chosen.missing.join(', '):'';
- return {file,matched:chosen.matched,mirrored:!!chosen.mirrored,reason,variantCount:pool.length||1};
+ const exact=candidates.find(x=>x.matched);
+ if(exact){
+  const pool=candidates.filter(x=>x.matched&&x.score===exact.score),seed=Math.max(0,Number(activeLineIndex)||0),chosen=pool[seed%pool.length];
+  return {file:chosen.path.split('/').pop().replace(/\\.webm$/i,''),matched:true,mirrored:!!chosen.mirrored,reason:'',variantCount:pool.length};
+ }
+ // Fallback ưu tiên WEBM thật: đứng thẳng, trung tính, silent/listening và đúng hướng/góc mặt.
+ const neutralWords=new Set(['neutral','normal','calm','binh thuong','trung tinh']);
+ const neutralCandidates=paths.map(path=>{
+  const meta=animationMeta(path),comm=canonicalAnimationValue('communication',meta.communication),
+   pose=canonicalAnimationValue('pose',meta.pose),action=canonicalAnimationValue('action',meta.action),
+   emotion=canonicalAnimationValue('emotion',meta.emotion);
+  if(!['silent','listening'].includes(comm)||pose!=='standing'||(action&&action!=='idle')||(emotion&&!neutralWords.has(emotion)))return null;
+  let mirrored=false,score=0;
+  if(target.direction){
+   const wanted=canonicalAnimationValue('direction',target.direction),actual=canonicalAnimationValue('direction',meta.direction);
+   if(actual===wanted)score+=100;
+   else if(oppositeHorizontalDirection(wanted)===actual&&meta.mirror_safe!==false&&String(meta.mirror_safe).toLowerCase()!=='false'){mirrored=true;score+=85}
+   else return null;
+  }else if(meta.direction)score+=10;
+  if(target.face_angle){
+   if(!meta.face_angle||canonicalAnimationValue('face_angle',meta.face_angle)!==canonicalAnimationValue('face_angle',target.face_angle))return null;
+   score+=100;
+  }else if(meta.face_angle)score+=10;
+  if(target.communication==='listening'&&comm==='listening')score+=30;
+  if(target.communication!=='listening'&&comm==='silent')score+=30;
+  if(emotion)score+=10;if(action==='idle')score+=10;
+  return {path,meta,score,mirrored};
+ }).filter(Boolean).sort((a,b)=>b.score-a.score||a.path.localeCompare(b.path));
+ if(neutralCandidates.length){
+  const chosen=neutralCandidates[0];
+  return {file:chosen.path.split('/').pop().replace(/\\.webm$/i,''),matched:false,neutralFallback:true,mirrored:!!chosen.mirrored,reason:'Không có WEBM khớp trạng thái; dùng WEBM đứng trung tính '+chosen.meta.communication+' đúng hướng/góc nhìn',variantCount:1};
+ }
+ const best=candidates[0],file=best.path.split('/').pop().replace(/\\.webm$/i,'');
+ const reason=best.mismatch.length?'không khớp '+best.mismatch.join(', '):best.missing.length?'thiếu metadata '+best.missing.join(', '):'';
+ return {file,matched:false,mirrored:!!best.mirrored,reason,variantCount:1};
 }
 function resolveSemanticExpression(folder,semantic){const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return '';const target=normalizeSemantic(semantic),norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[_-]+/g,' ').trim(),fields=['communication','emotion','pose','direction','face_angle','action','interaction_target'];let scored=paths.map(path=>{const meta=animationMeta(path),name=path.split('/').pop().replace(/\.webm$/i,'').toLowerCase().replace(/[_-]+/g,' ');let score=0,comm=norm(meta.communication);if(target.communication){if(comm&&comm.includes(norm(target.communication)))score+=100;else if(name.includes(norm(target.communication)))score+=35;else if(comm)score-=80}fields.slice(1).forEach(k=>{if(target[k]){const a=norm(target[k]),b=norm(meta[k]);if(b&&b===a)score+=12;else if(b&&(b.includes(a)||a.includes(b)))score+=5;else if(name.includes(a))score+=2}});return {path,score}}).sort((a,b)=>b.score-a.score);return scored[0].path.split('/').pop().replace(/\.webm$/i,'')}
 function semanticFromExpression(folder,file){const path=(expressionFilesByFolder[String(folder||'')]||[]).find(p=>p.split('/').pop().replace(/\.webm$/i,'')===normalizeExpression(file));return path?animationMeta(path):{}}
