@@ -1337,3 +1337,15 @@ QUY CHUẨN DÀN NHÂN VẬT VÀ ĐẠO DIỄN CAMERA TỰ ĐỘNG (BẮT BUỘC
 9. Không dùng hiệu ứng char-zoom để thay thế camera zoom. char-zoom/char-breathe chỉ là chuyển động vi mô của sprite, không phải thao tác cỡ cảnh.
 10. Khi tạo JSON có nhiều nhân vật, khai báo vị trí gốc cân đối và ổn định trong nhan_vat_hien_thi; dùng bo_cuc_nhan_vat.mode="auto" cho bố cục cân đối hoặc "manual" khi có blocking có chủ đích. Không tạo scale khác nhau theo trạng thái speaking/listening.
 ==================================================
+
+
+QUY TẮC WEBM DỰ PHÒNG CHO NHÂN VẬT KHÔNG CÓ BIẾN THỂ KHỚP (BẮT BUỘC)
+==================================================
+1. Khi không tìm được WEBM khớp đầy đủ communication, emotion, pose, action, direction và face_angle, KHÔNG được lập tức dừng WEBM rồi thay bằng chuyển động nhún/scale giả.
+2. Phải tìm tiếp trong đúng assetFolder của nhân vật một WEBM có tư thế standing, biểu cảm neutral/normal/calm (hoặc không có metadata emotion), communication là silent hoặc listening, action idle hoặc không khai báo.
+3. WEBM dự phòng phải khớp direction và face_angle hiện tại của chính nhân vật. Chính diện dùng chính diện; nghiêng 3/4 dùng đúng góc; quay trái/phải phải đúng hướng. Chỉ mirror nếu metadata mirror_safe cho phép.
+4. Nếu nhân vật đang nghe người khác, ưu tiên communication=listening; nếu chỉ hiện diện hoặc đang nói nhưng thiếu clip nói phù hợp, ưu tiên silent. Không dùng WEBM speaking sai hướng thay cho WEBM trung tính đúng hướng.
+5. WEBM dự phòng trung tính phải được phát như video bình thường, không pause ở frame đầu và không kích hoạt hiệu ứng nhún giả để mô phỏng animation. Vẫn giữ nguyên vị trí, scale và góc nhân vật.
+6. Chỉ khi không tồn tại WEBM trung tính đáp ứng đúng tư thế và hướng/góc nhìn mới được quay về cơ chế fallback cũ. Không lấy WEBM của nhân vật khác.
+7. Báo cáo trạng thái cần phân biệt WEBM khớp đầy đủ và WEBM trung tính dự phòng; không báo nhầm fallback trung tính là clip khớp đầy đủ.
+==================================================
