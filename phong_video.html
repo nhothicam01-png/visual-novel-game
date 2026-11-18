@@ -2334,7 +2334,7 @@ function resolveSemanticAnimation(folder,semantic){
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.path.localeCompare(b.path));
   if(speakingCandidates.length){
    const chosen=speakingCandidates[0];
-   return {file:chosen.path.split('/').pop().replace(/\\.webm$/i,''),matched:false,speakingFallback:true,mirrored:!!chosen.mirrored,reason:'Không có WEBM speaking đúng biểu cảm; dùng WEBM speaking cùng tư thế/hướng/góc mặt',variantCount:1};
+   return {file:chosen.path.split('/').pop().replace(/\.webm$/i,''),matched:false,speakingFallback:true,mirrored:!!chosen.mirrored,reason:'Không có WEBM speaking đúng biểu cảm; dùng WEBM speaking cùng tư thế/hướng/góc mặt',variantCount:1};
   }
  }
  // Fallback cuối cùng mới dùng WEBM silent/listening trung tính.
