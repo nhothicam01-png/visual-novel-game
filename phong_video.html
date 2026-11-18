@@ -798,7 +798,7 @@ async function updateAssets(){
      try{
       media=await cachedVideo(BASE+'NhanVat/'+folder+'/'+candidate.path.split('/').pop());
       if(media){
-       usedFallback=true;selection={...selection,file:candidate.path.split('/').pop().replace(/\\.webm$/i,''),mirrored:candidate.mirrored,neutralFallback:true,reason:'Dùng WEBM dự phòng cùng hướng và góc mặt'};
+       usedFallback=true;selection={...selection,file:candidate.path.split('/').pop().replace(/\.webm$/i,''),mirrored:candidate.mirrored,neutralFallback:true,reason:'Dùng WEBM dự phòng cùng hướng và góc mặt'};
        media.pause();try{media.currentTime=0}catch(e){}break;
       }
      }catch(e){}
