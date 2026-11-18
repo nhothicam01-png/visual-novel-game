@@ -342,7 +342,7 @@ function backgroundAssetUrl(value){
  const raw=String(value||'').trim();
  if(!raw)return '';
  if(/^https?:\/\//i.test(raw))return raw;
- const path=raw.replace(/\\\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');
+ const path=raw.replace(/\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');
  if(/^assets\//i.test(path))return BASE+path.slice(7);
  if(/^Nen\//i.test(path))return BASE+path;
  return BASE+'Nen/'+path;
