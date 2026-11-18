@@ -2771,9 +2771,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/bui_bay.png",
-          "type": "image",
-          "loop": true,
+          "id": "dust",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -2868,9 +2867,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/chuyen_canh.png",
-          "type": "image",
-          "loop": false,
+          "id": "transition",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -2965,9 +2963,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/hao_quang.png",
-          "type": "image",
-          "loop": true,
+          "id": "aura",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3062,9 +3059,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/khoi.png",
-          "type": "image",
-          "loop": true,
+          "id": "fog",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3159,9 +3155,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/la_cay_bay.png",
-          "type": "image",
-          "loop": true,
+          "id": "leaves",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3256,9 +3251,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/lua.png",
-          "type": "image",
-          "loop": true,
+          "id": "fire",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3353,9 +3347,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/manh_vo.png",
-          "type": "image",
-          "loop": false,
+          "id": "dust",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3450,9 +3443,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/mua.png",
-          "type": "image",
-          "loop": true,
+          "id": "rain",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3547,9 +3539,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/nhoe_chuyen_dong.png",
-          "type": "image",
-          "loop": false,
+          "id": "motion_blur",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3644,9 +3635,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/set.png",
-          "type": "image",
-          "loop": false,
+          "id": "lightning",
+          "type": "code",
           "opacity": 0.82,
           "z_index": -10
         }
@@ -3741,9 +3731,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/tia_dien.png",
-          "type": "image",
-          "loop": false,
+          "id": "lightning",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3838,9 +3827,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/tia_nang.png",
-          "type": "image",
-          "loop": true,
+          "id": "sunlight",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -3935,9 +3923,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/tuyet.png",
-          "type": "image",
-          "loop": true,
+          "id": "snow",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -4032,9 +4019,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/va_cham.png",
-          "type": "image",
-          "loop": false,
+          "id": "impact",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -4129,9 +4115,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/vet_nut.png",
-          "type": "image",
-          "loop": false,
+          "id": "cracks",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -4226,9 +4211,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/vet_thuong.png",
-          "type": "image",
-          "loop": false,
+          "id": "wound",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
@@ -4323,9 +4307,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/vu_no.png",
-          "type": "image",
-          "loop": false,
+          "id": "explosion",
+          "type": "code",
           "opacity": 0.68,
           "z_index": -10
         }
