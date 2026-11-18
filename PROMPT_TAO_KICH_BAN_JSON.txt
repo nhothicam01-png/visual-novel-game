@@ -521,6 +521,33 @@ Quy tắc:
 - `z_index` dùng chung trục lớp với nhân vật trong `nhan_vat_hien_thi[].z_index`: số nhỏ được vẽ trước (nằm sau nhân vật), số lớn được vẽ sau (nằm trước và có thể phủ lên nhân vật). Quy ước đề xuất: hiệu ứng nền/sau lưng nhân vật dùng `z_index: -10`; nhân vật thường dùng `1, 2, 3...`; hiệu ứng tiền cảnh/đè lên nhân vật dùng `z_index: 100`. Có thể đặt giá trị trung gian để một hiệu ứng nằm giữa các nhân vật. Không mặc định tất cả hiệu ứng ở phía trước.
 - Phân lớp theo nội dung: mưa/tuyết xa, sương nền, bụi hậu cảnh và ánh sáng nền thường ở sau nhân vật; tia điện gần ống kính, tia sáng lóe, bụi/mảnh vỡ tiền cảnh có thể ở trước. Chỉ để hiệu ứng phủ mặt khi đó là chủ ý hình ảnh; nếu không, đặt sau nhân vật hoặc giảm opacity.
 
+
+QUY TRÌNH KIỂM KÊ VÀ CHỌN HIỆU ỨNG HÌNH ẢNH – BẮT BUỘC TRƯỚC KHI TẠO/CHỈNH JSON
+--------------------------------------------------------------------------------
+1. Mỗi lần tạo truyện mới hoặc chỉnh sửa kịch bản có liên quan đến hiệu ứng, phải đọc cây thư mục GitHub mới nhất và rà soát trực tiếp toàn bộ thư mục `assets/HieuUng/` (bao gồm thư mục con nếu có). Không dùng danh sách nhớ từ cuộc trò chuyện trước, không dựa vào tên hiệu ứng đã từng dùng và không giả định thư viện không thay đổi.
+2. Lập danh sách kiểm kê từ các file thực sự tồn tại: đường dẫn tương đối đầy đủ, tên file chính xác, phần mở rộng và định dạng. Chỉ coi PNG/WEBM hoặc định dạng khác là dùng được khi player hiện tại thực sự hỗ trợ định dạng đó. Không suy ra định dạng từ tên gọi.
+3. Với từng hiệu ứng dự kiến trong câu chuyện (ví dụ mưa, tuyết, sấm chớp, tia điện, lá bay, khói, lửa, bụi, va chạm, vết nứt...), phải đối chiếu với danh sách file thực tế và chọn tài nguyên phù hợp nhất về nội dung. Tên file chỉ là gợi ý; nếu hình ảnh/ý nghĩa không thể xác định từ tên hoặc metadata, phải xem/kiểm tra tài nguyên hoặc ghi rõ chưa xác minh, không khẳng định nó phù hợp.
+4. Trước khi đưa một file vào JSON, xác minh chính xác file đó tồn tại trong repository, đúng chữ hoa/chữ thường, đúng phần mở rộng và đúng đường dẫn bắt đầu bằng `assets/HieuUng/`. Không tự tạo, đoán, đổi tên hoặc viết sai đường dẫn. Không lấy file cùng tên từ thư mục khác.
+5. Ưu tiên tái sử dụng hiệu ứng có sẵn. Chỉ đánh dấu THIẾU khi đã rà thư mục thực tế mà không có tài nguyên phù hợp. Nếu thiếu, ghi rõ hiệu ứng cần bổ sung; không âm thầm thay bằng hiệu ứng không tương đương và không bịa file để làm JSON trông như đã hoàn chỉnh.
+6. Với mỗi hiệu ứng được chọn, xác định rõ:
+   - Phạm vi và thời điểm xuất hiện: cảnh nào, bắt đầu ở nhịp nào, kết thúc khi nào.
+   - Cách phát: liên tục/lặp hay chỉ kích hoạt một lần; không đặt loop=true cho một tia sét/sự kiện chớp lóe chỉ xảy ra một lần.
+   - Lớp hiển thị: sau nhân vật, giữa các lớp nhân vật hay trước nhân vật; chọn z_index phù hợp, không mặc định phủ lên mặt.
+   - opacity phù hợp để không che thoại, nhân vật hoặc nội dung quan trọng.
+   - type phải khớp định dạng thực tế và hợp đồng mà player đang hỗ trợ.
+7. Phân biệt hiệu ứng hình ảnh toàn cảnh khai báo bằng `hieu_ung_canh` với hiệu ứng chuyển động/đạo diễn khai báo trong `hieu_ung`. Không chuyển tên file hình ảnh thành ID hiệu ứng chuyển động, không dùng ID hiệu ứng chuyển động thay cho file đồ họa toàn cảnh.
+8. Nếu một hiệu ứng cần phối hợp nhiều lớp (ví dụ mưa + chớp sáng + tia điện), phải kiểm tra từng file riêng, từng lớp z_index, opacity và thời điểm phát; không cho rằng một file có tên gần giống đã bao gồm tất cả các thành phần.
+9. Trước khi push, chạy kiểm tra đối chiếu tự động hoặc thủ công cho mọi đường dẫn hiệu ứng trong JSON:
+   - Mọi file được khai báo đều tồn tại đúng đường dẫn.
+   - Không có tên file/đuôi file tự suy đoán.
+   - type, loop, opacity, z_index hợp lệ theo player.
+   - Hiệu ứng chỉ xuất hiện ở đúng cảnh/đúng nhịp và được kết thúc khi không còn cần thiết.
+   - Không có hiệu ứng che khuất nhân vật hoặc xung đột lớp ngoài ý muốn.
+10. Báo cáo sau khi tạo/chỉnh JSON phải nêu rõ: hiệu ứng nào đã tái sử dụng (kèm đường dẫn file thật), hiệu ứng nào còn thiếu, và phần nào chưa thể xác minh trực quan/runtime. Không được báo “đã kiểm tra” nếu mới chỉ nhìn tên file hoặc chưa đọc cây thư mục mới nhất.
+11. Nếu không truy cập được `assets/HieuUng/`, phải dừng việc tự khai báo đường dẫn hiệu ứng hình ảnh, tiếp tục phần kịch bản không phụ thuộc hiệu ứng nếu có thể, và báo rõ giới hạn; tuyệt đối không bịa đường dẫn để hoàn tất.
+
+--------------------------------------------------------------------------------
+
 ==================================================
 VI. QUY TẮC ÂM THANH – CẤU TRÚC MỚI
 ==================================================
