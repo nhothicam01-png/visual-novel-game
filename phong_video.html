@@ -362,7 +362,7 @@ const ANIMATION_REGISTRY_FALLBACK={
  pose:["standing","sitting","lying","crouching","kneeling","walking_pose","Đứng","Ngồi","Nằm","Ngồi xổm","Quỳ gối"],
  action:["idle","walking","running","jumping","flying","swimming","sitting down","lying down","pushing","pulling","teleporting","turning","waving","dancing","falling","picking up","Đứng yên","Đi bộ","Đi bộ nhanh","Chạy","Nhảy","Bay","Bơi","Ngồi xuống","Nằm xuống","Bị đẩy","Bị kéo","Dịch chuyển tức thời","Quay người","Vẫy tay","Nhảy múa","Ngã","Nhặt đồ"],
  direction:["left","right","front","back","Trái","Phải","Chính diện","Phía sau","Sang trái","Sang phải"],
- face_angle:["0°","45°","90°","135°","180°"],
+ face_angle:["front","angled","Chính diện","Nghiêng"],
  view_angle:["full body","half body","close up","three quarter","high angle","low angle","top down","over the shoulder","Toàn thân","Bán thân","Cận cảnh","Góc 3/4","Góc nghiêng","Từ trên xuống","Từ dưới lên","Qua vai"],
  interaction_target:["none","character","object","Nhân vật","Đồ vật","Không có"]
 };
@@ -2248,7 +2248,7 @@ function canonicalAnimationValue(field,value){
  if(field==='face_angle'){
   if(!raw)return '';
   if(/^(front|front view|front facing|chinh dien|nhin thang|thang|0|0 deg|0 degree|0 degrees|0 do)$/.test(raw))return 'front';
-  const numeric=raw.match(/^(-?\d+(?:[.,]\d+)?)\s*(?:deg(?:ree)?s?|do)?$/);
+  const numeric=raw.match(/^(-?\d+(?:[.,]\d+)?)\s*(?:°|deg(?:ree)?s?|do)?$/);
   if(numeric)return Math.abs(Number(numeric[1].replace(',','.')))%360<0.5?'front':'angled';
   return 'angled';
  }
