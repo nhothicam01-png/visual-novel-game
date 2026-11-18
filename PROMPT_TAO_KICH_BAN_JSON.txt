@@ -515,8 +515,10 @@ ANIMATION / BIỂU CẢM:
 HÌNH NỀN:
 - Kiểm tra tài nguyên thực tế trong assets/Nen/.
 - `anh_nen` phải là tên tệp đầy đủ, gồm phần mở rộng.
-- Nếu nền không đổi, để `anh_nen` là chuỗi rỗng hoặc không khai báo để kế thừa nền ở mục thoại trước.
+- Mỗi `scene_id` chỉ khai báo nền mặc định MỘT LẦN tại dòng thoại đầu tiên của cảnh. Các dòng thoại tiếp theo để `anh_nen` là chuỗi rỗng hoặc không khai báo; player tự kế thừa nền của cảnh.
+- Khi đổi nền giữa một cảnh vì có chuyển địa điểm/thời gian thực sự, chỉ khai báo `anh_nen` tại đúng dòng bắt đầu bối cảnh mới; các dòng sau tiếp tục kế thừa.
 - Nếu `anh_nen` rỗng, thiếu hoặc null, không chuyển sang nền trống.
+- Khi xuất/chỉnh sửa JSON, không nhân bản cùng một `anh_nen` lên mọi dòng thoại. Khi đổi nền mặc định trong giao diện chỉnh cảnh, áp dụng cho toàn cảnh và chỉ xuất một lần ở dòng đầu cảnh.
 - Chỉ khai báo tệp mới khi cần đổi bối cảnh; không tự tạo tên file.
 
 ==================================================
