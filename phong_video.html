@@ -2281,7 +2281,7 @@ function resolveSemanticAnimation(folder,semantic){
  const exact=candidates.find(x=>x.matched);
  if(exact){
   const pool=candidates.filter(x=>x.matched&&x.score===exact.score),seed=Math.max(0,Number(activeLineIndex)||0),chosen=pool[seed%pool.length];
-  return {file:chosen.path.split('/').pop().replace(/\\.webm$/i,''),matched:true,mirrored:!!chosen.mirrored,reason:'',variantCount:pool.length};
+  return {file:chosen.path.split('/').pop().replace(/\.webm$/i,''),matched:true,mirrored:!!chosen.mirrored,reason:'',variantCount:pool.length};
  }
  // Fallback ưu tiên WEBM thật: đứng thẳng, trung tính, silent/listening và đúng hướng/góc mặt.
  const neutralWords=new Set(['neutral','normal','calm','binh thuong','trung tinh']);
@@ -2308,9 +2308,9 @@ function resolveSemanticAnimation(folder,semantic){
  }).filter(Boolean).sort((a,b)=>b.score-a.score||a.path.localeCompare(b.path));
  if(neutralCandidates.length){
   const chosen=neutralCandidates[0];
-  return {file:chosen.path.split('/').pop().replace(/\\.webm$/i,''),matched:false,neutralFallback:true,mirrored:!!chosen.mirrored,reason:'Không có WEBM khớp trạng thái; dùng WEBM đứng trung tính '+chosen.meta.communication+' đúng hướng/góc nhìn',variantCount:1};
+  return {file:chosen.path.split('/').pop().replace(/\.webm$/i,''),matched:false,neutralFallback:true,mirrored:!!chosen.mirrored,reason:'Không có WEBM khớp trạng thái; dùng WEBM đứng trung tính '+chosen.meta.communication+' đúng hướng/góc nhìn',variantCount:1};
  }
- const best=candidates[0],file=best.path.split('/').pop().replace(/\\.webm$/i,'');
+ const best=candidates[0],file=best.path.split('/').pop().replace(/\.webm$/i,'');
  const reason=best.mismatch.length?'không khớp '+best.mismatch.join(', '):best.missing.length?'thiếu metadata '+best.missing.join(', '):'';
  return {file,matched:false,mirrored:!!best.mirrored,reason,variantCount:1};
 }
@@ -2327,7 +2327,7 @@ function buildScenesFromJson(data){
  if(current)out.push(current);return out;
 }
 let storyCharacterFolderMap={};
-function normalizeCharacterName(value){return String(value??'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
+function normalizeCharacterName(value){return String(value??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]+/g,'').trim()}
 async function loadWorldCharacterFolderMap(data,storyPath){
  storyCharacterFolderMap={};worldCharacterDirectory=[];expressionFilesByFolder={};characterAnimationMetadata={};
  try{
@@ -2645,7 +2645,7 @@ $('visible-character-add').addEventListener('click',()=>{
  const list=activeCharacterList(),speaker=list.find(ch=>ch.id===String(line.speakerId||$('speaker').value));
  if(!line.visibleCharacters.length&&speaker)line.visibleCharacters.push({id:speaker.id,bieu_cam:line.expression||line.sourceFrame?.bieu_cam||'',x:30,y:100,scale:.72,z_index:1});
  const ch=list.find(item=>item.id===id);if(!ch||line.visibleCharacters.some(item=>String(item.id)===id))return;
- const files=expressionFilesByFolder[String(ch.folder)]||[],first=files[0]?.split('/').pop().replace(/\\.webm$/i,'')||'';
+ const files=expressionFilesByFolder[String(ch.folder)]||[],first=files[0]?.split('/').pop().replace(/\.webm$/i,'')||'';
  line.visibleCharacters.push({id:ch.id,bieu_cam:first,expression_id:semanticFromExpression(ch.folder,first),x:70,y:100,scale:.72,z_index:line.visibleCharacters.length+1});
  renderVisibleCharacters(line);updateAssets();
 });
