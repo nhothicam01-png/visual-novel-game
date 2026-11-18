@@ -514,7 +514,7 @@ Quy tắc:
 - Không dùng trường hiệu ứng cũ hoặc các ID cũ chỉ vì chúng từng xuất hiện trong prompt trước.
 - `anh_hieu_ung` không được dùng cho hiệu ứng môi trường; không tạo đường dẫn ảnh/video hiệu ứng.
 - Hiệu ứng toàn cảnh khai báo bằng `hieu_ung_canh` dưới dạng mảng object `{ id, type:"code", opacity, z_index }`.
-- ID hợp lệ: rain, snow, lightning, leaves, dust, fog, fire, sunlight, aura, impact, cracks, wound, sparkles, motion_blur, transition, explosion.
+- ID hợp lệ: rain, snow, lightning, leaves, petals, dust, fog, wind, bubbles, embers, fire, sunlight, aura, impact, cracks, wound, sparkles, motion_blur, transition, explosion.
 - Hiệu ứng môi trường được vẽ bằng Canvas procedural, không có file nguồn, không có loop/file path. Mặc định đặt sau nhân vật (`z_index:-10`); chỉ đặt trước nhân vật (`z_index:100`) khi có chủ ý.
 - Player ánh xạ tên file lịch sử sang ID code để tương thích truyện cũ; JSON mới chỉ ghi ID.
 
@@ -1429,7 +1429,7 @@ Mục tiêu: tạo cảm giác sân khấu được dàn dựng có chủ ý, c�
 ==================================================
 HỆ THỐNG HIỆU ỨNG MÔI TRƯỜNG THUẦN CODE — QUY CHUẨN MỚI
 ==================================================
-- Không sử dụng, tạo mới hoặc tham chiếu file ảnh/video trong assets/HieuUng/. Thư viện tài nguyên HieuUng đã được thay bằng hiệu ứng Canvas procedural tích hợp trong player.
+- Không sử dụng, tạo mới hoặc tham chiếu file ảnh/video trong thư viện hiệu ứng Canvas. Thư viện tài nguyên HieuUng đã được thay bằng hiệu ứng Canvas procedural tích hợp trong player.
 - Hiệu ứng toàn cảnh khai báo bằng ID trong hieu_ung_canh hoặc visual.sceneEffects, ví dụ:
   {"id":"rain","type":"code","opacity":0.7,"z_index":-10}
 - ID hợp lệ: rain, snow, lightning, leaves, dust, fog, fire, sunlight, aura, impact, cracks, wound, sparkles, motion_blur, transition, explosion.
@@ -1440,5 +1440,5 @@ HỆ THỐNG HIỆU ỨNG MÔI TRƯỜNG THUẦN CODE — QUY CHUẨN MỚI
 - Hiệu ứng phải chạy theo cùng timeline preview/xuất video, có thể pause/resume/seek bằng elapsed time; không tạo requestAnimationFrame hoặc timer riêng cho từng hiệu ứng.
 - Không để hiệu ứng nặng làm dừng timeline; giới hạn số hạt và bọc lỗi từng lớp vẽ.
 - Khi chỉnh sửa player, giữ tương thích dữ liệu cũ bằng cách ánh xạ tên file hiệu ứng lịch sử sang ID code, nhưng JSON mới chỉ được ghi ID code.
-- Trước khi hoàn tất kịch bản, xác thực mọi id thuộc danh sách hợp lệ, opacity trong 0..1, z_index là số hữu hạn; không còn đường dẫn assets/HieuUng/.
+- Trước khi hoàn tất kịch bản, xác thực mọi id thuộc danh sách hợp lệ, opacity trong 0..1, z_index là số hữu hạn; không còn đường dẫn thư viện hiệu ứng Canvas.
 ==================================================
