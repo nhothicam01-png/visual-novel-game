@@ -1054,6 +1054,8 @@ function drawFrameUnsafe(elapsed,st){
    if(shadowStyle.enabled!==false){
     const shadowColor=String(shadowStyle.color||'rgba(7,13,25,0.62)'),shadowCanvas=getCharacterShadowCanvas(media,shadowColor);
     if(shadowCanvas){const blur=clampStyle(shadowStyle.blur,.001,.04,.010)*h,offsetX=clampStyle(shadowStyle.offset_x,-.025,.025,.002)*w,offsetY=clampStyle(shadowStyle.offset_y,-.01,.04,.009)*h,shadowOpacity=clampStyle(shadowStyle.opacity,0,1,.58);
+     const poseName=String(spec?.expression_id?.pose||'').toLowerCase();
+     if(!/lying|sitting|kneeling|crouching|nằm|ngồi|quỳ/.test(poseName)){const ground=ctx.createRadialGradient(x,y-h*.004,0,x,y-h*.004,Math.max(8,dw*.24));ground.addColorStop(0,shadowColor);ground.addColorStop(1,'rgba(0,0,0,0)');ctx.save();ctx.globalAlpha=alpha*shadowOpacity*.42;ctx.fillStyle=ground;ctx.beginPath();ctx.ellipse(x,y-h*.004,Math.max(8,dw*.24),Math.max(3,h*.012),0,0,Math.PI*2);ctx.fill();ctx.restore()}
      ctx.save();ctx.globalAlpha=alpha*shadowOpacity;ctx.filter='blur('+blur.toFixed(1)+'px)';ctx.drawImage(shadowCanvas,x-dw/2+offsetX,y-dh+offsetY,dw,dh);ctx.restore();
     }
    }
