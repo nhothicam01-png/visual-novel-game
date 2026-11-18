@@ -1023,6 +1023,7 @@ function drawFrameUnsafe(elapsed,st){
   if(bgFx.includes('bg-left'))bx-=Math.sin(elapsed*.8)*w*.025*strength;
   if(bgFx.includes('bg-right'))bx+=Math.sin(elapsed*.8)*w*.025*strength;
   if(bgFx.includes('bg-float')){bz+=.035*strength;bx+=Math.sin(elapsed*.45)*w*.012*strength;by+=Math.cos(elapsed*.38)*h*.009*strength}
+  if(bgFx.includes('bg-earthquake')){bx+=Math.sin(elapsed*38)*w*.009*strength;by+=Math.cos(elapsed*34)*h*.006*strength;bz+=.012*strength}
   if(bgFx.includes('bg-pulse'))bz+=Math.sin(elapsed*2)*.012*strength;
   // Background luôn tối thiểu 100%; bù thêm khi pan/float để không lộ góc ảnh.
   bz=Math.max(1,bz,getVfxMinimumCoverScale(w,h,0,w/2+bx,h/2+by));
