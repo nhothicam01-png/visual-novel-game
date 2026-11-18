@@ -1,0 +1,765 @@
+{
+  "phien_ban": 3,
+  "world_id": "ThanhLinhKimSa",
+  "tieu_de": "Sau Tiếng Chuông – Kiểm Thử Góc Nhìn Và Im Lặng",
+  "mo_ta": "Truyện kiểm thử ngắn tập trung vào phân biệt narration/character, WEBM speaking/silent, góc chính diện 0°, góc nghiêng 45° nhìn phải và trái, cùng camera cận cảnh.",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.35,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_test_an": {
+      "character_id": "char_test_an",
+      "ten_hien_thi": "An",
+      "assetFolder": "Hầu gái",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_test_binh": {
+      "character_id": "char_test_binh",
+      "ten_hien_thi": "Bình",
+      "assetFolder": "Hihi",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Sau giờ học, hành lang đã vắng người. Tôi nhờ Bình ở lại vài phút để thử một điều nhỏ: khi nhân vật im lặng, hình ảnh phải giữ đúng trạng thái im lặng; khi đổi hướng nhìn, góc mặt cũng phải đổi theo.",
+      "anh_nen": "hanhlangtruong.png",
+      "thoi_luong": 8,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "full body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Bình, cậu đứng ở phía bên kia hành lang một chút nhé. Tớ muốn kiểm tra hướng nhìn khi hai người đứng đối diện nhau.",
+      "anh_nen": "",
+      "thoi_luong": 6,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "full body"
+          },
+          "x": 40,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_test_binh",
+      "ten_hien_thi": "Bình",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Được thôi. Tớ đứng ở đây rồi. Cậu nhìn sang phía tớ xem có tự nhiên không?",
+      "anh_nen": "",
+      "thoi_luong": 5.5,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_binh",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 68,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        },
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "45°",
+            "view_angle": "full body"
+          },
+          "x": 34,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Có. Khi tớ đứng bên trái khung hình và nhìn sang phải, góc nghiêng bốn mươi lăm độ phải hướng về phía cậu.",
+      "anh_nen": "",
+      "thoi_luong": 7,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "45°",
+        "view_angle": "three quarter"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "45°",
+            "view_angle": "three quarter"
+          },
+          "x": 38,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_test_binh",
+      "ten_hien_thi": "Bình",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Vậy nếu tớ đứng bên phải và nhìn ngược về phía cậu, hướng mặt phải được lật sang trái, chứ không giữ nguyên một phía.",
+      "anh_nen": "",
+      "thoi_luong": 7,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_binh",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 68,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        },
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "45°",
+            "view_angle": "full body"
+          },
+          "x": 34,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Tôi im lặng quan sát Bình. Dù đang có mặt trong khung hình, tôi không nói câu nào và không nên phát animation mấp máy miệng.",
+      "anh_nen": "",
+      "thoi_luong": 6,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "45°",
+        "view_angle": "three quarter"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "45°",
+            "view_angle": "three quarter"
+          },
+          "x": 38,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        },
+        {
+          "id": "char_test_binh",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 70,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Bây giờ tớ quay thẳng về phía trước. Góc chính diện phải trở về không độ, không bị giữ lại góc nghiêng của cảnh trước.",
+      "anh_nen": "san_truong_ban_ngay.png",
+      "thoi_luong": 7,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "full body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_test_binh",
+      "ten_hien_thi": "Bình",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ hiểu rồi. Còn khi tớ nói, chỉ animation của tớ được dùng trạng thái đang nói; cậu vẫn phải giữ trạng thái im lặng.",
+      "anh_nen": "",
+      "thoi_luong": 7,
+      "camera": {
+        "shot": "close_up",
+        "target": "char_test_binh",
+        "zoom": 1.28
+      },
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_binh",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 68,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        },
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "45°",
+            "view_angle": "three quarter"
+          },
+          "x": 34,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Chính xác. Lúc tớ nói với cậu, tớ dùng animation đang nói. Khi tớ chỉ nghe, suy nghĩ hoặc nhìn theo, tớ dùng animation im lặng.",
+      "anh_nen": "",
+      "thoi_luong": 7,
+      "camera": {
+        "shot": "close_up",
+        "target": "char_test_an",
+        "zoom": 1.25
+      },
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "45°",
+        "view_angle": "three quarter"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "45°",
+            "view_angle": "three quarter"
+          },
+          "x": 40,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Tôi nhìn sang trái rồi lại nhìn sang phải. Hướng mặc định của góc bốn mươi lăm độ là nhìn sang phải; khi cần nhìn về phía đối diện, hướng phải được đảo lại rõ ràng.",
+      "anh_nen": "",
+      "thoi_luong": 8,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "45°",
+        "view_angle": "three quarter"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "45°",
+            "view_angle": "three quarter"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_test_binh",
+      "ten_hien_thi": "Bình",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Nếu một nhân vật chỉ đứng nghe, hệ thống phải ưu tiên WEBM im lặng trong thư mục của chính nhân vật đó, không lấy nhầm WEBM đang nói của người khác.",
+      "anh_nen": "",
+      "thoi_luong": 8,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "half body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_binh",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "half body"
+          },
+          "x": 68,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        },
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "45°",
+            "view_angle": "three quarter"
+          },
+          "x": 34,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Còn nếu thư mục không có WEBM khớp, hệ thống chỉ được tìm phương án gần nhất trong chính thư mục ấy. Không được mượn animation của nhân vật khác.",
+      "anh_nen": "",
+      "thoi_luong": 7,
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "full body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "nhan_vat": "char_test_an",
+      "ten_hien_thi": "An",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Bài kiểm tra kết thúc. Tôi đã thử lời dẫn không mấp máy miệng, nhân vật nghe im lặng, góc chính diện, góc nghiêng bốn mươi lăm độ nhìn sang phải và nhìn sang trái, cùng các khung cận cảnh.",
+      "anh_nen": "",
+      "thoi_luong": 8,
+      "camera": {
+        "shot": "medium",
+        "target": "char_test_an",
+        "zoom": 1
+      },
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_test_an",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "front",
+            "face_angle": "0°",
+            "view_angle": "full body"
+          },
+          "x": 42,
+          "y": 102,
+          "scale": 0.7,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    }
+  ]
+}
