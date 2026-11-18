@@ -105,6 +105,11 @@
       "title": "Động Đất Và Cơn Bão Lớn",
       "logline": "Ba người bạn trải qua động đất ở trường, rồi trú ẩn khi cơn bão dữ dội kéo đến với mưa xối xả và sấm chớp liên hồi.",
       "arc": "Từ những rung chấn đầu tiên trong lớp học, trận động đất buộc cả nhóm tìm chỗ trú an toàn; khi dư chấn vừa qua, bão lớn ập đến và họ phải ở yên trong khu vực trú ẩn cho đến khi có thông báo an toàn."
+    },
+    {
+      "title": "Thử Nghiệm Thư Viện Hiệu Ứng Canvas",
+      "logline": "Ba người bạn thử thư viện hiệu ứng Canvas, từ thời tiết và ánh sáng đến camera, chuyển động nhân vật và đồng bộ timeline.",
+      "arc": "Lần lượt kiểm tra 10 hiệu ứng môi trường, phối hợp nhiều lớp, thử chuyển động nhân vật/camera và xác nhận phát, dừng, tua."
     }
   ],
   "story_folders": [
@@ -149,6 +154,12 @@
       "folder": "DongDatVaBaoLon",
       "path": "assets/KichBan/DongDatVaBaoLon",
       "json_path": "assets/KichBan/DongDatVaBaoLon/DongDatVaBaoLon.json"
+    },
+    {
+      "title": "Thử Nghiệm Thư Viện Hiệu Ứng Canvas",
+      "folder": "ThuVienHieuUngCanvas",
+      "path": "assets/KichBan/ThuVienHieuUngCanvas",
+      "json_path": "assets/KichBan/ThuVienHieuUngCanvas/ThuVienHieuUngCanvas.json"
     }
   ],
   "updated_at": "2026-11-19T00:00:00+07:00"
