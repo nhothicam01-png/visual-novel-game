@@ -2147,18 +2147,11 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/set.png",
+          "file": "assets/HieuUng/mua.png",
           "type": "image",
-          "loop": true,
-          "opacity": 0.95,
-          "z_index": 28
-        },
-        {
-          "file": "assets/HieuUng/tia_dien.png",
-          "type": "image",
-          "loop": true,
-          "opacity": 0.72,
-          "z_index": 29
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
         }
       ]
     },
@@ -2262,14 +2255,23 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
-      "noi_dung": "Được, nhưng đừng cố mở cửa sổ. Để giáo viên phụ trách xử lý.",
+      "noi_dung": "Cửa sổ đang đóng thì cứ để nguyên. Đừng tự ý mở cửa hay chạm vào thiết bị gần cửa.",
       "anh_nen": "",
       "anh_hieu_ung": "",
       "expression_id": {
@@ -2364,7 +2366,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -2466,7 +2477,23 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        },
+        {
+          "file": "assets/HieuUng/set.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.88,
+          "z_index": -10
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -2568,7 +2595,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -2675,7 +2711,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -2777,7 +2822,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -2879,7 +2933,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -2981,7 +3044,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3083,7 +3155,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3185,7 +3266,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3287,7 +3377,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3389,7 +3488,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3491,7 +3599,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3593,7 +3710,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3695,7 +3821,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3797,7 +3932,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -3899,7 +4043,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -4001,7 +4154,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC002",
@@ -4103,7 +4265,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -4210,18 +4381,11 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/set.png",
+          "file": "assets/HieuUng/mua.png",
           "type": "image",
-          "loop": true,
-          "opacity": 0.95,
-          "z_index": 28
-        },
-        {
-          "file": "assets/HieuUng/tia_dien.png",
-          "type": "image",
-          "loop": true,
-          "opacity": 0.72,
-          "z_index": 29
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
         }
       ]
     },
@@ -4325,7 +4489,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -4429,7 +4602,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -4531,7 +4713,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -4633,7 +4824,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -4735,7 +4935,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -4837,7 +5046,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -4939,7 +5157,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5043,7 +5270,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5145,7 +5381,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5249,7 +5494,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5351,7 +5605,30 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        },
+        {
+          "file": "assets/HieuUng/set.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.88,
+          "z_index": -10
+        },
+        {
+          "file": "assets/HieuUng/tia_dien.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -9
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5455,7 +5732,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5562,7 +5848,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5664,7 +5959,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5766,7 +6070,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5875,7 +6188,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -5977,7 +6299,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -6079,7 +6410,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC003",
@@ -6181,7 +6521,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -6288,18 +6637,11 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/set.png",
+          "file": "assets/HieuUng/mua.png",
           "type": "image",
-          "loop": true,
-          "opacity": 0.95,
-          "z_index": 28
-        },
-        {
-          "file": "assets/HieuUng/tia_dien.png",
-          "type": "image",
-          "loop": true,
-          "opacity": 0.72,
-          "z_index": 29
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
         }
       ]
     },
@@ -6403,7 +6745,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -6505,7 +6856,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -6607,7 +6967,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -6709,7 +7078,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -6811,7 +7189,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -6913,7 +7300,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7015,7 +7411,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7117,7 +7522,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7219,7 +7633,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7321,7 +7744,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7423,7 +7855,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7525,7 +7966,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7627,7 +8077,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7729,7 +8188,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7831,7 +8299,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -7933,7 +8410,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -8038,7 +8524,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -8140,7 +8635,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC004",
@@ -8242,7 +8746,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -8342,7 +8855,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -8442,7 +8964,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -8542,7 +9073,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -8642,7 +9182,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -8742,7 +9291,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -8842,7 +9400,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -8942,7 +9509,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -9042,7 +9618,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -9142,7 +9727,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -9242,7 +9836,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -9342,7 +9945,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -9442,7 +10054,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -9542,7 +10163,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
@@ -9642,7 +10272,16 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      }
+      },
+      "hieu_ung_canh": [
+        {
+          "file": "assets/HieuUng/mua.png",
+          "type": "image",
+          "loop": false,
+          "opacity": 0.62,
+          "z_index": -20
+        }
+      ]
     },
     {
       "scene_id": "SC005",
