@@ -142,7 +142,17 @@
                 "rotation_degrees": 0,
                 "opacity": 1
               }
-            ]
+            ],
+            "end_expression_id": {
+              "communication": "silent",
+              "emotion": "neutral",
+              "pose": "standing",
+              "direction": "right",
+              "face_angle": "135°",
+              "view_angle": "full body",
+              "action": "idle",
+              "interaction_target": "none"
+            }
           }
         },
         {
