@@ -751,26 +751,20 @@ function applyAutomaticCharacterLayout(layers,frame,width,height){
  if(visible.length<2)return;
  const config=frame?.bo_cuc_nhan_vat&&typeof frame.bo_cuc_nhan_vat==='object'?frame.bo_cuc_nhan_vat:{};
  if(String(config.mode||'auto').toLowerCase()!=='auto')return;
- // variation:"natural" (mặc định) phá hàng ngang đều tăm tắp: người đang nói to hơn và đứng trước, người khác lệch nhẹ về
- // cỡ/vị trí, nhóm đứng sát hơn. variation:"none" giữ cách xếp đều cũ.
- const natural=String(config.variation||'natural').toLowerCase()!=='none';
- const margin=Math.max(2,Math.min(18,Number(config.margin??6))),gap=Math.max(1,Math.min(14,Number(config.gap??5))),gapEff=natural?gap*.3:gap;
- const speakerId=String(frame?.nhan_vat??'');
- const mults=visible.map(item=>{if(!natural)return 1;const id=String(item.spec?.id??'');return id&&id===speakerId?1.2:.9+.16*hashUnit(id,'scale')});
- const available=100-margin*2-gapEff*(visible.length-1);
- const widths=visible.map((item,index)=>{const media=item.media,sw=media.videoWidth||media.naturalWidth||media.width||1,sh=media.videoHeight||media.naturalHeight||media.height||1,scale=Math.max(.1,Math.min(2.5,Number(item.spec?.scale??.72)*mults[index]));return Math.max(7,(sw/sh)*(height/width)*scale*100)});
+ // Tự dàn đối xứng và ổn định: người nói KHÔNG được phóng to, đổi chỗ hoặc chen lên trước.
+ // Vị trí nhân vật được giữ cố định giữa các lượt thoại; chỉ camera được lia/zoom.
+ const margin=Math.max(2,Math.min(18,Number(config.margin??6))),gap=Math.max(1,Math.min(14,Number(config.gap??5)));
+ const available=100-margin*2-gap*(visible.length-1);
+ const widths=visible.map(item=>{const media=item.media,sw=media.videoWidth||media.naturalWidth||media.width||1,sh=media.videoHeight||media.naturalHeight||media.height||1,scale=Math.max(.1,Math.min(2.5,Number(item.spec?.scale??.72)));return Math.max(7,(sw/sh)*(height/width)*scale*100)});
  const total=widths.reduce((a,b)=>a+b,0),shrink=total>available?available/total:1;
  let cursor=margin+Math.max(0,(available-total*shrink)/2);
- const order=visible.map((item,index)=>({index,size:mults[index]*(Number(item.spec?.scale??.72))})).sort((a,b)=>a.size-b.size||a.index-b.index);
  visible.forEach((item,index)=>{
-  const original=Number(item.spec?.scale??.72)*mults[index],id=String(item.spec?.id??''),w=widths[index]*shrink;
-  let x=cursor+w/2;
-  if(natural)x+=(hashUnit(id,'x')-.5)*gap*1.2;
-  x=Math.max(Math.min(4+w/2,50),Math.min(96-w/2,x));
-  const next={...item.spec,scale:Math.max(.1,Math.min(2.5,original*shrink)),x,layout_auto:true};
-  // Người to hơn/đang nói đứng trước. Dải z 1..30 để không đè lên lớp hiệu ứng "trước nhân vật" (z>=40).
-  if(natural)next.z_index=1+order.findIndex(o=>o.index===index)+(id&&id===speakerId?20:0);
-  item.spec=next;cursor+=w+gapEff;
+  const original=Math.max(.1,Math.min(2.5,Number(item.spec?.scale??.72))),w=widths[index]*shrink;
+  const x=cursor+w/2;
+  const next={...item.spec,scale:original*shrink,x,layout_auto:true};
+  // Thứ tự lớp ổn định theo thứ tự khai báo; không ưu tiên người đang thoại.
+  next.z_index=1+index;
+  item.spec=next;cursor+=w+gap;
  });
 }
 async function updateAssets(){
@@ -948,7 +942,7 @@ function drawAnimatedPngEffect(media,item,w,h,elapsed){
 // Kích thước/đáy nhân vật tính đúng như drawOneCharacter (cao = h*scale, chân neo tại y%).
 // Tâm bị kẹp để vùng nhìn luôn nằm TRỌN trong khung: không lộ viền nền, và khi nhân vật neo ở đáy khung
 // thì chân vẫn chạm đáy màn hình thay vì bị nhấc lên.
-function computeShotCamera(w,h,shotZoom,targetId,layers,portrait){
+function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
  if(!(shotZoom>1))return null;
  const layer=(layers||[]).find(item=>String(item.spec?.id||'')===targetId);if(!layer)return null;
  const count=Math.max(1,layers.length),zoom=portrait&&count===1?1:Math.max(1,Math.min(1.8,shotZoom));
@@ -956,7 +950,10 @@ function computeShotCamera(w,h,shotZoom,targetId,layers,portrait){
  const spec=layer.spec||{},requested=Number(spec.scale),clamp=(lo,hi,v)=>Math.max(lo,Math.min(hi,v));
  const scale=count===1?1:(Number.isFinite(requested)?clamp(.1,2.5,requested):.72),dh=h*scale;
  const px=Number.isFinite(Number(spec.x))?clamp(0,100,Number(spec.x)):50,py=Number.isFinite(Number(spec.y))?clamp(0,110,Number(spec.y)):102;
- const feet=Math.max(dh+h*.015,Math.min(h*1.02,h*py/100)),focusY=Math.max(dh*.08,feet-dh*(portrait?.62:.70));
+ const feet=Math.max(dh+h*.015,Math.min(h*1.02,h*py/100));
+ // Cận mặt ưu tiên vùng đầu/ngực; bán thân lấy vùng ngực; toàn thân giữ trọn chiều cao nhân vật.
+ const focusRatio=shot==='close_up'?.86:shot==='bust'?.70:shot==='full_body'?.50:(portrait?.62:.70);
+ const focusY=Math.max(dh*.08,feet-dh*focusRatio);
  const halfW=w/(2*zoom),halfH=h/(2*zoom);
  return {zoom,cx:clamp(halfW,w-halfW,w*px/100),cy:clamp(halfH,h-halfH,focusY)};
 }
@@ -986,12 +983,26 @@ function drawFrameUnsafe(elapsed,st){
  // Đạo diễn khung hình: camera nhắm riêng một nhân vật. Phép biến đổi áp dụng cho CẢ nền lẫn nhân vật
  // (trước đây chỉ áp cho nhân vật nên chân bị nhấc khỏi mặt đất, hở phần nền phía dưới).
  const sourceCameraFrame=getCurrentLine()?.sourceFrame||{},cameraSpec=sourceCameraFrame.camera&&typeof sourceCameraFrame.camera==='object'?sourceCameraFrame.camera:{};
- const shot=String(cameraSpec.shot||sourceCameraFrame.camera_shot||'').toLowerCase().replace(/[- ]+/g,'_');
- const cameraTarget=String(cameraSpec.target||sourceCameraFrame.camera_target||speakingCharacterId||'');
- // Mức zoom mặc định vừa phải; zoom tùy chỉnh trong JSON vẫn được tôn trọng nhưng có giới hạn an toàn.
- const shotZoom=Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.52:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.18:shot==='over_shoulder'||shot==='qua_vai'?1.32:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0);
+ const director=String(cameraSpec.director||'auto').toLowerCase();
+ const sceneLines=getCurrentScene()?.lines||[],lineIndex=Math.max(0,activeLineIndex);
+ const speakerTarget=String(sourceCameraFrame.nhan_vat||getCurrentLine()?.speakerId||speakingCharacterId||'');
+ // Mặc định tự đạo diễn: luân phiên cận mặt, bán thân, cận mặt, toàn thân, bán thân, toàn cảnh nhóm.
+ // Chỉ camera thay đổi; tọa độ và kích thước gốc của các nhân vật không đổi theo người nói.
+ const autoShots=['close_up','bust','close_up','full_body','bust','group'];
+ const autoShot=autoShots[lineIndex%autoShots.length];
+ const shot=director==='manual'
+  ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
+  :autoShot;
+ const cameraTarget=director==='manual'
+  ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
+  :(shot==='group'?'':speakerTarget);
+ const defaultZoom=shot==='close_up'?1.58:shot==='bust'?1.27:shot==='full_body'?1.035:shot==='group'?1:1;
+ const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.52:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.18:shot==='over_shoulder'||shot==='qua_vai'?1.32:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
- const shotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,charLayerVideos,isPortrait);
+ const rawShotCamera=shot==='group'?null:computeShotCamera(w,h,shotZoom,cameraTarget,charLayerVideos,isPortrait,shot);
+ // Lia máy mượt từ khung trung tâm đến chủ thể trong 0,48 giây; không di chuyển sprite.
+ const panT=Math.max(0,Math.min(1,(elapsed-lineMotionStartElapsed)/.48)),panEase=panT*panT*(3-2*panT);
+ const shotCamera=rawShotCamera?{zoom:1+(rawShotCamera.zoom-1)*panEase,cx:w/2+(rawShotCamera.cx-w/2)*panEase,cy:h/2+(rawShotCamera.cy-h/2)*panEase}:null;
  if(shotCamera){ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(shotCamera.zoom,shotCamera.zoom);ctx.translate(-shotCamera.cx,-shotCamera.cy)}
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
  if(bgAsset||bgVideo) {
