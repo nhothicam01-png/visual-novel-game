@@ -6,7 +6,7 @@ import harness
 fails=[]
 async def sc(page):
     for row in (8,18,21,10):
-        info=await page.evaluate("""r=>__dbg(`(async()=>{const it=allSourceLines()[${r}];await loadSourceLineForPlayback(it);
+        info=await page.evaluate("""r=>__dbg(`(async()=>{const lines=allSourceLines();const it=lines[Math.min(Math.max(0,Number(${r})||0),lines.length-1)];if(!it)throw new Error('Timeline không có dòng để kiểm tra; count='+lines.length);await loadSourceLineForPlayback(it);
           return charLayerVideos.map(l=>({id:l.spec.id,y:l.spec.y,scale:l.spec.scale,x:l.spec.x,z:l.spec.z_index,cut:!!l.spec.bottomCut}))})()`)""",row)
         print('row',row,[(c['id'][-6:],round(c['x'],1),round(c['scale'],3),c['y'],c['z'],c['cut']) for c in info])
         if len(info)<2: fails.append(('no layers',row)); continue
