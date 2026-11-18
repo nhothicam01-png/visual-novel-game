@@ -1432,3 +1432,19 @@ BỔ SUNG — CHỈ PHÂN LOẠI HAI NHÓM GÓC MẶT
 - Hướng quay trái/phải vẫn là tiêu chí riêng: nếu dữ liệu có direction thì tiếp tục ưu tiên đúng hướng; chỉ lật khi mirror_safe cho phép.
 - Nếu metadata WEBM ghi góc bằng số độ, phải tự quy đổi sang hai nhóm trên trước khi so khớp.
 -----------------------------------------
+
+
+==================================================
+BỔ SUNG — BỐ CỤC NHÂN VẬT TỰ NHIÊN, TRÁNH XẾP HÀNG ĐỀU NHAU (BẮT BUỘC)
+==================================================
+Mục tiêu: tạo cảm giác sân khấu được dàn dựng có chủ ý, có chiều sâu và có quan hệ không gian; không để nhân vật mặc định đứng thành một hàng với khoảng cách bằng nhau như x=25/50/75 trong mọi cảnh.
+
+1. Không dùng bố cục chia đều máy móc làm mặc định cho mọi cảnh. Trước khi đặt tọa độ, xác định số nhân vật thực sự hiện diện, ai đang tương tác với ai, ai là trọng tâm cảm xúc, hướng nhìn, vật thể/đạo cụ và không gian trống cần dành cho chữ hoặc hành động.
+2. Với 2 nhân vật đối thoại: giữ hai nhân vật ở hai vùng trái/phải để camera có thể lia ngang giữa họ; có thể dùng vị trí hơi lệch tâm (ví dụ x khoảng 28–38 và 62–74), không bắt buộc đối xứng tuyệt đối. Hai nhân vật phải nhìn về phía nhau theo interaction_target/direction.
+3. Với 3 nhân vật: ưu tiên bố cục tam giác hoặc vòng cung nông thay vì ba điểm cách đều. Có thể đặt người giữ vai trò trung tâm câu chuyện hơi gần camera hơn; hai người còn lại lệch trái/phải và lùi nhẹ. Không mặc định nhân vật giữa màn hình là người nói.
+4. Với 4 nhân vật trở lên: chia thành nhóm nhỏ theo quan hệ tương tác (cặp đang nói chuyện, người quan sát, người đứng tách biệt), tạo lớp trước/sau bằng chênh lệch y và scale vừa phải. Tránh dàn tất cả trên cùng một đường ngang.
+5. Chỉ dùng chênh lệch y/scale nhỏ và có lý do thị giác; không thu nhỏ nhân vật tùy tiện, không để nhân vật phía sau bị che mặt, không cắt mất chân/đầu. Ưu tiên giữ toàn thân và vùng an toàn trong khung.
+6. Bố cục phải ổn định qua các lượt thoại liên tiếp trong cùng một blocking. Không đổi x/y/scale theo người đang nói, không làm nhân vật tự nhảy vị trí giữa hai câu. Chỉ đổi bố cục khi có hành động di chuyển, nhân vật vào/ra cảnh, thay đổi nhóm tương tác hoặc chuyển địa điểm; khi di chuyển phải dùng motion đúng schema.
+7. Khi cần tọa độ có chủ ý, khai báo x/y/scale rõ ràng và dùng bo_cuc_nhan_vat.mode="manual" để player giữ nguyên blocking. Chỉ dùng mode="auto" khi thực sự muốn player tự phân bổ các nhân vật chưa có tọa độ; không khai báo x/y giả định rồi mong auto tự thay đổi chúng.
+8. Camera vẫn là lớp độc lập: camera lia ngang từ vị trí hiện tại đến người nói, không di chuyển sprite, không đổi bố cục sân khấu và không đưa người nói về giữa bằng cách sửa tọa độ nhân vật.
+9. Trước khi lưu, xem lại từng cảnh nhóm: bố cục có tạo chiều sâu không, các nhân vật có nhìn đúng người đang tương tác không, có khoảng trống cho phụ đề/chữ không, có sprite chồng lấn hoặc che mặt không. Nếu cảnh chỉ có hai người đối thoại, không ép tạo chiều sâu phức tạp; ưu tiên blocking rõ ràng và tự nhiên.
