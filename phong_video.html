@@ -797,7 +797,7 @@ async function updateAssets(){
    if(!media&&folder){for(const candidate of (expressionFilesByFolder[String(folder)]||[])){try{media=await cachedVideo(BASE+'NhanVat/'+folder+'/'+candidate.split('/').pop());if(media){usedFallback=true;media.pause();try{media.currentTime=0}catch(e){}break}}catch(e){}}}
    if(!media){media=makeFallbackCharacterCanvas({...spec,name:worldCharacterDirectory.find(ch=>String(ch.id)===String(spec.id))?.name||spec.id});usedFallback=true}
    const canPlayAnimation=!usedFallback&&(selection.matched||isSpeakingClip||selection.neutralFallback);
-   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,animationMatched:selection.matched&&!usedFallback,canPlayAnimation},folder,media,index,animationMatched:selection.matched&&!usedFallback,canPlayAnimation,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':(selection.neutralFallback?selection.reason:selection.reason),animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
+   return {spec:{...spec,expression_id:semantic,flipX:!!selection.mirrored,neutralFallback:!!selection.neutralFallback,animationMatched:selection.matched&&!usedFallback,canPlayAnimation},folder,media,index,animationMatched:selection.matched&&!usedFallback,canPlayAnimation,animationReason:usedFallback?'Dùng hình mô phỏng dự phòng vì WEBM không tải được':(selection.neutralFallback?selection.reason:selection.reason),animationState:[semantic.communication,semantic.action||semantic.pose,semantic.direction].filter(Boolean).join(' / '),mirrored:!!selection.mirrored,variantCount:selection.variantCount||1};
   });
   const safeAssetLoad=async(label,loader)=>{try{return await loader()}catch(error){console.warn('Không tải được '+label+'; tiếp tục bằng phương án dự phòng:',error);return null}};
   const [nextBg,nextChar,nextLayers,nextSceneEffects,nextObjects]=await Promise.all([
@@ -1040,7 +1040,7 @@ function drawFrameUnsafe(elapsed,st){
   y=Math.max(dh+h*.015,Math.min(h*1.02,y));
   ctx.save();let alpha=Math.max(0,Math.min(1,st.opacity??1));
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
-  const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
+  const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!spec?.neutralFallback&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
   if(isCurrentSpeaker){
    const motion=Math.max(0,Math.min(1,speechMotionSmooth));
    // Chu ky lien tuc, khong bam theo am luong hay tung am tiet nen khong bi giat.
