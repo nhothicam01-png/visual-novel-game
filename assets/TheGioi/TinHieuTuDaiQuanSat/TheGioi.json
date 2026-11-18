@@ -101,6 +101,13 @@
       "arc": "Từ tín hiệu bí ẩn ở trường, hành trình qua bến xe và con đường đèo, đến phát hiện bất ngờ rằng thông điệp chỉ dẫn đến một kho tư liệu khoa học bị lãng quên."
     }
   ],
-  "story_folders": [],
+  "story_folders": [
+    {
+      "title": "Bản Đồ Dưới Bầu Trời Đêm",
+      "folder": "BanDoDuoiBauTroiDem",
+      "path": "assets/KichBan/BanDoDuoiBauTroiDem",
+      "json_path": "assets/KichBan/BanDoDuoiBauTroiDem/BanDoDuoiBauTroiDem.json"
+    }
+  ],
   "updated_at": "2026-11-19T02:47:00.000Z"
 }
