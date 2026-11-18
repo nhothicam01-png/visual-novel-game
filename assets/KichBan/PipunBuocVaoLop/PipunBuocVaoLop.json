@@ -105,7 +105,45 @@
           "z_index": 2,
           "visible": true,
           "remove_from_scene": false,
-          "rotation_degrees": 0
+          "rotation_degrees": 0,
+          "motion": {
+            "duration_seconds": 2.4,
+            "easing": "ease_in_out",
+            "keyframes": [
+              {
+                "t": 0,
+                "x": -12,
+                "y": 100,
+                "scale": 0.66,
+                "rotation_degrees": 0,
+                "opacity": 1
+              },
+              {
+                "t": 0.28,
+                "x": 4,
+                "y": 100,
+                "scale": 0.66,
+                "rotation_degrees": 0,
+                "opacity": 1
+              },
+              {
+                "t": 0.72,
+                "x": 34,
+                "y": 100,
+                "scale": 0.66,
+                "rotation_degrees": 0,
+                "opacity": 1
+              },
+              {
+                "t": 1,
+                "x": 50,
+                "y": 100,
+                "scale": 0.66,
+                "rotation_degrees": 0,
+                "opacity": 1
+              }
+            ]
+          }
         },
         {
           "id": "char_rerin_char_03",
