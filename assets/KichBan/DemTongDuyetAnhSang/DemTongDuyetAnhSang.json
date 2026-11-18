@@ -784,11 +784,11 @@
       "expression_id": {
         "communication": "speaking",
         "emotion": "determined",
-        "pose": "standing",
-        "direction": "front",
-        "face_angle": "0°",
+        "pose": "walking_pose",
+        "direction": "right",
+        "face_angle": "135°",
         "view_angle": "full body",
-        "action": "idle",
+        "action": "walking",
         "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
@@ -830,12 +830,12 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "front",
-            "face_angle": "0°",
+            "emotion": "determined",
+            "pose": "walking_pose",
+            "direction": "right",
+            "face_angle": "135°",
             "view_angle": "full body",
-            "action": "idle",
+            "action": "walking",
             "interaction_target": "none"
           },
           "x": 75,
@@ -863,9 +863,6 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      },
-      "hieu_ung_canh": {
-        "walk": "char_rerin_char_03"
       }
     },
     {
@@ -1336,11 +1333,11 @@
       "expression_id": {
         "communication": "speaking",
         "emotion": "determined",
-        "pose": "standing",
-        "direction": "front",
-        "face_angle": "0°",
+        "pose": "walking_pose",
+        "direction": "right",
+        "face_angle": "135°",
         "view_angle": "full body",
-        "action": "idle",
+        "action": "walking",
         "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
@@ -1382,12 +1379,12 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "front",
-            "face_angle": "0°",
+            "emotion": "determined",
+            "pose": "walking_pose",
+            "direction": "right",
+            "face_angle": "135°",
             "view_angle": "full body",
-            "action": "idle",
+            "action": "walking",
             "interaction_target": "none"
           },
           "x": 75,
@@ -1415,9 +1412,6 @@
         "hieu_ung_am_thanh": {
           "tep": ""
         }
-      },
-      "hieu_ung_canh": {
-        "walk": "char_rerin_char_03"
       }
     },
     {
