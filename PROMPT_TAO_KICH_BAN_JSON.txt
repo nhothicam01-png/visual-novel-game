@@ -338,6 +338,49 @@ Chỉ xuất bản phương án đã chọn trong JSON cuối cùng. Khi báo c�
 
 ==================================================
 
+
+==================================================
+QUY TẮC ĐẠO DIỄN GÓC MẶT VÀ BIỂU CẢM KHI GIAO TIẾP
+==================================================
+MỤC TIÊU:
+Tránh việc cả nhóm luôn quay nghiêng vào nhau ở mọi câu thoại. Phối hợp góc chính diện và góc nghiêng có chủ đích, trong khi các nhân vật vẫn giữ vị trí và tiếp tục xuất hiện theo bố cục cảnh.
+
+1. TỶ LỆ ĐỊNH HƯỚNG THAM KHẢO
+- Với các câu thoại thông thường trong cảnh hội thoại nhiều nhân vật, hướng tới khoảng 70% góc nghiêng và 30% góc chính diện trên toàn cảnh/cả đoạn hội thoại.
+- Đây là tỷ lệ định hướng mềm, không phải quota cứng cho từng cảnh hoặc từng nhân vật. Không ép góc chính diện nếu ngữ cảnh không phù hợp.
+- Không chọn góc ngẫu nhiên chỉ để đạt tỷ lệ. Ưu tiên ý nghĩa câu thoại, người nghe và nhịp dựng.
+
+2. KHI NÀO DÙNG GÓC NGHIÊNG
+- Khi gọi tên, hỏi, trả lời hoặc nói trực tiếp với một nhân vật cụ thể: ưu tiên hướng mặt về người đó.
+- Khi trao đổi qua lại giữa hai nhân vật: giữ hướng nhìn tương hỗ hợp lý, không quay lưng/nhìn ra ngoài khung nếu không có chủ đích.
+- Giữ nguyên quy ước hướng trái/phải theo vị trí thực tế của người nói và người nghe; direction là hướng trái/phải, face_angle chỉ phân biệt chính diện (0°) và nghiêng (bất kỳ góc khác 0°).
+
+3. KHI NÀO DÙNG GÓC CHÍNH DIỆN
+- Khi nhân vật nói với cả nhóm/khán giả, phát biểu chung, thông báo, giải thích, độc thoại hoặc nhấn mạnh một ý quan trọng.
+- Có thể dùng chính diện cho câu cảm thán, bất ngờ, sợ hãi, vui mừng hoặc quyết tâm khi nhìn thẳng giúp truyền tải cảm xúc tốt hơn.
+- Nhân vật nghe cũng có thể quay chính diện để thể hiện phản ứng rõ rệt (bất ngờ, bối rối, lo lắng, xúc động); không giới hạn góc chính diện cho người đang nói.
+- Không biến mọi câu thoại thành chính diện. Chỉ chọn khi có lý do diễn xuất.
+
+4. BIỂU CẢM KHÔNG ĐƯỢC MẤT Ở GÓC CHÍNH DIỆN
+- Góc chính diện không đồng nghĩa với trung tính. Luôn đặt expression_id.emotion theo nội dung câu thoại/phản ứng, ví dụ afraid, surprised, happy, angry, worried, determined.
+- Người nói vẫn phải có communication:"speaking"; người nghe dùng listening hoặc reacting phù hợp.
+- Với người nghe, biểu cảm phải phản ứng với chính câu vừa nghe, không để cả nhóm mặc định neutral.
+- Nếu có WEBM chính diện đúng biểu cảm và communication, ưu tiên clip đó. Không thay bằng clip neutral chỉ vì góc chính diện.
+- Chỉ dùng neutral khi nội dung thực sự trung tính hoặc không có phản ứng đáng kể; không tự bịa biểu cảm không có trong ngữ cảnh.
+
+5. BỐ CỤC NHÓM VÀ CAMERA
+- Giữ các nhân vật cần có mặt trong nhan_vat_hien_thi; không ẩn hai nhân vật còn lại chỉ vì camera đang cận người nói.
+- Bố cục có thể lệch nhẹ về vị trí, chiều cao, tỷ lệ hoặc độ sâu để tránh ba nhân vật đứng thành hàng đều tăm tắp; không thay đổi vị trí sprite chỉ để tạo cảm giác camera đang lia.
+- Camera có thể cắt cận/góc chính diện người nói hoặc người phản ứng, nhưng camera.target không được tự động thay đổi direction/face_angle của nhân vật.
+- Nếu camera cận một người, các nhân vật khác vẫn giữ trạng thái hiện diện và diễn xuất hợp lý theo khung hình/cảnh.
+
+6. KIỂM TRA TRƯỚC KHI LƯU
+- Kiểm tra tỷ lệ chính diện/nghiêng ở cấp toàn đoạn, tính hợp lý theo ngữ cảnh, hướng nhìn người nói-người nghe và biểu cảm của cả người nói lẫn người nghe.
+- Kiểm tra có nhân vật nào nhìn ra ngoài khung vô cớ không.
+- Kiểm tra góc chính diện có giữ đúng emotion và communication hay bị rơi về neutral/silent ngoài ý muốn.
+- Không hy sinh đúng hướng giao tiếp chỉ để đạt tỷ lệ 70/30.
+==================================================
+
 ==================================================
 III. NGUYÊN TẮC BIÊN KỊCH
 ==================================================
