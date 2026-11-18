@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "world_name": "Thị Trấn Mây Đỏ",
+  "slug": "TinHieuTuDaiQuanSat",
+  "genre": "Bí ẩn nhẹ, phiêu lưu, tình bạn",
+  "premise": "Bubu, Pipun và Rerin tình cờ bắt được một tín hiệu vô tuyến lặp lại. Lần theo những manh mối cũ, họ khám phá câu chuyện về đài quan sát trên đèo và một bản đồ bầu trời bị thất lạc.",
+  "setting": "Một thị trấn nhỏ nằm giữa vùng đồi, có trường học, bến xe, con đường đèo và đại sảnh cộng đồng. Những câu chuyện xoay quanh các bí ẩn đời thường, khám phá khoa học và tình bạn.",
+  "tone": "Tò mò, ấm áp, có chút hồi hộp; giải quyết bí ẩn bằng quan sát, suy luận và phối hợp.",
+  "extra": "Thế giới độc lập với Học Viện Ánh Sao. Ba nhân vật giữ đúng character_id và nguồn animation đã có trong repository.",
+  "mode": "guided",
+  "places": [
+    {
+      "name": "Phòng câu lạc bộ ở trường",
+      "description": "Nơi nhóm bắt được tín hiệu vô tuyến lặp lại."
+    },
+    {
+      "name": "Bến xe thị trấn",
+      "description": "Điểm dừng chân trước khi cả nhóm lên đường tìm đài quan sát."
+    },
+    {
+      "name": "Con đường đèo",
+      "description": "Đường dẫn đến đài quan sát cũ, nơi manh mối được hé lộ."
+    },
+    {
+      "name": "Đại sảnh cộng đồng",
+      "description": "Nơi nhóm ghép các ghi chép thành bản đồ hoàn chỉnh."
+    }
+  ],
+  "characters": [
+    {
+      "character_id": "char_bubu_char_01",
+      "name": "Bubu",
+      "role": "Người phát hiện tín hiệu lạ, tò mò và giàu nhiệt huyết",
+      "personality": "Nhiệt tình, tò mò, đôi lúc hấp tấp nhưng biết nhận lỗi.",
+      "relationships": "Bạn thân của Pipun và Rerin.",
+      "assetFolder": "Bubu",
+      "selected": true,
+      "asset_status": "linked"
+    },
+    {
+      "character_id": "char_pipun_char_02",
+      "name": "Pipun",
+      "role": "Người phân tích dữ liệu và giữ cuốn sổ ghi chép",
+      "personality": "Cẩn thận, thực tế, giỏi quan sát và suy luận.",
+      "relationships": "Bạn thân của Bubu và Rerin.",
+      "assetFolder": "Pipun",
+      "selected": true,
+      "asset_status": "linked"
+    },
+    {
+      "character_id": "char_rerin_char_03",
+      "name": "Rerin",
+      "role": "Người điều phối chuyến tìm hiểu",
+      "personality": "Bình tĩnh, quyết đoán, có trách nhiệm và luôn ưu tiên an toàn.",
+      "relationships": "Bạn thân của Bubu và Pipun.",
+      "assetFolder": "Rerin",
+      "selected": true,
+      "asset_status": "linked"
+    }
+  ],
+  "rules": [
+    {
+      "name": "Nhân vật",
+      "description": "Chỉ Bubu, Pipun và Rerin là nhân vật chính; giữ nguyên character_id và assetFolder đã khai báo."
+    },
+    {
+      "name": "An toàn",
+      "description": "Nhóm không tự ý vào khu vực nguy hiểm hoặc công trình khóa kín; chỉ quan sát từ nơi công cộng và nhờ người có trách nhiệm hỗ trợ khi cần."
+    },
+    {
+      "name": "Giải quyết bí ẩn",
+      "description": "Mọi kết luận phải dựa trên manh mối đã xuất hiện; không biến suy đoán thành sự thật."
+    }
+  ],
+  "events": [
+    {
+      "name": "Tín hiệu lúc tan học",
+      "description": "Bubu bắt được tín hiệu lặp lại trong phòng câu lạc bộ; Pipun ghi lại nhịp tín hiệu và Rerin nhận ra nó có thể là mã tọa độ.",
+      "importance": "Mở bí ẩn và thiết lập mục tiêu."
+    },
+    {
+      "name": "Lần theo dấu mốc",
+      "description": "Ba người đến bến xe rồi đi theo con đường đèo vào ban ngày, đối chiếu các mốc địa hình với bản ghi.",
+      "importance": "Hành trình tìm kiếm và kiểm tra giả thuyết."
+    },
+    {
+      "name": "Bí mật của đài quan sát",
+      "description": "Nhóm phát hiện bản ghi cũ cho thấy tín hiệu là lời nhắc về một bản đồ sao được cất giữ an toàn, không phải lời cầu cứu.",
+      "importance": "Đảo chiều cách hiểu và giải đáp bí ẩn."
+    },
+    {
+      "name": "Bản đồ trở về",
+      "description": "Tại đại sảnh cộng đồng, ba người ghép các mảnh thông tin và quyết định lưu lại bản đồ để mọi người cùng tìm hiểu.",
+      "importance": "Giải quyết câu chuyện và kết thúc ấm áp."
+    }
+  ],
+  "story_ideas": [
+    {
+      "title": "Bản Đồ Dưới Bầu Trời Đêm",
+      "logline": "Một tín hiệu vô tuyến lặp lại kéo ba người bạn vào cuộc truy tìm đài quan sát cũ và bản đồ sao thất lạc.",
+      "arc": "Từ tín hiệu bí ẩn ở trường, hành trình qua bến xe và con đường đèo, đến phát hiện bất ngờ rằng thông điệp chỉ dẫn đến một kho tư liệu khoa học bị lãng quên."
+    }
+  ],
+  "story_folders": [],
+  "updated_at": "2026-11-19T02:47:00.000Z"
+}
