@@ -682,7 +682,10 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
  const semantic={...base,communication};
  // Tọa độ chỉ điều khiển vị trí. Loại hành động phải do AI phân tích nội dung và ghi rõ trong motion.action.
  if(motion&&typeof motion.action==='string'&&motion.action.trim())semantic.action=motion.action.trim();
- ['direction','face_angle','view_angle','pose','emotion'].forEach(k=>{if(motion&&motion[k]!=null&&String(motion[k]).trim())semantic[k]=String(motion[k]).trim()});
+ ['direction','face_angle','view_angle','pose','emotion','interaction_target'].forEach(k=>{if(motion&&motion[k]!=null&&String(motion[k]).trim())semantic[k]=String(motion[k]).trim()});
+ // Góc chính diện chỉ chuẩn hóa face_angle; tuyệt đối giữ nguyên emotion và communication.
+ // Nhờ vậy biểu cảm speaking/listening không bị rơi về neutral chỉ vì chọn góc chính diện.
+ if(semantic.face_angle&&canonicalAnimationValue('face_angle',semantic.face_angle)==='front')semantic.face_angle='0°';
  return semantic;
 }
 function makeFallbackCharacterCanvas(spec){
