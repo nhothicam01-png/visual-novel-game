@@ -2244,16 +2244,14 @@ function saveLineEffects(){
 function animationMeta(path){const m=characterAnimationMetadata[path]||{},u=m.user_metadata||{},v=(Array.isArray(m.characters)?m.characters[0]:{})||{};return {communication:String(u.communication||v.communication?.state||v.communication||m.communication||''),pose:String(u.pose||v.pose||m.start_pose||''),emotion:String(u.emotion||v.emotion||''),direction:String(u.direction||v.direction||''),face_angle:String(u.face_angle||v.face_angle||''),view_angle:String(u.view_angle||v.view_angle||''),action:String(u.action||v.action||m.action||''),interaction_target:String(u.interaction_target||v.interaction_target||''),mirror_safe:u.mirror_safe??m.mirror_safe}}
 function normalizeSemantic(v){if(v&&typeof v==='object')return v;if(typeof v==='string'&&v.trim())return {emotion:v.trim()};return {}}
 function canonicalAnimationValue(field,value){
- const raw=String(value??'').trim().toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/đ/g,'d').replace(/[_-]+/g,' ').replace(/\\s+/g,' ');
+ const raw=String(value??'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[_-]+/g,' ').replace(/\s+/g,' ');
  if(field==='face_angle'){
   if(!raw)return '';
   if(/^(front|front view|front facing|chinh dien|nhin thang|thang|0|0 deg|0 degree|0 degrees|0 do)$/.test(raw))return 'front';
-  const numeric=raw.match(/^(-?\\d+(?:[.,]\\d+)?)\\s*(?:deg(?:ree)?s?|do)?$/);
+  const numeric=raw.match(/^(-?\d+(?:[.,]\d+)?)\s*(?:deg(?:ree)?s?|do)?$/);
   if(numeric)return Math.abs(Number(numeric[1].replace(',','.')))%360<0.5?'front':'angled';
   return 'angled';
  }
-
- const raw=String(value??'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[_-]+/g,' ').replace(/\s+/g,' ');
  const maps={
   communication:{'dang noi':'speaking','noi':'speaking','speaking':'speaking','talking':'speaking','voice':'speaking','im lang':'silent','khong noi':'silent','silent':'silent','not speaking':'silent','quiet':'silent'},
   pose:{'dung':'standing','dung thang':'standing','standing':'standing','ngoi':'sitting','sitting':'sitting','nam':'lying','lying':'lying','cuoi':'crouching','crouching':'crouching'},
