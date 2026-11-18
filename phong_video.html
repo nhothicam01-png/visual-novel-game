@@ -730,22 +730,6 @@ function makeFallbackObjectCanvas(obj){
 }
 // Số ngẫu nhiên xác định theo (id,salt) trong [0,1): cùng nhân vật luôn cho cùng kết quả giữa các lần phát/xuất.
 function hashUnit(text,salt){let n=2166136261;const s=String(text)+':'+salt;for(let i=0;i<s.length;i++){n^=s.charCodeAt(i);n=Math.imul(n,16777619)}return ((n>>>0)%10007)/10007}
-// WEBM bán thân (không có chân) bị cắt ngang ở mép dưới khung. Mép cắt phải nằm tại/ngoài đáy màn hình,
-// nếu không nó lộ ra như người bị cắt lơ lửng. Đọc vài hàng pixel cuối của khung hình đầu, kết quả được nhớ lại.
-const spriteBottomCutCache=new WeakMap();
-function spriteIsBottomCut(media){
- if(!media)return false;
- if(spriteBottomCutCache.has(media))return spriteBottomCutCache.get(media);
- const sw=media.videoWidth||media.naturalWidth||media.width||0,sh=media.videoHeight||media.naturalHeight||media.height||0;
- if(!sw||!sh||(typeof media.readyState==='number'&&media.readyState<2))return false; // chưa có khung hình: chưa kết luận, không nhớ
- let cut=false;
- try{
-  const c=document.createElement('canvas');c.width=64;c.height=64;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(media,0,0,64,64);
-  const d=g.getImageData(0,61,64,3).data;let opaque=0;for(let i=3;i<d.length;i+=4)if(d[i]>128)opaque++;
-  cut=opaque/(64*3)>.08;
- }catch(error){console.warn('Không đọc được pixel đáy sprite (coi như nguyên thân):',error)}
- spriteBottomCutCache.set(media,cut);return cut;
-}
 function applyAutomaticCharacterLayout(layers,frame,width,height){
  const visible=layers.filter(item=>item?.media&&item.spec?.visible!==false&&item.spec?.remove_from_scene!==true);
  if(visible.length<2)return;
@@ -830,7 +814,7 @@ async function updateAssets(){
   sceneObjectLayers.forEach(old=>{if(old.media&&!nextObjects.some(item=>item.media===old.media)&&old.media.pause)old.media.pause()});
   bgVideo=isVideoBackground(bg)?nextBg:null;bgAsset=bgVideo?null:nextBg;charVideo=nextChar;
   charLayerVideos=nextLayers.filter(item=>item.media);
-  charLayerVideos.forEach(item=>{item.spec.__layer=item;if(item.motionEndMedia)item.spec.motionEndMedia=item.motionEndMedia;if(spriteIsBottomCut(item.media)){const y=Number(item.spec?.y);item.spec={...item.spec,y:Number.isFinite(y)?Math.max(y,102):102,bottomCut:true}}});
+  charLayerVideos.forEach(item=>{item.spec.__layer=item;if(item.motionEndMedia)item.spec.motionEndMedia=item.motionEndMedia});
   applyAutomaticCharacterLayout(charLayerVideos,frame,canvas.width,canvas.height);
   sceneObjectLayers=nextObjects.filter(item=>item.media);
   currentAnimationWarnings=charLayerVideos.filter(item=>!item.animationMatched||item.mirrored).map(item=>({id:String(item.spec?.id||''),state:item.animationState||'trạng thái yêu cầu',reason:item.mirrored?'Dùng WEBM ngược hướng và đã lật ngang tự động':(item.animationReason||'không có clip khớp'),mirrored:!!item.mirrored}));
