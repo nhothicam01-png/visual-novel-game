@@ -675,9 +675,8 @@
       },
       "hieu_ung_canh": [
         {
-          "file": "assets/HieuUng/mua.png",
-          "type": "image",
-          "loop": false,
+          "id": "rain",
+          "type": "code",
           "opacity": 0.34,
           "z_index": -10
         }
