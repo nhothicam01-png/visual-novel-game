@@ -119,7 +119,7 @@ $('reload-world-full').onclick=async()=>{
   const payload=await response.json();
   if(!response.ok)throw Error(payload.message||'GitHub API HTTP '+response.status);
   if(!payload.content||payload.encoding!=='base64')throw Error('GitHub không trả nội dung JSON dạng base64.');
-  const binary=atob(payload.content.replace(/\\s/g,''));
+  const binary=atob(payload.content.replace(/\s/g,''));
   const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));
   const fresh=JSON.parse(new TextDecoder('utf-8').decode(bytes));
   if(!fresh||typeof fresh!=='object'||Array.isArray(fresh))throw Error('JSON thế giới trên GitHub không hợp lệ.');
