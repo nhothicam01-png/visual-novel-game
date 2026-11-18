@@ -1330,6 +1330,17 @@ async function loadSourceLineForPlayback(item){
  if(!assetsReady)throw new Error('Cảnh đang được cập nhật liên tục; vui lòng thử phát lại.');
  if(line.speakerId)await applyVoiceForCurrentLine();
 }
+// Nạp nền trước (không chặn phát) hiệu ứng PNG/WEBM của toàn bộ đoạn sắp phát, theo thứ tự cảnh, 2 tệp một lượt.
+// Lỗi tải chỉ bỏ qua tệp đó: updateAssets vẫn tự xử lý hiệu ứng thiếu khi tới cảnh.
+function prefetchSceneEffectsFor(items){
+ const seen=new Set(),queue=[];
+ items.forEach(item=>{const scene=scenes[item.sceneIndex],line=scene?.lines?.[item.lineIndex];
+  normalizeSceneEffects(scene?.visual?.sceneEffects||line?.sourceFrame?.hieu_ung_canh||[]).forEach(effect=>{
+   const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');
+   if(seen.has(url))return;seen.add(url);queue.push(()=>(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(err=>console.warn('Nạp trước hiệu ứng thất bại:',effect.path,err)));
+  })});
+ void (async()=>{for(let i=0;i<queue.length;i+=2)await Promise.all(queue.slice(i,i+2).map(job=>job()))})();
+}
 async function preparePreviewPlayback(items,useBrowser){
  const imageUrls=new Set(),videoUrls=new Set();
  for(const item of items){
@@ -1370,6 +1381,7 @@ async function playPreview(){
   const effectiveStart=startIndex>=lastScopedIndex?scopedItems[0].sourceIndex:startIndex;
   const items=scopedItems.filter(item=>item.sourceIndex>=effectiveStart);
   if(!items.length){setStatus('Không tìm thấy câu thoại hợp lệ trong phạm vi phát.');return}
+  prefetchSceneEffectsFor(items);
   const useBrowser=$('preview-tts-mode').value==='browser';
   const shouldPrepare=directRecordRequested||!useBrowser;
   if(shouldPrepare){
