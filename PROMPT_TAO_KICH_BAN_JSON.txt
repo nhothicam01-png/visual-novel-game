@@ -1305,3 +1305,20 @@ QUY CHUẨN BỐ CỤC NHÂN VẬT TỰ ĐỘNG (BẮT BUỘC)
 5. Nhân vật visible:false hoặc remove_from_scene:true không được tính vào số lượng để tự dàn, kiểm tra chồng lấn, báo thiếu WEBM, hoặc dựng lớp hình.
 6. Tự dàn chỉ thay đổi tọa độ runtime; không ghi đè vị trí gốc trong JSON. Khi người dùng chọn manual, phải tôn trọng nguyên vẹn tọa độ đã khai báo.
 7. Sau khi tạo JSON, kiểm tra lại mọi frame nhiều nhân vật: nếu không phải tương tác có chủ đích thì dùng auto; nếu manual thì xác minh khoảng cách thực tế và không để các sprite đè nhau ngoài ý muốn.
+
+==================================================
+QUY TẮC CHỌN WEBM THEO TRẠNG THÁI RIÊNG CỦA TỪNG NHÂN VẬT (BẮT BUỘC)
+==================================================
+1. Trạng thái giao tiếp phải được khai báo độc lập trong expression_id của TỪNG phần tử nhan_vat_hien_thi. Không được suy ra trạng thái của mọi nhân vật từ nhân vật đang nói.
+2. Chỉ nhân vật có ID trùng với nhan_vat của lượt thoại trực tiếp (loai_phat_ngon="character") mới dùng communication="speaking".
+3. Nhân vật khác đang trực tiếp nghe người nói, được gọi tên/hỏi/chờ phản hồi hoặc đang chú ý đến cuộc tương tác phải dùng communication="listening".
+4. Nhân vật xuất hiện nhưng không tham gia nghe/nói trong nhịp đó dùng communication="silent". Dùng "reacting" khi cần nhấn mạnh phản ứng không lời; dùng "idle" khi nhân vật chỉ nghỉ/đứng yên.
+5. Nếu lượt thoại là narration/voice-over/độc thoại nội tâm không phát ra thành tiếng trước mặt người khác, không nhân vật nào được tự động chuyển sang speaking. Mỗi nhân vật giữ trạng thái listening/reacting/silent/idle đã khai báo phù hợp.
+6. Runtime phải giữ communication được khai báo trong expression_id hoặc motion.communication của từng nhân vật không phải người nói; chỉ mặc định về silent khi thiếu hoặc giá trị không hợp lệ. Không được ghi đè tất cả nhân vật không nói thành silent.
+7. Việc chọn WEBM theo thứ tự: lọc đúng assetFolder của nhân vật → communication → emotion/pose/action → direction → face_angle → các metadata còn lại. Phải chọn WEBM đúng trạng thái speaking/listening/silent/reacting/idle trong chính thư mục nhân vật đó.
+8. Góc WEBM được quyết định bởi direction và face_angle của NHÂN VẬT, không phải camera.shot, camera.target, camera.zoom hoặc góc cắt khung hình. Camera cận cảnh không biến nhân vật nghiêng thành chính diện và ngược lại.
+9. Khi nhân vật đang nghiêng 45°/góc 3/4, chọn WEBM có góc tương ứng và đúng trạng thái giao tiếp; khi nhân vật chính diện 0°, chọn WEBM chính diện và đúng trạng thái giao tiếp. Hướng trái/phải phải khớp direction; chỉ mirror khi metadata cho phép.
+10. Không tự sửa góc nhân vật để khớp camera. Nếu không có WEBM khớp đầy đủ, dùng phương án gần nhất trong cùng assetFolder theo quy tắc fallback hiện có và báo rõ thiếu biến thể; tuyệt đối không mượn WEBM từ nhân vật khác hoặc bịa tên file.
+11. Báo cáo WEBM còn thiếu/Asset Inventory phải kiểm tra trạng thái giao tiếp đã khai báo riêng cho từng nhân vật trong từng frame, không được mặc định tất cả nhân vật không nói là silent.
+12. Khi tạo hoặc chỉnh sửa JSON, phải rà từng dòng: người nói = speaking; người đang nghe = listening; người phản ứng không lời = reacting; người chỉ hiện diện = silent/idle. Giữ nguyên góc nhìn nhân vật xuyên suốt dù camera thay đổi.
+==================================================
