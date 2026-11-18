@@ -1,6 +1,6 @@
 """Bố cục nhiều nhân vật: sprite bán thân phải chạm đáy khung; bố cục tự nhiên không được đều tăm tắp."""
 import asyncio, os, sys
-os.environ.setdefault('STORY','assets/KichBan/SauTiengDongTrenNui/SauTiengDongTrenNui.json')
+os.environ.setdefault('STORY','assets/KichBan/DemTongDuyetAnhSang/DemTongDuyetAnhSang.json')
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 import harness
 fails=[]
