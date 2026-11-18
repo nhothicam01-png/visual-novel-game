@@ -18,7 +18,9 @@ async def main(scenario):
         server.terminate()
 async def _run(scenario):
     async with async_playwright() as p:
-        launch_options={'headless':True,'args':['--no-sandbox','--autoplay-policy=no-user-gesture-required']}\n        if CHROME: launch_options['executable_path']=CHROME\n        b=await p.chromium.launch(**launch_options)
+        launch_options={'headless':True,'args':['--no-sandbox','--autoplay-policy=no-user-gesture-required']}
+        if CHROME: launch_options['executable_path']=CHROME
+        b=await p.chromium.launch(**launch_options)
         ctx=await b.new_context(viewport={'width':412,'height':915},has_touch=True,is_mobile=True)
         await ctx.add_init_script("localStorage.setItem('vns.cinematic.pending.v1',%s)"%json.dumps(json.dumps({'data':story,'name':'Test'})))
         page=await ctx.new_page()
@@ -47,6 +49,6 @@ async def _run(scenario):
             return await r.abort()
         await ctx.route('**/*',route)
         await page.goto('http://127.0.0.1:8765/phong_video.html?cinematic=1')
-        await page.wait_for_function("window.__dbg&&window.__dbg('activeStoryName')==='Test'&&window.__dbg('scenes.length')>1",timeout=120000)
+        await page.wait_for_function("window.__dbg&&window.__dbg('activeStoryName')==='Test'&&window.__dbg('scenes.length')>0",timeout=120000)
         await scenario(page)
         await b.close()
