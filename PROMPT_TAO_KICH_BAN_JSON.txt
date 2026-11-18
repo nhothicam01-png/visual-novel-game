@@ -1322,3 +1322,18 @@ QUY TẮC CHỌN WEBM THEO TRẠNG THÁI RIÊNG CỦA TỪNG NHÂN VẬT (BẮT 
 11. Báo cáo WEBM còn thiếu/Asset Inventory phải kiểm tra trạng thái giao tiếp đã khai báo riêng cho từng nhân vật trong từng frame, không được mặc định tất cả nhân vật không nói là silent.
 12. Khi tạo hoặc chỉnh sửa JSON, phải rà từng dòng: người nói = speaking; người đang nghe = listening; người phản ứng không lời = reacting; người chỉ hiện diện = silent/idle. Giữ nguyên góc nhìn nhân vật xuyên suốt dù camera thay đổi.
 ==================================================
+
+==================================================
+QUY CHUẨN DÀN NHÂN VẬT VÀ ĐẠO DIỄN CAMERA TỰ ĐỘNG (BẮT BUỘC)
+==================================================
+1. Nhân vật là các lớp hình đứng cố định tại vị trí đã dàn trong sân khấu. Với 2 nhân vật, mặc định chia đều hai bên trái/phải; với nhiều nhân vật, phân bố cân đối toàn khung. Không đổi x, y, scale, z_index của một nhân vật chỉ vì nhân vật đó bắt đầu thoại.
+2. Tuyệt đối không phóng to riêng người đang nói, không tự đưa sprite người nói về giữa sân khấu, không đổi vị trí hai nhân vật qua lại theo lượt thoại. Người nói chỉ được nổi bật bằng camera, biểu cảm, animation và âm thanh.
+3. Camera là một lớp biến đổi độc lập áp dụng đồng bộ lên nền và toàn bộ nhân vật. Khi đổi người nói, camera lia/pan mượt để đưa nhân vật đó vào tâm khung camera; không được sửa tọa độ sprite để giả lập lia máy.
+4. Player mặc định tự đạo diễn luân phiên các cỡ cảnh theo nhịp thoại: cận mặt (close_up) → bán thân (bust) → cận mặt → toàn thân (full_body) → bán thân → toàn cảnh nhóm (group), rồi lặp lại/điều chỉnh tự nhiên theo độ dài cảnh. Không phải dòng nào cũng cận người nói.
+5. Ở cỡ cận/bán thân/toàn thân, camera có thể nhắm người đang nói và đưa người đó vào giữa khung hình. Ở cỡ toàn cảnh nhóm, camera trở về khung tổng thể, thấy tất cả nhân vật hiện diện cùng lúc; không zoom/target riêng một người.
+6. Chuyển động lia camera phải có easing mượt, không giật/cắt đột ngột. Khi đổi shot, chỉ thay đổi viewport (pan/zoom/focus); vị trí tương đối giữa các nhân vật luôn được giữ nguyên.
+7. Camera JSON có thể khai báo "director": "manual" khi đạo diễn muốn kiểm soát thủ công. Khi đó mới dùng camera.shot, camera.target và camera.zoom được khai báo rõ. Nếu không khai báo director hoặc dùng "auto", player áp dụng đạo diễn tự động.
+8. Tên shot được hỗ trợ trong chế độ tự động: close_up, bust, full_body, group. Các shot khác có thể dùng trong chế độ manual nếu player hỗ trợ.
+9. Không dùng hiệu ứng char-zoom để thay thế camera zoom. char-zoom/char-breathe chỉ là chuyển động vi mô của sprite, không phải thao tác cỡ cảnh.
+10. Khi tạo JSON có nhiều nhân vật, khai báo vị trí gốc cân đối và ổn định trong nhan_vat_hien_thi; dùng bo_cuc_nhan_vat.mode="auto" cho bố cục cân đối hoặc "manual" khi có blocking có chủ đích. Không tạo scale khác nhau theo trạng thái speaking/listening.
+==================================================
