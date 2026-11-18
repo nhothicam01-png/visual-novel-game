@@ -109,8 +109,9 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 .nav a.current{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
 
 /* Compact scene/dialogue editor drawer; preview remains visible */
-.scene-editor-drawer{position:fixed;z-index:1000;top:76px;right:16px;width:min(540px,calc(100vw - 32px));max-height:70vh;display:none;flex-direction:column;gap:8px;background:#080f1e;border:1px solid #a855f766;border-radius:12px;padding:10px;box-shadow:0 18px 55px #000c;overflow:hidden}
-.scene-editor-drawer.open{display:flex}
+.scene-editor-drawer{position:fixed;z-index:2147483000;top:76px;right:16px;width:min(540px,calc(100vw - 32px));max-height:70vh;display:none;flex-direction:column;gap:8px;background:#080f1e;border:1px solid #a855f766;border-radius:12px;padding:10px;box-shadow:0 18px 55px #000c;overflow:hidden;pointer-events:auto;touch-action:pan-y;isolation:isolate}
+.scene-editor-drawer.open{display:flex;pointer-events:auto}
+.scene-editor-drawer button,.scene-editor-drawer input,.scene-editor-drawer select,.scene-editor-drawer textarea{pointer-events:auto;touch-action:manipulation}
 .scene-editor-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#e9d5ff;padding:2px 2px 6px}
 .scene-editor-drawer>.main-panel{display:flex;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 .scene-editor-drawer>.main-panel:not([open])>*:not(.panel-heading){display:none}
@@ -134,6 +135,30 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <label class="field preview-tts-control">Giọng xem trước<select id="preview-tts-mode"><option value="browser">TTS trình duyệt · nhanh</option><option value="render">Giọng render · giống video</option></select></label>
 <label class="field preview-tts-control">Giọng trình duyệt<select id="browser-tts-voice"><option value="">Tự chọn theo ngôn ngữ</option></select></label>
 </div>
+<script>
+/* Isolated drawer controller: remains active even if later editor setup fails. */
+(()=>{
+ const openBtn=document.getElementById('open-scene-editor');
+ if(!openBtn||openBtn.dataset.drawerBound==='1')return;
+ openBtn.dataset.drawerBound='1';
+ const setOpen=open=>{
+  const drawer=document.getElementById('scene-editor-drawer');
+  if(!drawer)return;
+  drawer.classList.toggle('open',!!open);
+  openBtn.setAttribute('aria-expanded',String(!!open));
+  openBtn.textContent=open?'✕ Đóng chỉnh sửa':'☰ Cảnh & lời thoại';
+  if(open)window.scrollTo({top:0,behavior:'smooth'});
+ };
+ openBtn.addEventListener('click',e=>{
+  e.preventDefault();e.stopPropagation();
+  const drawer=document.getElementById('scene-editor-drawer');
+  setOpen(!drawer?.classList.contains('open'));
+ });
+ document.addEventListener('click',e=>{
+  if(e.target?.closest?.('#close-scene-editor')){e.preventDefault();setOpen(false);}
+ },true);
+})();
+</script>
 <div class="seek-panel speech-motion-panel" aria-label="Điều chỉnh chuyển động nhân vật đang nói">
 <label class="field">Tốc độ nhún/nghiêng <span id="speech-motion-speed-value">50</span>/100
 <input id="speech-motion-speed" type="range" min="1" max="100" step="1" value="50"></label>
@@ -2829,10 +2854,8 @@ document.querySelectorAll('#character,#expression,#background,#dialogue-width-mo
  $('sfx-file').addEventListener('change',()=>{if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}getPreviewSfxUrl()});
 document.querySelectorAll('[data-effect],#effect-strength').forEach(el=>el.addEventListener('change',saveLineEffects));
 
-const sceneDrawer=$('scene-editor-drawer'),sceneMenuButton=$('open-scene-editor');
-function setSceneEditorOpen(open){sceneDrawer.classList.toggle('open',!!open);sceneMenuButton.setAttribute('aria-expanded',String(!!open));sceneMenuButton.textContent=open?'✕ Đóng chỉnh sửa':'☰ Cảnh & lời thoại';if(open)window.scrollTo({top:0,behavior:'smooth'});}
-sceneMenuButton.addEventListener('click',()=>setSceneEditorOpen(!sceneDrawer.classList.contains('open')));
-$('close-scene-editor').addEventListener('click',()=>setSceneEditorOpen(false));
+// Drawer controls are bound by the isolated early handler near the toolbar.
+
 
 renderEffectCatalogs();
 scenes=[{name:'Cảnh 1',sceneId:'scene_1',isFlashback:false,visual:captureVisual(),lines:[newLine()]}];
