@@ -194,6 +194,10 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
  <summary style="cursor:pointer;font-weight:700">🧩 Báo cáo WEBM còn thiếu <span id="animation-report-count" class="note" style="font-weight:400">Chưa có dữ liệu</span></summary>
  <div id="animation-report-content" style="padding-top:10px"><div class="note">Chọn một kịch bản để quét các trạng thái nhân vật cần bổ sung.</div></div>
 </details>
+<details id="background-asset-preflight" class="panel" style="margin-top:10px" open>
+ <summary style="cursor:pointer;font-weight:700">🖼️ Kiểm tra ảnh nền theo từng cảnh <span id="background-asset-count" class="note" style="font-weight:400">Chưa kiểm tra</span></summary>
+ <div id="background-asset-report" style="padding-top:10px"><div class="note">Khi mở kịch bản, trình phát sẽ tự kiểm tra ảnh nền của tất cả cảnh và báo rõ cảnh/tệp bị thiếu.</div></div>
+</details>
 <details id="scene-asset-preflight" class="panel" style="margin-top:10px" open>
  <summary style="cursor:pointer;font-weight:700">🚑 Kiểm tra phương tiện &amp; đạo cụ <span id="scene-asset-count" class="note" style="font-weight:400">Chưa kiểm tra</span></summary>
  <div style="padding-top:10px"><div class="note">Đối chiếu mọi đường dẫn scene_objects trong kịch bản với file thực tế trên nhánh main của GitHub. File thiếu sẽ được báo trước khi dựng video.</div><button type="button" class="btn secondary" id="run-scene-asset-check">🔎 Kiểm tra tài nguyên ngay</button><div id="scene-asset-report" style="padding-top:10px"><div class="note">Chọn kịch bản rồi nhấn kiểm tra.</div></div><hr style="border-color:#334155;margin:12px 0"><div class="note">Rà soát các nhân vật có nguy cơ đứng đè lên nhau trong từng dòng và keyframe.</div><button type="button" class="btn secondary" id="run-character-layout-check">🧍 Kiểm tra bố cục nhân vật</button><div id="character-layout-report" style="padding-top:10px"><div class="note">Chưa kiểm tra bố cục.</div></div></div>
@@ -335,10 +339,13 @@ function ensureBackgroundOption(value){
  select.value=path;return path;
 }
 function backgroundAssetUrl(value){
- const path=String(value||'').trim();
- if(!path)return '';
- if(/^https?:\/\//i.test(path))return path;
- return BASE+(path.startsWith('assets/')?path.slice(7):'Nen/'+path.replace(/^\/+/, ''));
+ const raw=String(value||'').trim();
+ if(!raw)return '';
+ if(/^https?:\/\//i.test(raw))return raw;
+ const path=raw.replace(/\\\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');
+ if(/^assets\//i.test(path))return BASE+path.slice(7);
+ if(/^Nen\//i.test(path))return BASE+path;
+ return BASE+'Nen/'+path;
 }
 function isVideoBackground(value){return /\.(mp4|webm)(?:[?#]|$)/i.test(String(value||''));}
 const $=id=>document.getElementById(id);
@@ -867,6 +874,21 @@ async function updateAssets(){
  }catch(e){if(token===assetLoadToken){setStatus(e.message);console.error(e)}}
  finally{if(token===assetLoadToken)$('preview-loading').classList.remove('active')}
  return assetsLoaded&&token===assetLoadToken;
+}
+async function validateStoryBackgrounds(){
+ const host=$('background-asset-report'),count=$('background-asset-count');
+ if(!host||!count)return [];
+ const items=(scenes||[]).map((scene,index)=>({index,name:scene.name||('Cảnh '+(index+1)),file:String(scene.visual?.background||scene.lines?.[0]?.background||'').trim()}));
+ const missing=[],valid=[],unique=[...new Set(items.filter(x=>x.file).map(x=>x.file))],results=new Map();
+ count.textContent='Đang kiểm tra…';host.textContent='Đang tải và xác minh ảnh nền của '+items.length+' cảnh…';
+ let cursor=0;
+ const worker=async()=>{while(cursor<unique.length){const file=unique[cursor++];try{const url=backgroundAssetUrl(file),media=isVideoBackground(file)?await cachedVideo(url):await cachedImage(url);if(!media)throw new Error('Không tải được tài nguyên');results.set(file,{ok:true})}catch(error){results.set(file,{ok:false,error:String(error?.message||error)})}}};
+ await Promise.all(Array.from({length:Math.min(4,unique.length)},worker));
+ items.forEach(item=>{if(!item.file){missing.push({...item,error:'Cảnh chưa khai báo ảnh nền'});return}const result=results.get(item.file);(result?.ok?valid:missing).push({...item,error:result?.error||''})});
+ count.textContent=missing.length?missing.length+' cảnh có vấn đề':'Đã xác minh '+valid.length+'/'+items.length+' cảnh';
+ if(!missing.length){host.textContent='✓ Tất cả '+valid.length+' cảnh đều có ảnh nền tải được. Nền được giữ nguyên qua các câu thoại trong cùng cảnh.';return missing}
+ host.innerHTML='<div style="color:#dc2626;font-weight:700">Phát hiện '+missing.length+' vấn đề về ảnh nền:</div>'+missing.map(item=>'<div style="padding:7px 0;border-bottom:1px solid #475569"><strong>'+safeText(item.name)+'</strong><div class="note">Tệp: '+safeText(item.file||'(trống)')+'</div><div class="note">'+safeText(item.error)+'</div></div>').join('')+'<div class="note" style="padding-top:8px">Cảnh lỗi sẽ dùng nền dự phòng thay vì màn hình đen. Hãy bổ sung/đổi đúng tệp trong assets/Nen/ rồi nạp lại kịch bản.</div>';
+ return missing;
 }
 function backgroundAtSourceIndex(index){
  const rows=activeStoryData?.danh_sach||[],targetScene=String(rows[index]?.scene_id||'').trim();
@@ -2473,6 +2495,7 @@ async function applyStoryData(data,name,path){
  defaultVoiceProfileId='';
  try{localStorage.removeItem(storySettingsKey())}catch(e){}
  scenes=buildScenesFromJson(data);activeSceneIndex=0;activeLineIndex=0;restorePlaybackProgress();
+ validateStoryBackgrounds().catch(error=>{console.warn('Kiểm tra ảnh nền thất bại:',error);$('background-asset-count').textContent='Không kiểm tra được';$('background-asset-report').textContent='Không thể kiểm tra ảnh nền: '+(error.message||error)});
  renderCharacterVoiceSetup();renderStoryCharacterSelectors(getCurrentLine()?.speakerId,getCurrentLine()?.characterAsset);renderSceneList();renderLineList();applyVisual(getCurrentScene().visual);loadLineToEditor(getCurrentLine());
  $('speaker').readOnly=false;$('dialogue').readOnly=false;updateSeekUI(currentSourceIndex());
  await updateAssets();await applyVoiceForCurrentLine();preloadAdjacentAssets(0);
