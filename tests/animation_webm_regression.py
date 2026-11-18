@@ -10,8 +10,12 @@ async def sc(page):
     before=await page.evaluate("()=>__dbg(\"(()=>{const x=charLayerVideos.find(x=>x.spec.id==='char_pipun_char_02');return {src:x.media.currentSrc,paused:x.media.paused,time:x.media.currentTime,matched:x.animationMatched,canPlay:x.canPlayAnimation}})()\")")
     await asyncio.sleep(1.2)
     after=await page.evaluate("()=>__dbg(\"(()=>{const x=charLayerVideos.find(x=>x.spec.id==='char_pipun_char_02');return {src:x.media.currentSrc,paused:x.media.paused,time:x.media.currentTime,matched:x.animationMatched,canPlay:x.canPlayAnimation}})()\")")
+    await page.evaluate("()=>__dbg('previewStartedAt=performance.now();lineMotionStartElapsed=0;previewing=true;startRenderLoop()')")
+    await asyncio.sleep(2.7)
+    stopped=await page.evaluate("()=>__dbg(\"(()=>{const x=charLayerVideos.find(x=>x.spec.id==='char_pipun_char_02');return {src:x.media.currentSrc,paused:x.media.paused,activated:!!x.spec.__motionEndActivated,expected:x.spec.motionEndMedia?.currentSrc||''}})()\")")
+    await page.evaluate("()=>__dbg('stopPreview()')")
     semantic=await page.evaluate("()=>__dbg(\"({file:normalizeExpression('Pipun-24fps-1795001788335.webm'),front:canonicalAnimationValue('face_angle','0°'),angled:canonicalAnimationValue('face_angle','135°')})\")")
-    checks={'extension stripped':semantic['file']=='Pipun-24fps-1795001788335','front bucket':semantic['front']=='front','angled bucket':semantic['angled']=='angled','real WEBM path':'Pipun-24fps-1795001788335.webm' in before['src'] and not before['src'].endswith('.webm.webm'),'WEBM playing':before['canPlay'] and not before['paused'],'video time advances':after['time']>before['time']+0.2}
-    for name,ok in checks.items(): print(('PASS ' if ok else 'FAIL ')+name,before,after)
+    checks={'extension stripped':semantic['file']=='Pipun-24fps-1795001788335','front bucket':semantic['front']=='front','angled bucket':semantic['angled']=='angled','real WEBM path':'Pipun-24fps-1795001788335.webm' in before['src'] and not before['src'].endswith('.webm.webm'),'WEBM playing':before['canPlay'] and not before['paused'],'video time advances':after['time']>before['time']+0.2,'switches to silent standing WEBM after motion':stopped['activated'] and 'Pipun-24fps-1795001375891.webm' in stopped['src'] and not stopped['paused']}
+    for name,ok in checks.items(): print(('PASS ' if ok else 'FAIL ')+name,before,after,stopped)
     if not all(checks.values()): raise AssertionError('Pipun WEBM regression failed')
 asyncio.run(harness.main(sc))
