@@ -772,7 +772,38 @@ async function updateAssets(){
     }
    }
    let media=null,usedFallback=false;try{media=url?await cachedVideo(url):null;if(media&&!selection.matched&&!isSpeakingClip&&!selection.speakingFallback&&!selection.neutralFallback){media.pause();try{media.currentTime=0}catch(e){}}}catch(error){console.warn('Không tải được WEBM ưu tiên '+spec.id+':',error)}
-   if(!media&&folder){for(const candidate of (expressionFilesByFolder[String(folder)]||[])){try{media=await cachedVideo(BASE+'NhanVat/'+folder+'/'+candidate.split('/').pop());if(media){usedFallback=true;media.pause();try{media.currentTime=0}catch(e){}break}}catch(e){}}}
+   if(!media&&folder){
+    const target=normalizeSemantic(semantic),paths=expressionFilesByFolder[String(folder)]||[];
+    const fallbackCandidates=paths.map(path=>{
+     const meta=animationMeta(path),comm=canonicalAnimationValue('communication',meta.communication);
+     let mirrored=false,score=0;
+     const wantsSpeaking=canonicalAnimationValue('communication',target.communication)==='speaking';
+     if(wantsSpeaking&&comm!=='speaking')return null;
+     if(!wantsSpeaking&&!['silent','listening'].includes(comm))return null;
+     if(target.direction){
+      const wanted=canonicalAnimationValue('direction',target.direction),actual=canonicalAnimationValue('direction',meta.direction);
+      if(actual===wanted)score+=100;
+      else if(oppositeHorizontalDirection(wanted)===actual&&meta.mirror_safe!==false&&String(meta.mirror_safe).toLowerCase()!=='false'){mirrored=true;score+=85}
+      else return null;
+     }
+     if(target.face_angle){
+      if(!meta.face_angle||canonicalAnimationValue('face_angle',meta.face_angle)!==canonicalAnimationValue('face_angle',target.face_angle))return null;
+      score+=100;
+     }
+     ['pose','action','emotion'].forEach(k=>{if(target[k]&&canonicalAnimationValue(k,meta[k])===canonicalAnimationValue(k,target[k]))score+=20});
+     if(!wantsSpeaking&&comm==='silent')score+=5;
+     return {path,score,mirrored,meta};
+    }).filter(Boolean).sort((a,b)=>b.score-a.score||a.path.localeCompare(b.path));
+    for(const candidate of fallbackCandidates){
+     try{
+      media=await cachedVideo(BASE+'NhanVat/'+folder+'/'+candidate.path.split('/').pop());
+      if(media){
+       usedFallback=true;selection={...selection,file:candidate.path.split('/').pop().replace(/\\.webm$/i,''),mirrored:candidate.mirrored,neutralFallback:true,reason:'Dùng WEBM dự phòng cùng hướng và góc mặt'};
+       media.pause();try{media.currentTime=0}catch(e){}break;
+      }
+     }catch(e){}
+    }
+   }
    if(!media){media=makeFallbackCharacterCanvas({...spec,name:worldCharacterDirectory.find(ch=>String(ch.id)===String(spec.id))?.name||spec.id});usedFallback=true}
    const canPlayAnimation=!usedFallback&&(selection.matched||isSpeakingClip||selection.speakingFallback||selection.neutralFallback);
    let motionEndMedia=null,motionEndSelection=null;
