@@ -1,8 +1,8 @@
-"""Kiểm tra camera shot trên MỌI dòng của một kịch bản (mặc định SauTiengDongTrenNui):
+"""Kiểm tra camera shot trên MỌI dòng của một kịch bản (mặc định DemTongDuyetAnhSang):
  - vùng nhìn luôn nằm trọn trong khung (không lộ viền nền);
  - nhân vật neo y>=100% vẫn chạm/vượt đáy màn hình sau khi zoom (không hở đáy)."""
 import asyncio, json, os, sys
-os.environ.setdefault('STORY','assets/KichBan/SauTiengDongTrenNui/SauTiengDongTrenNui.json')
+os.environ.setdefault('STORY','assets/KichBan/DemTongDuyetAnhSang/DemTongDuyetAnhSang.json')
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 import harness
 bad=[]; checked=0
