@@ -1349,3 +1349,13 @@ QUY TẮC WEBM DỰ PHÒNG CHO NHÂN VẬT KHÔNG CÓ BIẾN THỂ KHỚP (BẮT
 6. Chỉ khi không tồn tại WEBM trung tính đáp ứng đúng tư thế và hướng/góc nhìn mới được quay về cơ chế fallback cũ. Không lấy WEBM của nhân vật khác.
 7. Báo cáo trạng thái cần phân biệt WEBM khớp đầy đủ và WEBM trung tính dự phòng; không báo nhầm fallback trung tính là clip khớp đầy đủ.
 ==================================================
+
+BỔ SUNG — CHỈ PHÂN LOẠI HAI NHÓM GÓC MẶT
+-----------------------------------------
+- face_angle chỉ có hai nhóm logic: front (chính diện) và angled (nghiêng).
+- Mọi góc nghiêng đều thuộc angled, không phân biệt 15°, 30°, 45°, 60°, 90° hay giá trị độ khác.
+- Chỉ góc 0°/chính diện mới thuộc front.
+- Khi chọn WEBM dự phòng, chỉ cần khớp nhóm front/angled; không yêu cầu khớp chính xác số độ.
+- Hướng quay trái/phải vẫn là tiêu chí riêng: nếu dữ liệu có direction thì tiếp tục ưu tiên đúng hướng; chỉ lật khi mirror_safe cho phép.
+- Nếu metadata WEBM ghi góc bằng số độ, phải tự quy đổi sang hai nhóm trên trước khi so khớp.
+-----------------------------------------
