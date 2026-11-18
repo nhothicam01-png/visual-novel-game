@@ -3,7 +3,7 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 def exists_ref(value, root):
     value=str(value or '').strip()
     if not value or value.startswith(('http://','https://','blob:','data:')): return True
-    p=pathlib.PurePosixPath(value.replace('\\\\','/'))
+    p=pathlib.PurePosixPath(value.replace(chr(92),'/'))
     if p.is_absolute() or '..' in p.parts: return False
     rel=value if value.startswith('assets/') else root+value
     return (ROOT/rel).is_file()
@@ -29,7 +29,7 @@ for p in sorted((ROOT/'assets/KichBan').glob('*/*.json')):
             if spec.get('id') not in chars: bad.append((where,'unknown visible character',spec.get('id')))
             m=spec.get('motion') or {}; keys=m.get('keyframes') or []
             if keys and (len(keys)<2 or any(not 0<=float(k.get('t',-1))<=1 for k in keys) or any(float(keys[n].get('t',-1))>=float(keys[n+1].get('t',-1)) for n in range(len(keys)-1))): bad.append((where,'invalid character keyframes',spec.get('id')))
-            if m and float(m.get('duration_seconds',1))<=0: bad.append((where,'invalid character motion duration',spec.get('id')))
+            if m and float(m.get('duration_seconds') or 1)<=0: bad.append((where,'invalid character motion duration',spec.get('id')))
         bg=str(row.get('anh_nen') or '')
         if bg and not exists_ref(bg,'assets/Nen/'): bad.append((where,'missing background',bg))
         for fx in row.get('hieu_ung_canh') or []:
