@@ -49,7 +49,7 @@
     {id:'char-bob',label:'Nhấp nhô',targets:['character'],renderAs:{character:'char-bob'}},
     {id:'char-sway',label:'Đung đưa',targets:['character'],renderAs:{character:'char-sway'}},
     {id:'char-shake',label:'Rung',targets:['character'],renderAs:{character:'char-shake'}},
-    {id:'char_fear_shake',label:'Run sợ / mất thăng bằng',targets:['character'],renderAs:{character:'char-fear-shake'}},
+    {id:'char_fear_shake',label:'Run sợ / mất thăng bằng',targets:['character'],renderAs:{character:'char-shake'}},
     {id:'char-zoom',label:'Phóng to nhẹ',targets:['character'],renderAs:{character:'char-zoom'}},
     {id:'char-float',label:'Trôi nhẹ',targets:['character'],renderAs:{character:'char-float'}},
     {id:'char-breathe',label:'Thở nhẹ',targets:['character'],renderAs:{character:'char-breathe'}},
