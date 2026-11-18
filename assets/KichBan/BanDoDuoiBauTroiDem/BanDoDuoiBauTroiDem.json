@@ -1,0 +1,2655 @@
+{
+  "phien_ban": 3,
+  "world_id": "TinHieuTuDaiQuanSat",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.5,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_bubu_char_01": {
+      "character_id": "char_bubu_char_01",
+      "ten_hien_thi": "Bubu",
+      "assetFolder": "Bubu",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_pipun_char_02": {
+      "character_id": "char_pipun_char_02",
+      "ten_hien_thi": "Pipun",
+      "assetFolder": "Pipun",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_rerin_char_03": {
+      "character_id": "char_rerin_char_03",
+      "ten_hien_thi": "Rerin",
+      "assetFolder": "Rerin",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Nghe thử cái radio này đi! Nó vừa phát ra ba tiếng bíp, nghỉ một chút, rồi lại lặp lại y hệt.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "anh_nen": "lop_hoc_chieu.png"
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Cậu đừng vặn nút lung tung. Để mình ghi lại nhịp trước đã, kẻo lát nữa không nhớ chính xác.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Tín hiệu không giống nhiễu ngẫu nhiên. Khoảng nghỉ giữa các tiếng bíp đang lặp lại theo một chu kỳ.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Vậy có người đang gửi tin nhắn cho chúng ta à? Hay là một chiếc radio bị hỏng?",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Chưa thể kết luận. Mình đã ghi được bốn chu kỳ giống nhau, đủ để so sánh với bảng mã vô tuyến cơ bản.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Trong ngăn tủ câu lạc bộ có cuốn sổ ghi các thiết bị cũ của trường. Có thể tín hiệu này từng được thử nghiệm ở đây.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Ở trang cuối có dòng chữ 'Đài quan sát phía đèo'. Chỗ đó có liên quan đến tín hiệu không?",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Bên dưới còn có ký hiệu ba nhịp ngắn, một nhịp dài. Trùng với đoạn mình vừa ghi lại!",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Chúng ta sẽ đến bến xe trước, kiểm tra tuyến đường lên đèo và chỉ đi khi trời còn sáng.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "anh_nen": "ben_xe.png"
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Mình cứ tưởng phải chạy ngay lên núi chứ. Nhưng đi từng bước cũng được, miễn là tìm ra nguồn tín hiệu.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Bản ghi cũ nói đài quan sát nằm gần một khúc cua có lan can đá. Mình sẽ đối chiếu từng mốc, không đoán mò.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Nhìn tấm biển kia kìa! Nó ghi đường lên đài quan sát cũ, đúng hướng trong cuốn sổ.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Đúng hướng rồi. Nhưng chúng ta chỉ đi trên lối công cộng, không trèo qua rào chắn hay vào công trình đóng cửa.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Mình đã đánh dấu vị trí bến xe và hướng con đường. Nếu tín hiệu có tọa độ, ta sẽ kiểm tra được nó có khớp không.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Con đường này vắng thật. Phía trước có một tòa nhà nhỏ với mái vòm, có phải đài quan sát không?",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "anh_nen": "duong_nui.png"
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Có vẻ đúng với hình minh họa trong sổ. Nhưng cửa ngoài đã khóa, chúng ta không tự ý đi vào.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Khoan đã, bên bảng thông tin công cộng có mã lưu trữ và ngày cập nhật. Mình có thể đọc từ đây.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Mã tín hiệu không phải tọa độ cầu cứu. Nó khớp với số hiệu của một cuộn ghi âm trong danh mục tư liệu.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Vậy suốt nãy giờ chúng ta lần theo một cuộn ghi âm à? Mình đã tưởng có ai mắc kẹt ở đây!",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Ít nhất ta đã tìm được manh mối thật. Danh mục ghi cuộn băng được chuyển về đại sảnh cộng đồng từ nhiều năm trước.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Đây rồi! Trong hộp tư liệu có cuộn ghi âm mang đúng số hiệu. Mình sẽ đọc nhãn và đối chiếu ngày tháng trước.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "anh_nen": "sanh_lon.png"
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Nhãn ghi đây là bản hướng dẫn tìm bản đồ sao cho buổi quan sát cộng đồng năm xưa.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Thế tín hiệu ba tiếng bíp là lời nhắc để tìm cuộn băng, còn cuộn băng lại chỉ đến bản đồ sao?",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Đúng vậy. Bản đồ được cất trong ngăn hồ sơ công khai, nhưng ký hiệu đánh dấu vị trí đã bị mờ theo thời gian.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Các mốc trên bản đồ trùng với tên những chòm sao trong sổ. Ta có thể khôi phục thứ tự bằng cách ghép các ghi chú.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Mình tìm thấy ghi chú cuối cùng! Nó nói bản đồ không phải kho báu, mà là tài liệu để mọi người cùng quan sát bầu trời.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Mình đã chép lại bản đồ và ghi rõ nguồn tư liệu. Như vậy người khác có thể kiểm tra lại, không phải chỉ tin lời chúng ta.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "anh_nen": "lop_hoc_chieu.png"
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Tín hiệu bí ẩn hóa ra là một lời nhắc được lưu lại từ lâu. Điều quan trọng là chúng ta đã kiểm tra từng manh mối.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Lần sau nếu radio phát tiếng lạ, mình sẽ ghi lại trước khi tưởng tượng ra cả một cuộc giải cứu!",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_rerin_char_03"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Và mình sẽ mang theo sổ ghi chép. Một bí ẩn nhỏ cũng đáng được giải bằng dữ liệu tử tế.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Vậy là bản đồ đã trở về đúng nơi mọi người có thể sử dụng. Còn chúng ta có thêm một chuyến phiêu lưu đáng nhớ.",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 23,
+          "y": 100,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 100,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 78,
+          "y": 100,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      }
+    }
+  ]
+}
