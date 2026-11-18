@@ -515,6 +515,11 @@ ANIMATION / BIỂU CẢM:
 HÌNH NỀN:
 - Kiểm tra tài nguyên thực tế trong assets/Nen/.
 - `anh_nen` phải là tên tệp đầy đủ, gồm phần mở rộng.
+- Đối chiếu tên file với danh sách tài nguyên mà player có thể nạp; không giả định mọi file có trong GitHub đều đã có option tĩnh trong giao diện. Player có trách nhiệm tự thêm option cho nền hợp lệ từ JSON.
+- Mỗi cảnh mới phải có nền xác định: ưu tiên khai báo `anh_nen` ở dòng đầu cảnh; nếu cố ý giữ nguyên bối cảnh thì phải xác nhận nền kế thừa từ cảnh trước. Không được để `background` rỗng khi bắt đầu cảnh.
+- Trước khi bàn giao, rà từng `scene_id`: lấy nền hiệu lực của dòng đầu cảnh, xác nhận file tồn tại trong `assets/Nen/`, đúng chính tả và phần mở rộng; không chỉ kiểm tra JSON có trường `anh_nen`.
+- Sau khi nạp, phải xác nhận player resolve đúng tên nền và tải được ảnh/video. Nếu tải thất bại, phải báo rõ tên file và cảnh; không được im lặng chuyển sang nền đen/trống.
+- Các dòng thoại trong cùng cảnh kế thừa nền của chính cảnh đó. Không được tìm ngược qua ranh giới `scene_id` để vô tình lấy nền của cảnh trước.
 - Mỗi `scene_id` chỉ khai báo nền mặc định MỘT LẦN tại dòng thoại đầu tiên của cảnh. Các dòng thoại tiếp theo để `anh_nen` là chuỗi rỗng hoặc không khai báo; player tự kế thừa nền của cảnh.
 - Nếu bối cảnh hoặc thời gian thay đổi rõ rệt, tạo `scene_id` mới và khai báo nền một lần ở dòng đầu cảnh mới; không đổi nền rải rác giữa các dòng của cùng một cảnh.
 - Nếu `anh_nen` rỗng, thiếu hoặc null, không chuyển sang nền trống.
