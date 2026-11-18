@@ -438,7 +438,11 @@ function renderAnimationAssetReport(){
   const specs=raw.filter(x=>x&&typeof x==='object'&&x.id!=null&&x.visible!==false&&x.remove_from_scene!==true),hasExplicitSnapshot=Array.isArray(line.visibleCharacters)||Array.isArray(frame.nhan_vat_hien_thi),display=hasExplicitSnapshot?specs:((frame.nhan_vat||line.speakerId)?[{id:String(frame.nhan_vat||line.speakerId),expression_id:frame.expression_id||line.expressionId||{}}]:[]);
   display.forEach(spec=>{
    const id=String(spec.id),folder=characterAssetFolder(id),base=normalizeSemantic(spec.expression_id||(id===String(frame.nhan_vat||line.speakerId||'')?frame.expression_id||line.expressionId:semanticFromExpression(folder,spec.bieu_cam)));
-   const semantic={...base,communication:String(line.text||frame.noi_dung||'').trim()&&id===String(frame.nhan_vat||line.speakerId||'')?'speaking':'silent'};
+   const narration=!!line.isNarration||['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'').toLowerCase());
+   const isSpeaker=!narration&&!!String(line.text||frame.noi_dung||'').trim()&&id===String(frame.nhan_vat||line.speakerId||'');
+   const requestedCommunication=canonicalAnimationValue('communication',spec.motion?.communication??base.communication);
+   const communication=isSpeaker?'speaking':(['listening','reacting','idle','silent'].includes(requestedCommunication)?requestedCommunication:'silent');
+   const semantic={...base,communication};
    const normalized={};Object.keys(fieldLabels).forEach(k=>{if(semantic[k])normalized[k]=canonicalAnimationValue(k,semantic[k])});
    Object.entries(normalized).forEach(([field,value])=>{
     if(isRegistered(field,semantic[field]))return;
@@ -693,8 +697,12 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
  const folder=characterAssetFolder(spec?.id),base=normalizeSemantic(spec?.expression_id||semanticFromExpression(folder,spec?.bieu_cam));
  const narration=!!currentLine?.isNarration||['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame?.loai_phat_ngon||frame?.speaker_type||frame?.kieu_loi_thoai||'').toLowerCase());
  const isSpeaking=!narration&&!!String(frame?.noi_dung||'').trim()&&String(spec?.id)===String(frame?.nhan_vat||currentLine?.speakerId||'');
- const semantic={...base,communication:isSpeaking?'speaking':'silent'};
  const motion=spec?.motion&&typeof spec.motion==='object'?spec.motion:null;
+ // Trạng thái giao tiếp lấy từ từng nhân vật trong snapshot, không lấy từ camera.
+ // Người đang phát thoại trực tiếp luôn là speaking; các nhân vật khác giữ listening/reacting/idle/silent đã khai báo.
+ const requestedCommunication=canonicalAnimationValue('communication',motion?.communication??base.communication);
+ const communication=isSpeaking?'speaking':(['listening','reacting','idle','silent'].includes(requestedCommunication)?requestedCommunication:'silent');
+ const semantic={...base,communication};
  // Tọa độ chỉ điều khiển vị trí. Loại hành động phải do AI phân tích nội dung và ghi rõ trong motion.action.
  if(motion&&typeof motion.action==='string'&&motion.action.trim())semantic.action=motion.action.trim();
  ['direction','face_angle','view_angle','pose','emotion'].forEach(k=>{if(motion&&motion[k]!=null&&String(motion[k]).trim())semantic[k]=String(motion[k]).trim()});
