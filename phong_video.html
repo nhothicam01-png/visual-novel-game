@@ -965,12 +965,13 @@ function drawFrame(elapsed,st){
 }
 function drawFrameUnsafe(elapsed,st){
  const w=canvas.width,h=canvas.height;
+ const quakeElapsed=Math.max(0,elapsed-lineMotionStartElapsed);
  st=st||readFrameState();
  const {bgFx,charFx,camFx,atmFx,strength}=st;
  ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
  let shakeX=0,shakeY=0,zoom=1;
  sceneEffectLayers.forEach(effect=>{if(effect.type==='code'&&effect.id==='lightning'){const period=Number(effect.config?.period||4.4),phase=((elapsed%period)+period)%period,pulse=[.08,.2,.28].reduce((v,t)=>Math.max(v,Math.max(0,1-Math.abs(phase-t)/.105)),0);if(pulse>0){const amount=.003*pulse;shakeX+=Math.sin(elapsed*85)*w*amount;shakeY+=Math.cos(elapsed*73)*h*amount}return;}});
- if(camFx.includes('camera-shake')&&elapsed<1.5){shakeX=Math.sin(elapsed*55)*w*.008*strength;shakeY=Math.cos(elapsed*48)*h*.008*strength}
+ if(camFx.includes('camera-shake')){shakeX=Math.sin(quakeElapsed*55)*w*.012*strength;shakeY=Math.cos(quakeElapsed*48)*h*.010*strength}
  if(camFx.includes('camera-zoom'))zoom*=1+Math.min(.10,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.10*strength);
  if(camFx.includes('camera-pull'))zoom*=1-Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08*strength);
  if(camFx.includes('camera-drift')){shakeX+=Math.sin(elapsed*.28)*w*.0035*strength}
@@ -1029,7 +1030,7 @@ function drawFrameUnsafe(elapsed,st){
   if(bgFx.includes('bg-left'))bx-=Math.sin(elapsed*.8)*w*.025*strength;
   if(bgFx.includes('bg-right'))bx+=Math.sin(elapsed*.8)*w*.025*strength;
   if(bgFx.includes('bg-float')){bz+=.035*strength;bx+=Math.sin(elapsed*.45)*w*.012*strength;by+=Math.cos(elapsed*.38)*h*.009*strength}
-  if(bgFx.includes('bg-earthquake')){bx+=Math.sin(elapsed*38)*w*.009*strength;by+=Math.cos(elapsed*34)*h*.006*strength;bz+=.012*strength}
+  if(bgFx.includes('bg-earthquake')){bx+=Math.sin(quakeElapsed*38)*w*.014*strength;by+=Math.cos(quakeElapsed*34)*h*.010*strength;bz+=.018*strength}
   if(bgFx.includes('bg-pulse'))bz+=Math.sin(elapsed*2)*.012*strength;
   // Background luôn tối thiểu 100%; bù thêm khi pan/float để không lộ góc ảnh.
   bz=Math.max(1,bz,getVfxMinimumCoverScale(w,h,0,w/2+bx,h/2+by));
@@ -1089,7 +1090,7 @@ function drawFrameUnsafe(elapsed,st){
   }
   if(charFx.includes('char-bob'))ctx.translate(0,Math.sin(elapsed*5)*h*.008*strength);
   if(charFx.includes('char-sway')){ctx.translate(x,y);ctx.rotate(Math.sin(elapsed*1.8)*.018*strength);ctx.translate(-x,-y)}
-  if(charFx.includes('char-shake')&&elapsed<2)ctx.translate(Math.sin(elapsed*42)*w*.009*strength,0);
+  if(charFx.includes('char-shake'))ctx.translate(Math.sin(quakeElapsed*42)*w*.010*strength,Math.cos(quakeElapsed*37)*h*.006*strength);
   if(charFx.includes('char-zoom')||charFx.includes('char-breathe')){const cz=1+Math.sin(elapsed*(charFx.includes('char-breathe')?1.6:2.2))*(charFx.includes('char-breathe')?.012:.018)*strength;ctx.translate(x,y);ctx.scale(cz,cz);ctx.translate(-x,-y)}
   if(charFx.includes('char-float'))ctx.translate(Math.sin(elapsed*1.15)*w*.012*strength,Math.sin(elapsed*1.7)*h*.006*strength);
   if(charFx.includes('char-enter'))ctx.translate(0,(1-Math.min(1,elapsed/1.1))*h*.22);
