@@ -1455,8 +1455,8 @@ async function loadSourceLineForPlayback(item){
  // phải đợi lượt mới nhất hoàn tất thay vì cho timeline chạy với cảnh chưa sẵn sàng.
  let assetsReady=false;
  for(let attempt=0;attempt<8&&!assetsReady;attempt++)assetsReady=await updateAssets();
- if(!assetsReady)throw new Error('Cảnh đang được cập nhật liên tục; vui lòng thử phát lại.');
- if(line.speakerId)await applyVoiceForCurrentLine();
+ if(!assetsReady){console.warn('Nạp tài nguyên cảnh chưa hoàn tất, vẫn tiếp tục phát:',item);setStatus('Cảnh '+(item.sceneIndex+1)+' thiếu/lỗi một số tài nguyên; vẫn tiếp tục phát.')}
+ if(line.speakerId){try{await applyVoiceForCurrentLine()}catch(err){console.warn('Không áp giọng cho câu thoại, bỏ qua:',err)}}
 }
 // Nạp nền trước (không chặn phát) hiệu ứng PNG/WEBM của toàn bộ đoạn sắp phát, theo thứ tự cảnh, 2 tệp một lượt.
 // Lỗi tải chỉ bỏ qua tệp đó: updateAssets vẫn tự xử lý hiệu ứng thiếu khi tới cảnh.
