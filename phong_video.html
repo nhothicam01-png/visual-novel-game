@@ -794,7 +794,7 @@ async function updateAssets(){
     isSpeakingClip=!!selectedPath&&canonicalAnimationValue('communication',animationMeta(selectedPath).communication)==='speaking';
     if(!isSpeakingClip){
      const candidates=(expressionFilesByFolder[String(folder)]||[]).map(path=>({path,meta:animationMeta(path)})).filter(item=>canonicalAnimationValue('communication',item.meta.communication)==='speaking');
-     const score=item=>['pose','action','emotion','direction','face_angle','view_angle','interaction_target'].reduce((n,k)=>n+(semantic[k]&&canonicalAnimationValue(k,item.meta[k])===canonicalAnimationValue(k,semantic[k])?10:0),0);
+     const score=item=>['pose','action','emotion','direction','face_angle','interaction_target'].reduce((n,k)=>n+(semantic[k]&&canonicalAnimationValue(k,item.meta[k])===canonicalAnimationValue(k,semantic[k])?10:0),0);
      candidates.sort((a,b)=>score(b)-score(a)||a.path.localeCompare(b.path));
      if(candidates.length){expression=candidates[0].path.split('/').pop().replace(/\.webm$/i,'');url=BASE+'NhanVat/'+folder+'/'+expression+'.webm';selection={...selection,file:expression,matched:false,mirrored:false,reason:'Ưu tiên WEBM speaking gần nhất'};isSpeakingClip=true}
     }
@@ -2248,7 +2248,7 @@ function oppositeHorizontalDirection(value){
 }
 function resolveSemanticAnimation(folder,semantic){
  const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return {file:'',matched:false,mirrored:false,reason:'Thư mục chưa có WEBM'};
- const target=normalizeSemantic(semantic),strict=['communication','pose','action','emotion','face_angle','view_angle','interaction_target'].filter(k=>target[k]);
+ const target=normalizeSemantic(semantic),strict=['communication','pose','action','emotion','face_angle','interaction_target'].filter(k=>target[k]);
  const candidates=paths.map(path=>{
   const meta=animationMeta(path),missing=[],mismatch=[];let score=0,mirrored=false;
   strict.forEach(k=>{const wanted=canonicalAnimationValue(k,target[k]),actual=canonicalAnimationValue(k,meta[k]);if(!actual)missing.push(k);else if(actual!==wanted)mismatch.push(k);else score+=100});
@@ -2265,7 +2265,7 @@ function resolveSemanticAnimation(folder,semantic){
  const reason=chosen.mismatch.length?'không khớp '+chosen.mismatch.join(', '):chosen.missing.length?'thiếu metadata '+chosen.missing.join(', '):'';
  return {file,matched:chosen.matched,mirrored:!!chosen.mirrored,reason,variantCount:pool.length||1};
 }
-function resolveSemanticExpression(folder,semantic){const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return '';const target=normalizeSemantic(semantic),norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[_-]+/g,' ').trim(),fields=['communication','emotion','pose','direction','face_angle','view_angle','action','interaction_target'];let scored=paths.map(path=>{const meta=animationMeta(path),name=path.split('/').pop().replace(/\.webm$/i,'').toLowerCase().replace(/[_-]+/g,' ');let score=0,comm=norm(meta.communication);if(target.communication){if(comm&&comm.includes(norm(target.communication)))score+=100;else if(name.includes(norm(target.communication)))score+=35;else if(comm)score-=80}fields.slice(1).forEach(k=>{if(target[k]){const a=norm(target[k]),b=norm(meta[k]);if(b&&b===a)score+=12;else if(b&&(b.includes(a)||a.includes(b)))score+=5;else if(name.includes(a))score+=2}});return {path,score}}).sort((a,b)=>b.score-a.score);return scored[0].path.split('/').pop().replace(/\.webm$/i,'')}
+function resolveSemanticExpression(folder,semantic){const paths=expressionFilesByFolder[String(folder||'')]||[];if(!paths.length)return '';const target=normalizeSemantic(semantic),norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[_-]+/g,' ').trim(),fields=['communication','emotion','pose','direction','face_angle','action','interaction_target'];let scored=paths.map(path=>{const meta=animationMeta(path),name=path.split('/').pop().replace(/\.webm$/i,'').toLowerCase().replace(/[_-]+/g,' ');let score=0,comm=norm(meta.communication);if(target.communication){if(comm&&comm.includes(norm(target.communication)))score+=100;else if(name.includes(norm(target.communication)))score+=35;else if(comm)score-=80}fields.slice(1).forEach(k=>{if(target[k]){const a=norm(target[k]),b=norm(meta[k]);if(b&&b===a)score+=12;else if(b&&(b.includes(a)||a.includes(b)))score+=5;else if(name.includes(a))score+=2}});return {path,score}}).sort((a,b)=>b.score-a.score);return scored[0].path.split('/').pop().replace(/\.webm$/i,'')}
 function semanticFromExpression(folder,file){const path=(expressionFilesByFolder[String(folder||'')]||[]).find(p=>p.split('/').pop().replace(/\.webm$/i,'')===normalizeExpression(file));return path?animationMeta(path):{}}
 function buildScenesFromJson(data){
  const rows=data?.danh_sach;if(!Array.isArray(rows)||!rows.length)throw new Error('JSON không có danh_sach hợp lệ.');if(Number(data.phien_ban)!==3||!String(data.world_id||'').trim())throw new Error('Chỉ hỗ trợ JSON phiên bản 3 có world_id hợp lệ.');
