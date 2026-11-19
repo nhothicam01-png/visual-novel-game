@@ -1142,11 +1142,13 @@ function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
  const px=Number.isFinite(Number(spec.x))?clamp(0,100,Number(spec.x)):50,py=clampCharacterGroundY(spec.y);
  // Phải dùng đúng vị trí chân sau khi áp dụng cùng giới hạn 10% đầu an toàn như lúc vẽ sprite.
  const feet=Math.max(dh+h*.10,Math.min(h,h*py/100));
- // Zoom/cận cảnh lấy TOP sprite làm anchor để ưu tiên giữ trọn đầu; toàn thân lấy tâm cơ thể.
- const focusRatio=shot==='full_body'||shot==='fullbody'||shot==='wide'||shot==='wide_shot'?.50:1;
- const focusY=feet-dh*focusRatio;
+ // Đặt đỉnh đầu gần phía trên khung hình nhưng chừa khoảng nền khoảng 12% chiều cao.
+ // Camera nhìn xuống thêm một chút để phần đầu không sát mép trên khi phóng lớn.
+ const focusY=feet-dh;
  const halfW=w/(2*zoom),halfH=h/(2*zoom);
- return {zoom,cx:clamp(halfW,w-halfW,w*px/100),cy:clamp(halfH,h-halfH,focusY)};
+ const headroom=h*.12;
+ const cameraY=focusY+(h/2-headroom)/zoom;
+ return {zoom,cx:clamp(halfW,w-halfW,w*px/100),cy:clamp(halfH,h-halfH,cameraY)};
 }
 // Lớp bảo vệ: lỗi vẽ một hiệu ứng không được phép làm chết vòng phát thoại.
 let previewRenderErrorLogged=false;
@@ -1256,7 +1258,7 @@ function drawFrameUnsafe(elapsed,st){
  const rawShotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,cameraLayers,isPortrait,shot);
  // Chỉ bắt đầu lia khi có một cue camera mới. Giữ nguyên vị trí và zoom trong các
  // câu còn lại của cùng shot, kể cả khi người nói thay đổi.
- const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startZoom:1,targetX:null,targetZoom:1,startElapsed:0,followOffset:0,followElapsed:elapsed,baseSubjectX:null});
+ const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startY:null,startZoom:1,targetX:null,targetY:null,targetZoom:1,startElapsed:0,followOffset:0,followElapsed:elapsed,baseSubjectX:null});
  const panMarker=director==='manual'
   ?'manual|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom)
   :'auto|'+sceneKey+'|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom);
@@ -1267,8 +1269,10 @@ function drawFrameUnsafe(elapsed,st){
   panState.startZoom=Math.max(1,Math.min(3,Number.isFinite(panState.zoom)?panState.zoom:1));
   const startHalfW=w/(2*panState.startZoom);
   panState.startX=Math.max(startHalfW,Math.min(w-startHalfW,Number.isFinite(panState.x)?panState.x:w/2));
+  panState.startY=Math.max(h/(2*panState.startZoom),Math.min(h-h/(2*panState.startZoom),Number.isFinite(panState.y)?panState.y:h/2));
   panState.targetZoom=Math.max(1,Math.min(3,rawShotCamera?rawShotCamera.zoom:1));
   panState.targetX=rawShotCamera?rawShotCamera.cx:w/2;
+  panState.targetY=rawShotCamera?rawShotCamera.cy:h/2;
   panState.baseSubjectX=rawShotCamera?rawShotCamera.cx:w/2;
   panState.followOffset=0;panState.followElapsed=elapsed;
  }
@@ -1287,10 +1291,12 @@ function drawFrameUnsafe(elapsed,st){
  panState.followOffset=(Number(panState.followOffset)||0)+(desiredFollow-(Number(panState.followOffset)||0))*followAlpha;
  panState.followElapsed=elapsed;
  const cameraX=cameraBaseX+panState.followOffset;
- // Keep the viewport inside the cover-fitted background at every point of the pan.
+ const cameraY=panState.startY+(panState.targetY-panState.startY)*panEase;
+ // Keep horizontal and vertical viewport bounds inside the scene.
+ const halfViewportH=h/(2*cameraZoom);
  const shotCamera={zoom:cameraZoom,
   cx:Math.max(halfViewportW,Math.min(w-halfViewportW,cameraX)),
-  cy:h/2};
+  cy:Math.max(halfViewportH,Math.min(h-halfViewportH,cameraY))};
  panState.x=shotCamera.cx;panState.y=shotCamera.cy;panState.zoom=shotCamera.zoom;
  if(shotCamera){ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(shotCamera.zoom,shotCamera.zoom);ctx.translate(-shotCamera.cx,-shotCamera.cy)}
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
