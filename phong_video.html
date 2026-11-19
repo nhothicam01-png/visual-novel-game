@@ -1844,6 +1844,7 @@ async function playPreview(){
     if(!(firstLineReady&&itemIndex===0))await loadSourceLineForPlayback(item);
     if(!await waitWhilePaused(run))break;
     const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;await playLineAudio(line);
+    if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_PROGRESS',index:Number(line.sourceIndex??item.sourceIndex??0)},location.origin);
     const text=$('dialogue').value.trim();
     speakingCharacterId=text&&!line.isNarration?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
     speechTextIndex=0;speechAudioElement=null;speechMotionSmooth=0;speechMotionFrameAt=0;
@@ -1875,6 +1876,7 @@ async function playPreview(){
    setStatus('Timeline gặp lỗi và đã tự giải phóng: '+(err?.message||String(err)));
   }finally{
    if(previewing&&run===previewRunId)stopPreview();
+   if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_PLAYBACK_ENDED'},location.origin);
    if(directRecording)await stopDirectRecorder();
   }
  }finally{
@@ -3226,14 +3228,18 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
     if(request!==demoStudioBridgeRequest)return;
     await seekSourceLine(Math.max(0,Number(message.index)||0));
     if(request!==demoStudioBridgeRequest)return;
-    previewing=true;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();
+    previewing=false;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();
     window.parent.postMessage({type:'DEMO_STUDIO_READY',index:currentSourceIndex()},location.origin);
    }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
   }else if(message.type==='DEMO_STUDIO_SEEK'&&demoStudioStoryLoaded){
    const request=++demoStudioBridgeRequest;
-   try{await seekSourceLine(Math.max(0,Number(message.index)||0));if(request!==demoStudioBridgeRequest)return;previewing=true;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();window.parent.postMessage({type:'DEMO_STUDIO_FRAME',index:currentSourceIndex()},location.origin)}
+   try{await seekSourceLine(Math.max(0,Number(message.index)||0));if(request!==demoStudioBridgeRequest)return;previewing=false;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();window.parent.postMessage({type:'DEMO_STUDIO_FRAME',index:currentSourceIndex()},location.origin)}
    catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
-  }
+  }else if(message.type==='DEMO_STUDIO_PLAY'&&demoStudioStoryLoaded){
+   $('preview-scope').value='full';if(!previewing&&!previewPreparing)playPreview().catch(error=>window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin));
+  }else if(message.type==='DEMO_STUDIO_PAUSE'&&previewing&&!previewPaused){pausePreview()}
+  else if(message.type==='DEMO_STUDIO_RESUME'&&previewing&&previewPaused){resumePreview()}
+  else if(message.type==='DEMO_STUDIO_STOP'){stopPreview()}
  });
  window.addEventListener('load',()=>window.parent.postMessage({type:'DEMO_STUDIO_ENGINE_READY'},location.origin),{once:true});
 }
