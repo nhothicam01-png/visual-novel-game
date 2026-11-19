@@ -1510,8 +1510,8 @@ function buildDialogueLayer(w,h){
 }
 let lastPreviewRenderAt=0;
 function renderPreviewTick(){
- // Giới hạn preview 30 FPS để nhiều lớp VFX phủ kín màn hình không làm nghẽn GPU/CPU trên điện thoại.
- const now=performance.now();if(now-lastPreviewRenderAt<1000/30)return;lastPreviewRenderAt=now;
+ // Đồng bộ preview tối đa 60 FPS để chuyển động WEBM mượt hơn trên màn hình 60Hz; đồng hồ hoạt ảnh vẫn dùng thời gian thực.
+ const now=performance.now();if(now-lastPreviewRenderAt<1000/60)return;lastPreviewRenderAt=now;
  // [TỐI ƯU] Đang xuất video thì không vẽ preview để khỏi tranh CPU/GPU và không đụng vào video đang seek.
  if(recording)return;
  // Dong ho preview dung lai khi tam dung de hoat anh khong nhay vot khi tiep tuc.
