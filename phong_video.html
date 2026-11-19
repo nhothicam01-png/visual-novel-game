@@ -1800,7 +1800,7 @@ async function playPreview(){
  if(previewPreparing||previewing)return;
  const startToken=++previewStartToken,isCurrent=()=>startToken===previewStartToken;
  previewPreparing=true;updatePlaybackButtons();
- let firstLineReady=false;
+ let firstLineReady=false,playbackCompleted=false;
  try{
   saveCurrentLine();saveCurrentScene();
   const scope=$('preview-scope').value,startIndex=currentSourceIndex();
@@ -1871,12 +1871,13 @@ async function playPreview(){
      const step=Math.min(80,remaining);await new Promise(resolve=>setTimeout(resolve,step));remaining-=step;
     }
    }
+   if(previewing&&run===previewRunId)playbackCompleted=true;
   }catch(err){
    console.error('Lỗi timeline preview:',err);
    setStatus('Timeline gặp lỗi và đã tự giải phóng: '+(err?.message||String(err)));
   }finally{
    if(previewing&&run===previewRunId)stopPreview();
-   if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_PLAYBACK_ENDED'},location.origin);
+   if(playbackCompleted&&new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_PLAYBACK_ENDED'},location.origin);
    if(directRecording)await stopDirectRecorder();
   }
  }finally{
