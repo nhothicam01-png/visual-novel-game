@@ -1041,7 +1041,7 @@ function trimPlaybackAssetCaches(keepUrls){
 }
 async function preloadAdjacentAssets(sourceIndex,count=5){
  const rows=activeStoryData?.danh_sach||[],start=Math.max(0,sourceIndex),end=Math.min(rows.length,start+count),jobs=[],keep=new Set();
- for(let i=Math.max(0,start-5);i<Math.min(rows.length,end+5);i++){
+ for(let i=Math.max(0,playbackAssetCursor-5);i<Math.min(rows.length,end+5);i++){
   const row=rows[i]||{},assets=rowAssetUrls(row,i);
   assets.images.forEach(url=>keep.add(freshAssetUrl(url)));
   assets.videos.forEach(url=>keep.add(freshAssetUrl(url)));
@@ -1826,6 +1826,7 @@ async function convertTtsBlobToWav(blob){
  }finally{await ac.close().catch(()=>{})}
 }
 async function preparePreviewPlayback(items,useBrowser){
+ playbackAssetCursor=Number(items[0]?.sourceIndex)||0;
  const initialCount=Math.min(items.length,10),total=initialCount+items.length+(useBrowser?0:items.length);let done=0;
  setTaskProgress('Chuẩn bị 10 thoại đầu và âm thanh toàn truyện · 0/'+total,0);
  await prefetchSceneEffectsFor(items.slice(0,initialCount));
@@ -1887,14 +1888,15 @@ async function playPreview(){
   // của câu mới với elapsed cũ (panT=1), làm camera nhảy tới toàn cảnh/đích rồi mới lia.
   lineMotionStartElapsed=(performance.now()-previewStartedAt)/1000;
   startRenderLoop();updatePlaybackButtons();
-  let nextAssetWindowPromise=null,nextAssetWindowStart=10;
+  const assetWindowPromises=new Map();
   try{
    for(let itemIndex=0;itemIndex<items.length;itemIndex++){
-    if(itemIndex===5&&items.length>15)nextAssetWindowPromise=preloadAdjacentAssets(items[15].sourceIndex,5);
-    if(itemIndex===10&&nextAssetWindowPromise){await nextAssetWindowPromise;nextAssetWindowPromise=null;}
-    if(itemIndex>10&&itemIndex%5===0){const nextStart=itemIndex+5;if(nextStart<items.length)nextAssetWindowPromise=preloadAdjacentAssets(items[nextStart].sourceIndex,5);}
-    if(itemIndex>=15&&itemIndex%5===0&&nextAssetWindowPromise){await nextAssetWindowPromise;nextAssetWindowPromise=null;}
-    const item=items[itemIndex];
+    const item=items[itemIndex];playbackAssetCursor=Number(item.sourceIndex)||0;
+    if(itemIndex===5&&items.length>15)assetWindowPromises.set(15,preloadAdjacentAssets(items[15].sourceIndex,5));
+    if(itemIndex>=10&&itemIndex%5===0){
+     if(itemIndex>10){const ready=assetWindowPromises.get(itemIndex);if(ready)await ready;}
+     const nextStart=itemIndex+10;if(nextStart<items.length)assetWindowPromises.set(nextStart,preloadAdjacentAssets(items[nextStart].sourceIndex,5));
+    }
     if(!await waitWhilePaused(run))break;
     // Chụp lại vị trí camera hiện tại làm điểm đầu trước khi đổi thoại/nạp tài nguyên.
     lineMotionStartElapsed=(performance.now()-previewStartedAt)/1000;
@@ -2559,7 +2561,7 @@ $('export-video').addEventListener('click',exportVideo);
 
 let scenes=[],activeSceneIndex=0,activeLineIndex=0;
 let activeStoryData=null,activeStoryName='',activeStoryPath='',characterVoiceMap={},characterDirectory=[],defaultVoiceProfileId='';
-let sourceLineCount=0,assetLoadToken=0,isPortrait=false;
+let sourceLineCount=0,assetLoadToken=0,isPortrait=false,playbackAssetCursor=0;
 const imageAssetCache=new Map(),videoAssetCache=new Map();
 function clone(obj){return JSON.parse(JSON.stringify(obj))}
 const GH_API='https://api.github.com/repos/nhothicam01-png/visual-novel-game/contents/assets/KichBan?ref=main';
