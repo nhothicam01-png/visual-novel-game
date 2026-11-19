@@ -360,7 +360,7 @@ function isVideoBackground(value){return /\.(mp4|webm)(?:[?#]|$)/i.test(String(v
 const localAssetObjectUrls=new Map();let localAssetDbPromise=null;
 function openLocalAssetDb(){if(localAssetDbPromise)return localAssetDbPromise;localAssetDbPromise=new Promise((resolve,reject)=>{const req=indexedDB.open('demoStudioAssetVault',1);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('Không mở được kho tài nguyên cục bộ'));req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('assets')){const st=db.createObjectStore('assets',{keyPath:'id'});st.createIndex('name','name',{unique:false});st.createIndex('category','category',{unique:false})}}});return localAssetDbPromise}
 async function localAssetUrl(value){const raw=String(value||'');if(!raw.startsWith('localasset:'))return raw;const id=raw.slice(11);if(localAssetObjectUrls.has(id))return localAssetObjectUrls.get(id);const db=await openLocalAssetDb(),item=await new Promise((resolve,reject)=>{const tx=db.transaction('assets','readonly'),req=tx.objectStore('assets').get(id);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error)});if(!item?.blob)throw new Error('Không tìm thấy tài nguyên cục bộ: '+id);const url=URL.createObjectURL(item.blob)+'#'+encodeURIComponent(item.name||'asset');localAssetObjectUrls.set(id,url);return url}
-async function hydrateLocalAssetRefs(story){const rows=Array.isArray(story?.danh_sach)?story.danh_sach:[];for(const row of rows){if(typeof row.anh_nen==='string'&&row.anh_nen.startsWith('localasset:'))row.anh_nen=await localAssetUrl(row.anh_nen);for(const key of ['nhac_nen','hieu_ung_am_thanh']){const a=row.am_thanh?.[key];if(a&&typeof a.tep==='string'&&a.tep.startsWith('localasset:'))a.tep=await localAssetUrl(a.tep)}if(Array.isArray(row.nhan_vat_hien_thi))for(const spec of row.nhan_vat_hien_thi)if(typeof spec?.webm_file==='string'&&spec.webm_file.startsWith('localasset:'))spec.webm_file=await localAssetUrl(spec.webm_file)}const bgm=story?.am_thanh_mac_dinh?.nhac_nen;if(typeof bgm==='string'&&bgm.startsWith('localasset:'))story.am_thanh_mac_dinh.nhac_nen=await localAssetUrl(bgm);else if(typeof bgm?.tep==='string'&&bgm.tep.startsWith('localasset:'))bgm.tep=await localAssetUrl(bgm.tep);return story}
+async function hydrateLocalAssetRefs(story){const rows=Array.isArray(story?.danh_sach)?story.danh_sach:[];for(const row of rows){if(typeof row.anh_nen==='string'&&row.anh_nen.startsWith('localasset:'))row.anh_nen=await localAssetUrl(row.anh_nen);if(typeof row.audio_tts?.file==='string'&&row.audio_tts.file.startsWith('localasset:'))row.audio_tts.file=await localAssetUrl(row.audio_tts.file);for(const key of ['nhac_nen','hieu_ung_am_thanh']){const a=row.am_thanh?.[key];if(a&&typeof a.tep==='string'&&a.tep.startsWith('localasset:'))a.tep=await localAssetUrl(a.tep)}if(Array.isArray(row.nhan_vat_hien_thi))for(const spec of row.nhan_vat_hien_thi)if(typeof spec?.webm_file==='string'&&spec.webm_file.startsWith('localasset:'))spec.webm_file=await localAssetUrl(spec.webm_file)}const bgm=story?.am_thanh_mac_dinh?.nhac_nen;if(typeof bgm==='string'&&bgm.startsWith('localasset:'))story.am_thanh_mac_dinh.nhac_nen=await localAssetUrl(bgm);else if(typeof bgm?.tep==='string'&&bgm.tep.startsWith('localasset:'))bgm.tep=await localAssetUrl(bgm.tep);return story}
 const $=id=>document.getElementById(id);
 let canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
 const previewCanvas=canvas,previewCtx=ctx;
@@ -1789,8 +1789,15 @@ async function preparePreviewPlayback(items,useBrowser){
  for(let index=0;index<items.length;index++){
   const item=items[index];
   await loadSourceLineForPlayback(item);
-  if(!useBrowser&&$('dialogue').value.trim())await ensureTtsReady();
+  if(!useBrowser&&$('dialogue').value.trim()){
+   const blob=await ensureTtsReady();
+   if(blob){
+    const duration=await new Promise(resolve=>{const url=URL.createObjectURL(blob),audio=new Audio();audio.preload='metadata';audio.onloadedmetadata=()=>{const value=Number.isFinite(audio.duration)?audio.duration:0;URL.revokeObjectURL(url);resolve(value)};audio.onerror=()=>{URL.revokeObjectURL(url);resolve(0)};audio.src=url});
+    if(duration>0){const line=getCurrentLine();line.duration=duration;line.audioDuration=duration;const profile=selectedVoiceProfile();if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_READY',index:Number(line.sourceIndex??item.sourceIndex??0),blob,duration,cacheKey:line.cacheKey||ttsRequestKey(),profileId:profile?.id||'',voiceName:profile?.name||''},location.origin)}
+   }
+  }
   done++;setTaskProgress((useBrowser?'Chuẩn bị cảnh/nhân vật · ':'Chuẩn bị cảnh, nhân vật và WAV · ')+done+'/'+total,total?done/total*100:100);
+  if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_PROGRESS',done,total:items.length},location.origin);
  }
  // Trả giao diện về đúng dòng bắt đầu; tài nguyên đã có trong cache nên phát không phải tải mạng lại.
  if(items.length)await loadSourceLineForPlayback(items[0]);
@@ -2190,6 +2197,9 @@ async function ensureTtsReady(){
  if(line?.speakerId)await applyVoiceForCurrentLine();
  if(!text)return null;
  const key=ttsRequestKey();
+ if(line?.audioUrl&&line.audioCacheKey===key&&!line.wavBlob){
+  try{const response=await fetch(line.audioUrl);if(!response.ok)throw Error('Không đọc được WAV đã lưu');line.wavBlob=await response.blob();line.cacheKey=key;line.duration=line.audioDuration||line.duration||0}catch(error){console.warn('Bỏ qua WAV lưu cũ, sẽ tạo lại:',error);line.audioUrl='';line.wavBlob=null}
+ }
  if(line?.wavBlob&&line.cacheKey===key){generatedTtsBlob=line.wavBlob;generatedTtsKey=key;return line.wavBlob}
  if(!ttsGenerationPromise)ttsGenerationPromise=generatePiperAudio().catch(err=>{generatedTtsBlob=null;generatedTtsKey='';throw err}).finally(()=>{ttsGenerationPromise=null});
  return await ttsGenerationPromise;
@@ -2764,7 +2774,7 @@ function buildScenesFromJson(data){
   frame.hieu_ung_canh=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung??[]);
   if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterId,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;
- current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,background:lastBackground,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,speakerType:String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'character').toLowerCase(),isNarration:['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'').toLowerCase()),text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
+ current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,background:lastBackground,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,speakerType:String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'character').toLowerCase(),isNarration:['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'').toLowerCase()),text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',audioUrl:String(frame.audio_tts?.file||''),audioCacheKey:String(frame.audio_tts?.cacheKey||''),audioDuration:Number(frame.audio_tts?.duration)||0,pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
  if(current)out.push(current);return out;
 }
 let storyCharacterFolderMap={};
@@ -3232,6 +3242,14 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
     previewing=false;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();
     window.parent.postMessage({type:'DEMO_STUDIO_READY',index:currentSourceIndex()},location.origin);
    }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
+  }else if(message.type==='DEMO_STUDIO_GENERATE_AUDIO'&&demoStudioStoryLoaded){
+   if(previewing||previewPreparing){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:'Hãy dừng phát trước khi tạo WAV.'},location.origin);return}
+   try{
+    const items=allSourceLines();
+    await preparePreviewPlayback(items,false);
+    const failed=items.filter(item=>{const line=scenes[item.sceneIndex]?.lines[item.lineIndex];return String(line?.text||'').trim()&&!line?.wavBlob}).length;
+    window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_DONE',done:items.length-failed,total:items.length,failed},location.origin);
+   }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:'Tạo WAV thất bại: '+(error?.message||String(error))},location.origin)}
   }else if(message.type==='DEMO_STUDIO_SEEK'&&demoStudioStoryLoaded){
    const request=++demoStudioBridgeRequest;
    try{await seekSourceLine(Math.max(0,Number(message.index)||0));if(request!==demoStudioBridgeRequest)return;previewing=false;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();window.parent.postMessage({type:'DEMO_STUDIO_FRAME',index:currentSourceIndex()},location.origin)}
