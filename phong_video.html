@@ -1237,11 +1237,12 @@ function drawFrameUnsafe(elapsed,st){
   // Cảnh một nhân vật lớn hơn; cảnh nhiều người thu nhỏ vừa đủ để không chồng lấn.
   // Sprite luôn lấy chiều cao sân khấu làm chuẩn 100%; chiều rộng tự giữ đúng tỷ lệ nguồn.
   // Neo đáy ở bottom:-2% (đường chân tại 102% chiều cao), cho phép tràn nhẹ khỏi mép dưới.
+  // Chừa tối thiểu 10% chiều cao phía trên đầu; giới hạn này áp dụng cả khi motion/keyframes thay đổi y.
   // Scale trong JSON vẫn được tôn trọng; không tự thu nhỏ theo số nhân vật hoặc tỷ lệ màn hình.
   const fit=sw&&sh?h/sh:1;
   const effectiveScale=charLayerVideos.length===1?1:scale;
   const safeScale=Math.max(.1,Math.min(2.5,effectiveScale)),dw=sw*fit*safeScale,dh=sh*fit*safeScale;
-  y=Math.max(dh+h*.015,Math.min(h*1.02,y));
+  y=Math.max(dh+h*.10,Math.min(h*1.02,y));
   ctx.save();let alpha=Math.max(0,Math.min(1,st.opacity??1));
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
   const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!spec?.neutralFallback&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
