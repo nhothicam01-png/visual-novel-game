@@ -29,7 +29,7 @@
 <aside class="panel left"><div class="section-title">Dự án / Cảnh</div><div class="drop" id="drop"><strong>Thả JSON kịch bản vào đây</strong><span>Hoặc chọn file từ thiết bị</span><label class="filebtn" for="fileInput">Chọn kịch bản</label></div><div class="stats"><div class="stat"><b id="lineCount">0</b><span>THOẠI / ĐOẠN</span></div><div class="stat"><b id="sceneCount">0</b><span>CẢNH</span></div><div class="stat"><b id="duration">00:00</b><span>THỜI LƯỢNG</span></div><div class="stat"><b id="charCount">0</b><span>NHÂN VẬT</span></div></div><div class="section-title">Danh sách cảnh</div><div class="scene-list" id="sceneList"><div class="empty">Import JSON để hiển thị toàn bộ cảnh</div></div></aside>
 <main class="panel center"><div class="preview-head"><strong>Monitor · Xem trước</strong><span class="pill" id="sceneBadge">Chưa tải</span><span class="muted hint" id="lineBadge">—</span><label class="hint">Tỉ lệ <select id="previewRatio" aria-label="Tỉ lệ khung hình"><option value="16:9" selected>16:9 · Ngang</option><option value="9:16">9:16 · Dọc</option><option value="1:1">1:1 · Vuông</option></select></label><label class="hint check" title="Ẩn khung thoại nhưng vẫn giữ giọng đọc và âm thanh"><input type="checkbox" id="studioShowDialogue" checked> Khung thoại</label></div><details class="motion-controls" open><summary>Chuyển động nhân vật khi nói</summary><div class="motion-control-grid"><label class="hint check"><input type="checkbox" id="studioSpeechMotionEnabled" checked> Tự nhún/nghiêng</label><label class="motion-range">Tốc độ <output id="studioMotionSpeedValue">50</output>/100<input id="studioMotionSpeed" type="range" min="1" max="100" value="50"></label><label class="motion-range">Cường độ nhún <output id="studioMotionIntensityValue">40</output>/100<input id="studioMotionIntensity" type="range" min="1" max="100" value="40"></label><label class="motion-range">Độ nghiêng <output id="studioMotionTiltValue">50</output>/100<input id="studioMotionTilt" type="range" min="1" max="100" value="50"></label></div></details><div class="stage"><iframe id="enginePreview" title="Preview renderer Visual Novel Studio" src="./phong_video.html?demoStudioPreview=1" allow="autoplay" loading="eager"></iframe><div class="preview-status" id="previewStatus">Đang khởi tạo bộ dựng thật…</div></div><div class="transport"><button id="toStart">|◀</button><button id="playBtn">▶ Phát</button><button id="toEnd">▶|</button><span class="time" id="timeReadout">00:00 / 00:00</span><span class="spacer"></span><label class="hint">Độ phân giải <select id="exportQuality"><option value="540">540p</option><option value="720" selected>720p</option><option value="1080">1080p</option></select></label><label class="hint">FPS <select id="exportFps"><option value="24">24</option><option value="30" selected>30</option><option value="50">50</option><option value="60">60</option></select></label><button id="recordDirectBtn" title="Ghi theo thời gian thực; nhanh hơn render offline">⏺ Ghi trực tiếp</button><button id="exportVideoBtn" class="primary">🎬 Render MP4 chất lượng cao</button></div><div class="hint" id="exportStatus">Video sẽ xuất theo tỉ lệ đang chọn, kèm thoại và âm thanh.</div><div class="hint">Bản dựng trực quan: chọn clip trên timeline hoặc kéo đầu phát để duyệt toàn bộ kịch bản.</div></main>
 <section class="panel right"><div class="section-title">Inspector · Thuộc tính đoạn</div><div id="inspector"><div class="empty">Chọn một đoạn thoại trên timeline để chỉnh sửa.</div></div></section>
-<section class="panel timeline"><div class="timeline-toolbar"><strong>Timeline · Toàn bộ kịch bản</strong><span class="hint">Kéo thân clip để đổi thứ tự · kéo mép phải để chỉnh thời lượng</span><span class="pill" id="zoomLabel">1×</span><div class="spacer"></div><button id="generateAudioBtn" class="primary" title="Tạo WAV cho toàn bộ câu thoại">🎙 Tạo WAV toàn bộ</button><button id="validateBtn" title="Kiểm tra lỗi và cảnh báo trong kịch bản">✓ Kiểm tra</button><button id="undoBtn" title="Ctrl+Z" disabled>↶ Hoàn tác</button><button id="redoBtn" title="Ctrl+Y" disabled>↷ Làm lại</button><span class="hint" id="saveStatus">Chưa có thay đổi</span><button id="zoomOut">−</button><button id="zoomIn">＋</button><button id="fitBtn">Vừa khung</button></div><div class="timeline-scroll" id="timelineScroll"><div class="timeline-inner" id="timelineInner"><div class="empty">Import kịch bản để dựng timeline</div></div></div></section>
+<section class="panel timeline"><div class="timeline-toolbar"><strong>Timeline · Toàn bộ kịch bản</strong><span class="hint">Kéo thân clip để đổi thứ tự · kéo mép phải để chỉnh thời lượng</span><span class="pill" id="zoomLabel">1×</span><div class="spacer"></div><button id="generateAudioBtn" class="primary" title="Tạo WAV cho toàn bộ câu thoại">🎙 Tạo WAV toàn bộ</button><button id="validateBtn" title="Kiểm tra lỗi và cảnh báo trong kịch bản">✓ Kiểm tra</button><button id="estimateDurationsBtn" title="Ước lượng thời lượng theo số từ và dấu câu; ưu tiên WAV đã tạo">⏱ Căn thời lượng</button><button id="undoBtn" title="Ctrl+Z" disabled>↶ Hoàn tác</button><button id="redoBtn" title="Ctrl+Y" disabled>↷ Làm lại</button><span class="hint" id="saveStatus">Chưa có thay đổi</span><button id="zoomOut">−</button><button id="zoomIn">＋</button><button id="fitBtn">Vừa khung</button></div><div class="timeline-scroll" id="timelineScroll"><div class="timeline-inner" id="timelineInner"><div class="empty">Import kịch bản để dựng timeline</div></div></div></section>
 </div>
 <section class="asset-page" id="assetPage" hidden>
  <div><div class="section-title">Asset Library · Kho tài nguyên trên thiết bị này</div><div class="hint">File được lưu trong IndexedDB của trình duyệt, không tải lên GitHub. Chỉ trình duyệt và thiết bị này truy cập được.</div></div>
@@ -69,6 +69,27 @@ if(matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<
 const HISTORY_LIMIT=40,AUTOSAVE_KEY='demoStudio.autosave.v1';let undoStack=[],redoStack=[],historyBusy=false,lastSavedAt=0;
 const fmt=t=>{t=Math.max(0,Number(t)||0);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Math.floor(t%60)).padStart(2,'0')};
 const dur=r=>Math.max(.2,Number(r?.thoi_luong)||5);
+function estimateDialogueDuration(line){
+ const text=String(line?.noi_dung||'').trim();
+ if(!text)return .8;
+ const words=(text.match(/\\S+/g)||[]).length;
+ const commas=(text.match(/[,，、;；:：]/g)||[]).length;
+ const stops=(text.match(/[.!?。！？…]/g)||[]).length;
+ const d=words/3.35+commas*.16+stops*.28;
+ return Math.max(.8,Math.round(d*10)/10);
+}
+function applyEstimatedDurations(){
+ if(!data||!rows.length)return;
+ const old=rows.map(dur),next=rows.map(line=>Number(line?.audio_tts?.duration)>0?Math.max(.2,Number(line.audio_tts.duration)):estimateDialogueDuration(line));
+ const changed=next.filter((v,i)=>Math.abs(v-old[i])>.05).length;
+ if(!changed){$('saveStatus').textContent='Thời lượng thoại đã gần khớp ước lượng';return}
+ if(!confirm('Căn thời lượng cho '+rows.length+' câu thoại theo độ dài nội dung'+
+  ' (ưu tiên thời lượng WAV đã có). '+changed+' câu sẽ thay đổi. Bạn vẫn có thể kéo mép clip để chỉnh thủ công.'))return;
+ pushHistory();rows.forEach((line,i)=>{line.thoi_luong=next[i]});data.danh_sach=rows;
+ buildSegments();selected=Math.max(0,Math.min(selected,rows.length-1));playhead=segments[selected]?.start||0;
+ renderAll();syncPreviewLine(selected,true);persistAutosave();
+ $('saveStatus').textContent='Đã căn thời lượng '+rows.length+' câu thoại theo nội dung';
+}
 const sceneKey=r=>String(r?.scene_id||'Cảnh');
 const charName=id=>data?.nhan_vat?.[id]?.ten_hien_thi||data?.nhan_vat?.[id]?.name||id||'Không lời';
 let activeStoryPath="";
@@ -88,7 +109,7 @@ function renderTimeline(){
  renderSegments.forEach(seg=>{
   const r=rows[seg.i],left=seg.start*scale,w=Math.max(5,seg.duration*scale-2),name=charName(r.nhan_vat);
   if(!seen.has(seg.scene)){seen.add(seg.scene);let last=seg.i;while(last+1<rows.length&&sceneKey(rows[last+1])===seg.scene)last++;const sceneWidth=Math.max(20,(segments[last].end-seg.start)*scale-2);sceneClips+='<div class="clip scene" data-kind="scene" title="'+esc(seg.scene)+'" style="left:'+left+'px;width:'+sceneWidth+'px" data-index="'+seg.i+'">'+esc(seg.scene)+'</div>'}
-  dialogueClips+='<div class="clip dialogue '+(selected===seg.i?'selected':'')+'" data-kind="dialogue" title="'+esc(name+': '+r.noi_dung)+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(name+' · '+(r.noi_dung||'').slice(0,48))+'</div>';
+  const dialogueText=String(r.noi_dung||''),wordCount=(dialogueText.match(/\\S+/g)||[]).length,estimated=Number(r.audio_tts?.duration)>0?Number(r.audio_tts.duration):estimateDialogueDuration(r);const dialogueLabel=name+' · '+dialogueText.slice(0,48)+' · '+wordCount+' từ / ~'+estimated.toFixed(1)+'s';dialogueClips+='<div class="clip dialogue '+(selected===seg.i?'selected':'')+'" data-kind="dialogue" title="'+esc(name+': '+dialogueText+'\\n'+wordCount+' từ · ước lượng '+estimated.toFixed(1)+' giây · thời lượng timeline '+dur(r).toFixed(1)+' giây')+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(name+' · '+dialogueText.slice(0,48))+'</div>';
   const audioMeta=r.audio_tts&&typeof r.audio_tts==='object'?r.audio_tts:null;
   if(audioMeta&&Number(audioMeta.duration)>0){const aw=Math.max(5,Number(audioMeta.duration)*scale-2),audioLabel='♫ '+name+' · '+Number(audioMeta.duration).toFixed(2)+'s';audioClips+='<div class="clip music" data-kind="audio" title="'+esc(audioLabel)+'" style="left:'+left+'px;width:'+aw+'px" data-index="'+seg.i+'">'+esc(audioLabel)+'</div>'}
   const visible=Array.isArray(r.nhan_vat_hien_thi)?r.nhan_vat_hien_thi:[];
@@ -412,7 +433,7 @@ async function loadGithubStory(path){
  }catch(error){$('githubList').innerHTML='<div class="empty">Lỗi tải truyện: '+esc(error.message)+'</div>'}
 }
 $('githubBtn').onclick=openGithubLibrary;$('closeGithub').onclick=()=>$('githubModal').hidden=true;$('githubSearch').oninput=renderGithubList;
-$('validateBtn').onclick=showStoryValidation;$('closeValidation').onclick=()=>$('validationModal').hidden=true;$('closeValidationBottom').onclick=()=>$('validationModal').hidden=true;
+$('validateBtn').onclick=showStoryValidation;$('estimateDurationsBtn').onclick=applyEstimatedDurations;$('closeValidation').onclick=()=>$('validationModal').hidden=true;$('closeValidationBottom').onclick=()=>$('validationModal').hidden=true;
 $('pushGithubBtn').onclick=async()=>{const button=$('pushGithubBtn');try{
  if(!data)throw Error('Chưa có kịch bản để lưu.');
  if(!window.GitHubManager?.getToken())throw Error('Chưa kết nối GitHub trên trình duyệt này. Mở GitHub Manager để kết nối trước.');
