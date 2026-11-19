@@ -116,15 +116,6 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 .scene-editor-drawer>.main-panel{display:flex;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 .scene-editor-drawer>.main-panel:not([open])>*:not(.panel-heading){display:none}
 @media(max-width:600px){.scene-editor-drawer{top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:48vh;padding:9px}.scene-editor-drawer>.main-panel{max-height:calc(48vh - 48px)}}
-
-/* Embedded real renderer mode for demoStudio */
-@media all{
- body.demo-studio-embed{position:relative!important;padding:0!important;margin:0!important;min-height:100vh!important;height:100vh!important;justify-content:center!important;gap:0!important;background:#000!important;overflow:hidden!important}
- body.demo-studio-embed> :not(#game-container){display:none!important}
- body.demo-studio-embed #game-container{position:absolute!important;inset:0!important;width:100%!important;max-width:none!important;max-height:none!important;height:100%!important;aspect-ratio:auto!important;border-radius:0!important;box-shadow:none!important}
- body.demo-studio-embed #preview-canvas{width:100%!important;height:100%!important;object-fit:contain!important}
- body.demo-studio-embed #preview-loading{font-size:12px!important}
-}
 </style>
 <script src="./vns-local.js?v=20261116-localstory1"></script>
 </head>
@@ -350,17 +341,13 @@ function ensureBackgroundOption(value){
 function backgroundAssetUrl(value){
  const raw=String(value||'').trim();
  if(!raw)return '';
- if(/^https?:\/\//i.test(raw)||/^blob:/i.test(raw))return raw;
+ if(/^https?:\/\//i.test(raw))return raw;
  const path=raw.replace(/\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');
  if(/^assets\//i.test(path))return BASE+path.slice(7);
  if(/^Nen\//i.test(path))return BASE+path;
  return BASE+'Nen/'+path;
 }
 function isVideoBackground(value){return /\.(mp4|webm)(?:[?#]|$)/i.test(String(value||''));}
-const localAssetObjectUrls=new Map();let localAssetDbPromise=null;
-function openLocalAssetDb(){if(localAssetDbPromise)return localAssetDbPromise;localAssetDbPromise=new Promise((resolve,reject)=>{const req=indexedDB.open('demoStudioAssetVault',1);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('Không mở được kho tài nguyên cục bộ'));req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('assets')){const st=db.createObjectStore('assets',{keyPath:'id'});st.createIndex('name','name',{unique:false});st.createIndex('category','category',{unique:false})}}});return localAssetDbPromise}
-async function localAssetUrl(value){const raw=String(value||'');if(!raw.startsWith('localasset:'))return raw;const id=raw.slice(11);if(localAssetObjectUrls.has(id))return localAssetObjectUrls.get(id);const db=await openLocalAssetDb(),item=await new Promise((resolve,reject)=>{const tx=db.transaction('assets','readonly'),req=tx.objectStore('assets').get(id);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error)});if(!item?.blob)throw new Error('Không tìm thấy tài nguyên cục bộ: '+id);const url=URL.createObjectURL(item.blob)+'#'+encodeURIComponent(item.name||'asset');localAssetObjectUrls.set(id,url);return url}
-async function hydrateLocalAssetRefs(story){const rows=Array.isArray(story?.danh_sach)?story.danh_sach:[];for(const row of rows){if(typeof row.anh_nen==='string'&&row.anh_nen.startsWith('localasset:'))row.anh_nen=await localAssetUrl(row.anh_nen);if(typeof row.audio_tts?.file==='string'&&row.audio_tts.file.startsWith('localasset:'))row.audio_tts.file=await localAssetUrl(row.audio_tts.file);for(const key of ['nhac_nen','hieu_ung_am_thanh']){const a=row.am_thanh?.[key];if(a&&typeof a.tep==='string'&&a.tep.startsWith('localasset:'))a.tep=await localAssetUrl(a.tep)}if(Array.isArray(row.nhan_vat_hien_thi))for(const spec of row.nhan_vat_hien_thi)if(typeof spec?.webm_file==='string'&&spec.webm_file.startsWith('localasset:'))spec.webm_file=await localAssetUrl(spec.webm_file)}const bgm=story?.am_thanh_mac_dinh?.nhac_nen;if(typeof bgm==='string'&&bgm.startsWith('localasset:'))story.am_thanh_mac_dinh.nhac_nen=await localAssetUrl(bgm);else if(typeof bgm?.tep==='string'&&bgm.tep.startsWith('localasset:'))bgm.tep=await localAssetUrl(bgm.tep);return story}
 const $=id=>document.getElementById(id);
 let canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
 const previewCanvas=canvas,previewCtx=ctx;
@@ -388,7 +375,7 @@ const backgrounds=[
  ['render.mp4','Video nền render.mp4']
 ];
 let backgroundAssetWarning='',bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewPreparing=false,previewStartToken=0,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
-let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null,speechMotionSmooth=0,speechMotionFrameAt=0,demoStudioSpeechMotionEnabled=true;
+let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null,speechMotionSmooth=0,speechMotionFrameAt=0;
 let cancelPendingPlaybackAudio=null;
 const speechAudioSources=new WeakMap();
 let piperVoices=[];
@@ -418,7 +405,7 @@ function renderEffectCatalogs(){
   }));
  }
 }
-function setStatus(s){$('export-status').textContent=s;if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_PROGRESS',message:String(s||'')},location.origin)}
+function setStatus(s){$('export-status').textContent=s}
 const ANIMATION_REGISTRY_FALLBACK={
  communication:["speaking","silent","listening","reacting","idle"],
  emotion:["neutral","happy","sad","angry","afraid","surprised","embarrassed","crying","laughing","worried","confused","determined","Trung tính","Vui vẻ","Buồn","Tức giận","Giận dữ","Sợ hãi","Hoảng sợ","Ngạc nhiên","Xấu hổ","Khóc","Cười","Lo lắng","Bối rối","Quyết tâm"],
@@ -608,7 +595,6 @@ async function pushExportMetadata(allAudio,manifest){
 
 function setTtsStatus(s){$('tts-status').textContent=s}
 function setTaskProgress(label,percent=null){
- if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_PROGRESS',message:String(label||'Đang xử lý…'),percent},location.origin);
  const box=$('task-progress'),fill=$('progress-fill');
  if(!box||!fill)return;
  box.hidden=false;
@@ -623,16 +609,11 @@ function finishTaskProgress(label){
  setTimeout(()=>{$('task-progress').hidden=true;$('task-progress').classList.remove('indeterminate');$('progress-fill').style.width='0%'},1800);
 }
 
-let previewAspectRatio='16:9';
-function updateRatioButtons(){const el=$('ratio-toggle');if(el)el.textContent='📐 Tỉ lệ: '+previewAspectRatio}
-function setPreviewAspectRatio(ratio){
- previewAspectRatio=['16:9','9:16','1:1'].includes(String(ratio))?String(ratio):'16:9';isPortrait=previewAspectRatio==='9:16';
- stage.classList.toggle('portrait',isPortrait);stage.classList.toggle('square',previewAspectRatio==='1:1');stage.classList.remove('force-landscape','force-portrait');
- if(document.fullscreenElement)stage.classList.add(isPortrait?'force-portrait':'force-landscape');
- const dims=previewAspectRatio==='9:16'?[1080,1920]:previewAspectRatio==='1:1'?[1080,1080]:[1920,1080];canvas.width=dims[0];canvas.height=dims[1];
- if(!dialogueFontSizeTouched){$('dialogue-font-size').value=String(Math.round(canvas.width*.027));$('dialogue-font-size-value').textContent='Tự động · '+$('dialogue-font-size').value+' px'}updateRatioButtons();drawFrame(0);
+function updateRatioButtons(){
+ const el=$('ratio-toggle');
+ if(el)el.textContent='📐 Tỉ lệ: '+(isPortrait?'9:16':'16:9');
 }
-function toggleAspectRatio(){setPreviewAspectRatio(previewAspectRatio==='16:9'?'9:16':previewAspectRatio==='9:16'?'1:1':'16:9')}
+function toggleAspectRatio(){resizeCanvas(!isPortrait)}
 function resizeCanvas(portrait){
  isPortrait=!!portrait;stage.classList.toggle('portrait',isPortrait);
  stage.classList.remove('force-landscape','force-portrait');
@@ -858,18 +839,9 @@ async function updateAssets(){
    const locomotionActions=new Set(['walking','running','running_pose','moving','locomotion']);
    let assetSemantic=semantic,motionClipMatched=false,motionClipCommunication='';
    let selection,expression='',url='';
-   // Cho phép DemoStudio ghim một WEBM cụ thể cho từng nhân vật/đoạn thoại.
-   const explicitWebm=String(spec?.webm_file||spec?.animation_file||'').trim();
-   if(explicitWebm){
-    if(/^blob:/i.test(explicitWebm)){expression=explicitWebm.split('#').pop()||'local-webm';url=explicitWebm;selection={file:expression,matched:true,mirrored:false,reason:'WEBM lấy từ Kho tài nguyên cục bộ'};}
-    else{const paths=expressionFilesByFolder[String(folder||'')]||[];
-    const wanted=explicitWebm.replace(/\\/g,'/');
-    const chosenPath=paths.find(path=>path===wanted||path.endsWith('/'+wanted.split('/').pop())||path.split('/').pop()===wanted.split('/').pop());
-    if(chosenPath){expression=chosenPath.split('/').pop().replace(/\.webm$/i,'');url=BASE+'NhanVat/'+folder+'/'+chosenPath.split('/').pop();const chosenMeta=animationMeta(chosenPath);selection={file:expression,matched:true,mirrored:false,reason:'WEBM được chọn thủ công trong DemoStudio'};assetSemantic={...semantic,...Object.fromEntries(['communication','emotion','pose','action','direction','face_angle','view_angle','interaction_target'].map(k=>[k,chosenMeta[k]||semantic[k]]))};}}
-   }
    // Chọn WEBM locomotion thật theo metadata, không lấy một frame đứng yên rồi kéo sprite.
    // Nếu đang nói, ưu tiên clip walking/running có khẩu hình speaking; chỉ dùng silent khi thư viện không có clip speaking tương ứng.
-   if(!selection&&motion&&locomotionActions.has(motionAction)){
+   if(motion&&locomotionActions.has(motionAction)){
     const dx=Number(motion?.to?.x)-Number(motion?.from?.x);
     const moveDirection=Number.isFinite(dx)&&Math.abs(dx)>.05?(dx<0?'left':'right'):canonicalAnimationValue('direction',motion.direction||semantic.direction||'right');
     const paths=expressionFilesByFolder[String(folder||'')]||[];
@@ -898,7 +870,7 @@ async function updateAssets(){
    }
    if(!selection){selection=resolveSemanticAnimation(folder,assetSemantic);expression=selection.file;url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':''}
    let isSpeakingClip=motionClipMatched&&motionClipCommunication==='speaking';
-   if(!selection&&(!motionAction||!locomotionActions.has(motionAction)))if(String(semantic.communication||'')==='speaking'&&folder&&!selection.neutralFallback){
+   if(!motionAction||!locomotionActions.has(motionAction))if(String(semantic.communication||'')==='speaking'&&folder&&!selection.neutralFallback){
     const selectedPath=(expressionFilesByFolder[String(folder)]||[]).find(path=>path.split('/').pop().replace(/\.webm$/i,'')===expression);
     isSpeakingClip=!!selectedPath&&canonicalAnimationValue('communication',animationMeta(selectedPath).communication)==='speaking';
     if(!isSpeakingClip){
@@ -1359,7 +1331,7 @@ function drawFrameUnsafe(elapsed,st){
   ctx.save();let alpha=Math.max(0,Math.min(1,st.opacity??1));
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
   const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!spec?.neutralFallback&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
-  if(isCurrentSpeaker&&demoStudioSpeechMotionEnabled){
+  if(isCurrentSpeaker){
    const motion=Math.max(0,Math.min(1,speechMotionSmooth));
    // Chu ky lien tuc, khong bam theo am luong hay tung am tiet nen khong bi giat.
    // Thu tu: nhun xuong thang -> len nghieng trai -> xuong thang -> len nghieng phai.
@@ -1628,7 +1600,7 @@ async function startDirectRecorder(){
  if(!previewCanvas.captureStream||!window.MediaRecorder)throw new Error('Trình duyệt không hỗ trợ ghi trực tiếp.');
  const fps=Math.max(1,Number($('fps').value)||30),quality=Number($('export-quality').value)||720;
  const oldWidth=previewCanvas.width,oldHeight=previewCanvas.height,longEdge=quality===1080?1920:quality===540?960:1280,shortEdge=quality===1080?1080:quality===540?540:720;
- previewCanvas.width=previewAspectRatio==='1:1'?quality:(isPortrait?shortEdge:longEdge);previewCanvas.height=previewAspectRatio==='1:1'?quality:(isPortrait?longEdge:shortEdge);drawFrame(0);
+ previewCanvas.width=isPortrait?shortEdge:longEdge;previewCanvas.height=isPortrait?longEdge:shortEdge;drawFrame(0);
  const videoStream=previewCanvas.captureStream(fps);directRecordAudioContext=new (window.AudioContext||window.webkitAudioContext)();await directRecordAudioContext.resume();directRecordDestination=directRecordAudioContext.createMediaStreamDestination();
  const tracks=[...videoStream.getVideoTracks(),...directRecordDestination.stream.getAudioTracks()],stream=new MediaStream(tracks);
  const types=['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
@@ -1654,8 +1626,8 @@ async function stopDirectRecorder(){
 }
 
 function resolvedLineAudio(line,kind){
- if(kind==='bgm')return String(line?.sourceAudio?.bgm||line?.sourceFrame?.am_thanh?.nhac_nen?.tep||$('bgm')?.value||'').trim();
- if(kind==='sfx')return String(line?.sourceAudio?.sfx||line?.sourceFrame?.am_thanh?.hieu_ung_am_thanh?.tep||$('sfx-file')?.files?.[0]?.name||'').trim();
+ if(kind==='bgm')return String($('bgm')?.value||'').trim();
+ if(kind==='sfx')return String($('sfx-file')?.files?.[0]?.name||'').trim();
  return '';
 }
 let previewLineBgmName='',previewLineSfxName='',previewSfxFile=null,previewSfxUrl='';
@@ -1670,9 +1642,9 @@ async function playLineAudio(line){
  if(bgm!==previewLineBgmName){
   if(previewAudio.bgm){previewAudio.bgm.pause();previewAudio.bgm=null}
   previewLineBgmName=bgm;
-  if(bgm){const url=/^(blob:|https?:\/\/)/i.test(bgm)?bgm:bgm.startsWith('assets/')?BASE+bgm.slice(7):BASE+'AmThanh/Nen/'+bgm;previewAudio.bgm=audioElement(url,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
+  if(bgm){previewAudio.bgm=audioElement(BASE+'AmThanh/Nen/'+bgm,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
  }
- const sfx=resolvedLineAudio(line,'sfx'),sfxUrl=/^(blob:|https?:\/\/)/i.test(sfx)?sfx:sfx?(sfx.startsWith('assets/')?BASE+sfx.slice(7):BASE+'AmThanh/HieuUng/'+sfx):getPreviewSfxUrl();
+ const sfx=resolvedLineAudio(line,'sfx'),sfxUrl=getPreviewSfxUrl();
  if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}
  previewLineSfxName=sfx;
  if(sfx&&sfxUrl){previewAudio.sfx=audioElement(sfxUrl,false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
@@ -1773,19 +1745,6 @@ function prefetchSceneEffectsFor(items){
   })});
  void (async()=>{for(let i=0;i<queue.length;i+=2)await Promise.all(queue.slice(i,i+2).map(job=>job()))})();
 }
-async function convertTtsBlobToWav(blob){
- if(!blob||String(blob.type||'').includes('wav'))return blob;
- const AudioCtx=window.AudioContext||window.webkitAudioContext;if(!AudioCtx)throw new Error('Thiết bị không hỗ trợ giải mã âm thanh để xuất WAV.');
- const ac=new AudioCtx();
- try{
-  const buffer=await ac.decodeAudioData(await blob.arrayBuffer()),channels=Math.min(2,buffer.numberOfChannels),frames=buffer.length,bytes=frames*channels*2,output=new ArrayBuffer(44+bytes),view=new DataView(output);
-  const write=(offset,value)=>{for(let i=0;i<value.length;i++)view.setUint8(offset+i,value.charCodeAt(i))};
-  write(0,'RIFF');view.setUint32(4,36+bytes,true);write(8,'WAVE');write(12,'fmt ');view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,buffer.sampleRate,true);view.setUint32(28,buffer.sampleRate*channels*2,true);view.setUint16(32,channels*2,true);view.setUint16(34,16,true);write(36,'data');view.setUint32(40,bytes,true);
-  const source=Array.from({length:channels},(_,i)=>buffer.getChannelData(i));let offset=44;
-  for(let i=0;i<frames;i++)for(let c=0;c<channels;c++){const sample=Math.max(-1,Math.min(1,source[c][i]));view.setInt16(offset,sample<0?sample*32768:sample*32767,true);offset+=2}
-  return new Blob([output],{type:'audio/wav'});
- }finally{await ac.close().catch(()=>{})}
-}
 async function preparePreviewPlayback(items,useBrowser){
  const imageUrls=new Set(),videoUrls=new Set();
  for(const item of items){
@@ -1808,16 +1767,8 @@ async function preparePreviewPlayback(items,useBrowser){
  for(let index=0;index<items.length;index++){
   const item=items[index];
   await loadSourceLineForPlayback(item);
-  if(!useBrowser&&$('dialogue').value.trim()){
-   let blob=null;try{blob=await ensureTtsReady()}catch(error){console.warn('Không tạo được WAV cho câu '+(Number(item.sourceIndex)+1)+':',error)}
-   if(blob){
-    blob=await convertTtsBlobToWav(blob);const generatedLine=getCurrentLine();generatedLine.wavBlob=blob;generatedLine.cacheKey=ttsRequestKey();
-    const duration=await new Promise(resolve=>{const url=URL.createObjectURL(blob),audio=new Audio();audio.preload='metadata';audio.onloadedmetadata=()=>{const value=Number.isFinite(audio.duration)?audio.duration:0;URL.revokeObjectURL(url);resolve(value)};audio.onerror=()=>{URL.revokeObjectURL(url);resolve(0)};audio.src=url});
-    if(duration>0){const line=getCurrentLine();line.duration=duration;line.audioDuration=duration;const profile=selectedVoiceProfile();if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_READY',index:Number(line.sourceIndex??item.sourceIndex??0),blob,duration,cacheKey:line.cacheKey||ttsRequestKey(),profileId:profile?.id||'',voiceName:profile?.name||''},location.origin)}
-   }
-  }
+  if(!useBrowser&&$('dialogue').value.trim())await ensureTtsReady();
   done++;setTaskProgress((useBrowser?'Chuẩn bị cảnh/nhân vật · ':'Chuẩn bị cảnh, nhân vật và WAV · ')+done+'/'+total,total?done/total*100:100);
-  if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_PROGRESS',done,total:items.length},location.origin);
  }
  // Trả giao diện về đúng dòng bắt đầu; tài nguyên đã có trong cache nên phát không phải tải mạng lại.
  if(items.length)await loadSourceLineForPlayback(items[0]);
@@ -1827,7 +1778,7 @@ async function playPreview(){
  if(previewPreparing||previewing)return;
  const startToken=++previewStartToken,isCurrent=()=>startToken===previewStartToken;
  previewPreparing=true;updatePlaybackButtons();
- let firstLineReady=false,playbackCompleted=false;
+ let firstLineReady=false;
  try{
   saveCurrentLine();saveCurrentScene();
   const scope=$('preview-scope').value,startIndex=currentSourceIndex();
@@ -1871,7 +1822,6 @@ async function playPreview(){
     if(!(firstLineReady&&itemIndex===0))await loadSourceLineForPlayback(item);
     if(!await waitWhilePaused(run))break;
     const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;await playLineAudio(line);
-    if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_PROGRESS',index:Number(line.sourceIndex??item.sourceIndex??0)},location.origin);
     const text=$('dialogue').value.trim();
     speakingCharacterId=text&&!line.isNarration?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
     speechTextIndex=0;speechAudioElement=null;speechMotionSmooth=0;speechMotionFrameAt=0;
@@ -1898,13 +1848,11 @@ async function playPreview(){
      const step=Math.min(80,remaining);await new Promise(resolve=>setTimeout(resolve,step));remaining-=step;
     }
    }
-   if(previewing&&run===previewRunId)playbackCompleted=true;
   }catch(err){
    console.error('Lỗi timeline preview:',err);
    setStatus('Timeline gặp lỗi và đã tự giải phóng: '+(err?.message||String(err)));
   }finally{
    if(previewing&&run===previewRunId)stopPreview();
-   if(playbackCompleted&&new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_PLAYBACK_ENDED'},location.origin);
    if(directRecording)await stopDirectRecorder();
   }
  }finally{
@@ -2142,7 +2090,7 @@ async function prefetchEdgeTts(){
 }
 function ttsRequestKey(){
  const profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
- return JSON.stringify({text:$('dialogue').value.trim(),voiceId,profile:profile||null,lang:$('tts-lang').value,engine:(profile?.engine||$('tts-engine').value)+(edgeDead?'-x':''),eg:$('edge-gender').value});
+ return JSON.stringify({text:$('dialogue').value.trim(),voiceId,profile:profile||null,lang:$('tts-lang').value,engine:$('tts-engine').value+(edgeDead?'-x':''),eg:$('edge-gender').value});
 }
 const piperMods=new Map();
 async function loadPiperModule(){
@@ -2173,7 +2121,7 @@ async function getPiperSession(voiceId){
 async function generatePiperAudio(){
  const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
  if(!text)throw new Error('Bạn chưa nhập lời thoại.');
- const useEdge=($('tts-engine').value==='edge'||profile?.engine==='edge')&&!edgeDead;
+ const useEdge=$('tts-engine').value==='edge'&&!edgeDead;
  if(!voiceId&&!useEdge)throw new Error('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');
  const btn=$('generate-piper'),key=ttsRequestKey(),line=getCurrentLine();
  if(line){line.text=text;line.speaker=activeCharacterList().find(ch=>ch.id===$('speaker').value)?.name||$('speaker').value.trim()||'Nhân vật';line.profileId=profile?.id||'';line.lang=$('tts-lang').value;line.voiceId=voiceId}
@@ -2217,9 +2165,6 @@ async function ensureTtsReady(){
  if(line?.speakerId)await applyVoiceForCurrentLine();
  if(!text)return null;
  const key=ttsRequestKey();
- if(line?.audioUrl&&line.audioCacheKey===key&&!line.wavBlob){
-  try{const response=await fetch(line.audioUrl);if(!response.ok)throw Error('Không đọc được WAV đã lưu');line.wavBlob=await response.blob();line.cacheKey=key;line.duration=line.audioDuration||line.duration||0}catch(error){console.warn('Bỏ qua WAV lưu cũ, sẽ tạo lại:',error);line.audioUrl='';line.wavBlob=null}
- }
  if(line?.wavBlob&&line.cacheKey===key){generatedTtsBlob=line.wavBlob;generatedTtsKey=key;return line.wavBlob}
  if(!ttsGenerationPromise)ttsGenerationPromise=generatePiperAudio().catch(err=>{generatedTtsBlob=null;generatedTtsKey='';throw err}).finally(()=>{ttsGenerationPromise=null});
  return await ttsGenerationPromise;
@@ -2410,7 +2355,7 @@ async function exportVideo(){
   const mixedAudio=await offline.startRendering();allAudio.forEach(e=>{e.buffer=null});audioBuffers.bgm.clear();audioBuffers.sfx.clear();
   // Tạo canvas xuất riêng; preview tiếp tục dùng canvas và context gốc.
   renderCanvas=document.createElement('canvas');
-  {const q=Number($('export-quality').value)||720,L=q===1080?1920:q===540?960:1280,S=q===1080?1080:q===540?540:720;renderCanvas.width=previewAspectRatio==='1:1'?q:(isPortrait?S:L);renderCanvas.height=previewAspectRatio==='1:1'?q:(isPortrait?L:S)}
+  {const q=Number($('export-quality').value)||720,L=q===1080?1920:q===540?960:1280,S=q===1080?1080:q===540?540:720;renderCanvas.width=isPortrait?S:L;renderCanvas.height=isPortrait?L:S}
   renderCtx=renderCanvas.getContext('2d',{alpha:false});
   canvas=renderCanvas;ctx=renderCtx;
   const mb=await import('https://esm.sh/mediabunny@1.62.1');
@@ -2570,10 +2515,10 @@ function profileFromJsonVoice(value){
 function resolveVoiceForLine(line){
  const frame=line?.sourceFrame||{};
  const ch=characterDirectory.find(x=>x.id===String(line?.speakerId??''))||characterDirectory.find(x=>x.name===line?.speaker);
- const lineVoice=profileFromJsonVoice(frame.giong_noi??frame.giong??frame.voice??frame.voice_id??frame.voiceId??frame.tts_voice);
- if(lineVoice?.voiceId&&piperVoices.some(v=>v.key===lineVoice.voiceId))return {profile:lineVoice,source:'Ghi đè riêng câu thoại'};
  const assigned=getVoiceProfiles().find(p=>p.id===(characterVoiceMap[ch?.id||'']||''));
  if(assigned?.voiceId&&piperVoices.some(v=>v.key===assigned.voiceId))return {profile:assigned,source:'Thiết lập nhân vật'};
+ const lineVoice=profileFromJsonVoice(frame.giong_noi??frame.giong??frame.voice??frame.voice_id??frame.voiceId??frame.tts_voice);
+ if(lineVoice?.voiceId&&piperVoices.some(v=>v.key===lineVoice.voiceId))return {profile:lineVoice,source:'JSON của mục thoại'};
  const jsonVoice=profileFromJsonVoice(ch?.jsonVoice);
  if(jsonVoice?.voiceId&&piperVoices.some(v=>v.key===jsonVoice.voiceId))return {profile:jsonVoice,source:'JSON nhân vật'};
  const fallback=getVoiceProfiles().find(p=>p.id===defaultVoiceProfileId);
@@ -2794,7 +2739,7 @@ function buildScenesFromJson(data){
   frame.hieu_ung_canh=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung??[]);
   if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterId,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;
- current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,background:lastBackground,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,speakerType:String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'character').toLowerCase(),isNarration:['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'').toLowerCase()),text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',audioUrl:String(frame.audio_tts?.file||''),audioCacheKey:String(frame.audio_tts?.cacheKey||''),audioDuration:Number(frame.audio_tts?.duration)||0,pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
+ current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,background:lastBackground,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,speakerType:String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'character').toLowerCase(),isNarration:['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'').toLowerCase()),text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
  if(current)out.push(current);return out;
 }
 let storyCharacterFolderMap={};
@@ -2820,7 +2765,6 @@ async function loadWorldCharacterFolderMap(data,storyPath){
 async function applyStoryData(data,name,path){
  stopPreview();const rows=data?.danh_sach;
  if(!Array.isArray(rows)||!rows.length)throw new Error('File JSON không có danh_sach hợp lệ.');
- await hydrateLocalAssetRefs(data);
  if(Number(data.phien_ban)!==3||!String(data.world_id||'').trim())throw new Error('File JSON phải dùng phien_ban: 3 và world_id hợp lệ.');
  activeStoryData=data;activeStoryName=String(name||'Kịch bản import').replace(/\.json$/i,'');activeStoryPath=String(path||('assets/KichBan/'+activeStoryName+'/'+activeStoryName+'.json'));sourceLineCount=rows.length;
  characterDirectory=uniqueCharacters(data);
@@ -3243,77 +3187,6 @@ loadSceneEffectLibrary();
 updateAssets();
 drawFrame(0);
 if(location.search.includes('cinematic=1')){void (async()=>{try{const raw=localStorage.getItem('vns.cinematic.pending.v1');if(!raw)return;const pending=JSON.parse(raw);if(!pending||!pending.data)throw new Error('Không tìm thấy dữ liệu phim bàn giao.');await applyStoryData(pending.data,pending.name||'Cinematic Film','assets/KichBan/Cinematic/'+String(pending.name||'film').replace(/[^A-Za-z0-9_-]+/g,'_')+'.json');localStorage.removeItem('vns.cinematic.pending.v1');$('story-status').textContent='Đã nhận phim từ Cinematic Film Studio. '+pending.data.danh_sach.length+' mục timeline · '+scenes.length+' cảnh. Hãy nhấn Chạy để xem trước hoặc Ghi trực tiếp để xuất video.';setStatus('Đã nạp kịch bản phim tự động.');}catch(e){$('story-status').textContent='Không thể nhận phim tự động: '+e.message;console.error(e)}})()}
-
-/* Parent bridge: demoStudio reuses this exact renderer for static preview and scrubbing. */
-let demoStudioStoryLoaded=false,demoStudioBridgeRequest=0;
-function applyDemoStudioSpeechMotion(settings){
- if(!settings||typeof settings!=='object')return;
- demoStudioSpeechMotionEnabled=settings.enabled!==false;
- const values=[['speech-motion-speed',settings.speed,50],['speech-motion-intensity',settings.intensity,40],['speech-motion-tilt',settings.tilt,50]];
- values.forEach(([id,value,fallback])=>{const slider=$(id);if(!slider)return;const n=Math.max(1,Math.min(100,Number(value)||fallback));slider.value=String(n);const output=$(id+'-value');if(output)output.textContent=String(n)});
- if(!previewing)drawFrame(0);
-}
-if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
- document.body.classList.add('demo-studio-embed');
- window.addEventListener('message',async event=>{
-  if(event.source!==window.parent||event.origin!==location.origin)return;
-  const message=event.data;if(!message||typeof message!=='object'||!String(message.type||'').startsWith('DEMO_STUDIO_'))return;
-  if(message.type==='DEMO_STUDIO_LOAD'){
-   const request=++demoStudioBridgeRequest;
-   try{
-    await applyStoryData(message.data,message.name||'demoStudio Preview',message.path||'assets/KichBan/demoStudio/demoStudio.json');
-    setPreviewAspectRatio(message.ratio||previewAspectRatio);
-    if(typeof message.dialogueVisible==='boolean')$('show-dialogue').checked=message.dialogueVisible;
-    applyDemoStudioSpeechMotion(message.speechMotion);
-    drawFrame(0);
-    demoStudioStoryLoaded=true;
-    if(request!==demoStudioBridgeRequest)return;
-    await seekSourceLine(Math.max(0,Number(message.index)||0));
-    if(request!==demoStudioBridgeRequest)return;
-    previewing=false;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();
-    window.parent.postMessage({type:'DEMO_STUDIO_READY',index:currentSourceIndex()},location.origin);
-   }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
-  }else if(message.type==='DEMO_STUDIO_SET_RATIO'&&demoStudioStoryLoaded){
-   setPreviewAspectRatio(message.ratio);
-  }else if(message.type==='DEMO_STUDIO_SET_DIALOGUE_VISIBILITY'&&demoStudioStoryLoaded){
-   $('show-dialogue').checked=message.visible!==false;
-   drawFrame(0);
-  }else if(message.type==='DEMO_STUDIO_SET_SPEECH_MOTION'&&demoStudioStoryLoaded){
-   applyDemoStudioSpeechMotion(message.settings);
-  }else if(message.type==='DEMO_STUDIO_EXPORT_VIDEO'&&demoStudioStoryLoaded){
-   if(recording){window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_ERROR',message:'Đang có một tiến trình xuất video.'},location.origin);return}
-   try{
-    setPreviewAspectRatio(message.ratio||previewAspectRatio);
-    applyDemoStudioSpeechMotion(message.speechMotion);
-    $('fps').value=String([24,30,50,60].includes(Number(message.fps))?Number(message.fps):30);
-    $('export-quality').value=String([540,720,1080].includes(Number(message.quality))?Number(message.quality):720);
-    window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_PROGRESS',message:'Đang dựng MP4 bằng WebCodecs…'},location.origin);
-    if(!window.VideoEncoder||!window.AudioEncoder)throw new Error('Trình duyệt chưa hỗ trợ WebCodecs. Hãy dùng Chrome hoặc Edge mới.');
-    await exportVideo();
-    const exportResult=$('export-status').textContent||'';
-    if(!exportResult.startsWith('Đã xuất MP4'))throw new Error(exportResult||'Bộ xuất video chưa hoàn tất.');
-    window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_DONE',message:exportResult},location.origin);
-   }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_ERROR',message:error?.message||String(error)},location.origin)}
-  }else if(message.type==='DEMO_STUDIO_GENERATE_AUDIO'&&demoStudioStoryLoaded){
-   if(previewing||previewPreparing){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:'Hãy dừng phát trước khi tạo WAV.'},location.origin);return}
-   try{
-    const items=allSourceLines();
-    await preparePreviewPlayback(items,false);
-    const failed=items.filter(item=>{const line=scenes[item.sceneIndex]?.lines[item.lineIndex];return String(line?.text||'').trim()&&!line?.wavBlob}).length;
-    window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_DONE',done:items.length-failed,total:items.length,failed},location.origin);
-   }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:'Tạo WAV thất bại: '+(error?.message||String(error))},location.origin)}
-  }else if(message.type==='DEMO_STUDIO_SEEK'&&demoStudioStoryLoaded){
-   const request=++demoStudioBridgeRequest;
-   try{await seekSourceLine(Math.max(0,Number(message.index)||0));if(request!==demoStudioBridgeRequest)return;previewing=false;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();window.parent.postMessage({type:'DEMO_STUDIO_FRAME',index:currentSourceIndex()},location.origin)}
-   catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
-  }else if(message.type==='DEMO_STUDIO_PLAY'&&demoStudioStoryLoaded){
-   $('preview-scope').value='full';if(!previewing&&!previewPreparing)playPreview().catch(error=>window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin));
-  }else if(message.type==='DEMO_STUDIO_PAUSE'&&previewing&&!previewPaused){pausePreview()}
-  else if(message.type==='DEMO_STUDIO_RESUME'&&previewing&&previewPaused){resumePreview()}
-  else if(message.type==='DEMO_STUDIO_STOP'){stopPreview()}
- });
- window.addEventListener('load',()=>window.parent.postMessage({type:'DEMO_STUDIO_ENGINE_READY'},location.origin),{once:true});
-}
 })();
 </script>
 <script src="./github-manager.js"></script>
