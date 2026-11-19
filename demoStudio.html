@@ -314,6 +314,18 @@ function observePlayerState(){
  });
  [play,record,status].filter(Boolean).forEach(el=>playerObserver.observe(el,{childList:true,subtree:true,characterData:true,attributes:true}));
 }
+async function attachCachedAudioToPlayer(w){
+ if(!assetDb)await openAssetDb();
+ const refs=[];
+ for(let i=0;i<rows.length;i++){
+  const ref=String(rows[i]?.audio_tts?.file||'');
+  if(!ref.startsWith('localasset:'))continue;
+  const id=ref.slice(11),record=await assetTx('readonly',st=>st.get(id));
+  if(record?.blob instanceof Blob&&record.blob.size)refs.push({index:i,blob:record.blob,cacheKey:String(rows[i].audio_tts.cacheKey||''),duration:Number(rows[i].audio_tts.duration)||0});
+ }
+ if(!refs.length||typeof w.attachStoredStoryAudioForStudio!=='function')return {attached:0,stale:0,missing:0};
+ return await w.attachStoredStoryAudioForStudio(refs);
+}
 async function loadStoryIntoPlayer(){
  if(!data||!previewEngineReady)return false;
  const w=playerWindow();if(!w||typeof w.applyStoryData!=='function'){ $('previewStatus').textContent='Bộ dựng phong_video chưa sẵn sàng. Hãy tải lại trang.';return false}
@@ -321,9 +333,10 @@ async function loadStoryIntoPlayer(){
  $('previewStatus').textContent='Đang nạp kịch bản vào trình phát phong_video…';
  try{
   await w.applyStoryData(JSON.parse(JSON.stringify(data)),$('projectName').textContent,activeStoryPath);
+  const audioReuse=await attachCachedAudioToPlayer(w);
   applyPlayerSettings();observePlayerState();previewStorySent=true;
   if(selected>0&&typeof w.seekSourceLine==='function')await w.seekSourceLine(selected);
-  $('previewStatus').textContent='Đã nạp kịch bản · dùng bộ phát và ghi trực tiếp của phòng tạo video.';
+  $('previewStatus').textContent='Đã nạp kịch bản · tái sử dụng '+audioReuse.attached+' WAV cục bộ'+(audioReuse.stale?' · '+audioReuse.stale+' file cần tạo lại do thoại/giọng đã đổi':'')+' · dùng bộ phát và ghi trực tiếp của phòng tạo video.';
   return true;
  }catch(error){$('previewStatus').textContent='Không nạp được kịch bản vào trình phát: '+(error.message||error);return false}
 }
