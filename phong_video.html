@@ -1121,9 +1121,11 @@ function drawFrameUnsafe(elapsed,st){
  const shot=director==='manual'
   ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
   :autoShot;
+ // Shot type giữ theo nhịp 2–4 câu, nhưng chủ thể auto luôn bám người đang nói ở câu hiện tại.
+ // Vì camera marker có cameraTarget, chỉ khi đổi người nói mới cần lia sang nhân vật mới.
  const cameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
-  :(shot==='group'?'':cueSpeaker);
+  :(shot==='group'?'':speakerTarget);
  const defaultZoom=shot==='close_up'?1.38:shot==='bust'?1.16:shot==='full_body'?1.035:shot==='group'?1:1;
  const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.42:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
