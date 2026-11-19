@@ -1906,7 +1906,7 @@ async function playPreview(){
   try{
    for(let itemIndex=0;itemIndex<items.length;itemIndex++){
     const item=items[itemIndex];playbackAssetCursor=Number(item.sourceIndex)||0;
-    if(itemIndex===5&&items.length>15)assetWindowPromises.set(15,preloadAdjacentAssets(items[15].sourceIndex,5));
+    if(itemIndex===0&&items.length>15)assetWindowPromises.set(15,preloadAdjacentAssets(items[15].sourceIndex,5));
     if(itemIndex>=10&&itemIndex%5===0){
      if(itemIndex>10){const ready=assetWindowPromises.get(itemIndex);if(ready)await ready;}
      const nextStart=itemIndex+10;if(nextStart<items.length)assetWindowPromises.set(nextStart,preloadAdjacentAssets(items[nextStart].sourceIndex,5));
@@ -1962,7 +1962,14 @@ $('browser-tts-voice').addEventListener('change',()=>setTtsStatus('Đã chọn g
 $('play-preview').addEventListener('click',()=>{if(!previewing)playPreview().catch(err=>{console.error('Lỗi phát preview:',err);setStatus('Phát bị dừng do lỗi: '+(err?.message||String(err)));updatePlaybackButtons()});else if(previewPaused)resumePreview();else pausePreview()});
 // Double-click vào khung video để chạy / tạm dừng / tiếp tục xem trước.
 stage.addEventListener('dblclick',e=>{e.preventDefault();if(!previewing)playPreview();else if(previewPaused)resumePreview();else pausePreview()});
-$('direct-record-button').addEventListener('click',async()=>{if(directRecording){stopPreview();await stopDirectRecorder();return}if(previewing){setStatus('Hãy dừng phát trước khi bắt đầu ghi trực tiếp.');return}if($('preview-tts-mode').value==='browser'){$('preview-tts-mode').value='render';setTtsStatus('Ghi trực tiếp dùng giọng render để thu được âm thanh đầy đủ.')}directRecordRequested=true;await playPreview()});
+$('direct-record-button').addEventListener('click',async()=>{
+ if(directRecording||directRecorder){stopPreview();await stopDirectRecorder();return}
+ if(directRecordRequested||previewPreparing){directRecordRequested=false;stopPreview();$('direct-record-button').textContent='⏺ Ghi trực tiếp';$('direct-record-button').classList.remove('danger');setStatus('Đã hủy chuẩn bị/ghi trực tiếp.');return}
+ if(previewing){setStatus('Hãy dừng phát trước khi bắt đầu ghi trực tiếp.');return}
+ if($('preview-tts-mode').value==='browser'){$('preview-tts-mode').value='render';setTtsStatus('Ghi trực tiếp dùng giọng render để thu được âm thanh đầy đủ.')}
+ directRecordRequested=true;$('direct-record-button').textContent='⏹ Hủy chuẩn bị';$('direct-record-button').classList.add('danger');
+ try{await playPreview()}finally{if(!directRecording){$('direct-record-button').textContent='⏺ Ghi trực tiếp';$('direct-record-button').classList.remove('danger')}}
+});
 $('stop-preview').addEventListener('click',()=>{if(window.speechSynthesis)window.speechSynthesis.cancel();setTtsStatus('Đã dừng đọc thử.')});
 $('stop-scene').addEventListener('click',stopAndResetPreview);
 $('speak-preview').addEventListener('click',async()=>{
