@@ -380,6 +380,8 @@ let cancelPendingPlaybackAudio=null;
 const speechAudioSources=new WeakMap();
 let piperVoices=[];
 let previewAudio={bgm:null,tts:null,sfx:null};
+// Giữ Blob WAV và Audio element trong suốt phiên mở trang; dừng/phát lại không tổng hợp hay nạp lại âm thanh.
+const sessionTtsBlobCache=new Map(),previewTtsAudioCache=new Map();
 let recordingTimer=null;
 let directRecording=false,directRecordRequested=false,directRecorder=null,directRecordChunks=[],directRecordAudioContext=null,directRecordDestination=null,directRecordStartedAt=0,directRecordEntries=[];const directRecordSources=new WeakSet();
 const charSelect=$('character');
@@ -650,6 +652,20 @@ function cachedVideo(src){
  const fresh=freshAssetUrl(src);
  if(!videoAssetCache.has(fresh))videoAssetCache.set(fresh,loadVideo(fresh).catch(err=>{videoAssetCache.delete(fresh);throw err}));
  return videoAssetCache.get(fresh);
+}
+function cachedPreviewTtsAudio(line){
+ const key=String(activeStoryPath||activeStoryName)+'|'+String(line?.sourceIndex??'')+'|'+String(line?.cacheKey||'');
+ if(!line?.wavBlob||!line.cacheKey)return null;
+ let entry=previewTtsAudioCache.get(key);
+ if(!entry||entry.blob!==line.wavBlob){
+  if(entry){entry.audio.pause();URL.revokeObjectURL(entry.url);previewTtsAudioCache.delete(key)}
+  const url=URL.createObjectURL(line.wavBlob),audio=new Audio(url);
+  audio.preload='auto';audio.crossOrigin='anonymous';
+  entry={blob:line.wavBlob,url,audio};previewTtsAudioCache.set(key,entry);
+ }
+ try{entry.audio.currentTime=0}catch(_){}
+ entry.audio.volume=Math.max(0,Math.min(1,Number($('tts-volume').value)||0));
+ return entry.audio;
 }
 // Lớp hiệu ứng cảnh có thể là <video> hoặc <img>/<canvas> (PNG mô phỏng). Chỉ phần tử phát được
 // (có play/pause) mới được điều khiển; ảnh tĩnh không có play()/pause() nên không được gọi trực tiếp.
@@ -1553,6 +1569,8 @@ function stopPreview(options={}){
  // Giải phóng Promise đang chờ audio.onended khi tua hoặc dừng giữa câu.
  if(cancelPendingPlaybackAudio){const cancel=cancelPendingPlaybackAudio;cancelPendingPlaybackAudio=null;cancel();}
  Object.values(previewAudio).forEach(a=>{if(a){a.pause();try{a.currentTime=0}catch(_){}}});
+ // Các Audio element của từng thoại được giữ lại trong cache cho tới khi reload trang.
+ previewTtsAudioCache.forEach(entry=>{if(entry?.audio){entry.audio.pause();try{entry.audio.currentTime=0}catch(_){}}});
  if(charVideo)charVideo.pause();
  charLayerVideos.forEach(x=>x.media?.pause?.());
  sceneEffectLayers.forEach(x=>pauseMedia(x.media));
@@ -1826,7 +1844,12 @@ async function playPreview(){
   }
   sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){}}});
   previewPreparing=false;previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
-  if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
+  // stopPreview() đã pause media để dừng sạch. Khi bắt đầu lượt mới phải bật lại toàn bộ WEBM của các nhân vật, không chỉ charVideo cũ.
+  if(charVideo){try{charVideo.currentTime=0}catch(_){}charVideo.play().catch(()=>{})}
+  if(bgVideo){try{bgVideo.currentTime=0}catch(_){}bgVideo.play().catch(()=>{})}
+  charLayerVideos.forEach(item=>{if(item.canPlayAnimation&&item.media){try{item.media.currentTime=0}catch(_){}playMedia(item.media)}});
+  sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(_){}playMedia(item.media)}});
+  sceneObjectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.currentTime=0}catch(_){}playMedia(item.media)}});
   previewLineBgmName='';
   // Mốc camera phải đổi NGAY khi chuyển sang câu mới, trước khi nạp scene/assets.
   // Nếu đặt mốc sau await loadSourceLineForPlayback(), render loop có thể vẽ một frame
@@ -1848,7 +1871,12 @@ async function playPreview(){
     try{
      if(useBrowser){if(text){setTtsStatus('Đang đọc bằng TTS trình duyệt…');await speakBrowserText(text)}}
      else if(line.wavBlob){
-      const url=URL.createObjectURL(line.wavBlob),audio=audioElement(url,false,Number($('tts-volume').value));previewAudio.tts=audio;speechAudioElement=audio;attachSpeechAnalyser(audio);
+      // Preview thường dùng lại chính Audio element + Blob URL đã tạo ở lần đầu; ghi trực tiếp dùng element riêng để nối MediaRecorder.
+      const url=directRecording?URL.createObjectURL(line.wavBlob):null;
+      const audio=directRecording?audioElement(url,false,Number($('tts-volume').value)):cachedPreviewTtsAudio(line);
+      if(!audio)throw new Error('Không tạo được Audio từ WAV đã lưu.');
+      audio.volume=Math.max(0,Math.min(1,Number($('tts-volume').value)||0));
+      previewAudio.tts=audio;speechAudioElement=audio;attachSpeechAnalyser(audio);
       await new Promise(resolve=>{
        let settled=false;
        const finish=()=>{if(settled)return;settled=true;audio.removeEventListener('ended',finish);audio.removeEventListener('error',finish);audio.removeEventListener('abort',finish);if(cancelPendingPlaybackAudio===cancel)cancelPendingPlaybackAudio=null;resolve()};
@@ -1857,7 +1885,8 @@ async function playPreview(){
        audio.addEventListener('ended',finish,{once:true});audio.addEventListener('error',finish,{once:true});audio.addEventListener('abort',finish,{once:true});
        audio.play().catch(finish);
       });
-      URL.revokeObjectURL(url);if(previewAudio.tts===audio)previewAudio.tts=null;
+      if(directRecording&&url)URL.revokeObjectURL(url);
+      if(previewAudio.tts===audio)previewAudio.tts=null;
      }else if(text){setTtsStatus('Thiếu WAV của câu thoại: '+(line.speaker||item.sourceIndex+1));}
     }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;}
     const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0)),motionDuration=Math.max(0,...(line.sourceFrame?.nhan_vat_hien_thi||[]).map(ch=>Number(ch.motion?.duration_seconds)||0)),requestedDuration=Math.max(0,Math.min(30,Number(line.sourceFrame?.thoi_luong)||0),motionDuration),lineElapsed=(performance.now()-previewStartedAt)/1000-lineMotionStartElapsed,hold=Math.max(pause,requestedDuration-lineElapsed);
@@ -2152,6 +2181,7 @@ async function generatePiperAudio(){
    setTtsStatus('Đang tạo giọng Edge Neural…');setTaskProgress('Đang tạo giọng Edge Neural…');
    const spec={text,lang:$('tts-lang').value,profile},blob=await edgeSynthCached(spec);
    if(line){line.wavBlob=blob;line.cacheKey=key;line.gain=edgeGain(spec)}
+   sessionTtsBlobCache.set(key,blob);
    generatedTtsBlob=blob;generatedTtsKey=key;
    const url=URL.createObjectURL(blob),audio=new Audio(url);
    audio.onloadedmetadata=()=>{if(line)line.duration=audio.duration;setTtsStatus('Đã tạo giọng Edge · '+audio.duration.toFixed(2)+' giây.');URL.revokeObjectURL(url);renderLineList()};
@@ -2172,6 +2202,7 @@ async function generatePiperAudio(){
   let blob=new Blob([await wav.arrayBuffer()],{type:'audio/wav'});
   if(profile){setTtsStatus('Đang áp dụng hồ sơ giọng '+profile.name+'…');setTaskProgress('Đang xử lý hồ sơ giọng…');blob=await applyVoiceProfile(blob,profile)}
   if(line){line.wavBlob=blob;line.cacheKey=key;line.gain=1}
+  sessionTtsBlobCache.set(key,blob);
   generatedTtsBlob=blob;generatedTtsKey=key;
   const url=URL.createObjectURL(blob),audio=new Audio(url);
   audio.onloadedmetadata=()=>{if(line)line.duration=audio.duration;setTtsStatus('Đã tạo WAV · '+audio.duration.toFixed(2)+' giây.');URL.revokeObjectURL(url);renderLineList()};
@@ -2186,6 +2217,9 @@ async function ensureTtsReady(){
  if(!text)return null;
  const key=ttsRequestKey();
  if(line?.wavBlob&&line.cacheKey===key){generatedTtsBlob=line.wavBlob;generatedTtsKey=key;return line.wavBlob}
+ // Nếu trạng thái editor/giọng làm cacheKey của dòng lệch, vẫn tái sử dụng WAV đã tạo trong phiên khi chữ + giọng trùng khớp.
+ const sessionBlob=sessionTtsBlobCache.get(key);
+ if(sessionBlob){if(line){line.wavBlob=sessionBlob;line.cacheKey=key}generatedTtsBlob=sessionBlob;generatedTtsKey=key;return sessionBlob}
  if(!ttsGenerationPromise)ttsGenerationPromise=generatePiperAudio().catch(err=>{generatedTtsBlob=null;generatedTtsKey='';throw err}).finally(()=>{ttsGenerationPromise=null});
  return await ttsGenerationPromise;
 }
