@@ -2444,7 +2444,7 @@
         "face_angle": "135°",
         "view_angle": "full body",
         "interaction_target": "none",
-        "action": "walking"
+        "action": "running"
       },
       "nhan_vat_hien_thi": [
         {
@@ -2457,7 +2457,7 @@
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "none",
-            "action": "walking"
+            "action": "running"
           },
           "x": 50,
           "y": 92,
@@ -2466,7 +2466,7 @@
           "motion": {
             "duration_seconds": 2.4,
             "easing": "easeInOut",
-            "action": "walking",
+            "action": "running",
             "direction": "left",
             "from": {
               "x": 112,
@@ -2507,7 +2507,8 @@
               "face_angle": "135°",
               "view_angle": "full body",
               "interaction_target": "none"
-            }
+            },
+            "pose": "walking_pose"
           }
         }
       ],
