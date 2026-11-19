@@ -2321,6 +2321,22 @@ async function clipFrameSlow(video,c,k,t,fps){
  c.frames.set(k,bmp);c.bytes+=size;clipCacheBytes+=size;
  return bmp;
 }
+ // Nạp trước clip trước khi render thoại: tránh vừa xuất vừa seek/giải mã từng khung.
+async function primeClipFrames(video,fps){
+ if(!video||!Number.isFinite(video.duration)||video.duration<=0)return;
+ const c=getClipEntry(video,fps);
+ if(c.noCache)return; // Clip quá lớn thì giữ cơ chế đọc từng khung, tránh vượt RAM.
+ for(let k=0;k<c.n;k++){
+  if(c.frames.has(k))continue;
+  await clipFrameSlow(video,c,k,k/fps,fps);
+  if((k&7)===7)await yieldToUI();
+ }
+}
+async function primeActiveSceneClips(fps){
+ const videos=[bgVideo,charVideo,...sceneEffectLayers.filter(x=>x.type==='video'&&x.media).map(x=>x.media)];
+ const unique=[...new Set(videos.filter(v=>v&&Number.isFinite(v.duration)&&v.duration>0))];
+ for(const video of unique)await primeClipFrames(video,fps);
+}
 // Nhường luồng chính cho UI mà không bị trình duyệt giãn thời gian khi tab ẩn (setTimeout bị throttle, MessageChannel thì không).
 const yieldChannel=new MessageChannel();
 function yieldToUI(){return new Promise(r=>{yieldChannel.port1.onmessage=()=>r();yieldChannel.port2.postMessage(0)})}
@@ -2423,7 +2439,7 @@ async function exportVideo(){
   const mb=await import('https://esm.sh/mediabunny@1.62.1');
   const target=new mb.BufferTarget(),format=new mb.Mp4OutputFormat();
   output=new mb.Output({format,target});
-  const videoSource=new mb.CanvasSource(renderCanvas,{codec:'avc',bitrate:Math.round((({1080:8000000,720:4500000,540:2800000})[Number($('export-quality').value)]||4500000)*Math.min(1.6,Math.max(1,fps/30))),latencyMode:'realtime',hardwareAcceleration:'prefer-hardware',keyFrameInterval:2});
+  const videoSource=new mb.CanvasSource(renderCanvas,{codec:'avc',bitrate:Math.round((({1080:8000000,720:4500000,540:2800000})[Number($('export-quality').value)]||4500000)*Math.min(1.6,Math.max(1,fps/30))),latencyMode:'quality',hardwareAcceleration:'prefer-hardware',keyFrameInterval:2});
   const audioSource=new mb.AudioBufferSource({codec:'aac',quality:new mb.Quality({bitrate:160000})});
   output.addVideoTrack(videoSource,{frameRate:fps});output.addAudioTrack(audioSource);await output.start();
   const frameCount=Math.ceil(finalDuration*fps);let frameIndex=0,lastUi=0;const exportT0=performance.now();let tClip=0,tDraw=0,tEnc=0,lastAssetSig='';const pending=[],MAX_INFLIGHT=LOW_MEM?4:8;
@@ -2446,6 +2462,8 @@ async function exportVideo(){
     }
     // [TỐI ƯU] Chốt trạng thái hiệu ứng + hộp thoại một lần cho cả câu thoại.
     const st=readFrameState();st.dialogueLayer=buildDialogueLayer(renderCanvas.width,renderCanvas.height);
+    // Giải mã và cache trước các clip của đoạn thoại; vòng render bên dưới chỉ đọc khung đã nạp.
+    await primeActiveSceneClips(clipFps);
     const lineEndFrame=Math.min(frameCount,Math.round((entry.start+entry.duration+entry.pause)*fps));
     const lineFrames=Math.max(0,lineEndFrame-frameIndex);
     for(let f=0;f<lineFrames;f++){
