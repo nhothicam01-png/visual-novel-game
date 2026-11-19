@@ -53,24 +53,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -169,7 +169,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -181,7 +181,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -234,7 +234,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -246,7 +246,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -378,24 +378,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -524,10 +524,10 @@
         "communication": "silent",
         "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
@@ -536,10 +536,10 @@
             "communication": "silent",
             "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -680,24 +680,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -759,7 +759,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -771,7 +771,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -840,10 +840,10 @@
         "communication": "silent",
         "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
@@ -852,10 +852,10 @@
             "communication": "silent",
             "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -1036,10 +1036,10 @@
         "communication": "silent",
         "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
@@ -1048,10 +1048,10 @@
             "communication": "silent",
             "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -1212,10 +1212,10 @@
         "communication": "silent",
         "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
@@ -1224,10 +1224,10 @@
             "communication": "silent",
             "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -1392,24 +1392,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -1420,9 +1420,7 @@
       "hieu_ung": {
         "nhan_vat": [],
         "nen": [],
-        "camera": [
-          "camera-misty"
-        ],
+        "camera": [],
         "moi_truong": []
       },
       "hieu_ung_canh": [
@@ -1465,7 +1463,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -1477,7 +1475,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -1538,10 +1536,10 @@
         "communication": "silent",
         "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
@@ -1550,10 +1548,10 @@
             "communication": "silent",
             "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -1690,10 +1688,10 @@
         "communication": "silent",
         "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
@@ -1702,10 +1700,10 @@
             "communication": "silent",
             "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -1852,24 +1850,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -1892,12 +1890,6 @@
         },
         {
           "id": "transition",
-          "type": "code",
-          "opacity": 1,
-          "z_index": -10
-        },
-        {
-          "id": "flash",
           "type": "code",
           "opacity": 1,
           "z_index": -10
@@ -1929,24 +1921,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "confused",
+        "emotion": "neutral",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "confused",
+            "emotion": "neutral",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -2020,7 +2012,7 @@
       },
       "am_thanh": {
         "nhac_nen": {
-          "tep": "afternoon_between_leaves.mp3"
+          "tep": ""
         },
         "hieu_ung_am_thanh": {
           "tep": ""
@@ -2038,7 +2030,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -2050,7 +2042,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2066,7 +2058,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2082,7 +2074,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2128,7 +2120,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -2140,7 +2132,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2156,7 +2148,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2172,7 +2164,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2218,7 +2210,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -2230,7 +2222,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2246,9 +2238,9 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -2262,7 +2254,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2308,7 +2300,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "confused",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -2320,7 +2312,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "confused",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2398,7 +2390,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "confused",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -2426,7 +2418,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "confused",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2488,7 +2480,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -2500,7 +2492,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2516,7 +2508,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2532,7 +2524,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2578,7 +2570,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -2590,7 +2582,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2606,9 +2598,9 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -2622,7 +2614,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2668,7 +2660,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -2680,7 +2672,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2696,7 +2688,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2712,7 +2704,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2758,7 +2750,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -2770,7 +2762,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2786,7 +2778,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2802,7 +2794,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2848,7 +2840,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -2878,7 +2870,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -2892,7 +2884,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2938,7 +2930,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -2950,7 +2942,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -2966,7 +2958,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -2982,7 +2974,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3028,24 +3020,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -3056,7 +3048,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3072,7 +3064,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3118,7 +3110,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -3130,7 +3122,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -3146,7 +3138,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3162,7 +3154,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3298,7 +3290,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -3310,7 +3302,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -3326,9 +3318,9 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -3342,7 +3334,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3388,7 +3380,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -3400,7 +3392,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -3478,12 +3470,12 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "annoyed",
+        "emotion": "sad",
         "pose": "standing",
-        "direction": "left",
+        "direction": "right",
         "face_angle": "135°",
         "view_angle": "full body",
-        "interaction_target": "char_bubu_char_01"
+        "interaction_target": "char_rerin_char_03"
       },
       "nhan_vat_hien_thi": [
         {
@@ -3506,12 +3498,12 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "annoyed",
+            "emotion": "sad",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
-            "interaction_target": "char_bubu_char_01"
+            "interaction_target": "char_rerin_char_03"
           },
           "x": 51,
           "y": 0,
@@ -3568,7 +3560,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "annoyed",
+        "emotion": "sad",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -3598,7 +3590,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -3612,7 +3604,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "annoyed",
+            "emotion": "sad",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3658,7 +3650,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -3670,7 +3662,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -3748,7 +3740,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -3776,7 +3768,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3838,7 +3830,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "nervous",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -3850,7 +3842,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "nervous",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -3866,7 +3858,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3882,7 +3874,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -3928,7 +3920,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -3958,7 +3950,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -3972,7 +3964,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4018,7 +4010,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -4030,7 +4022,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -4046,7 +4038,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4062,7 +4054,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4198,24 +4190,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -4226,7 +4218,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4242,7 +4234,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4288,24 +4280,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -4316,7 +4308,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4332,7 +4324,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4378,7 +4370,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "nervous",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -4390,7 +4382,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "nervous",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -4406,7 +4398,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4422,7 +4414,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4468,7 +4460,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "kind",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -4498,7 +4490,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -4512,7 +4504,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "kind",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4558,24 +4550,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "calm",
+        "emotion": "neutral",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "calm",
+            "emotion": "neutral",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -4667,7 +4659,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -4679,7 +4671,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -4695,7 +4687,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4711,7 +4703,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4776,7 +4768,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "confused",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -4806,7 +4798,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -4820,7 +4812,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "confused",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4879,7 +4871,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -4891,7 +4883,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -4907,7 +4899,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4923,7 +4915,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -4988,7 +4980,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -5000,7 +4992,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -5016,7 +5008,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5032,7 +5024,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5091,7 +5083,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "confused",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -5103,7 +5095,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "confused",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -5194,24 +5186,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -5222,7 +5214,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5238,7 +5230,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5303,24 +5295,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -5331,7 +5323,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5347,7 +5339,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5400,7 +5392,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -5428,7 +5420,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5490,7 +5482,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "nervous",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -5502,7 +5494,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "nervous",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -5518,7 +5510,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5534,7 +5526,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5580,7 +5572,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "kind",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -5610,7 +5602,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -5624,7 +5616,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "kind",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5670,7 +5662,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -5682,7 +5674,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -5760,7 +5752,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -5788,7 +5780,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -5850,7 +5842,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -5862,7 +5854,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -5940,7 +5932,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "kind",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -5970,7 +5962,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -5984,7 +5976,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "kind",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -6030,24 +6022,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -6058,7 +6050,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -6074,7 +6066,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -6120,24 +6112,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "confused",
+        "emotion": "neutral",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "confused",
+            "emotion": "neutral",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -6191,7 +6183,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -6203,7 +6195,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -6258,24 +6250,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -6398,10 +6390,10 @@
         "communication": "silent",
         "emotion": "sad",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
@@ -6410,10 +6402,10 @@
             "communication": "silent",
             "emotion": "sad",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -6461,7 +6453,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "confused",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -6473,7 +6465,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "confused",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -6532,24 +6524,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -6603,7 +6595,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -6615,7 +6607,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -6668,24 +6660,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "determined",
+        "emotion": "happy",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "determined",
+            "emotion": "happy",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -6739,7 +6731,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "determined",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -6751,7 +6743,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "determined",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -6804,7 +6796,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "kind",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -6832,7 +6824,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "kind",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -6907,7 +6899,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "relieved",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -6919,7 +6911,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "relieved",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -6997,7 +6989,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "kind",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -7027,7 +7019,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -7041,7 +7033,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "kind",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7087,7 +7079,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -7099,7 +7091,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -7115,7 +7107,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7131,7 +7123,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7267,7 +7259,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -7279,7 +7271,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -7357,7 +7349,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "thoughtful",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -7387,7 +7379,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -7401,7 +7393,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "thoughtful",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7447,7 +7439,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "curious",
+        "emotion": "neutral",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -7475,7 +7467,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7537,7 +7529,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -7549,7 +7541,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -7565,7 +7557,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7581,7 +7573,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7627,7 +7619,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "kind",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "left",
         "face_angle": "135°",
@@ -7657,7 +7649,7 @@
             "communication": "listening",
             "emotion": "neutral",
             "pose": "standing",
-            "direction": "left",
+            "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
             "interaction_target": "char_rerin_char_03"
@@ -7671,7 +7663,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "kind",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7717,7 +7709,7 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
-        "emotion": "determined",
+        "emotion": "happy",
         "pose": "standing",
         "direction": "right",
         "face_angle": "135°",
@@ -7729,7 +7721,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "speaking",
-            "emotion": "determined",
+            "emotion": "happy",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -7807,24 +7799,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "surprised",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "surprised",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -7835,7 +7827,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7851,7 +7843,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "neutral",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7922,24 +7914,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "worried",
+        "emotion": "afraid",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
@@ -7950,7 +7942,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -7966,7 +7958,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "worried",
+            "emotion": "afraid",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
@@ -8025,24 +8017,24 @@
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "silent",
-        "emotion": "determined",
+        "emotion": "happy",
         "pose": "standing",
-        "direction": "right",
+        "direction": "front",
         "face_angle": "0°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "none"
       },
       "nhan_vat_hien_thi": [
         {
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "silent",
-            "emotion": "determined",
+            "emotion": "happy",
             "pose": "standing",
-            "direction": "right",
+            "direction": "front",
             "face_angle": "0°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "none"
           },
           "x": 25,
           "y": 0,
