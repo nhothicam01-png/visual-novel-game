@@ -1316,6 +1316,10 @@ function drawFrameUnsafe(elapsed,st){
   cx:Math.max(halfViewportW,Math.min(w-halfViewportW,cameraX)),
   cy:Math.max(halfViewportH,Math.min(h-halfViewportH,cameraBaseY))};
  panState.x=shotCamera.cx;panState.y=shotCamera.cy;panState.zoom=shotCamera.zoom;
+ const cameraTargetLayer=cameraLayers.find(item=>String(item.spec?.id||'')===cameraTarget);
+ const cameraTargetName=cameraTargetLayer?(worldCharacterDirectory.find(ch=>String(ch.id)===cameraTarget)?.name||cameraTargetLayer.spec?.name||cameraTarget):'none';
+ const cameraProgress=rawShotCamera?(panT>=.995?'HOLD':('PAN '+Math.round(panT*100)+'%')):'NO ZOOM';
+ updateCameraDebugStatus('CAM '+(director==='manual'?'MANUAL':'AUTO')+' | '+String(shot).toUpperCase()+' | '+cameraTargetName+' | '+cameraZoom.toFixed(2)+'x | '+cameraProgress);
  if(shotCamera){ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(shotCamera.zoom,shotCamera.zoom);ctx.translate(-shotCamera.cx,-shotCamera.cy)}
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
  if(bgAsset||bgVideo) {
