@@ -2191,6 +2191,34 @@ async function ensureTtsReady(){
 }
 // API đồng bộ cho DemoStudio: tổng hợp bằng engine/giọng đang chọn trong phong_video,
  // giải mã file thực tế để lấy duration và waveform rồi trả Blob trực tiếp cùng origin.
+// Nhận lại WAV đã lưu trong kho IndexedDB của DemoStudio sau khi nạp lại trang.
+window.attachStoredStoryAudioForStudio=async function(items){
+ if(!activeStoryData||!scenes.length||!Array.isArray(items))return {attached:0,stale:0,missing:0};
+ const previousScene=activeSceneIndex,previousLine=activeLineIndex;let attached=0,stale=0,missing=0;
+ const byIndex=new Map(items.filter(x=>Number.isInteger(Number(x.index))).map(x=>[Number(x.index),x]));
+ try{
+  for(let si=0;si<scenes.length;si++){
+   activeSceneIndex=si;
+   for(let li=0;li<scenes[si].lines.length;li++){
+    const line=scenes[si].lines[li],meta=byIndex.get(Number(line.sourceIndex));
+    if(!meta)continue;
+    if(!(meta.blob instanceof Blob)||!meta.blob.size){missing++;continue}
+    activeLineIndex=li;loadLineToEditor(line);await applyVoiceForCurrentLine();
+    const currentKey=ttsRequestKey();
+    if(!meta.cacheKey||meta.cacheKey!==currentKey){stale++;continue}
+    line.wavBlob=meta.blob;line.cacheKey=meta.cacheKey;
+    if(Number(meta.duration)>0)line.duration=Number(meta.duration);
+    line.gain=line.gain??1;attached++;
+   }
+  }
+  return {attached,stale,missing};
+ }finally{
+  activeSceneIndex=Math.max(0,Math.min(previousScene,scenes.length-1));
+  activeLineIndex=Math.max(0,Math.min(previousLine,(scenes[activeSceneIndex]?.lines.length||1)-1));
+  const restored=getCurrentLine();if(restored)loadLineToEditor(restored);
+  renderSceneList();renderLineList();applyVisual(getCurrentScene()?.visual||captureVisual());
+ }
+};
 window.generateStoryAudioForStudio=async function(){
  if(!activeStoryData||!scenes.length)throw new Error('Chưa nạp kịch bản vào Player.');
  if(recording)throw new Error('Player đang xuất video; hãy chờ hoàn tất.');
