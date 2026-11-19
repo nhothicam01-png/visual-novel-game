@@ -682,7 +682,8 @@ const CODE_VFX_CATALOG=[['rain','Mưa'],['snow','Tuyết'],['lightning','Sấm s
 function renderSceneEffectPicker(){
  const host=$('scene-effect-picker');if(!host)return;
  const scene=getCurrentScene(),lineEffects=getCurrentLine()?.sourceFrame?.hieu_ung_canh;
- const selected=normalizeSceneEffects(Array.isArray(lineEffects)&&lineEffects.length?lineEffects:scene?.visual?.sceneEffects||[]);
+ // [] là lựa chọn tường minh của dòng hiện tại (không có hiệu ứng), chỉ kế thừa scene khi dữ liệu dòng cũ chưa có trường này.
+ const selected=normalizeSceneEffects(Array.isArray(lineEffects)?lineEffects:(scene?.visual?.sceneEffects||[]));
  const ids=new Set(selected.map(x=>x.id));
  document.querySelectorAll('[data-line-scene-effect]').forEach(input=>{input.checked=ids.has(input.dataset.lineSceneEffect)});
  if(selected.length){const opacity=Math.round(selected[0].opacity*100);$('scene-effect-opacity').value=String(opacity);$('scene-effect-opacity-value').textContent=opacity+'%';$('scene-effect-status').textContent=selected.length+' hiệu ứng code đang bật.'}else{$('scene-effect-status').textContent='Chưa chọn hiệu ứng môi trường.'}
