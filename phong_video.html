@@ -388,7 +388,7 @@ const backgrounds=[
  ['render.mp4','Video nền render.mp4']
 ];
 let backgroundAssetWarning='',bgAsset=null,bgVideo=null,charVideo=null,charLayerVideos=[],previewing=false,previewPaused=false,previewPreparing=false,previewStartToken=0,previewSpeech=null,raf=0,recording=false,generatedTtsBlob=null,piperModule=null,piperSession=null,piperSessionVoice='';
-let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null,speechMotionSmooth=0,speechMotionFrameAt=0;
+let speakingCharacterId='',speechMotionLevel=0,speechAnalyser=null,speechAnalyserData=null,speechAudioContext=null,speechTextIndex=0,speechAudioElement=null,speechMotionSmooth=0,speechMotionFrameAt=0,demoStudioSpeechMotionEnabled=true;
 let cancelPendingPlaybackAudio=null;
 const speechAudioSources=new WeakMap();
 let piperVoices=[];
@@ -1359,7 +1359,7 @@ function drawFrameUnsafe(elapsed,st){
   ctx.save();let alpha=Math.max(0,Math.min(1,st.opacity??1));
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
   const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!spec?.neutralFallback&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
-  if(isCurrentSpeaker){
+  if(isCurrentSpeaker&&demoStudioSpeechMotionEnabled){
    const motion=Math.max(0,Math.min(1,speechMotionSmooth));
    // Chu ky lien tuc, khong bam theo am luong hay tung am tiet nen khong bi giat.
    // Thu tu: nhun xuong thang -> len nghieng trai -> xuong thang -> len nghieng phai.
@@ -3246,6 +3246,13 @@ if(location.search.includes('cinematic=1')){void (async()=>{try{const raw=localS
 
 /* Parent bridge: demoStudio reuses this exact renderer for static preview and scrubbing. */
 let demoStudioStoryLoaded=false,demoStudioBridgeRequest=0;
+function applyDemoStudioSpeechMotion(settings){
+ if(!settings||typeof settings!=='object')return;
+ demoStudioSpeechMotionEnabled=settings.enabled!==false;
+ const values=[['speech-motion-speed',settings.speed,50],['speech-motion-intensity',settings.intensity,40],['speech-motion-tilt',settings.tilt,50]];
+ values.forEach(([id,value,fallback])=>{const slider=$(id);if(!slider)return;const n=Math.max(1,Math.min(100,Number(value)||fallback));slider.value=String(n);const output=$(id+'-value');if(output)output.textContent=String(n)});
+ if(!previewing)drawFrame(0);
+}
 if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
  document.body.classList.add('demo-studio-embed');
  window.addEventListener('message',async event=>{
@@ -3257,6 +3264,7 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
     await applyStoryData(message.data,message.name||'demoStudio Preview',message.path||'assets/KichBan/demoStudio/demoStudio.json');
     setPreviewAspectRatio(message.ratio||previewAspectRatio);
     if(typeof message.dialogueVisible==='boolean')$('show-dialogue').checked=message.dialogueVisible;
+    applyDemoStudioSpeechMotion(message.speechMotion);
     drawFrame(0);
     demoStudioStoryLoaded=true;
     if(request!==demoStudioBridgeRequest)return;
@@ -3270,10 +3278,13 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
   }else if(message.type==='DEMO_STUDIO_SET_DIALOGUE_VISIBILITY'&&demoStudioStoryLoaded){
    $('show-dialogue').checked=message.visible!==false;
    drawFrame(0);
+  }else if(message.type==='DEMO_STUDIO_SET_SPEECH_MOTION'&&demoStudioStoryLoaded){
+   applyDemoStudioSpeechMotion(message.settings);
   }else if(message.type==='DEMO_STUDIO_EXPORT_VIDEO'&&demoStudioStoryLoaded){
    if(recording){window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_ERROR',message:'Đang có một tiến trình xuất video.'},location.origin);return}
    try{
     setPreviewAspectRatio(message.ratio||previewAspectRatio);
+    applyDemoStudioSpeechMotion(message.speechMotion);
     $('fps').value=String([24,30,50,60].includes(Number(message.fps))?Number(message.fps):30);
     $('export-quality').value=String([540,720,1080].includes(Number(message.quality))?Number(message.quality):720);
     window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_PROGRESS',message:'Đang dựng MP4 bằng WebCodecs…'},location.origin);
