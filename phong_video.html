@@ -1058,7 +1058,7 @@ function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
  const count=Math.max(1,layers.length),zoom=portrait&&count===1?1:Math.max(1,Math.min(1.8,shotZoom));
  if(zoom<=1)return null;
  const spec=layer.spec||{},requested=Number(spec.scale),clamp=(lo,hi,v)=>Math.max(lo,Math.min(hi,v));
- const baseScale=Number.isFinite(requested)?clamp(.1,2.5,requested):.68,py=clampCharacterGroundY(spec.y),scale=getCharacterDepthScale(py,baseScale),dh=h*scale;
+ const baseScale=Number.isFinite(requested)?clamp(.1,2.5,requested):.68,scale=getCharacterDepthScale(spec.y,baseScale),dh=h*scale;
  const px=Number.isFinite(Number(spec.x))?clamp(0,100,Number(spec.x)):50,py=clampCharacterGroundY(spec.y);
  // Phải dùng đúng vị trí chân sau khi áp dụng cùng giới hạn 10% đầu an toàn như lúc vẽ sprite.
  const feet=Math.max(dh+h*.10,Math.min(h*.98,h*py/100));
