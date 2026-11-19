@@ -26,7 +26,7 @@
 <section class="panel timeline"><div class="timeline-toolbar"><strong>Timeline · Toàn bộ kịch bản</strong><span class="pill" id="zoomLabel">1×</span><div class="spacer"></div><button id="zoomOut">−</button><button id="zoomIn">＋</button><button id="fitBtn">Vừa khung</button></div><div class="timeline-scroll" id="timelineScroll"><div class="timeline-inner" id="timelineInner"><div class="empty">Import kịch bản để dựng timeline</div></div></div></section>
 </div>
 <script>
-const $=id=>document.getElementById(id);if(matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<=700)document.documentElement.classList.add('phone-device');let data=null,rows=[],selected=-1,zoom=1,pxPerSec=42,playhead=0,playing=false,timer=null,total=0,segments=[],previewEngineReady=false,previewStorySent=false,previewRequestIndex=-1,selectedKind='dialogue';
+const $=id=>document.getElementById(id);if(matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<=700)document.documentElement.classList.add('phone-device');let data=null,rows=[],selected=-1,zoom=1,pxPerSec=42,playhead=0,playing=false,timer=null,total=0,segments=[],previewEngineReady=false,previewStorySent=false,previewRequestIndex=-1,selectedKind='dialogue',selectedObjectId='',webmTreeCache=null,webmFolderCache={};
 const fmt=t=>{t=Math.max(0,Number(t)||0);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Math.floor(t%60)).padStart(2,'0')};
 const dur=r=>Math.max(.2,Number(r?.thoi_luong)||5);
 const sceneKey=r=>String(r?.scene_id||'Cảnh');
@@ -48,7 +48,7 @@ function renderTimeline(){
   if(!seen.has(seg.scene)){seen.add(seg.scene);let last=seg.i;while(last+1<rows.length&&sceneKey(rows[last+1])===seg.scene)last++;const sceneWidth=Math.max(20,(segments[last].end-seg.start)*scale-2);sceneClips+='<div class="clip scene" data-kind="scene" title="'+esc(seg.scene)+'" style="left:'+left+'px;width:'+sceneWidth+'px" data-index="'+seg.i+'">'+esc(seg.scene)+'</div>'}
   dialogueClips+='<div class="clip dialogue '+(selected===seg.i?'selected':'')+'" data-kind="dialogue" title="'+esc(name+': '+r.noi_dung)+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(name+' · '+(r.noi_dung||'').slice(0,48))+'</div>';
   const visible=Array.isArray(r.nhan_vat_hien_thi)?r.nhan_vat_hien_thi:[];
-  visible.forEach(spec=>{const id=String(spec.id||'');if(!charClips.has(id))return;const ex=spec.expression_id||{},label=[ex.action||ex.pose,ex.direction].filter(Boolean).join(' · ')||'Hiện diện';charClips.set(id,charClips.get(id)+'<div class="clip character" data-kind="character" title="'+esc(label)+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(label)+'</div>')});
+  visible.forEach(spec=>{const id=String(spec.id||'');if(!charClips.has(id))return;const ex=spec.expression_id||{},label=[ex.action||ex.pose,ex.direction].filter(Boolean).join(' · ')||'Hiện diện';charClips.set(id,charClips.get(id)+'<div class="clip character" data-kind="character" data-character-id="'+attr(id)+'" title="'+esc(label)+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(label)+'</div>')});
   const fx=(r.hieu_ung_canh||[]).map(x=>x.id||x).join(', ');if(fx)effectClips+='<div class="clip effect" data-kind="effect" title="'+esc(fx)+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(fx)+'</div>';
   const cam=r.camera&&Object.keys(r.camera).length?Object.entries(r.camera).map(([k,v])=>k+': '+(typeof v==='object'?JSON.stringify(v):v)).join(' · '):'';if(cam)cameraClips+='<div class="clip camera" data-kind="camera" title="'+esc(cam)+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(cam.slice(0,55))+'</div>';
   const action=r.expression_id?.action||visible.map(x=>x.expression_id?.action).filter(Boolean).join(', ');if(action)motionClips+='<div class="clip motion" data-kind="motion" title="'+esc(action)+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(action)+'</div>';
@@ -58,7 +58,7 @@ function renderTimeline(){
  const row=(label,clips)=>'<div class="track"><div class="track-label">'+label+'</div><div class="track-content" style="width:'+(width-108)+'px">'+clips+'</div></div>';
  const charRows=chars.map(([id,info])=>row('👤 '+esc(info?.ten_hien_thi||info?.name||id),charClips.get(id)||'')).join('');
  inner.innerHTML='<div class="ruler"><div class="track-label" style="height:27px">THỜI GIAN</div>'+ticks+'</div>'+row('🎬 Cảnh',sceneClips)+charRows+row('💬 Thoại',dialogueClips)+row('🎥 Camera',cameraClips)+row('🏃 Chuyển động',motionClips)+row('✨ Hiệu ứng',effectClips)+row('♫ Nhạc nền',musicClips)+row('🔊 Âm thanh',sfxClips)+'<div class="playhead" id="playhead" style="left:'+(108+playhead*scale)+'px"></div>';
- inner.querySelectorAll('.clip').forEach(c=>c.onclick=()=>{selectedKind=c.dataset.kind||'dialogue';selectLine(Number(c.dataset.index),true);renderInspector()});$('zoomLabel').textContent=zoom.toFixed(1)+'×';
+ inner.querySelectorAll('.clip').forEach(c=>c.onclick=()=>{selectedKind=c.dataset.kind||'dialogue';selectedObjectId=c.dataset.characterId||'';selectLine(Number(c.dataset.index),true);renderInspector()});$('zoomLabel').textContent=zoom.toFixed(1)+'×';
 }
 function renderInspector(){
  const el=$('inspector');
@@ -68,7 +68,7 @@ function renderInspector(){
  const select=(label,id,value,options)=>'<div class="field"><label>'+label+'</label><select id="'+id+'">'+options.map(x=>'<option value="'+attr(x)+'" '+(String(x)===String(value)?'selected':'')+'>'+esc(x||'(trống)')+'</option>').join('')+'</select></div>';
  const specList=Array.isArray(r.nhan_vat_hien_thi)?r.nhan_vat_hien_thi:[];
  const speakerId=String(r.nhan_vat||'');
- const spec=specList.find(x=>String(x.id)===speakerId)||specList[0]||null;
+ const selectedCharacterId=selectedKind==='character'?(selectedObjectId||speakerId):speakerId;const spec=specList.find(x=>String(x.id)===selectedCharacterId)||specList.find(x=>String(x.id)===speakerId)||specList[0]||null;
  const ex=spec?.expression_id||r.expression_id||{};
  const opts=(key,extra=[])=>[...new Set([...(extra||[]),...(key?[String(key)]:[]),...specList.map(x=>String(x.expression_id?.[key]||'')).filter(Boolean)])];
  let html='<div class="field"><label>Đối tượng đang chọn</label><div class="pill">'+esc(({dialogue:'Thoại',character:'Nhân vật',scene:'Cảnh',camera:'Camera',motion:'Chuyển động',effect:'Hiệu ứng',music:'Nhạc nền',sfx:'Âm thanh'}[kind]||kind))+' · Đoạn '+(selected+1)+' / '+rows.length+'</div></div>';
@@ -86,6 +86,7 @@ function renderInspector(){
   html+=select('Giao tiếp','objComm',ex.communication,opts('communication',['speaking','listening','silent','reacting']));
   html+=select('Cảm xúc','objEmotion',ex.emotion,opts('emotion',['neutral','happy','sad','angry','anxious','embarrassed','fearful','surprised']));
   html+=field('Đối tượng tương tác','objTarget',ex.interaction_target||'');
+  html+='<div class="webm-picker"><strong>🎞 Thư viện WEBM thực tế</strong><p class="hint">Tìm, lọc và xem thử clip từ đúng thư mục nhân vật trên GitHub. Chọn clip rồi áp dụng để ghim clip này cho riêng đoạn hiện tại.</p><input id="webmSearch" class="search" placeholder="Tìm tên file, hành động, cảm xúc..."><div class="grid2"><label class="field"><label>Hành động</label><select id="webmActionFilter"><option value="">Tất cả</option></select></label><label class="field"><label>Cảm xúc</label><select id="webmEmotionFilter"><option value="">Tất cả</option></select></label></div><div id="webmResults" class="webm-results"><div class="empty">Đang tải thư viện WEBM...</div></div><video id="webmPreview" controls muted playsinline style="width:100%;max-height:190px;background:#050811;border-radius:8px;margin-top:8px"></video><div class="hint" id="webmSelectedLabel">Clip đang ghim: '+esc(spec?.webm_file||'Tự động theo metadata')+'</div><button id="clearWebm" type="button">↺ Bỏ ghim · để trình phát tự chọn</button></div>';
  }else if(kind==='scene'){
   html+=field('Mã cảnh','editScene',r.scene_id||'')+field('Ảnh nền','editBg',r.anh_nen||'');
  }else if(kind==='camera'){
@@ -103,6 +104,7 @@ function renderInspector(){
  }
  html+='<div class="row" style="flex-wrap:wrap"><button class="primary" id="applyObject">Áp dụng thay đổi</button><button id="prevLine">← Trước</button><button id="nextLine">Tiếp →</button></div><p class="hint" style="margin-top:12px">Các trường không chỉnh sửa được vẫn được giữ nguyên trong JSON.</p>';
  el.innerHTML=html;
+ if(kind==='character')setupWebmPicker(String(spec?.id||speakerId),spec?.webm_file||'');
  $('applyObject').onclick=()=>{
   if(kind==='dialogue'){
    const old=String(r.nhan_vat||''),next=String($('editSpeaker').value||old);r.nhan_vat=next;r.noi_dung=$('editText').value;r.thoi_luong=Math.max(.2,Number($('editDuration').value)||5);r.scene_id=$('editScene').value.trim()||r.scene_id;r.anh_nen=$('editBg').value.trim();if(Array.isArray(r.nhan_vat_hien_thi)){const sp=r.nhan_vat_hien_thi.find(x=>String(x.id)===old);if(sp&&next!==old&&!r.nhan_vat_hien_thi.some(x=>String(x.id)===next))sp.id=next}
@@ -119,6 +121,34 @@ function renderInspector(){
   const oldTime=segments[selected]?.start||0;buildSegments();renderAll();seek(oldTime);syncPreviewLine(selected,true);
  };
  $('prevLine').onclick=()=>selectLine(Math.max(0,selected-1),true);$('nextLine').onclick=()=>selectLine(Math.min(rows.length-1,selected+1),true);
+}
+async function getWebmLibrary(folder){
+ if(webmFolderCache[folder])return webmFolderCache[folder];
+ if(!webmTreeCache){const r=await fetch('https://api.github.com/repos/nhothicam01-png/visual-novel-game/git/trees/main?recursive=1');if(!r.ok)throw new Error('GitHub HTTP '+r.status);webmTreeCache=(await r.json()).tree||[]}
+ const files=webmTreeCache.filter(x=>x.type==='blob'&&x.path.startsWith('assets/NhanVat/'+folder+'/')&&x.path.endsWith('.webm')).map(x=>x.path);
+ let index=0;const metas={};const workers=Array.from({length:Math.min(5,files.length)},async()=>{while(index<files.length){const path=files[index++];try{const m=await fetch('https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path+'.json');if(m.ok)metas[path]=await m.json()}catch(e){}}});
+ await Promise.all(workers);return webmFolderCache[folder]=files.map(path=>({path,meta:metas[path]||{},url:'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path}));
+}
+function setupWebmPicker(characterId,currentPath){
+ const host=$('inspector'),search=$('webmSearch'),results=$('webmResults'),video=$('webmPreview');if(!results)return;
+ let choices=[],picked=currentPath||'';
+ const render=()=>{
+  const q=(search.value||'').toLocaleLowerCase('vi'),a=$('webmActionFilter').value,e=$('webmEmotionFilter').value;
+  const list=choices.filter(x=>{const u=x.meta.user_metadata||{},hay=(x.path+' '+JSON.stringify(x.meta)).toLocaleLowerCase('vi');return (!q||hay.includes(q))&&(!a||String(u.action||x.meta.action||'')===a)&&(!e||String(u.emotion||'')===e)});
+  results.innerHTML=list.length?list.map(x=>{const u=x.meta.user_metadata||{},tags=[u.communication,u.action,u.emotion,u.pose,u.direction,u.face_angle].filter(Boolean).join(' · ');return '<button type="button" class="github-item" data-webm-path="'+attr(x.path)+'" style="text-align:left;border-color:'+(picked===x.path?'#9b8cff':'#343b4b')+'"><b>'+esc(x.path.split('/').pop())+'</b><small>'+esc(tags||x.meta.summary||'Chưa có metadata')+'</small></button>'}).join(''):'<div class="empty">Không có clip khớp bộ lọc.</div>';
+  results.querySelectorAll('[data-webm-path]').forEach(b=>b.onclick=()=>{picked=b.dataset.webmPath;const item=choices.find(x=>x.path===picked);video.src=item.url;video.load();video.play().catch(()=>{});$('webmSelectedLabel').textContent='Đang xem thử: '+picked;render()});
+ };
+ getWebmLibrary(String(data.nhan_vat?.[characterId]?.assetFolder||characterId)).then(items=>{
+  choices=items;
+  const actions=[...new Set(items.map(x=>String(x.meta.user_metadata?.action||x.meta.action||'')).filter(Boolean))].sort(),emotions=[...new Set(items.map(x=>String(x.meta.user_metadata?.emotion||'')).filter(Boolean))].sort();
+  $('webmActionFilter').innerHTML='<option value="">Tất cả</option>'+actions.map(x=>'<option>'+esc(x)+'</option>').join('');
+  $('webmEmotionFilter').innerHTML='<option value="">Tất cả</option>'+emotions.map(x=>'<option>'+esc(x)+'</option>').join('');
+  if(picked){const found=items.find(x=>x.path===picked);if(found){video.src=found.url;video.load()}}
+  render();
+ }).catch(e=>{results.innerHTML='<div class="empty">Không tải được thư viện WEBM: '+esc(e.message)+'</div>'});
+ search.oninput=render;$('webmActionFilter').onchange=render;$('webmEmotionFilter').onchange=render;
+ $('clearWebm').onclick=()=>{picked='';video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata';};
+ $('applyObject').addEventListener('click',()=>{const target=String($('objChar')?.value||characterId),sp=(rows[selected]?.nhan_vat_hien_thi||[]).find(x=>String(x.id)===target);if(sp){if(picked)sp.webm_file=picked;else delete sp.webm_file;}}, {once:true});
 }
 function renderMonitor(){if(!data)return;const i=selected>=0?selected:findLine(playhead),r=rows[i]||rows[0];$('lineBadge').textContent='Đoạn '+(i+1)+' / '+rows.length;$('sceneBadge').textContent=sceneKey(r)}
 function assetUrl(p){if(/^https?:/i.test(p))return p;return './assets/BoiCanh/'+encodeURIComponent(p).replace(/%2F/g,'/')}
