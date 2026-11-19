@@ -1142,9 +1142,8 @@ function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
  const px=Number.isFinite(Number(spec.x))?clamp(0,100,Number(spec.x)):50,py=clampCharacterGroundY(spec.y);
  // Phải dùng đúng vị trí chân sau khi áp dụng cùng giới hạn 10% đầu an toàn như lúc vẽ sprite.
  const feet=Math.max(dh+h*.10,Math.min(h,h*py/100));
- // Cận cảnh và mọi cú lia bám theo vùng đầu: tâm nhìn nằm khoảng 12% chiều cao tính từ đỉnh sprite.
- // Chỉ toàn thân mới lấy tâm giữa cơ thể để giữ trọn dáng nhân vật.
- const focusRatio=shot==='full_body'||shot==='fullbody'||shot==='wide'||shot==='wide_shot'?.50:.88;
+ // Zoom/cận cảnh lấy TOP sprite làm anchor để ưu tiên giữ trọn đầu; toàn thân lấy tâm cơ thể.
+ const focusRatio=shot==='full_body'||shot==='fullbody'||shot==='wide'||shot==='wide_shot'?.50:1;
  const focusY=feet-dh*focusRatio;
  const halfW=w/(2*zoom),halfH=h/(2*zoom);
  return {zoom,cx:clamp(halfW,w-halfW,w*px/100),cy:clamp(halfH,h-halfH,focusY)};
