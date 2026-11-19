@@ -670,6 +670,13 @@ function cachedVideo(src){
  if(!videoAssetCache.has(fresh))videoAssetCache.set(fresh,loadVideo(fresh).catch(err=>{videoAssetCache.delete(fresh);throw err}));
  return videoAssetCache.get(fresh);
 }
+function cachedAudio(src){
+ if(!src||/^blob:/i.test(src))return Promise.resolve(null);
+ const fresh=freshAssetUrl(src);if(audioAssetCache.has(fresh))return Promise.resolve(audioAssetCache.get(fresh));
+ const audio=new Audio();audio.crossOrigin='anonymous';audio.preload='auto';audio.src=fresh;audio.load();
+ const ready=new Promise((resolve,reject)=>{let settled=false;const finish=(ok)=>{if(settled)return;settled=true;clearTimeout(timer);audio.removeEventListener('loadeddata',onReady);audio.removeEventListener('error',onError);ok?resolve(audio):reject(new Error('Không tải được âm thanh: '+src))};const onReady=()=>finish(true),onError=()=>finish(false),timer=setTimeout(()=>finish(false),30000);audio.addEventListener('loadeddata',onReady,{once:true});audio.addEventListener('error',onError,{once:true});if(audio.readyState>=2)finish(true)});
+ return ready.then(value=>{audioAssetCache.set(fresh,value);return value}).catch(error=>{audio.removeAttribute('src');audio.load();throw error});
+}
 // Lớp hiệu ứng cảnh có thể là <video> hoặc <img>/<canvas> (PNG mô phỏng). Chỉ phần tử phát được
 // (có play/pause) mới được điều khiển; ảnh tĩnh không có play()/pause() nên không được gọi trực tiếp.
 const isPlayableMedia=m=>!!m&&typeof m.play==='function'&&typeof m.pause==='function';
@@ -1014,7 +1021,7 @@ function backgroundAtSourceIndex(index){
  return String(getCurrentScene()?.visual?.background||'').trim();
 }
 function rowAssetUrls(row,index){
- const urls={images:new Set(),videos:new Set()},frame=row?.sourceFrame||row||{},bg=String(row?.anh_nen||frame.anh_nen||backgroundAtSourceIndex(index)||'').trim();
+ const urls={images:new Set(),videos:new Set(),audios:new Set()},frame=row?.sourceFrame||row||{},bg=String(row?.anh_nen||frame.anh_nen||backgroundAtSourceIndex(index)||'').trim();
  if(bg){const url=backgroundAssetUrl(bg);(isVideoBackground(bg)?urls.videos:urls.images).add(url)}
  const addCharacter=(spec,semantic)=>{const folder=characterAssetFolder(spec?.id??row?.nhan_vat??row?.character),motion=spec?.motion||null;let selection;
   if(motion&&['walking','running','running_pose','moving','locomotion'].includes(canonicalAnimationValue('action',motion.action||''))){
@@ -1030,6 +1037,9 @@ function rowAssetUrls(row,index){
  if(specs.length)specs.forEach(spec=>addCharacter(spec,semanticForVisibleCharacter(spec,frame,row)));
  else if(row?.nhan_vat||frame.nhan_vat||row?.speakerId){const id=String(frame.nhan_vat||row.nhan_vat||row.speakerId);addCharacter({id},normalizeSemantic(frame.expression_id||row.expression_id||{}))}
  normalizeSceneEffects(frame.hieu_ung_canh??row?.hieu_ung_canh??[]).forEach(effect=>{const path=String(effect?.path||'').trim();if(!path||effect.type==='code')return;const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?urls.images:urls.videos).add(url)});
+ const bgm=resolvedLineAudio(row,'bgm'),sfx=resolvedLineAudio(row,'sfx');
+ const audioUrl=value=>!value||/^blob:/i.test(value)?'':/^https?:\\/\\//i.test(value)?value:value.startsWith('assets/')?BASE+value.slice(7):BASE+'AmThanh/'+(value===bgm?'Nen/':'HieuUng/')+value;
+ [audioUrl(bgm),audioUrl(sfx)].filter(Boolean).forEach(url=>urls.audios.add(url));
  const objects=Array.isArray(row?.scene_objects)?row.scene_objects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
  objects.forEach(o=>{const file=String(o?.asset||o?.path||o?.file||'').trim();if(!file)return;const url=/^https?:\/\//i.test(file)?file:file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file;(/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?urls.images:urls.videos).add(url)});
  return urls;
@@ -1038,6 +1048,7 @@ function trimPlaybackAssetCaches(keepUrls){
  const active=new Set([bgVideo?.src,charVideo?.src,...charLayerVideos.map(x=>x.media?.src),...sceneEffectLayers.map(x=>x.media?.src),...sceneObjectLayers.map(x=>x.media?.src)].filter(Boolean).map(freshAssetUrl));
  for(const [key,media] of videoAssetCache){if(!keepUrls.has(key)&&!active.has(key)){try{media.pause();media.removeAttribute('src');media.load()}catch(_){}videoAssetCache.delete(key)}}
  for(const key of imageAssetCache.keys())if(!keepUrls.has(key))imageAssetCache.delete(key);
+ for(const [key,audio] of audioAssetCache){if(!keepUrls.has(key)){try{audio.pause();audio.removeAttribute('src');audio.load()}catch(_){}audioAssetCache.delete(key)}}
 }
 async function preloadAdjacentAssets(sourceIndex,count=5){
  const rows=activeStoryData?.danh_sach||[],start=Math.max(0,sourceIndex),end=Math.min(rows.length,start+count),jobs=[],keep=new Set();
@@ -1045,7 +1056,8 @@ async function preloadAdjacentAssets(sourceIndex,count=5){
   const row=rows[i]||{},assets=rowAssetUrls(row,i);
   assets.images.forEach(url=>keep.add(freshAssetUrl(url)));
   assets.videos.forEach(url=>keep.add(freshAssetUrl(url)));
-  if(i>=start&&i<end){assets.images.forEach(url=>jobs.push(()=>cachedImage(url)));assets.videos.forEach(url=>jobs.push(()=>cachedVideo(url)))}
+  assets.audios.forEach(url=>keep.add(freshAssetUrl(url)));
+  if(i>=start&&i<end){assets.images.forEach(url=>jobs.push(()=>cachedImage(url)));assets.videos.forEach(url=>jobs.push(()=>cachedVideo(url)));assets.audios.forEach(url=>jobs.push(()=>cachedAudio(url)))}
  }
  let done=0;for(let i=0;i<jobs.length;i+=3)await Promise.all(jobs.slice(i,i+3).map(async job=>{try{await job()}catch(error){console.warn('Nạp trước tài nguyên thoại thất bại:',error)}finally{done++}}));
  trimPlaybackAssetCaches(keep);
@@ -1649,7 +1661,7 @@ function attachSpeechAnalyser(audio){
  }catch(err){console.warn('Không thể phân tích nhịp âm thanh thoại:',err);speechAnalyser=null;speechAnalyserData=null}
 }
 function audioElement(url,loop,volume){
- const a=new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;
+ const cached=audioAssetCache.get(freshAssetUrl(url)),a=cached?cached.cloneNode(true):new Audio(url);a.crossOrigin='anonymous';a.loop=!!loop;a.volume=volume;
  if(directRecording)connectDirectRecordAudio(a);
  return a;
 }
@@ -1845,7 +1857,9 @@ async function preparePreviewPlayback(items,useBrowser){
   if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_PROGRESS',done,total:items.length},location.origin);
  }
  if(items.length)await loadSourceLineForPlayback(items[0]);
- // Sau khi 10 thoại đầu đã sẵn sàng, nạp thêm 5 thoại kế tiếp trước khi bật recorder.
+ // Hoàn tất nền/nhân vật/hiệu ứng/nhạc/SFX của 10 thoại đầu trước khi bật recorder.
+ if(items.length)await preloadAdjacentAssets(items[0].sourceIndex,10);
+ // Nạp thêm 5 thoại kế tiếp trước khi bật recorder để tạo khoảng đệm.
  if(items.length>10)await preloadAdjacentAssets(items[10].sourceIndex,5);
  setTaskProgress('Đã sẵn sàng: 10 thoại đầu + 5 thoại kế tiếp; WAV đã chuẩn bị',100);
 }
@@ -2562,7 +2576,7 @@ $('export-video').addEventListener('click',exportVideo);
 let scenes=[],activeSceneIndex=0,activeLineIndex=0;
 let activeStoryData=null,activeStoryName='',activeStoryPath='',characterVoiceMap={},characterDirectory=[],defaultVoiceProfileId='';
 let sourceLineCount=0,assetLoadToken=0,isPortrait=false,playbackAssetCursor=0;
-const imageAssetCache=new Map(),videoAssetCache=new Map();
+const imageAssetCache=new Map(),videoAssetCache=new Map(),audioAssetCache=new Map();
 function clone(obj){return JSON.parse(JSON.stringify(obj))}
 const GH_API='https://api.github.com/repos/nhothicam01-png/visual-novel-game/contents/assets/KichBan?ref=main';
 const storyCache=new Map();
