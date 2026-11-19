@@ -681,9 +681,9 @@ function normalizeSceneEffects(values){
 const CODE_VFX_CATALOG=[['rain','Mưa'],['snow','Tuyết'],['lightning','Sấm sét'],['storm','Mưa bão + sấm sét'],['leaves','Lá rơi'],['petals','Cánh hoa'],['dust','Bụi / mảnh vụn'],['fog','Sương / khói'],['wind','Gió giật'],['bubbles','Bọt khí'],['embers','Tàn lửa'],['fire','Lửa'],['sunlight','Tia nắng'],['aura','Hào quang'],['impact','Va chạm'],['shockwave','Sóng chấn động'],['earthquake','Động đất / rung chấn'],['rockfall','Đá rơi / sạt lở'],['cracks','Vết nứt lan rộng'],['space_warp','Biến dạng không gian'],['wound','Vết thương'],['sparkles','Lấp lánh'],['motion_blur','Nhòe chuyển động'],['transition','Chuyển cảnh'],['explosion','Vụ nổ']];
 function renderSceneEffectPicker(){
  const host=$('scene-effect-picker');if(!host)return;
- const scene=getCurrentScene(),lineEffects=getCurrentLine()?.sourceFrame?.hieu_ung_canh;
- // [] là lựa chọn tường minh của dòng hiện tại (không có hiệu ứng), chỉ kế thừa scene khi dữ liệu dòng cũ chưa có trường này.
- const selected=normalizeSceneEffects(Array.isArray(lineEffects)?lineEffects:(scene?.visual?.sceneEffects||[]));
+ const line=getCurrentLine(),lineEffects=line?.sourceFrame?.hieu_ung_canh;
+ // Mỗi dòng là nguồn duy nhất: thiếu hoặc [] đều có nghĩa là không bật hiệu ứng.
+ const selected=normalizeSceneEffects(Array.isArray(lineEffects)?lineEffects:[]);
  const ids=new Set(selected.map(x=>x.id));
  document.querySelectorAll('[data-line-scene-effect]').forEach(input=>{input.checked=ids.has(input.dataset.lineSceneEffect)});
  if(selected.length){const opacity=Math.round(selected[0].opacity*100);$('scene-effect-opacity').value=String(opacity);$('scene-effect-opacity-value').textContent=opacity+'%';$('scene-effect-status').textContent=selected.length+' hiệu ứng code đang bật.'}else{$('scene-effect-status').textContent='Chưa chọn hiệu ứng môi trường.'}
@@ -692,15 +692,15 @@ function renderSceneEffectPicker(){
   return '<div class="scene-effect-row" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(145px,auto);gap:8px;align-items:center;margin:5px 0"><label class="check" style="align-items:flex-start;margin:0"><input type="checkbox" data-scene-effect="'+id+'" '+(ids.has(id)?'checked':'')+'><span>'+name+' <small style="opacity:.65">(Canvas)</small></span></label><select data-scene-effect-layer="'+id+'" aria-label="Vị trí lớp '+name+'"><option value="behind" '+(layer==='behind'?'selected':'')+'>Sau nhân vật</option><option value="front" '+(layer==='front'?'selected':'')+'>Trước nhân vật</option></select></div>';
  }).join('');
  const savePicked=()=>{
-  const sc=getCurrentScene();if(!sc)return;
+  const line=getCurrentLine();if(!line)return;
   const picked=Array.from(host.querySelectorAll('[data-scene-effect]:checked')).map((el,index)=>{
    const id=el.dataset.sceneEffect,layer=Array.from(host.querySelectorAll('[data-scene-effect-layer]')).find(select=>select.dataset.sceneEffectLayer===id)?.value||'behind';
    return {id,type:'code',opacity:Number($('scene-effect-opacity').value)/100,z_index:layer==='front'?100:-10};
   });
-  sc.visual={...(sc.visual||captureVisual()),sceneEffects:picked};
+  line.sourceFrame=line.sourceFrame&&typeof line.sourceFrame==='object'?line.sourceFrame:{};
+  line.sourceFrame.hieu_ung_canh=picked.map(x=>({...x}));
   const idsOfPicked=new Set(picked.map(x=>x.id));
   $('scene-effect-status').textContent=picked.length+' hiệu ứng code · '+picked.filter(x=>x.z_index>=50).length+' lớp trước · '+picked.filter(x=>x.z_index<50).length+' lớp sau.';
-  const line=getCurrentLine();if(line?.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.hieu_ung_canh=picked.map(x=>({...x}));
   document.querySelectorAll('[data-line-scene-effect]').forEach(input=>{input.checked=idsOfPicked.has(input.dataset.lineSceneEffect)});
   updateAssets();
  };
@@ -724,7 +724,6 @@ async function loadBackgroundLibrary(){
 }
 async function loadSceneEffectLibrary(){
  sceneEffectLibrary=CODE_VFX_CATALOG.map(([id,name])=>({id,name,type:'code',scope:'scene'}));
- scenes.forEach(sc=>{if(sc.visual?.sceneEffects)sc.visual.sceneEffects=normalizeSceneEffects(sc.visual.sceneEffects)});
  renderSceneEffectPicker();
  if(getCurrentScene()&&!previewPreparing&&!previewing&&!directRecording)void updateAssets();
 }
@@ -789,7 +788,7 @@ async function updateAssets(){
  const hasExplicitSpecs=Array.isArray(currentLine?.visibleCharacters)||Array.isArray(frame.nhan_vat_hien_thi),rawSpecs=Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters.filter(x=>x&&typeof x==='object'&&x.id!=null):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&typeof x==='object'&&x.id!=null):[];
  const displaySpecs=hasExplicitSpecs?rawSpecs.filter(spec=>spec.visible!==false&&spec.remove_from_scene!==true):((frame.nhan_vat||currentLine?.speakerId)?[{id:String(frame.nhan_vat||currentLine.speakerId),expression_id:frame.expression_id||{},x:50,y:100,scale:1,z_index:1}]:[]);
  const bgPath=bg?backgroundAssetUrl(bg):'',charPath=!hasExplicitSpecs&&!displaySpecs.length&&character&&expr?BASE+'NhanVat/'+character+'/'+expr+'.webm':'';
- const rowSceneEffects=Array.isArray(frame.hieu_ung_canh)&&frame.hieu_ung_canh.length?frame.hieu_ung_canh:null,sceneSpecs=normalizeSceneEffects(rowSceneEffects||activeScene?.visual?.sceneEffects||[]);
+ const sceneSpecs=normalizeSceneEffects(frame.hieu_ung_canh??[]);
  const rawObjects=Array.isArray(currentLine?.scene_objects)?currentLine.scene_objects:Array.isArray(currentLine?.sceneObjects)?currentLine.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
  const objectSpecs=rawObjects.filter(o=>o&&typeof o==='object'&&String(o.asset||o.path||o.file||'').trim()).map((o,index)=>{const file=String(o.asset||o.path||o.file).trim(),url=(file.toLowerCase().startsWith('http://')||file.toLowerCase().startsWith('https://'))?file:(file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file);return {...o,id:String(o.id||('object_'+index)),url,type:/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?'image':'video',z_index:Number(o.z_index??10+index)}});
  const effectKey=JSON.stringify(sceneSpecs.map(x=>[x.id,x.opacity,x.z_index,x.config]));
@@ -920,7 +919,7 @@ function preloadAdjacentAssets(sourceIndex,count=3){
   const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=resolveSemanticExpression(character,row.expression_id);
   if(bg){const url=backgroundAssetUrl(bg);if(isVideoBackground(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
   if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
-  normalizeSceneEffects(row.hieu_ung_canh||[]);
+   normalizeSceneEffects(row.hieu_ung_canh??[]);
   (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi.filter(spec=>spec&&spec.visible!==false&&spec.remove_from_scene!==true):[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),semantic=semanticForVisibleCharacter(spec,row,{speakerId:row.nhan_vat});const selection=resolveSemanticAnimation(folder,semantic);if(folder&&selection.file)cachedVideo(BASE+'NhanVat/'+folder+'/'+selection.file+'.webm').catch(()=>{})});
  }
 }
@@ -2524,8 +2523,9 @@ function buildScenesFromJson(data){
  const out=[];let current=null,lastBackground='',activeBgm=String(data.am_thanh_mac_dinh?.nhac_nen||'').trim(),characterMap=data.nhan_vat||{},pauseDefault=Number(data.thiet_lap_chung?.thoi_gian_cho_giua??0.5);
  const inferSpeakerId=frame=>{const explicit=String(frame?.nhan_vat||'').trim();if(explicit)return explicit;const label=normalizeCharacterName(frame?.ten_hien_thi||'');if(label){const found=Object.entries(characterMap).find(([id,info])=>normalizeCharacterName(info?.ten_hien_thi||info?.name||id)===label);if(found)return found[0]}return ''};
  rows.forEach((frame,index)=>{const rawBg=String(frame.anh_nen||'').trim();if(rawBg)lastBackground=rawBg;const characterId=inferSpeakerId(frame),charInfo=characterMap[characterId]||{},folder=characterAssetFolder(characterId),expression=resolveSemanticExpression(folder,frame.expression_id);const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim(),sceneId=String(frame.scene_id??'').trim(),flashback=frame.hoi_tuong===true,starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
- if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterId,expression,effects:mapJsonEffects(frame),sceneEffects:normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
- current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;if(Object.prototype.hasOwnProperty.call(frame,'hieu_ung_canh')||Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))current.visual.sceneEffects=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung);
+  frame.hieu_ung_canh=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung??[]);
+  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1)
+  current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;
  current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,background:lastBackground,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,speakerType:String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'character').toLowerCase(),isNarration:['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'').toLowerCase()),text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
  if(current)out.push(current);return out;
 }
@@ -2632,8 +2632,8 @@ function buildEditedStoryOutput(){
   const characterId=matched?.id||line.speakerId||asset;
   if(characterId)frame.nhan_vat=characterId;
   frame.scene_id=String(scene.sceneId||('scene_'+(sceneIndex+1)));
-  const sceneEffects=normalizeSceneEffects(scene.visual?.sceneEffects||[]);if(sceneEffects.length)frame.hieu_ung_canh=sceneEffects.map(item=>({file:item.path,type:item.type,loop:item.loop!==false,opacity:item.opacity,z_index:item.z_index}));else delete frame.hieu_ung_canh;
-  if(Object.prototype.hasOwnProperty.call(frame,'anh_hieu_ung'))frame.anh_hieu_ung=sceneEffects[0]?.path.split('/').pop().replace(/\.[^.]+$/,'')||'';
+  frame.hieu_ung_canh=normalizeSceneEffects(frame.hieu_ung_canh??[]);
+  delete frame.anh_hieu_ung;
   if(scene.isFlashback)frame.hoi_tuong=true;else delete frame.hoi_tuong;
   const hasVisibleSnapshot=Array.isArray(line.visibleCharacters)||Array.isArray(frame.nhan_vat_hien_thi),visible=Array.isArray(line.visibleCharacters)?line.visibleCharacters:Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[];
   if(hasVisibleSnapshot)frame.nhan_vat_hien_thi=visible.map((item,index)=>{const folder=characterAssetFolder(item.id);return {id:String(item.id),expression_id:item.expression_id||semanticFromExpression(folder,item.bieu_cam),x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined,render_style:item.render_style?JSON.parse(JSON.stringify(item.render_style)):undefined}});
@@ -2751,7 +2751,7 @@ function saveCurrentLine(){
  line.pauseAfter=Math.max(0,Math.min(10,Number($('line-pause').value)||0));
  if(oldKey&&oldKey!==ttsRequestKey()){} // key is rechecked on next use; keep cached WAV for other lines.
 }
-function saveCurrentScene(){const sc=getCurrentScene();if(sc){const effects=normalizeSceneEffects(sc.visual?.sceneEffects||[]);sc.visual={...captureVisual(),sceneEffects:effects};sc.isFlashback=!!$('scene-flashback')?.checked;sc.lines.forEach(line=>{line.isFlashback=sc.isFlashback;line.background=sc.visual.background;if(line.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.hieu_ung_canh=effects.map(x=>({...x}))})}const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
+function saveCurrentScene(){const sc=getCurrentScene();if(sc){sc.visual={...captureVisual()};delete sc.visual.sceneEffects;sc.isFlashback=!!$('scene-flashback')?.checked;sc.lines.forEach(line=>{line.isFlashback=sc.isFlashback;line.background=sc.visual.background})}const line=getCurrentLine();if(line){line.characterAsset=$('character').value;line.expression=$('expression').value;line.background=$('background').value}}
 function loadLineToEditor(line){
  if(!line)return;
  if(!Array.isArray(line.visibleCharacters)&&Array.isArray(line.sourceFrame?.nhan_vat_hien_thi))line.visibleCharacters=line.sourceFrame.nhan_vat_hien_thi.map((item,index)=>{const folder=characterAssetFolder(item.id),expression=resolveSemanticExpression(folder,item.expression_id);return {id:String(item.id),expression_id:item.expression_id||{},bieu_cam:expression,x:Number(item.x??(index?70:30)),y:Number(item.y??100),scale:Number(item.scale??.72),z_index:Number(item.z_index??index+1),visible:item.visible!==false,remove_from_scene:item.remove_from_scene===true,rotation_degrees:Number(item.rotation_degrees||0),motion:item.motion?JSON.parse(JSON.stringify(item.motion)):undefined,render_style:item.render_style?JSON.parse(JSON.stringify(item.render_style)):undefined}});
@@ -2932,7 +2932,7 @@ function newLine(){return {speaker:'Nhân vật 1',text:'',effectSettings:[],eff
 $('scene-select').addEventListener('change',e=>selectScene(Number(e.target.value)));
 $('scene-flashback').addEventListener('change',()=>{const sc=getCurrentScene();if(!sc)return;sc.isFlashback=$('scene-flashback').checked;sc.lines.forEach(line=>line.isFlashback=sc.isFlashback);drawFrame(0)});
 // Hiệu ứng Canvas chạy theo timeline; không có media loop control.
-$('scene-effect-opacity').addEventListener('input',()=>{$('scene-effect-opacity-value').textContent=$('scene-effect-opacity').value+'%';const sc=getCurrentScene();if(!sc)return;sc.visual.sceneEffects=normalizeSceneEffects(sc.visual.sceneEffects).map(x=>({...x,opacity:Number($('scene-effect-opacity').value)/100}));updateAssets()});
+$('scene-effect-opacity').addEventListener('input',()=>{$('scene-effect-opacity-value').textContent=$('scene-effect-opacity').value+'%';const line=getCurrentLine();if(!line)return;const current=normalizeSceneEffects(line.sourceFrame?.hieu_ung_canh??[]);line.sourceFrame=line.sourceFrame&&typeof line.sourceFrame==='object'?line.sourceFrame:{};line.sourceFrame.hieu_ung_canh=current.map(x=>({...x,opacity:Number($('scene-effect-opacity').value)/100}));updateAssets()});
 $('add-scene').addEventListener('click',async()=>{
  saveCurrentLine();saveCurrentScene();
  const n=scenes.length+1;scenes.push({name:'Cảnh '+n,sceneId:'scene_'+Date.now()+'_'+n,isFlashback:false,visual:captureVisual(),lines:[newLine()]});
