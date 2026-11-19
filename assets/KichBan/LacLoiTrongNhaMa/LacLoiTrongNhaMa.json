@@ -1210,7 +1210,7 @@
             "action": "walking"
           },
           "x": 24,
-          "y": 96,
+          "y": 92,
           "scale": 0.68,
           "z_index": 1,
           "motion": {
@@ -1218,27 +1218,27 @@
             "easing": "linear",
             "from": {
               "x": 24,
-              "y": 96
+              "y": 92
             },
             "to": {
               "x": 50,
-              "y": 96
+              "y": 92
             },
             "keyframes": [
               {
                 "t": 0,
                 "x": 24,
-                "y": 96
+                "y": 92
               },
               {
                 "t": 0.55,
                 "x": 38,
-                "y": 96
+                "y": 92
               },
               {
                 "t": 1,
                 "x": 50,
-                "y": 96
+                "y": 92
               }
             ]
           }
@@ -1255,7 +1255,7 @@
             "interaction_target": "none"
           },
           "x": 51,
-          "y": 96,
+          "y": 92,
           "scale": 0.68,
           "z_index": 2
         },
@@ -1271,7 +1271,7 @@
             "interaction_target": "none"
           },
           "x": 78,
-          "y": 96,
+          "y": 92,
           "scale": 0.68,
           "z_index": 3
         }
