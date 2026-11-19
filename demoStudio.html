@@ -37,7 +37,7 @@ function importData(obj,name,path){if(!obj||!Array.isArray(obj.danh_sach)||!obj.
 function buildSegments(){let t=0;segments=rows.map((r,i)=>{const start=t,d=dur(r);t+=d;return {i,start,end:t,duration:d,scene:sceneKey(r)}});total=t}
 function sceneGroups(){const out=[];rows.forEach((r,i)=>{const k=sceneKey(r);let g=out[out.length-1];if(!g||g.key!==k){g={key:k,start:i,end:i,count:0};out.push(g)}g.end=i;g.count++});return out}
 function renderAll(){if(!data)return;$('lineCount').textContent=rows.length;$('sceneCount').textContent=new Set(rows.map(sceneKey)).size;$('duration').textContent=fmt(total);$('charCount').textContent=Object.keys(data.nhan_vat||{}).length;$('sceneBadge').textContent=sceneKey(rows[selected>=0?selected:0]);renderScenes();renderTimeline();renderInspector();renderMonitor()}
-function renderScenes(){const groups=sceneGroups();$('sceneList').innerHTML=groups.map(g=>'<button class="scene-item '+(selected>=g.start&&selected<=g.end?'active':'')+'" data-index="'+g.start+'"><b>'+esc(g.key)+'</b><small>Đoạn '+(g.start+1)+'–'+(g.end+1)+' · '+g.count+' thoại</small></button>').join('');$('sceneList').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedKind='scene';selectLine(Number(b.dataset.index),true)})}
+function renderScenes(){const groups=sceneGroups();$('sceneList').innerHTML=groups.map(g=>'<button class="scene-item '+(selected>=g.start&&selected<=g.end?'active':'')+'" data-index="'+g.start+'"><b>'+esc(g.key)+'</b><small>Đoạn '+(g.start+1)+'–'+(g.end+1)+' · '+g.count+' thoại</small></button>').join('');$('sceneList').onclick=e=>{const b=e.target.closest('button[data-index]');if(!b)return;selectedKind='scene';selectLine(Number(b.dataset.index),true)}}
 function renderTimeline(){
  const width=Math.max(720,total*pxPerSec*zoom+150),scale=pxPerSec*zoom,inner=$('timelineInner');
  inner.style.width=width+'px';let ticks='';const step=zoom<.7?10:5;
@@ -59,7 +59,7 @@ function renderTimeline(){
  const row=(label,clips)=>'<div class="track"><div class="track-label">'+label+'</div><div class="track-content" style="width:'+(width-108)+'px">'+clips+'</div></div>';
  const charRows=chars.map(([id,info])=>row('👤 '+esc(info?.ten_hien_thi||info?.name||id),charClips.get(id)||'')).join('');
  inner.innerHTML='<div class="ruler"><div class="track-label" style="height:27px">THỜI GIAN</div>'+ticks+'</div>'+row('🎬 Cảnh',sceneClips)+charRows+row('💬 Thoại',dialogueClips)+row('🎥 Camera',cameraClips)+row('🏃 Chuyển động',motionClips)+row('✨ Hiệu ứng',effectClips)+row('♫ Nhạc nền',musicClips)+row('🔊 Âm thanh',sfxClips)+'<div class="playhead" id="playhead" style="left:'+(108+playhead*scale)+'px"></div>';
- inner.querySelectorAll('.clip').forEach(c=>c.onclick=()=>{selectedKind=c.dataset.kind||'dialogue';selectedObjectId=c.dataset.characterId||'';selectLine(Number(c.dataset.index),true);renderInspector()});$('zoomLabel').textContent=zoom.toFixed(1)+'×';
+ inner.onclick=e=>{const c=e.target.closest('.clip');if(!c||!inner.contains(c))return;selectedKind=c.dataset.kind||'dialogue';selectedObjectId=c.dataset.characterId||'';selectLine(Number(c.dataset.index),true)};$('zoomLabel').textContent=zoom.toFixed(1)+'×';
 }
 function renderInspector(){
  const el=$('inspector');
