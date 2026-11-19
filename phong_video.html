@@ -1367,7 +1367,8 @@ function drawFrameUnsafe(elapsed,st){
   ctx.save();let alpha=Math.max(0,Math.min(1,st.opacity??1));
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
   const activeSpeakerId=String(speakingCharacterId||getCurrentLine()?.speakerId||getCurrentLine()?.sourceFrame?.nhan_vat||'');
-  const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!spec?.neutralFallback&&!!activeSpeakerId&&(
+  // Chuyển động nhún/nghiêng là biến đổi khung vẽ, không phụ thuộc WEBM có clip nói hay đang dùng pose trung tính.
+  const isCurrentSpeaker=!!activeSpeakerId&&(
    !spec?.id||String(spec.id)===activeSpeakerId||
    (charLayerVideos.length===1&&charLayerVideos[0]?.spec===spec)
   );
