@@ -1023,14 +1023,23 @@ function backgroundAtSourceIndex(index){
 function rowAssetUrls(row,index){
  const urls={images:new Set(),videos:new Set(),audios:new Set()},frame=row?.sourceFrame||row||{},bg=String(row?.anh_nen||frame.anh_nen||backgroundAtSourceIndex(index)||'').trim();
  if(bg){const url=backgroundAssetUrl(bg);(isVideoBackground(bg)?urls.videos:urls.images).add(url)}
- const addCharacter=(spec,semantic)=>{const folder=characterAssetFolder(spec?.id??row?.nhan_vat??row?.character),motion=spec?.motion||null;let selection;
-  if(motion&&['walking','running','running_pose','moving','locomotion'].includes(canonicalAnimationValue('action',motion.action||''))){
-   const dx=Number(motion?.to?.x)-Number(motion?.from?.x),direction=Number.isFinite(dx)&&Math.abs(dx)>.05?(dx<0?'left':'right'):canonicalAnimationValue('direction',motion.direction||semantic?.direction||'right');
-   const candidates=(expressionFilesByFolder[String(folder||'')]||[]).map(path=>({path,meta:animationMeta(path)})).filter(x=>canonicalAnimationValue('action',x.meta.action)===(canonicalAnimationValue('action',motion.action)||'walking')&&canonicalAnimationValue('direction',x.meta.direction)===direction);
-   if(candidates[0])urls.videos.add(BASE+'NhanVat/'+folder+'/'+candidates[0].path.split('/').pop());
+ const addCharacter=(spec,semantic)=>{
+  const folder=characterAssetFolder(spec?.id??row?.nhan_vat??row?.character),motion=spec?.motion&&typeof spec.motion==='object'?spec.motion:null,paths=expressionFilesByFolder[String(folder||'')]||[];
+  let url='',selection=null;
+  const explicitWebm=String(spec?.webm_file||spec?.animation_file||'').trim();
+  if(explicitWebm&&!/^blob:/i.test(explicitWebm)){
+   const wanted=explicitWebm.replace(/\\\\/g,'/'),chosen=paths.find(path=>path===wanted||path.endsWith('/'+wanted.split('/').pop())||path.split('/').pop()===wanted.split('/').pop());
+   if(chosen)url=BASE+'NhanVat/'+folder+'/'+chosen.split('/').pop();
   }
-  selection=resolveSemanticAnimation(folder,semantic||semanticForVisibleCharacter(spec,frame,row));
-  if(folder&&selection.file)urls.videos.add(BASE+'NhanVat/'+folder+'/'+selection.file+'.webm');
+  const action=canonicalAnimationValue('action',motion?.action||''),locomotion=new Set(['walking','running','running_pose','moving','locomotion']);
+  if(!url&&motion&&locomotion.has(action)){
+   const dx=Number(motion?.to?.x)-Number(motion?.from?.x),direction=Number.isFinite(dx)&&Math.abs(dx)>.05?(dx<0?'left':'right'):canonicalAnimationValue('direction',motion.direction||semantic?.direction||'right');
+   const hasAction=paths.some(path=>canonicalAnimationValue('action',animationMeta(path).action)===action&&['left','right'].includes(canonicalAnimationValue('direction',animationMeta(path).direction))),resolvedAction=hasAction?action:'walking';
+   const candidates=paths.map(path=>{const meta=animationMeta(path),clipAction=canonicalAnimationValue('action',meta.action),clipDirection=canonicalAnimationValue('direction',meta.direction),communication=canonicalAnimationValue('communication',meta.communication);if(clipAction!==resolvedAction||!['speaking','silent','listening'].includes(communication))return null;let mirrored=false,dirScore=0;if(clipDirection===direction)dirScore=100;else if(oppositeHorizontalDirection(direction)===clipDirection&&meta.mirror_safe!==false&&String(meta.mirror_safe).toLowerCase()!=='false'){dirScore=85;mirrored=true}else return null;const speakingPreference=semantic?.communication==='speaking'?(communication==='speaking'?1000:0):(communication==='speaking'?-50:communication==='silent'?100:50);return {path,score:speakingPreference+dirScore+(canonicalAnimationValue('emotion',meta.emotion)===canonicalAnimationValue('emotion',semantic?.emotion)?20:0)+(canonicalAnimationValue('face_angle',meta.face_angle)===canonicalAnimationValue('face_angle',motion?.face_angle||semantic?.face_angle)?10:0),mirrored}}).filter(Boolean).sort((x,y)=>y.score-x.score||x.path.localeCompare(y.path));
+   if(candidates[0])url=BASE+'NhanVat/'+folder+'/'+candidates[0].path.split('/').pop();
+  }
+  if(!url){selection=resolveSemanticAnimation(folder,semantic||semanticForVisibleCharacter(spec,frame,row));if(folder&&selection.file)url=BASE+'NhanVat/'+folder+'/'+selection.file+'.webm'}
+  if(url)urls.videos.add(url);
   const end=spec?.motion?.end_expression_id;if(folder&&end&&typeof end==='object'){const e=resolveSemanticAnimation(folder,end);if(e.file)urls.videos.add(BASE+'NhanVat/'+folder+'/'+e.file+'.webm')}
  };
  const specs=Array.isArray(row?.nhan_vat_hien_thi)?row.nhan_vat_hien_thi.filter(x=>x&&x.visible!==false&&x.remove_from_scene!==true):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&x.visible!==false&&x.remove_from_scene!==true):[];
