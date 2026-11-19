@@ -1558,7 +1558,7 @@ HỆ THỐNG HIỆU ỨNG MÔI TRƯỜNG THUẦN CODE — QUY CHUẨN MỚI
 
 QUY TẮC CHUYỂN ĐỘNG NHÂN VẬT VÀ ÁNH XẠ WEBM — BẮT BUỘC
 - Mọi nhân vật thay đổi vị trí bằng motion phải khai báo rõ motion.action; không được cho rằng thay đổi x/y tự làm nhân vật đi bộ/chạy.
-- Nếu nhân vật đi bộ, dùng action:"walking", pose:"walking_pose"; nếu chạy chỉ dùng action:"running" khi thư viện WEBM của đúng nhân vật có clip chạy đã được xác nhận. Nếu không có clip chạy, dùng walking thay vì tạo trạng thái running không có tài nguyên.
+- Ghi action theo hành động thật trong truyện: đi bộ là "walking", chạy là "running", pose locomotion phù hợp. Không bóp méo ý nghĩa hành động trong JSON chỉ vì thiếu WEBM. Nếu nhân vật chạy nhưng thiếu clip running, vẫn ghi motion.action="running"; player sẽ tự dùng WEBM walking cùng hướng làm phương án thay thế và phải báo rõ thiếu clip running. Không được tuyên bố có clip chạy nếu chưa kiểm tra metadata.
 - Hướng hoạt ảnh locomotion phải lấy từ dấu của (motion.to.x - motion.from.x): âm là left, dương là right. Không lấy hướng nhìn người đối thoại để quyết định hướng di chuyển.
 - WEBM locomotion là lớp hình thể độc lập với communication/TTS. Khi vừa đi vừa nói, vẫn dùng clip locomotion phù hợp; lời thoại được phát bằng hệ thống giọng riêng.
 - Chuyển động đi vào/đi ra bình thường phải giữ opacity:1 trong suốt hành trình. Chỉ giảm opacity khi có chủ đích tàng hình, tan biến hoặc fade-out; không dùng opacity thấp để giả lập đi bộ.
