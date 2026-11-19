@@ -1749,7 +1749,7 @@ function playbackPreparationKey(item,useBrowser){
  const line=scenes[item.sceneIndex]?.lines[item.lineIndex];if(!line)return '';
  const frame=line.sourceFrame||{},scene=scenes[item.sceneIndex]||{},resolved=resolveVoiceForLine(line);
  return JSON.stringify({
-  story:activeStoryPath||activeStoryName,sourceIndex:item.sourceIndex,
+  story:activeStoryPath||activeStoryName,
   frame,sceneVisual:scene.visual||{},background:line.background||'',
   characterAsset:line.characterAsset||'',expression:line.expression||'',
   visibleCharacters:line.visibleCharacters||null,sceneObjects:line.scene_objects||line.sceneObjects||null,
@@ -2618,7 +2618,8 @@ function oppositeHorizontalDirection(value){
 function resolveSemanticAnimation(folder,semantic){
  const paths=expressionFilesByFolder[String(folder||'')]||[];
  if(!paths.length)return {file:'',matched:false,mirrored:false,reason:'Thư mục chưa có WEBM'};
- const target=normalizeSemantic(semantic),strict=['communication','pose','action','emotion','face_angle','interaction_target'].filter(k=>target[k]);
+ const target=normalizeSemantic(semantic),strict=['communication','pose','action','emotion','face_angle'].filter(k=>target[k]);
+ // interaction_target là quan hệ đạo diễn, không phải thuộc tính của clip WEBM; không dùng nó để loại clip nói đúng góc/hướng.
  const candidates=paths.map(path=>{
   const meta=animationMeta(path),missing=[],mismatch=[];let score=0,mirrored=false;
   strict.forEach(k=>{const wanted=canonicalAnimationValue(k,target[k]),actual=canonicalAnimationValue(k,meta[k]);if(!actual)missing.push(k);else if(actual!==wanted)mismatch.push(k);else score+=100});
@@ -2785,10 +2786,11 @@ async function loadWorldCharacterFolderMap(data,storyPath){
  }catch(error){storyCharacterFolderMap={};worldCharacterDirectory=[];expressionFilesByFolder={};characterAnimationMetadata={};console.error('Không thể tải ánh xạ nhân vật chính thức từ thế giới:',error);throw new Error('Không thể tải tài nguyên nhân vật theo TheGioi.json: '+error.message)}
 }
 async function applyStoryData(data,name,path){
- stopPreview();preparedPlaybackLineKeys.clear();const rows=data?.danh_sach;
+ const incomingStoryName=String(name||'Kịch bản import').replace(/\.json$/i,''),incomingStoryPath=String(path||('assets/KichBan/'+incomingStoryName+'/'+incomingStoryName+'.json'));
+ stopPreview();if(activeStoryPath!==incomingStoryPath)preparedPlaybackLineKeys.clear();const rows=data?.danh_sach;
  if(!Array.isArray(rows)||!rows.length)throw new Error('File JSON không có danh_sach hợp lệ.');
  if(Number(data.phien_ban)!==3||!String(data.world_id||'').trim())throw new Error('File JSON phải dùng phien_ban: 3 và world_id hợp lệ.');
- activeStoryData=data;activeStoryName=String(name||'Kịch bản import').replace(/\.json$/i,'');activeStoryPath=String(path||('assets/KichBan/'+activeStoryName+'/'+activeStoryName+'.json'));sourceLineCount=rows.length;
+ activeStoryData=data;activeStoryName=incomingStoryName;activeStoryPath=incomingStoryPath;sourceLineCount=rows.length;
  characterDirectory=uniqueCharacters(data);
  await loadWorldCharacterFolderMap(data,activeStoryPath);
  characterVoiceMap={};
