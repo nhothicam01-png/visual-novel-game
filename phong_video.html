@@ -806,9 +806,17 @@ function makeFallbackObjectCanvas(obj){
 function hashUnit(text,salt){let n=2166136261;const s=String(text)+':'+salt;for(let i=0;i<s.length;i++){n^=s.charCodeAt(i);n=Math.imul(n,16777619)}return ((n>>>0)%10007)/10007}
 function applyAutomaticCharacterLayout(layers,frame,width,height){
  const visible=layers.filter(item=>item?.media&&item.spec?.visible!==false&&item.spec?.remove_from_scene!==true);
- if(visible.length<2)return;
  const config=frame?.bo_cuc_nhan_vat&&typeof frame.bo_cuc_nhan_vat==='object'?frame.bo_cuc_nhan_vat:{};
  if(String(config.mode||'auto').toLowerCase()!=='auto')return;
+ // Cảnh chỉ có một nhân vật: ưu tiên vùng trung tâm, nhưng không can thiệp chuyển động/đi ra khỏi khung.
+ if(visible.length===1){
+  const item=visible[0],spec=item.spec||{},motion=spec.motion&&typeof spec.motion==='object'?spec.motion:null;
+  if(motion)return;
+  const currentX=Number(spec.x),centeredX=Number.isFinite(currentX)?Math.max(42,Math.min(58,currentX)):50;
+  item.spec={...spec,x:centeredX,layout_auto:true};
+  return;
+ }
+ if(visible.length<2)return;
  // Chỉ tự phân bổ trục X cho nhân vật chưa có tọa độ tường minh.
  // Luôn tôn trọng x/y/scale/z_index đã khai báo; tuyệt đối không neo nhân vật xuống đáy canvas.
  const missing=visible.filter(item=>!Number.isFinite(Number(item.spec?.x)));
@@ -1806,6 +1814,18 @@ async function playPreview(){
   }
   sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){}}});
   previewPreparing=false;previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
+  // stopPreview() ở bước chuẩn bị đã pause các WEBM; phải phát lại toàn bộ layer nhân vật
+  // trước khi render/đọc thoại, nếu không canvas chỉ giữ nguyên frame đầu của WEBM.
+  const characterPlayback=charLayerVideos.filter(item=>item?.canPlayAnimation&&item.media&&typeof item.media.play==='function');
+  await Promise.all(characterPlayback.map(async item=>{
+   try{
+    await item.media.play();
+    if(typeof item.media.requestVideoFrameCallback==='function'){
+     await new Promise(resolve=>{let settled=false;const finish=()=>{if(settled)return;settled=true;clearTimeout(timer);resolve()};const timer=setTimeout(finish,250);try{item.media.requestVideoFrameCallback(finish)}catch(_){finish()}});
+    }else await new Promise(resolve=>setTimeout(resolve,80));
+   }catch(error){console.warn('Không thể khởi chạy WEBM nhân vật '+(item.spec?.id||'')+':',error)}
+  }));
+  if(!isCurrent())return;
   if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
   previewLineBgmName='';
   // Mốc camera phải đổi NGAY khi chuyển sang câu mới, trước khi nạp scene/assets.
