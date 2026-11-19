@@ -1554,3 +1554,14 @@ HỆ THỐNG HIỆU ỨNG MÔI TRƯỜNG THUẦN CODE — QUY CHUẨN MỚI
 - Khi chỉnh sửa player, giữ tương thích dữ liệu cũ bằng cách ánh xạ tên file hiệu ứng lịch sử sang ID code, nhưng JSON mới chỉ được ghi ID code.
 - Trước khi hoàn tất kịch bản, xác thực mọi id thuộc danh sách hợp lệ, opacity trong 0..1, z_index là số hữu hạn; không còn đường dẫn thư viện hiệu ứng Canvas.
 ==================================================
+
+
+QUY TẮC CHUYỂN ĐỘNG NHÂN VẬT VÀ ÁNH XẠ WEBM — BẮT BUỘC
+- Mọi nhân vật thay đổi vị trí bằng motion phải khai báo rõ motion.action; không được cho rằng thay đổi x/y tự làm nhân vật đi bộ/chạy.
+- Nếu nhân vật đi bộ, dùng action:"walking", pose:"walking_pose"; nếu chạy chỉ dùng action:"running" khi thư viện WEBM của đúng nhân vật có clip chạy đã được xác nhận. Nếu không có clip chạy, dùng walking thay vì tạo trạng thái running không có tài nguyên.
+- Hướng hoạt ảnh locomotion phải lấy từ dấu của (motion.to.x - motion.from.x): âm là left, dương là right. Không lấy hướng nhìn người đối thoại để quyết định hướng di chuyển.
+- WEBM locomotion là lớp hình thể độc lập với communication/TTS. Khi vừa đi vừa nói, vẫn dùng clip locomotion phù hợp; lời thoại được phát bằng hệ thống giọng riêng.
+- Chuyển động đi vào/đi ra bình thường phải giữ opacity:1 trong suốt hành trình. Chỉ giảm opacity khi có chủ đích tàng hình, tan biến hoặc fade-out; không dùng opacity thấp để giả lập đi bộ.
+- Mọi motion phải có end_expression_id hợp lệ để đổi sang WEBM đứng/idle sau khi kết thúc. Không để clip walking tiếp tục chạy khi nhân vật đã dừng.
+- Nếu không tìm thấy WEBM locomotion chính xác, chọn clip walking gần nhất cùng hướng (được phép mirror nếu metadata cho phép); nếu vẫn không có, báo thiếu tài nguyên và dùng trạng thái đứng dự phòng, tuyệt đối không giả vờ đã có clip chạy.
+- Trước khi lưu kịch bản, rà soát tất cả motion: action, chiều dịch chuyển, direction, opacity, duration, keyframes tăng dần và end_expression_id. Câu thoại có nội dung “đi/chạy/tiến/lùi/rời khỏi khung” phải đối chiếu với motion thực tế.
