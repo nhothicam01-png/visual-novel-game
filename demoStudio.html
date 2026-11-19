@@ -416,7 +416,7 @@ $('generateAudioBtn').onclick=async()=>{
    await storeGeneratedAudio(item);stored++;
    $('previewStatus').textContent='Đã tạo và đưa WAV vào kho/timeline: '+stored+'/'+generated.length;
   }
-  data.danh_sach=rows;buildSegments();renderAll();persistAutosave();
+  data.danh_sach=rows;await refreshAssetLibrary();buildSegments();renderAll();persistAutosave();
   $('saveStatus').textContent='Đã tạo '+stored+' WAV thật · thời lượng lấy từ audio đã giải mã';
   $('previewStatus').textContent='Hoàn tất: '+stored+' WAV đã được lưu trong kho cục bộ và thêm vào track WAV thoại.'+(errors.length?' Có '+errors.length+' câu lỗi: '+errors.slice(0,3).map(x=>'#'+(x.index+1)+' '+x.message).join(' · '):'');
  }catch(error){$('previewStatus').textContent='Tạo WAV thất bại: '+(error?.message||error);$('saveStatus').textContent='Tạo WAV chưa hoàn tất'}
