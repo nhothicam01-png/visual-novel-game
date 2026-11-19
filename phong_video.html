@@ -2696,7 +2696,7 @@ function resolveSemanticAnimation(folder,semantic){
   }).filter(Boolean).sort((a,b)=>b.score-a.score||a.path.localeCompare(b.path));
   if(candidatesBySemantics.length){
    const chosen=candidatesBySemantics[0];
-   return {file:chosen.path.split('/').pop().replace(/\\.webm$/i,''),matched:false,semanticFallback:true,neutralFallback:!!target.emotion&&neutralWords.has(canonicalAnimationValue('emotion',chosen.meta.emotion)),mirrored:!!chosen.mirrored,reason:chosen.notes.length?'Không có WEBM khớp hoàn toàn; '+chosen.notes.join(', '):'Không có tổ hợp WEBM khớp hoàn toàn; chọn biến thể gần nhất theo metadata',variantCount:1};
+   return {file:chosen.path.split('/').pop().replace(/\.webm$/i,''),matched:false,semanticFallback:true,neutralFallback:!!target.emotion&&neutralWords.has(canonicalAnimationValue('emotion',chosen.meta.emotion)),mirrored:!!chosen.mirrored,reason:chosen.notes.length?'Không có WEBM khớp hoàn toàn; '+chosen.notes.join(', '):'Không có tổ hợp WEBM khớp hoàn toàn; chọn biến thể gần nhất theo metadata',variantCount:1};
   }
  }
  // Fallback cuối cùng mới dùng WEBM silent/listening trung tính.
