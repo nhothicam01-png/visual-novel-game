@@ -1759,9 +1759,13 @@ function playbackPreparationKey(item,useBrowser){
   wavReady:!!line.wavBlob,wavCacheKey:line.cacheKey||''
  });
 }
+function unpreparedPlaybackItems(items,useBrowser){
+ return items.filter(item=>{const key=playbackPreparationKey(item,useBrowser);return !key||!preparedPlaybackLineKeys.has(key)});
+}
 async function preparePreviewPlayback(items,useBrowser){
+ const pendingItems=unpreparedPlaybackItems(items,useBrowser);
  const imageUrls=new Set(),videoUrls=new Set();
- for(const item of items){
+ for(const item of pendingItems){
   const line=scenes[item.sceneIndex]?.lines[item.lineIndex];if(!line)continue;
   const frame=line.sourceFrame||{},bg=String(frame.anh_nen||line.background||backgroundAtSourceIndex(item.sourceIndex)||'').trim();
   const folder=characterAssetFolder(frame.nhan_vat??line.characterAsset??line.speakerId),expression=resolveSemanticExpression(folder,frame.expression_id)||normalizeExpression(line.expression||'');
@@ -1770,7 +1774,7 @@ async function preparePreviewPlayback(items,useBrowser){
   (Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[]).forEach(spec=>{const displayFolder=characterAssetFolder(spec?.id),displayExpression=resolveSemanticExpression(displayFolder,spec?.expression_id||semanticFromExpression(displayFolder,spec?.bieu_cam));if(displayFolder&&displayExpression)videoUrls.add(BASE+'NhanVat/'+displayFolder+'/'+displayExpression+'.webm')});
  }
  const assetJobs=[...imageUrls].map(url=>()=>cachedImage(url)),videoJobs=[...videoUrls].map(url=>()=>cachedVideo(url));
- const total=assetJobs.length+videoJobs.length+items.length+(useBrowser?0:items.length);let done=0;
+ const total=assetJobs.length+videoJobs.length+pendingItems.length+(useBrowser?0:pendingItems.length);let done=0;
  setTaskProgress('Chuẩn bị toàn bộ tài nguyên · 0/'+total,0);
  const jobs=[...assetJobs,...videoJobs];
  for(let i=0;i<jobs.length;i+=3){
@@ -1778,12 +1782,8 @@ async function preparePreviewPlayback(items,useBrowser){
  }
  // Duyệt từng dòng một lần trước khi phát để updateAssets nạp cả WEBM ngữ nghĩa,
  // WEBM speaking/listening dự phòng, chuyển động kết thúc, hiệu ứng và vật thể của dòng.
- for(let index=0;index<items.length;index++){
-  const item=items[index],preparedKey=playbackPreparationKey(item,useBrowser);
-  if(preparedKey&&preparedPlaybackLineKeys.has(preparedKey)){
-   done++;setTaskProgress((useBrowser?'Đã chuẩn bị · ':'Đã có cảnh/nhân vật/WAV · ')+done+'/'+total,total?done/total*100:100);
-   continue;
-  }
+ for(let index=0;index<pendingItems.length;index++){
+  const item=pendingItems[index];
   await loadSourceLineForPlayback(item);
   if(!useBrowser&&$('dialogue').value.trim())await ensureTtsReady();
   const completedKey=playbackPreparationKey(item,useBrowser);
@@ -1808,8 +1808,8 @@ async function playPreview(){
   const effectiveStart=startIndex>=lastScopedIndex?scopedItems[0].sourceIndex:startIndex;
   const items=scopedItems.filter(item=>item.sourceIndex>=effectiveStart);
   if(!items.length){setStatus('Không tìm thấy câu thoại hợp lệ trong phạm vi phát.');return}
-  prefetchSceneEffectsFor(items);
   const useBrowser=$('preview-tts-mode').value==='browser';
+  prefetchSceneEffectsFor(unpreparedPlaybackItems(items,useBrowser));
   const shouldPrepare=true;
   if(shouldPrepare){
    try{await preparePreviewPlayback(items,useBrowser);firstLineReady=true}
