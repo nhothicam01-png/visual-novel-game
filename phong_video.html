@@ -1745,6 +1745,20 @@ function prefetchSceneEffectsFor(items){
   })});
  void (async()=>{for(let i=0;i<queue.length;i+=2)await Promise.all(queue.slice(i,i+2).map(job=>job()))})();
 }
+function playbackPreparationKey(item,useBrowser){
+ const line=scenes[item.sceneIndex]?.lines[item.lineIndex];if(!line)return '';
+ const frame=line.sourceFrame||{},scene=scenes[item.sceneIndex]||{},resolved=resolveVoiceForLine(line);
+ return JSON.stringify({
+  story:activeStoryPath||activeStoryName,sourceIndex:item.sourceIndex,
+  frame,sceneVisual:scene.visual||{},background:line.background||'',
+  characterAsset:line.characterAsset||'',expression:line.expression||'',
+  visibleCharacters:line.visibleCharacters||null,sceneObjects:line.scene_objects||line.sceneObjects||null,
+  text:line.text||'',speakerId:line.speakerId||'',speaker:line.speaker||'',
+  voice:resolved?.profile||null,voiceMode:useBrowser?'browser':$('tts-engine').value,
+  edgeGender:$('edge-gender').value,edgeDead:!!edgeDead,
+  wavReady:!!line.wavBlob,wavCacheKey:line.cacheKey||''
+ });
+}
 async function preparePreviewPlayback(items,useBrowser){
  const imageUrls=new Set(),videoUrls=new Set();
  for(const item of items){
@@ -1765,9 +1779,15 @@ async function preparePreviewPlayback(items,useBrowser){
  // Duyệt từng dòng một lần trước khi phát để updateAssets nạp cả WEBM ngữ nghĩa,
  // WEBM speaking/listening dự phòng, chuyển động kết thúc, hiệu ứng và vật thể của dòng.
  for(let index=0;index<items.length;index++){
-  const item=items[index];
+  const item=items[index],preparedKey=playbackPreparationKey(item,useBrowser);
+  if(preparedKey&&preparedPlaybackLineKeys.has(preparedKey)){
+   done++;setTaskProgress((useBrowser?'Đã chuẩn bị · ':'Đã có cảnh/nhân vật/WAV · ')+done+'/'+total,total?done/total*100:100);
+   continue;
+  }
   await loadSourceLineForPlayback(item);
   if(!useBrowser&&$('dialogue').value.trim())await ensureTtsReady();
+  const completedKey=playbackPreparationKey(item,useBrowser);
+  if(completedKey)preparedPlaybackLineKeys.add(completedKey);
   done++;setTaskProgress((useBrowser?'Chuẩn bị cảnh/nhân vật · ':'Chuẩn bị cảnh, nhân vật và WAV · ')+done+'/'+total,total?done/total*100:100);
  }
  // Trả giao diện về đúng dòng bắt đầu; tài nguyên đã có trong cache nên phát không phải tải mạng lại.
@@ -2439,6 +2459,8 @@ let scenes=[],activeSceneIndex=0,activeLineIndex=0;
 let activeStoryData=null,activeStoryName='',activeStoryPath='',characterVoiceMap={},characterDirectory=[],defaultVoiceProfileId='';
 let sourceLineCount=0,assetLoadToken=0,isPortrait=false;
 const imageAssetCache=new Map(),videoAssetCache=new Map();
+// Ghi nhớ từng câu đã chuẩn bị trong phiên hiện tại để tua/phát lại không phải quét và nạp trước lại toàn bộ.
+const preparedPlaybackLineKeys=new Set();
 function clone(obj){return JSON.parse(JSON.stringify(obj))}
 const GH_API='https://api.github.com/repos/nhothicam01-png/visual-novel-game/contents/assets/KichBan?ref=main';
 const storyCache=new Map();
@@ -2763,7 +2785,7 @@ async function loadWorldCharacterFolderMap(data,storyPath){
  }catch(error){storyCharacterFolderMap={};worldCharacterDirectory=[];expressionFilesByFolder={};characterAnimationMetadata={};console.error('Không thể tải ánh xạ nhân vật chính thức từ thế giới:',error);throw new Error('Không thể tải tài nguyên nhân vật theo TheGioi.json: '+error.message)}
 }
 async function applyStoryData(data,name,path){
- stopPreview();const rows=data?.danh_sach;
+ stopPreview();preparedPlaybackLineKeys.clear();const rows=data?.danh_sach;
  if(!Array.isArray(rows)||!rows.length)throw new Error('File JSON không có danh_sach hợp lệ.');
  if(Number(data.phien_ban)!==3||!String(data.world_id||'').trim())throw new Error('File JSON phải dùng phien_ban: 3 và world_id hợp lệ.');
  activeStoryData=data;activeStoryName=String(name||'Kịch bản import').replace(/\.json$/i,'');activeStoryPath=String(path||('assets/KichBan/'+activeStoryName+'/'+activeStoryName+'.json'));sourceLineCount=rows.length;
