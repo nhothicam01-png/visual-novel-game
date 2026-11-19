@@ -1608,7 +1608,17 @@ async function startDirectRecorder(){
  if(!previewCanvas.captureStream||!window.MediaRecorder)throw new Error('Trình duyệt không hỗ trợ ghi trực tiếp.');
  const fps=Math.max(1,Number($('fps').value)||30),quality=Number($('export-quality').value)||720;
  const oldWidth=previewCanvas.width,oldHeight=previewCanvas.height,longEdge=quality===1080?1920:quality===540?960:1280,shortEdge=quality===1080?1080:quality===540?540:720;
- previewCanvas.width=isPortrait?shortEdge:longEdge;previewCanvas.height=isPortrait?longEdge:shortEdge;drawFrame(0);
+ previewCanvas.width=isPortrait?shortEdge:longEdge;previewCanvas.height=isPortrait?longEdge:shortEdge;
+ // Ghi trực tiếp cũng phải đánh thức WEBM sau stopPreview() trước khi lấy frame đầu vào stream.
+ await Promise.all(charLayerVideos.filter(item=>item?.canPlayAnimation&&item.media&&typeof item.media.play==='function').map(async item=>{
+  try{
+   await item.media.play();
+   if(typeof item.media.requestVideoFrameCallback==='function'){
+    await new Promise(resolve=>{let settled=false;const finish=()=>{if(settled)return;settled=true;clearTimeout(timer);resolve()};const timer=setTimeout(finish,250);try{item.media.requestVideoFrameCallback(finish)}catch(_){finish()}});
+   }else await new Promise(resolve=>setTimeout(resolve,80));
+  }catch(error){console.warn('Không thể khởi chạy WEBM trước khi ghi '+(item.spec?.id||'')+':',error)}
+ }));
+ drawFrame(0);
  const videoStream=previewCanvas.captureStream(fps);directRecordAudioContext=new (window.AudioContext||window.webkitAudioContext)();await directRecordAudioContext.resume();directRecordDestination=directRecordAudioContext.createMediaStreamDestination();
  const tracks=[...videoStream.getVideoTracks(),...directRecordDestination.stream.getAudioTracks()],stream=new MediaStream(tracks);
  const types=['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
