@@ -1143,7 +1143,7 @@ function getCharacterCameraLayers(layers,elapsed){
 function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
  if(!(shotZoom>1))return null;
  const layer=(layers||[]).find(item=>String(item.spec?.id||'')===targetId);if(!layer)return null;
- const count=Math.max(1,layers.length),zoom=portrait&&count===1?1:Math.max(1,Math.min(1.8,shotZoom));
+ const zoom=Math.max(1,Math.min(1.8,shotZoom));
  if(zoom<=1)return null;
  const spec=layer.spec||{},requested=Number(spec.scale),clamp=(lo,hi,v)=>Math.max(lo,Math.min(hi,v));
  const baseScale=Number.isFinite(requested)?clamp(.1,2.5,requested):.68,scale=getCharacterDepthScale(spec.y,baseScale),dh=h*scale;
@@ -1249,9 +1249,9 @@ function drawFrameUnsafe(elapsed,st){
  // Mặc định là khung hình đối thoại: giữ cả nhóm trong ảnh, chỉ dịch rất nhẹ về người nói.
  // Cận cảnh chỉ xuất hiện khi dữ liệu biểu cảm/góc nhìn hoặc đạo diễn chỉ định nhấn mạnh.
  const autoShot=emotionalEmphasis?'close_up'
-  :(visibleCount>=3?'wide'
-   :(visibleCount===2?(cueIndex%3===0?'wide':'medium')
-    :(cueIndex%3===2?'wide':'medium')));
+  :(visibleCount>=3?(cueIndex%4===0?'wide':(cueIndex%4===2?'close_up':'medium'))
+   :(visibleCount===2?(cueIndex%4===0?'wide':(cueIndex%4===3?'close_up':'medium'))
+    :(cueIndex%4===2?'wide':(cueIndex%4===1?'close_up':'medium'))));
  const shot=director==='manual'
   ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
   :autoShot;
@@ -1260,9 +1260,12 @@ function drawFrameUnsafe(elapsed,st){
  const cueLine=sceneLines[cueStart]||currentLine;
  const cueSource=cueLine.sourceFrame||cueLine;
  const cueTarget=String(cueSource.nhan_vat||cueLine.speakerId||speakerTarget);
- const cameraTarget=director==='manual'
+ const requestedCameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
   :(cueTarget||speakerTarget);
+ const cameraTarget=cameraLayers.some(item=>String(item.spec?.id||'')===requestedCameraTarget)
+  ?requestedCameraTarget
+  :(cameraLayers.some(item=>String(item.spec?.id||'')===speakerTarget)?speakerTarget:String(cameraLayers[0]?.spec?.id||''));
  const defaultZoom=director==='manual'?1
   :(shot==='close_up'?1.42:(shot==='medium'?1.14:1));
  const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.42:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
@@ -1271,7 +1274,7 @@ function drawFrameUnsafe(elapsed,st){
  const rawShotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,cameraLayers,isPortrait,shot);
  // Chỉ bắt đầu lia khi có một cue camera mới. Giữ nguyên vị trí và zoom trong các
  // câu còn lại của cùng shot, kể cả khi người nói thay đổi.
- const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startZoom:1,targetX:null,targetZoom:1,startElapsed:0,followOffset:0,followElapsed:elapsed,baseSubjectX:null});
+ const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startY:null,startZoom:1,targetX:null,targetY:null,targetZoom:1,startElapsed:0,followOffset:0,followElapsed:elapsed,baseSubjectX:null});
  const panMarker=director==='manual'
   ?'manual|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom)
   :'auto|'+sceneKey+'|cue-'+String(cueIndex)+'|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom);
@@ -1282,8 +1285,11 @@ function drawFrameUnsafe(elapsed,st){
   panState.startZoom=Math.max(1,Math.min(1.8,Number.isFinite(panState.zoom)?panState.zoom:1));
   const startHalfW=w/(2*panState.startZoom);
   panState.startX=Math.max(startHalfW,Math.min(w-startHalfW,Number.isFinite(panState.x)?panState.x:w/2));
+  const startHalfH=h/(2*panState.startZoom);
+  panState.startY=Math.max(startHalfH,Math.min(h-startHalfH,Number.isFinite(panState.y)?panState.y:h/2));
   panState.targetZoom=Math.max(1,Math.min(1.8,rawShotCamera?rawShotCamera.zoom:1));
   panState.targetX=rawShotCamera?rawShotCamera.cx:w/2;
+  panState.targetY=rawShotCamera?rawShotCamera.cy:h/2;
   panState.baseSubjectX=rawShotCamera?rawShotCamera.cx:w/2;
   panState.followOffset=0;panState.followElapsed=elapsed;
  }
@@ -1303,9 +1309,11 @@ function drawFrameUnsafe(elapsed,st){
  panState.followElapsed=elapsed;
  const cameraX=cameraBaseX+panState.followOffset;
  // Keep the viewport inside the cover-fitted background at every point of the pan.
+ const halfViewportH=h/(2*cameraZoom);
+ const cameraBaseY=panState.startY+(panState.targetY-panState.startY)*panEase;
  const shotCamera={zoom:cameraZoom,
   cx:Math.max(halfViewportW,Math.min(w-halfViewportW,cameraX)),
-  cy:h/2};
+  cy:Math.max(halfViewportH,Math.min(h-halfViewportH,cameraBaseY))};
  panState.x=shotCamera.cx;panState.y=shotCamera.cy;panState.zoom=shotCamera.zoom;
  if(shotCamera){ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(shotCamera.zoom,shotCamera.zoom);ctx.translate(-shotCamera.cx,-shotCamera.cy)}
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
@@ -1358,7 +1366,11 @@ function drawFrameUnsafe(elapsed,st){
   y=Math.max(dh+h*.10,Math.min(h,y));
   ctx.save();let alpha=Math.max(0,Math.min(1,st.opacity??1));
   if(Math.abs(rotation)>.01&&dh){const centerY=y-dh/2;ctx.translate(x,centerY);ctx.rotate(rotation*Math.PI/180);ctx.translate(-x,-centerY)}
-  const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!spec?.neutralFallback&&!!speakingCharacterId&&(!spec?.id||String(spec.id)===speakingCharacterId);
+  const activeSpeakerId=String(speakingCharacterId||getCurrentLine()?.speakerId||getCurrentLine()?.sourceFrame?.nhan_vat||'');
+  const isCurrentSpeaker=spec?.canPlayAnimation!==false&&!spec?.neutralFallback&&!!activeSpeakerId&&(
+   !spec?.id||String(spec.id)===activeSpeakerId||
+   (charLayerVideos.length===1&&charLayerVideos[0]?.spec===spec)
+  );
   if(isCurrentSpeaker){
    const motion=Math.max(0,Math.min(1,speechMotionSmooth));
    // Chu ky lien tuc, khong bam theo am luong hay tung am tiet nen khong bi giat.
@@ -1855,7 +1867,7 @@ async function playPreview(){
    if(!isCurrent())return;
   }
   sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){}}});
-  previewPreparing=false;previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
+  previewPreparing=false;previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startY:null,startZoom:1,targetX:null,targetY:null,targetZoom:1,startElapsed:0,followOffset:0,followElapsed:0,baseSubjectX:null};const run=previewRunId;
   // stopPreview() đã pause media để dừng sạch. Khi bắt đầu lượt mới phải bật lại toàn bộ WEBM của các nhân vật, không chỉ charVideo cũ.
   if(charVideo){try{charVideo.currentTime=0}catch(_){}charVideo.play().catch(()=>{})}
   if(bgVideo){try{bgVideo.currentTime=0}catch(_){}bgVideo.play().catch(()=>{})}
