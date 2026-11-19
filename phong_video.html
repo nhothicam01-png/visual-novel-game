@@ -1267,6 +1267,8 @@ function drawFrameUnsafe(elapsed,st){
  // Nhiều nhân vật: nếu JSON có nhan_vat_hien_thi thì dựng từng lớp độc lập.
  // Nếu không có trường này, giữ nguyên cách dựng một nhân vật của JSON cũ.
  const drawOneCharacter=(media,spec)=>{
+  // Layer có thể đã đổi sang WEBM trạng thái kết thúc sau khi motion hoàn tất.
+  media=spec?.__layer?.media||media;
   if(!media)return;
   const move=spec?.motion&&typeof spec.motion==='object'?spec.motion:null,duration=Math.max(.01,Number(move?.duration_seconds)||1),motionElapsed=Math.max(0,elapsed-lineMotionStartElapsed);
   // Khi nhân vật hoàn tất chuyển động, tự đổi từ WEBM hành động sang WEBM trạng thái kết thúc.
