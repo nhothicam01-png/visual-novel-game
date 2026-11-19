@@ -226,7 +226,7 @@ function assetUrl(p){if(/^https?:/i.test(p))return p;return './assets/BoiCanh/'+
 function findLine(t){return segments.findIndex(s=>t>=s.start&&t<s.end)}
 function selectLine(i,move){selected=Math.max(0,Math.min(rows.length-1,i));const seg=segments[selected];if(move)seek(seg.start);renderAll();syncPreviewLine(selected)}
 function seek(t){playhead=Math.max(0,Math.min(total,t));const i=findLine(playhead);if(i>=0&&i!==selected){selected=i;renderInspector();renderScenes();renderMonitor();syncPreviewLine(i)}const ph=$('playhead');if(ph)ph.style.left=(108+playhead*pxPerSec*zoom)+'px';$('timeReadout').textContent=fmt(playhead)+' / '+fmt(total)}
-let playerPlaybackStarted=false,previewStorySent=false,previewRequestIndex=-1,studioDirectRecording=false,playerObserver=null;
+let playerPlaybackStarted=false,studioDirectRecording=false,playerObserver=null;
 const PREVIEW_RATIOS={'16:9':[16,9],'9:16':[9,16],'1:1':[1,1]};
 function playerWindow(){try{return $('enginePreview').contentWindow}catch(_){return null}}
 function playerDocument(){try{return $('enginePreview').contentDocument}catch(_){return null}}
