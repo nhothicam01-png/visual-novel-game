@@ -26,7 +26,7 @@
 <section class="panel timeline"><div class="timeline-toolbar"><strong>Timeline · Toàn bộ kịch bản</strong><span class="pill" id="zoomLabel">1×</span><div class="spacer"></div><button id="zoomOut">−</button><button id="zoomIn">＋</button><button id="fitBtn">Vừa khung</button></div><div class="timeline-scroll" id="timelineScroll"><div class="timeline-inner" id="timelineInner"><div class="empty">Import kịch bản để dựng timeline</div></div></div></section>
 </div>
 <script>
-const $=id=>document.getElementById(id);if(matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<=700)document.documentElement.classList.add('phone-device');let data=null,rows=[],selected=-1,zoom=1,pxPerSec=42,playhead=0,playing=false,timer=null,total=0,segments=[],previewEngineReady=false,previewStorySent=false,previewRequestIndex=-1,selectedKind='dialogue',selectedObjectId='',webmTreeCache=null,webmFolderCache={};
+const $=id=>document.getElementById(id);if(matchMedia('(pointer:coarse)').matches&&Math.min(screen.width,screen.height)<=700)document.documentElement.classList.add('phone-device');let data=null,rows=[],selected=-1,zoom=1,pxPerSec=42,playhead=0,playing=false,timer=null,total=0,segments=[],previewEngineReady=false,previewStorySent=false,previewRequestIndex=-1,selectedKind='dialogue',selectedObjectId='',webmTreeCache=null,webmFolderCache={},webmPendingSelection='';
 const fmt=t=>{t=Math.max(0,Number(t)||0);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Math.floor(t%60)).padStart(2,'0')};
 const dur=r=>Math.max(.2,Number(r?.thoi_luong)||5);
 const sceneKey=r=>String(r?.scene_id||'Cảnh');
@@ -114,7 +114,7 @@ function renderInspector(){
   if(kind==='character'||kind==='motion'){
    const target=kind==='character'?String($('objChar').value):String(spec?.id||speakerId);
    let targetSpec=specList.find(x=>String(x.id)===target);if(!targetSpec&&kind==='character'){targetSpec={id:target,expression_id:{}};specList.push(targetSpec);r.nhan_vat_hien_thi=specList}
-   if(targetSpec){targetSpec.expression_id=targetSpec.expression_id||{};for(const [id,key] of [['objPose','pose'],['objAction','action'],['objDirection','direction'],['objFace','face_angle'],['objView','view_angle'],['objComm','communication'],['objEmotion','emotion'],['objTarget','interaction_target']])if($(id))targetSpec.expression_id[key]=$(id).value;if(kind==='character'&&target===speakerId)r.expression_id={...r.expression_id,...targetSpec.expression_id}}
+   if(targetSpec){if(kind==='character'){if(webmPendingSelection)targetSpec.webm_file=webmPendingSelection;else delete targetSpec.webm_file;}targetSpec.expression_id=targetSpec.expression_id||{};for(const [id,key] of [['objPose','pose'],['objAction','action'],['objDirection','direction'],['objFace','face_angle'],['objView','view_angle'],['objComm','communication'],['objEmotion','emotion'],['objTarget','interaction_target']])if($(id))targetSpec.expression_id[key]=$(id).value;if(kind==='character'&&target===speakerId)r.expression_id={...r.expression_id,...targetSpec.expression_id}}
   }
   if(kind==='camera'){try{r.camera=JSON.parse($('objJson').value)}catch(e){alert('JSON camera không hợp lệ: '+e.message);return}}
   if(kind==='music'||kind==='sfx'){r.am_thanh=r.am_thanh||{};const key=kind==='music'?'nhac_nen':'hieu_ung_am_thanh';r.am_thanh[key]=r.am_thanh[key]||{};r.am_thanh[key].tep=$('objAudio').value.trim()}
@@ -131,12 +131,12 @@ async function getWebmLibrary(folder){
 }
 function setupWebmPicker(characterId,currentPath){
  const host=$('inspector'),search=$('webmSearch'),results=$('webmResults'),video=$('webmPreview');if(!results)return;
- let choices=[],picked=currentPath||'';
+ let choices=[],picked=currentPath||'';webmPendingSelection=picked;
  const render=()=>{
   const q=(search.value||'').toLocaleLowerCase('vi'),a=$('webmActionFilter').value,e=$('webmEmotionFilter').value;
   const list=choices.filter(x=>{const u=x.meta.user_metadata||{},hay=(x.path+' '+JSON.stringify(x.meta)).toLocaleLowerCase('vi');return (!q||hay.includes(q))&&(!a||String(u.action||x.meta.action||'')===a)&&(!e||String(u.emotion||'')===e)});
   results.innerHTML=list.length?list.map(x=>{const u=x.meta.user_metadata||{},tags=[u.communication,u.action,u.emotion,u.pose,u.direction,u.face_angle].filter(Boolean).join(' · ');return '<button type="button" class="github-item" data-webm-path="'+attr(x.path)+'" style="text-align:left;border-color:'+(picked===x.path?'#9b8cff':'#343b4b')+'"><b>'+esc(x.path.split('/').pop())+'</b><small>'+esc(tags||x.meta.summary||'Chưa có metadata')+'</small></button>'}).join(''):'<div class="empty">Không có clip khớp bộ lọc.</div>';
-  results.querySelectorAll('[data-webm-path]').forEach(b=>b.onclick=()=>{picked=b.dataset.webmPath;const item=choices.find(x=>x.path===picked);video.src=item.url;video.load();video.play().catch(()=>{});$('webmSelectedLabel').textContent='Đang xem thử: '+picked;render()});
+  results.querySelectorAll('[data-webm-path]').forEach(b=>b.onclick=()=>{picked=b.dataset.webmPath;webmPendingSelection=picked;const item=choices.find(x=>x.path===picked);video.src=item.url;video.load();video.play().catch(()=>{});$('webmSelectedLabel').textContent='Đang xem thử: '+picked;render()});
  };
  getWebmLibrary(String(data.nhan_vat?.[characterId]?.assetFolder||characterId)).then(items=>{
   choices=items;
@@ -147,8 +147,7 @@ function setupWebmPicker(characterId,currentPath){
   render();
  }).catch(e=>{results.innerHTML='<div class="empty">Không tải được thư viện WEBM: '+esc(e.message)+'</div>'});
  search.oninput=render;$('webmActionFilter').onchange=render;$('webmEmotionFilter').onchange=render;
- $('clearWebm').onclick=()=>{picked='';video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata';};
- $('applyObject').addEventListener('click',()=>{const target=String($('objChar')?.value||characterId),sp=(rows[selected]?.nhan_vat_hien_thi||[]).find(x=>String(x.id)===target);if(sp){if(picked)sp.webm_file=picked;else delete sp.webm_file;}}, {once:true});
+ $('clearWebm').onclick=()=>{picked='';webmPendingSelection='';video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata';};
 }
 function renderMonitor(){if(!data)return;const i=selected>=0?selected:findLine(playhead),r=rows[i]||rows[0];$('lineBadge').textContent='Đoạn '+(i+1)+' / '+rows.length;$('sceneBadge').textContent=sceneKey(r)}
 function assetUrl(p){if(/^https?:/i.test(p))return p;return './assets/BoiCanh/'+encodeURIComponent(p).replace(/%2F/g,'/')}
@@ -158,7 +157,7 @@ function seek(t){playhead=Math.max(0,Math.min(total,t));const i=findLine(playhea
 function togglePlay(){if(!data)return;if(playing){playing=false;clearInterval(timer);$('playBtn').textContent='▶ Phát';$('previewStatus').textContent='Đã tạm dừng tại '+fmt(playhead);return}if(playhead>=total)seek(0);playing=true;$('playBtn').textContent='Ⅱ Tạm dừng';$('previewStatus').textContent='Đang duyệt toàn bộ timeline · preview theo từng thoại';let last=performance.now();timer=setInterval(()=>{const now=performance.now();seek(playhead+(now-last)/1000);last=now;if(playhead>=total){playing=false;clearInterval(timer);$('playBtn').textContent='▶ Phát';$('previewStatus').textContent='Đã phát hết kịch bản'}},50)}
 
 function sendPreviewLoad(){if(!data||!previewEngineReady)return;previewStorySent=false;previewRequestIndex=-1;$('previewStatus').textContent='Đang nạp kịch bản vào bộ dựng thật…';$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_LOAD',data,name:$('projectName').textContent,path:activeStoryPath,index:Math.max(0,selected)},location.origin)}
-function syncPreviewLine(index,force=false){if(!data||!previewEngineReady)return;if(!previewStorySent){sendPreviewLoad();return}if(previewRequestIndex===index&&!force)return;previewRequestIndex=index;$('previewStatus').textContent='Đang dựng đoạn '+(index+1)+'/'+rows.length+'…';$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_SEEK',index},location.origin)}
+function syncPreviewLine(index,force=false){if(!data||!previewEngineReady)return;if(force){previewStorySent=false;previewRequestIndex=-1;sendPreviewLoad();return}if(!previewStorySent){sendPreviewLoad();return}if(previewRequestIndex===index&&!force)return;previewRequestIndex=index;$('previewStatus').textContent='Đang dựng đoạn '+(index+1)+'/'+rows.length+'…';$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_SEEK',index},location.origin)}
 window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==$('enginePreview').contentWindow)return;const m=event.data||{};if(m.type==='DEMO_STUDIO_ENGINE_READY'){previewEngineReady=true;if(data)sendPreviewLoad()}else if(m.type==='DEMO_STUDIO_READY'){previewStorySent=true;previewRequestIndex=Number(m.index);$('previewStatus').textContent='Preview thật · '+(m.index+1)+'/'+rows.length+' · nền, WEBM, biểu cảm, camera, hiệu ứng'}else if(m.type==='DEMO_STUDIO_FRAME'){$('previewStatus').textContent='Preview thật · đoạn '+(Number(m.index)+1)+'/'+rows.length}else if(m.type==='DEMO_STUDIO_ERROR'){$('previewStatus').textContent='Lỗi preview: '+m.message}});
 function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}function attr(v){return esc(v).replace(/'/g,'&#39;')}
 let githubStories=[];
