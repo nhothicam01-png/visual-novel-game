@@ -2645,6 +2645,44 @@ function resolveSemanticAnimation(folder,semantic){
    return {file:chosen.path.split('/').pop().replace(/\.webm$/i,''),matched:false,speakingFallback:true,mirrored:!!chosen.mirrored,reason:'Không có WEBM speaking đúng biểu cảm; dùng WEBM speaking cùng tư thế/hướng/góc mặt',variantCount:1};
   }
  }
+ // Với trạng thái không nói, giữ emotion và face_angle trước; không ép mọi listening về WEBM trung tính.
+ // Ưu tiên đúng communication, emotion, góc mặt, hướng; chỉ nới lỏng thuộc tính ít quan trọng khi thiếu clip.
+ if(['silent','listening','reacting','idle'].includes(canonicalAnimationValue('communication',target.communication))){
+  const wantedComm=canonicalAnimationValue('communication',target.communication);
+  const nonSpeakingCandidates=paths.map(path=>{
+   const meta=animationMeta(path),comm=canonicalAnimationValue('communication',meta.communication),
+    emotion=canonicalAnimationValue('emotion',meta.emotion),pose=canonicalAnimationValue('pose',meta.pose),
+    action=canonicalAnimationValue('action',meta.action);
+   if(!['silent','listening','reacting','idle'].includes(comm))return null;
+   let mirrored=false,score=0;
+   if(comm===wantedComm)score+=500;
+   else if(wantedComm==='listening'&&comm==='silent')score+=350;
+   else if(wantedComm==='silent'&&comm==='listening')score+=300;
+   else return null;
+   if(target.emotion){
+    if(emotion===canonicalAnimationValue('emotion',target.emotion))score+=400;
+    else if(neutralWords.has(emotion))score+=80;
+    else return null;
+   }
+   if(target.face_angle){
+    if(!meta.face_angle||canonicalAnimationValue('face_angle',meta.face_angle)!==canonicalAnimationValue('face_angle',target.face_angle))return null;
+    score+=250;
+   }
+   if(target.direction){
+    const wanted=canonicalAnimationValue('direction',target.direction),actual=canonicalAnimationValue('direction',meta.direction);
+    if(actual===wanted)score+=150;
+    else if(oppositeHorizontalDirection(wanted)===actual&&meta.mirror_safe!==false&&String(meta.mirror_safe).toLowerCase()!=='false'){mirrored=true;score+=125}
+    else return null;
+   }
+   if(target.pose){if(pose===canonicalAnimationValue('pose',target.pose))score+=100;else if(pose)score-=30}
+   if(target.action){if(action===canonicalAnimationValue('action',target.action))score+=100;else if(action)score-=30}
+   return {path,meta,score,mirrored};
+  }).filter(Boolean).sort((a,b)=>b.score-a.score||a.path.localeCompare(b.path));
+  if(nonSpeakingCandidates.length){
+   const chosen=nonSpeakingCandidates[0];
+   return {file:chosen.path.split('/').pop().replace(/\.webm$/i,''),matched:false,neutralFallback:neutralWords.has(canonicalAnimationValue('emotion',chosen.meta.emotion)),mirrored:!!chosen.mirrored,reason:'Ưu tiên WEBM im lặng/lắng nghe đúng cảm xúc và góc mặt; nới lỏng thuộc tính phụ nếu cần',variantCount:1};
+  }
+ }
  // Fallback cuối cùng mới dùng WEBM silent/listening trung tính.
  const neutralCandidates=paths.map(path=>{
   const meta=animationMeta(path),comm=canonicalAnimationValue('communication',meta.communication),
