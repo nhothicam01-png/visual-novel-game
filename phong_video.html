@@ -1648,14 +1648,21 @@ async function playPreview(){
   sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.pause();item.media.currentTime=0;item.media.__sceneEffectFinished=false}catch(e){}}});
   previewPreparing=false;previewing=true;previewPaused=false;previewPauseStartedAt=0;previewStartedAt=performance.now();const run=previewRunId;
   if(charVideo)charVideo.play().catch(()=>{});if(bgVideo)bgVideo.play().catch(()=>{});
-  previewLineBgmName='';startRenderLoop();updatePlaybackButtons();
+  previewLineBgmName='';
+  // Mốc camera phải đổi NGAY khi chuyển sang câu mới, trước khi nạp scene/assets.
+  // Nếu đặt mốc sau await loadSourceLineForPlayback(), render loop có thể vẽ một frame
+  // của câu mới với elapsed cũ (panT=1), làm camera nhảy tới toàn cảnh/đích rồi mới lia.
+  lineMotionStartElapsed=(performance.now()-previewStartedAt)/1000;
+  startRenderLoop();updatePlaybackButtons();
   try{
    for(let itemIndex=0;itemIndex<items.length;itemIndex++){
     const item=items[itemIndex];
     if(!await waitWhilePaused(run))break;
+    // Chụp lại vị trí camera hiện tại làm điểm đầu trước khi đổi thoại/nạp tài nguyên.
+    lineMotionStartElapsed=(performance.now()-previewStartedAt)/1000;
     if(!(firstLineReady&&itemIndex===0))await loadSourceLineForPlayback(item);
     if(!await waitWhilePaused(run))break;
-    const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;lineMotionStartElapsed=(performance.now()-previewStartedAt)/1000;await playLineAudio(line);
+    const line=getCurrentLine(),lineStart=directRecording?(performance.now()-directRecordStartedAt)/1000:0;await playLineAudio(line);
     const text=$('dialogue').value.trim();
     speakingCharacterId=text&&!line.isNarration?String(line.speakerId||line.sourceFrame?.nhan_vat||$('speaker').value||''):'';
     speechTextIndex=0;speechAudioElement=null;speechMotionSmooth=0;speechMotionFrameAt=0;
