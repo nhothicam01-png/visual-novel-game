@@ -116,6 +116,15 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 .scene-editor-drawer>.main-panel{display:flex;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 .scene-editor-drawer>.main-panel:not([open])>*:not(.panel-heading){display:none}
 @media(max-width:600px){.scene-editor-drawer{top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:48vh;padding:9px}.scene-editor-drawer>.main-panel{max-height:calc(48vh - 48px)}}
+
+/* Embedded real renderer mode for demoStudio */
+@media all{
+ body.demo-studio-embed{padding:0!important;margin:0!important;min-height:100vh!important;justify-content:center!important;gap:0!important;background:#000!important;overflow:hidden!important}
+ body.demo-studio-embed> :not(#game-container){display:none!important}
+ body.demo-studio-embed #game-container{width:100vw!important;max-width:none!important;max-height:none!important;height:auto!important;aspect-ratio:16/9!important;border-radius:0!important;box-shadow:none!important}
+ body.demo-studio-embed #preview-canvas{width:100%!important;height:100%!important;object-fit:contain!important}
+ body.demo-studio-embed #preview-loading{font-size:12px!important}
+}
 </style>
 <script src="./vns-local.js?v=20261116-localstory1"></script>
 </head>
@@ -3187,6 +3196,31 @@ loadSceneEffectLibrary();
 updateAssets();
 drawFrame(0);
 if(location.search.includes('cinematic=1')){void (async()=>{try{const raw=localStorage.getItem('vns.cinematic.pending.v1');if(!raw)return;const pending=JSON.parse(raw);if(!pending||!pending.data)throw new Error('Không tìm thấy dữ liệu phim bàn giao.');await applyStoryData(pending.data,pending.name||'Cinematic Film','assets/KichBan/Cinematic/'+String(pending.name||'film').replace(/[^A-Za-z0-9_-]+/g,'_')+'.json');localStorage.removeItem('vns.cinematic.pending.v1');$('story-status').textContent='Đã nhận phim từ Cinematic Film Studio. '+pending.data.danh_sach.length+' mục timeline · '+scenes.length+' cảnh. Hãy nhấn Chạy để xem trước hoặc Ghi trực tiếp để xuất video.';setStatus('Đã nạp kịch bản phim tự động.');}catch(e){$('story-status').textContent='Không thể nhận phim tự động: '+e.message;console.error(e)}})()}
+
+/* Parent bridge: demoStudio reuses this exact renderer for static preview and scrubbing. */
+let demoStudioStoryLoaded=false,demoStudioBridgeRequest=0;
+if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
+ document.body.classList.add('demo-studio-embed');
+ window.addEventListener('message',async event=>{
+  if(event.source!==window.parent||event.origin!==location.origin)return;
+  const message=event.data;if(!message||typeof message!=='object'||!String(message.type||'').startsWith('DEMO_STUDIO_'))return;
+  if(message.type==='DEMO_STUDIO_LOAD'){
+   const request=++demoStudioBridgeRequest;
+   try{
+    await applyStoryData(message.data,message.name||'demoStudio Preview',message.path||'assets/KichBan/demoStudio/demoStudio.json');
+    demoStudioStoryLoaded=true;
+    if(request!==demoStudioBridgeRequest)return;
+    await seekSourceLine(Math.max(0,Number(message.index)||0));
+    if(request===demoStudioBridgeRequest)window.parent.postMessage({type:'DEMO_STUDIO_READY',index:currentSourceIndex()},location.origin);
+   }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
+  }else if(message.type==='DEMO_STUDIO_SEEK'&&demoStudioStoryLoaded){
+   const request=++demoStudioBridgeRequest;
+   try{await seekSourceLine(Math.max(0,Number(message.index)||0));if(request!==demoStudioBridgeRequest)return;drawFrame(0);window.parent.postMessage({type:'DEMO_STUDIO_FRAME',index:currentSourceIndex()},location.origin)}
+   catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
+  }
+ });
+ window.addEventListener('load',()=>window.parent.postMessage({type:'DEMO_STUDIO_ENGINE_READY'},location.origin),{once:true});
+}
 })();
 </script>
 <script src="./github-manager.js"></script>
