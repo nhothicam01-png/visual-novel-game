@@ -72,7 +72,7 @@ const dur=r=>Math.max(.2,Number(r?.thoi_luong)||5);
 function estimateDialogueDuration(line){
  const text=String(line?.noi_dung||'').trim();
  if(!text)return .8;
- const words=(text.match(/\\S+/g)||[]).length;
+ const words=(text.match(/\S+/g)||[]).length;
  const commas=(text.match(/[,，、;；:：]/g)||[]).length;
  const stops=(text.match(/[.!?。！？…]/g)||[]).length;
  const d=words/3.35+commas*.16+stops*.28;
@@ -109,7 +109,7 @@ function renderTimeline(){
  renderSegments.forEach(seg=>{
   const r=rows[seg.i],left=seg.start*scale,w=Math.max(5,seg.duration*scale-2),name=charName(r.nhan_vat);
   if(!seen.has(seg.scene)){seen.add(seg.scene);let last=seg.i;while(last+1<rows.length&&sceneKey(rows[last+1])===seg.scene)last++;const sceneWidth=Math.max(20,(segments[last].end-seg.start)*scale-2);sceneClips+='<div class="clip scene" data-kind="scene" title="'+esc(seg.scene)+'" style="left:'+left+'px;width:'+sceneWidth+'px" data-index="'+seg.i+'">'+esc(seg.scene)+'</div>'}
-  const dialogueText=String(r.noi_dung||''),wordCount=(dialogueText.match(/\\S+/g)||[]).length,estimated=Number(r.audio_tts?.duration)>0?Number(r.audio_tts.duration):estimateDialogueDuration(r);const dialogueLabel=name+' · '+dialogueText.slice(0,48)+' · '+wordCount+' từ / ~'+estimated.toFixed(1)+'s';dialogueClips+='<div class="clip dialogue '+(selected===seg.i?'selected':'')+'" data-kind="dialogue" title="'+esc(name+': '+dialogueText+'\\n'+wordCount+' từ · ước lượng '+estimated.toFixed(1)+' giây · thời lượng timeline '+dur(r).toFixed(1)+' giây')+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(name+' · '+dialogueText.slice(0,48))+'</div>';
+  const dialogueText=String(r.noi_dung||''),wordCount=(dialogueText.match(/\S+/g)||[]).length,estimated=Number(r.audio_tts?.duration)>0?Number(r.audio_tts.duration):estimateDialogueDuration(r);const dialogueLabel=name+' · '+dialogueText.slice(0,48)+' · '+wordCount+' từ / ~'+estimated.toFixed(1)+'s';dialogueClips+='<div class="clip dialogue '+(selected===seg.i?'selected':'')+'" data-kind="dialogue" title="'+esc(name+': '+dialogueText+'\n'+wordCount+' từ · ước lượng '+estimated.toFixed(1)+' giây · thời lượng timeline '+dur(r).toFixed(1)+' giây')+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(name+' · '+dialogueText.slice(0,32)+' · ~'+estimated.toFixed(1)+'s')+'</div>';
   const audioMeta=r.audio_tts&&typeof r.audio_tts==='object'?r.audio_tts:null;
   if(audioMeta&&Number(audioMeta.duration)>0){const aw=Math.max(5,Number(audioMeta.duration)*scale-2),audioLabel='♫ '+name+' · '+Number(audioMeta.duration).toFixed(2)+'s';audioClips+='<div class="clip music" data-kind="audio" title="'+esc(audioLabel)+'" style="left:'+left+'px;width:'+aw+'px" data-index="'+seg.i+'">'+esc(audioLabel)+'</div>'}
   const visible=Array.isArray(r.nhan_vat_hien_thi)?r.nhan_vat_hien_thi:[];
