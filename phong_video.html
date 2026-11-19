@@ -1318,9 +1318,10 @@ function drawFrameUnsafe(elapsed,st){
   cy:Math.max(halfViewportH,Math.min(h-halfViewportH,cameraBaseY))};
  panState.x=shotCamera.cx;panState.y=shotCamera.cy;panState.zoom=shotCamera.zoom;
  const cameraTargetLayer=cameraLayers.find(item=>String(item.spec?.id||'')===cameraTarget);
- const cameraTargetName=cameraTargetLayer?(worldCharacterDirectory.find(ch=>String(ch.id)===cameraTarget)?.name||cameraTargetLayer.spec?.name||cameraTarget):'none';
- const cameraProgress=rawShotCamera?(panT>=.995?'HOLD':('PAN '+Math.round(panT*100)+'%')):'NO ZOOM';
- updateCameraDebugStatus('CAM '+(director==='manual'?'MANUAL':'AUTO')+' | '+String(shot).toUpperCase()+' | '+cameraTargetName+' | '+cameraZoom.toFixed(2)+'x | '+cameraProgress);
+ const cameraTargetName=cameraTargetLayer?(worldCharacterDirectory.find(ch=>String(ch.id)===cameraTarget)?.name||cameraTargetLayer.spec?.name||cameraTarget):'Chưa có mục tiêu';
+ const shotLabel=shot==='close_up'?'CẬN CẢNH':(shot==='medium'?'TRUNG CẢNH':(shot==='wide'?'TOÀN CẢNH':String(shot).toUpperCase()));
+ const cameraProgress=rawShotCamera?(panT>=.995?'ĐÃ ỔN ĐỊNH':'ĐANG LIA '+Math.round(panT*100)+'%'):'KHÔNG ZOOM';
+ updateCameraDebugStatus('CAMERA '+(director==='manual'?'THỦ CÔNG':'TỰ ĐỘNG')+' | '+shotLabel+' | '+cameraTargetName+' | Zoom '+cameraZoom.toFixed(2)+'x | '+cameraProgress);
  if(shotCamera){ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(shotCamera.zoom,shotCamera.zoom);ctx.translate(-shotCamera.cx,-shotCamera.cy)}
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
  if(bgAsset||bgVideo) {
