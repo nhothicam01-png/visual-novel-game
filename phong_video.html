@@ -395,7 +395,15 @@ function renderEffectCatalogs(){
   host.innerHTML=(window.VNEffects?.list(target)||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="'+group+'" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
  });
  const env=document.querySelector('[data-environment-effect-list]');
- if(env)env.innerHTML=(window.VNEnvironmentEffects?.list()||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="atm" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
+ if(env){
+  const nativeEffects=(window.VNEnvironmentEffects?.list()||[]).map(item=>'<label class="check"><input type="checkbox" data-effect="atm" value="'+safeText(item.id)+'"> '+safeText(item.label)+'</label>').join('');
+  const canvasEffects=CODE_VFX_CATALOG.map(([id,name])=>'<label class="check"><input type="checkbox" data-line-scene-effect="'+id+'"> '+safeText(name)+' <small>(Canvas)</small></label>').join('');
+  env.innerHTML=nativeEffects+'<div class="note" style="margin:8px 0 4px">Hiệu ứng Canvas của cảnh</div>'+canvasEffects;
+  env.querySelectorAll('[data-line-scene-effect]').forEach(input=>input.addEventListener('change',()=>{
+   const master=document.querySelector('#scene-effect-picker [data-scene-effect="'+input.dataset.lineSceneEffect+'"]');
+   if(master){master.checked=input.checked;master.dispatchEvent(new Event('change',{bubbles:true}))}
+  }));
+ }
 }
 function setStatus(s){$('export-status').textContent=s}
 const ANIMATION_REGISTRY_FALLBACK={
@@ -673,7 +681,8 @@ function normalizeSceneEffects(values){
 const CODE_VFX_CATALOG=[['rain','Mưa'],['snow','Tuyết'],['lightning','Sấm sét'],['storm','Mưa bão + sấm sét'],['leaves','Lá rơi'],['petals','Cánh hoa'],['dust','Bụi / mảnh vụn'],['fog','Sương / khói'],['wind','Gió giật'],['bubbles','Bọt khí'],['embers','Tàn lửa'],['fire','Lửa'],['sunlight','Tia nắng'],['aura','Hào quang'],['impact','Va chạm'],['shockwave','Sóng chấn động'],['earthquake','Động đất / rung chấn'],['rockfall','Đá rơi / sạt lở'],['cracks','Vết nứt lan rộng'],['space_warp','Biến dạng không gian'],['wound','Vết thương'],['sparkles','Lấp lánh'],['motion_blur','Nhòe chuyển động'],['transition','Chuyển cảnh'],['explosion','Vụ nổ']];
 function renderSceneEffectPicker(){
  const host=$('scene-effect-picker');if(!host)return;
- const scene=getCurrentScene(),selected=normalizeSceneEffects(scene?.visual?.sceneEffects||[]);
+ const scene=getCurrentScene(),lineEffects=getCurrentLine()?.sourceFrame?.hieu_ung_canh;
+ const selected=normalizeSceneEffects(Array.isArray(lineEffects)&&lineEffects.length?lineEffects:scene?.visual?.sceneEffects||[]);
  const ids=new Set(selected.map(x=>x.id));
  if(selected.length){const opacity=Math.round(selected[0].opacity*100);$('scene-effect-opacity').value=String(opacity);$('scene-effect-opacity-value').textContent=opacity+'%';$('scene-effect-status').textContent=selected.length+' hiệu ứng code đang bật.'}else{$('scene-effect-status').textContent='Chưa chọn hiệu ứng môi trường.'}
  host.innerHTML=CODE_VFX_CATALOG.map(([id,name])=>{
@@ -687,7 +696,10 @@ function renderSceneEffectPicker(){
    return {id,type:'code',opacity:Number($('scene-effect-opacity').value)/100,z_index:layer==='front'?100:-10};
   });
   sc.visual={...(sc.visual||captureVisual()),sceneEffects:picked};
+  const idsOfPicked=new Set(picked.map(x=>x.id));
   $('scene-effect-status').textContent=picked.length+' hiệu ứng code · '+picked.filter(x=>x.z_index>=50).length+' lớp trước · '+picked.filter(x=>x.z_index<50).length+' lớp sau.';
+  const line=getCurrentLine();if(line?.sourceFrame&&typeof line.sourceFrame==='object')line.sourceFrame.hieu_ung_canh=picked.map(x=>({...x}));
+  document.querySelectorAll('[data-line-scene-effect]').forEach(input=>{input.checked=idsOfPicked.has(input.dataset.lineSceneEffect)});
   updateAssets();
  };
  host.querySelectorAll('[data-scene-effect],[data-scene-effect-layer]').forEach(input=>input.addEventListener('change',savePicked));
