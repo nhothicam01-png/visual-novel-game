@@ -1126,7 +1126,7 @@
             "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
-            "interaction_target": "char_bubu_char_01"
+            "interaction_target": "char_rerin_char_03"
           },
           "x": 51,
           "y": 0,
@@ -1221,7 +1221,7 @@
               "y": 92
             },
             "to": {
-              "x": 50,
+              "x": 38,
               "y": 92
             },
             "keyframes": [
@@ -1232,12 +1232,12 @@
               },
               {
                 "t": 0.55,
-                "x": 38,
+                "x": 31,
                 "y": 92
               },
               {
                 "t": 1,
-                "x": 50,
+                "x": 38,
                 "y": 92
               }
             ]
@@ -1322,10 +1322,10 @@
             "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
-            "interaction_target": "none"
+            "interaction_target": "char_rerin_char_03"
           },
-          "x": 24,
-          "y": 0,
+          "x": 38,
+          "y": 92,
           "scale": 0.68,
           "z_index": 1
         },
