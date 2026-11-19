@@ -3256,6 +3256,8 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
    try{
     await applyStoryData(message.data,message.name||'demoStudio Preview',message.path||'assets/KichBan/demoStudio/demoStudio.json');
     setPreviewAspectRatio(message.ratio||previewAspectRatio);
+    if(typeof message.dialogueVisible==='boolean')$('show-dialogue').checked=message.dialogueVisible;
+    drawFrame(0);
     demoStudioStoryLoaded=true;
     if(request!==demoStudioBridgeRequest)return;
     await seekSourceLine(Math.max(0,Number(message.index)||0));
@@ -3265,6 +3267,9 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
    }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
   }else if(message.type==='DEMO_STUDIO_SET_RATIO'&&demoStudioStoryLoaded){
    setPreviewAspectRatio(message.ratio);
+  }else if(message.type==='DEMO_STUDIO_SET_DIALOGUE_VISIBILITY'&&demoStudioStoryLoaded){
+   $('show-dialogue').checked=message.visible!==false;
+   drawFrame(0);
   }else if(message.type==='DEMO_STUDIO_EXPORT_VIDEO'&&demoStudioStoryLoaded){
    if(recording){window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_ERROR',message:'Đang có một tiến trình xuất video.'},location.origin);return}
    try{
