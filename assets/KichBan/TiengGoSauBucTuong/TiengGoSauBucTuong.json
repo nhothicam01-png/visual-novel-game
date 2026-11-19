@@ -2439,11 +2439,12 @@
       "expression_id": {
         "communication": "speaking",
         "emotion": "afraid",
-        "pose": "standing",
-        "direction": "right",
-        "face_angle": "45°",
+        "pose": "walking_pose",
+        "direction": "left",
+        "face_angle": "135°",
         "view_angle": "full body",
-        "interaction_target": "none"
+        "interaction_target": "none",
+        "action": "walking"
       },
       "nhan_vat_hien_thi": [
         {
@@ -2451,11 +2452,12 @@
           "expression_id": {
             "communication": "speaking",
             "emotion": "afraid",
-            "pose": "standing",
-            "direction": "right",
-            "face_angle": "45°",
+            "pose": "walking_pose",
+            "direction": "left",
+            "face_angle": "135°",
             "view_angle": "full body",
-            "interaction_target": "none"
+            "interaction_target": "none",
+            "action": "walking"
           },
           "x": 50,
           "y": 92,
@@ -2464,10 +2466,12 @@
           "motion": {
             "duration_seconds": 2.4,
             "easing": "easeInOut",
+            "action": "walking",
+            "direction": "left",
             "from": {
               "x": 112,
               "y": 92,
-              "opacity": 0
+              "opacity": 1
             },
             "to": {
               "x": 50,
@@ -2479,13 +2483,13 @@
                 "t": 0,
                 "x": 112,
                 "y": 92,
-                "opacity": 0
+                "opacity": 1
               },
               {
                 "t": 0.7,
                 "x": 75,
                 "y": 92,
-                "opacity": 0.8
+                "opacity": 1
               },
               {
                 "t": 1,
@@ -2495,11 +2499,12 @@
               }
             ],
             "end_expression_id": {
-              "communication": "listening",
-              "emotion": "afraid",
+              "communication": "silent",
+              "emotion": "neutral",
               "pose": "standing",
+              "action": "idle",
               "direction": "left",
-              "face_angle": "45°",
+              "face_angle": "135°",
               "view_angle": "full body",
               "interaction_target": "none"
             }
