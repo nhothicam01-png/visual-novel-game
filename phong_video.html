@@ -1038,7 +1038,7 @@ function rowAssetUrls(row,index){
  else if(row?.nhan_vat||frame.nhan_vat||row?.speakerId){const id=String(frame.nhan_vat||row.nhan_vat||row.speakerId);addCharacter({id},normalizeSemantic(frame.expression_id||row.expression_id||{}))}
  normalizeSceneEffects(frame.hieu_ung_canh??row?.hieu_ung_canh??[]).forEach(effect=>{const path=String(effect?.path||'').trim();if(!path||effect.type==='code')return;const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?urls.images:urls.videos).add(url)});
  const bgm=resolvedLineAudio(row,'bgm'),sfx=resolvedLineAudio(row,'sfx');
- const audioUrl=value=>!value||/^blob:/i.test(value)?'':/^https?:\\/\\//i.test(value)?value:value.startsWith('assets/')?BASE+value.slice(7):BASE+'AmThanh/'+(value===bgm?'Nen/':'HieuUng/')+value;
+ const audioUrl=value=>!value||/^blob:/i.test(value)?'':(value.startsWith('http://')||value.startsWith('https://'))?value:value.startsWith('assets/')?BASE+value.slice(7):BASE+'AmThanh/'+(value===bgm?'Nen/':'HieuUng/')+value;
  [audioUrl(bgm),audioUrl(sfx)].filter(Boolean).forEach(url=>urls.audios.add(url));
  const objects=Array.isArray(row?.scene_objects)?row.scene_objects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
  objects.forEach(o=>{const file=String(o?.asset||o?.path||o?.file||'').trim();if(!file)return;const url=/^https?:\/\//i.test(file)?file:file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file;(/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?urls.images:urls.videos).add(url)});
