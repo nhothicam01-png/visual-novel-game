@@ -656,7 +656,7 @@ function getCharacterShadowCanvas(media,color){
  let entry=characterShadowCanvasCache.get(media);if(!entry||entry.canvas.width!==sw||entry.canvas.height!==sh){const canvas=document.createElement('canvas');canvas.width=sw;canvas.height=sh;entry={canvas,ctx:canvas.getContext('2d')};characterShadowCanvasCache.set(media,entry)}
  const c=entry.ctx;c.clearRect(0,0,sw,sh);c.globalCompositeOperation='source-over';c.drawImage(media,0,0,sw,sh);c.globalCompositeOperation='source-in';c.fillStyle=color;c.fillRect(0,0,sw,sh);c.globalCompositeOperation='source-over';return entry.canvas;
 }
-const CODE_VFX_ALIASES={rain:['rain','mua'],snow:['snow','tuyet'],lightning:['lightning','thunder','sam_set'],storm:['storm','bao','bao_lon','mua_bao_sam_set'],leaves:['leaves','la_roi'],petals:['petals','canh_hoa'],dust:['dust','bui'],fog:['fog','suong','khoi'],wind:['wind','gio'],bubbles:['bubbles','bot_khi'],embers:['embers','tan_lua'],fire:['fire','lua'],sunlight:['sunlight','tia_nang'],aura:['aura','hao_quang'],impact:['impact','va_cham'],shockwave:['shockwave','chan_dong'],earthquake:['earthquake','dong_dat','rung_chan'],rockfall:['rockfall','da_roi','sat_lo'],cracks:['cracks','vet_nut'],wound:['wound','vet_thuong'],sparkles:['sparkles','lap_lanh'],motion_blur:['motion_blur','nhoe_chuyen_dong'],transition:['transition','chuyen_canh'],explosion:['explosion','vu_no']};
+const CODE_VFX_ALIASES={rain:['rain','mua'],snow:['snow','tuyet'],lightning:['lightning','thunder','sam_set'],storm:['storm','bao','bao_lon','mua_bao_sam_set'],leaves:['leaves','la_roi'],petals:['petals','canh_hoa'],dust:['dust','bui'],fog:['fog','suong','khoi'],wind:['wind','gio'],bubbles:['bubbles','bot_khi'],embers:['embers','tan_lua'],fire:['fire','lua'],sunlight:['sunlight','tia_nang'],aura:['aura','hao_quang'],impact:['impact','va_cham'],shockwave:['shockwave','chan_dong'],earthquake:['earthquake','dong_dat','rung_chan'],rockfall:['rockfall','da_roi','sat_lo'],cracks:['cracks','vet_nut'],wound:['wound','vet_thuong'],sparkles:['sparkles','lap_lanh'],motion_blur:['motion_blur','nhoe_chuyen_dong'],space_warp:['space_warp','bien_dang_khong_gian','khong_gian_rung_chuyen'],transition:['transition','chuyen_canh'],explosion:['explosion','vu_no']};
 function normalizeSceneEffects(values){
  const list=Array.isArray(values)?values:(values?[values]:[]);
  return list.map((value,index)=>{
@@ -670,7 +670,7 @@ function normalizeSceneEffects(values){
   return {id,type:'code',loop:true,opacity:Math.max(.05,Math.min(1,Number(value.opacity??1))),z_index:Number(value.z_index??20+index),config:value.config&&typeof value.config==='object'?value.config:{}};
  }).filter(Boolean);
 }
-const CODE_VFX_CATALOG=[['rain','Mưa'],['snow','Tuyết'],['lightning','Sấm sét'],['storm','Mưa bão + sấm sét'],['leaves','Lá rơi'],['petals','Cánh hoa'],['dust','Bụi / mảnh vụn'],['fog','Sương / khói'],['wind','Gió giật'],['bubbles','Bọt khí'],['embers','Tàn lửa'],['fire','Lửa'],['sunlight','Tia nắng'],['aura','Hào quang'],['impact','Va chạm'],['shockwave','Sóng chấn động'],['earthquake','Động đất / rung chấn'],['rockfall','Đá rơi / sạt lở'],['cracks','Vết nứt lan rộng'],['wound','Vết thương'],['sparkles','Lấp lánh'],['motion_blur','Nhòe chuyển động'],['transition','Chuyển cảnh'],['explosion','Vụ nổ']];
+const CODE_VFX_CATALOG=[['rain','Mưa'],['snow','Tuyết'],['lightning','Sấm sét'],['storm','Mưa bão + sấm sét'],['leaves','Lá rơi'],['petals','Cánh hoa'],['dust','Bụi / mảnh vụn'],['fog','Sương / khói'],['wind','Gió giật'],['bubbles','Bọt khí'],['embers','Tàn lửa'],['fire','Lửa'],['sunlight','Tia nắng'],['aura','Hào quang'],['impact','Va chạm'],['shockwave','Sóng chấn động'],['earthquake','Động đất / rung chấn'],['rockfall','Đá rơi / sạt lở'],['cracks','Vết nứt lan rộng'],['space_warp','Biến dạng không gian'],['wound','Vết thương'],['sparkles','Lấp lánh'],['motion_blur','Nhòe chuyển động'],['transition','Chuyển cảnh'],['explosion','Vụ nổ']];
 function renderSceneEffectPicker(){
  const host=$('scene-effect-picker');if(!host)return;
  const scene=getCurrentScene(),selected=normalizeSceneEffects(scene?.visual?.sceneEffects||[]);
@@ -1030,6 +1030,43 @@ function drawFrame(elapsed,st){
   return false;
  }
 }
+// Biến dạng không gian hậu kỳ: chụp toàn bộ nền + nhân vật + hiệu ứng vào buffer,
+ // sau đó bẻ cong các dải ảnh theo sóng thời gian. Chạy giống nhau ở preview và export.
+ let spaceWarpBuffer=null,spaceWarpBufferCtx=null;
+ function applySpaceWarpEffect(w,h,elapsed,item){
+  if(!item)return;
+  if(!spaceWarpBuffer||spaceWarpBuffer.width!==w||spaceWarpBuffer.height!==h){
+   spaceWarpBuffer=document.createElement('canvas');spaceWarpBuffer.width=w;spaceWarpBuffer.height=h;
+   spaceWarpBufferCtx=spaceWarpBuffer.getContext('2d',{alpha:false});
+  }
+  const cfg=item.config||{},intensity=Math.max(.15,Math.min(2.5,Number(cfg.intensity??1))),
+   speed=Math.max(.1,Math.min(4,Number(cfg.speed??1))),
+   frequency=Math.max(.5,Math.min(4,Number(cfg.frequency??1.4))),
+   opacity=Math.max(.05,Math.min(1,Number(item.opacity??1))),
+   t=elapsed*speed,amp=w*.0065*intensity,rows=Math.max(48,Math.min(120,Math.round(h/10)));
+  spaceWarpBufferCtx.setTransform(1,0,0,1,0,0);spaceWarpBufferCtx.clearRect(0,0,w,h);
+  spaceWarpBufferCtx.drawImage(canvas,0,0,w,h);
+  // Giữ ảnh gốc làm nền để mép dải biến dạng không lộ vùng đen.
+  ctx.save();ctx.globalAlpha=1;ctx.drawImage(spaceWarpBuffer,0,0,w,h);ctx.restore();
+  for(let i=0;i<rows;i++){
+   const y=i*h/rows,hh=Math.ceil(h/rows)+1,cy=(y+hh*.5)/h-.5;
+   const wave=Math.sin(cy*Math.PI*2*frequency*3+t*2.7)+.42*Math.sin(cy*Math.PI*2*frequency*6-t*1.9);
+   const dx=wave*amp;
+   const dy=Math.sin(cy*Math.PI*2*frequency*2+t*1.7)*h*.0018*intensity;
+   ctx.save();ctx.beginPath();ctx.rect(0,y,w,hh);ctx.clip();ctx.globalAlpha=opacity*.92;
+   ctx.drawImage(spaceWarpBuffer,dx,dy,w,h);ctx.restore();
+  }
+  // Vòng gợn không gian trong suốt, co giãn nhẹ quanh tâm để mắt cảm nhận độ sâu.
+  const pulse=.5+.5*Math.sin(t*2.1),cx=w*.5+Math.sin(t*.37)*w*.08,cy=h*.48+Math.cos(t*.31)*h*.06;
+  ctx.save();ctx.globalCompositeOperation='screen';ctx.globalAlpha=opacity*(.10+.08*pulse)*intensity;
+  for(let n=0;n<3;n++){const r=(.12+n*.105+.018*Math.sin(t*1.8+n))*Math.min(w,h);ctx.strokeStyle=n===1?'rgba(125,205,255,.8)':'rgba(190,155,255,.65)';ctx.lineWidth=Math.max(1,w*.0015);ctx.beginPath();ctx.ellipse(cx,cy,r*1.45,r,Math.sin(t*.22)*.08,0,Math.PI*2);ctx.stroke()}
+  ctx.restore();
+  // Tách viền màu rất nhẹ theo nhịp, tạo cảm giác lớp thực tại trượt khỏi nhau.
+  const chroma=(.8+.2*Math.sin(t*3))*Math.min(5,w*.0035)*intensity;
+  if(chroma>.3){ctx.save();ctx.globalCompositeOperation='screen';ctx.globalAlpha=opacity*.075;
+   ctx.drawImage(spaceWarpBuffer,chroma,0,w,h);ctx.globalAlpha=opacity*.06;
+   ctx.drawImage(spaceWarpBuffer,-chroma,0,w,h);ctx.restore()}
+ }
 function drawFrameUnsafe(elapsed,st){
  const w=canvas.width,h=canvas.height;
  const quakeElapsed=Math.max(0,elapsed-lineMotionStartElapsed);
@@ -1185,12 +1222,12 @@ function drawFrameUnsafe(elapsed,st){
  // Hiệu ứng cảnh và nhân vật dùng chung một trục z_index.
  // z_index thấp nằm phía sau; z_index cao nằm phía trước và có thể phủ lên nhân vật.
  const drawSceneEffectItem=item=>{
-  if(item.type==='code')drawCodeEnvironmentEffect(item.id,item,w,h,elapsed);
+  if(item.type==='code'&&item.id!=='space_warp')drawCodeEnvironmentEffect(item.id,item,w,h,elapsed);
  };
  const renderLayers=[];
  if(charLayerVideos.length)charLayerVideos.forEach((layer,index)=>renderLayers.push({kind:'character',z:Number(layer.spec?.z_index??index+1),order:1,draw:()=>drawOneCharacter(layer.media,layer.spec)}));
  else if(charVideo)renderLayers.push({kind:'character',z:1,order:1,draw:()=>drawOneCharacter(frameOverride.char||charVideo,{x:50,y:100,scale:1,z_index:1})});
- sceneEffectLayers.forEach((item,index)=>renderLayers.push({kind:'effect',z:Number(item.z_index??20+index),order:0,draw:()=>drawSceneEffectItem(item)}));
+ sceneEffectLayers.filter(item=>item.id!=='space_warp').forEach((item,index)=>renderLayers.push({kind:'effect',z:Number(item.z_index??20+index),order:0,draw:()=>drawSceneEffectItem(item)}));
  renderLayers.sort((a,b)=>a.z-b.z||a.order-b.order).forEach(layer=>{
   try{layer.draw()}catch(error){
    if(!previewRenderErrorLogged){previewRenderErrorLogged=true;console.error('Bỏ qua lớp hiệu ứng/nhân vật bị lỗi để không khóa timeline:',layer.kind,error)}
@@ -1236,6 +1273,8 @@ function drawFrameUnsafe(elapsed,st){
  }
  // Hiệu ứng cảnh đã được vẽ xen kẽ với nhân vật theo z_index ở trên.
  ctx.restore();
+ const spaceWarp=sceneEffectLayers.find(item=>item.type==='code'&&item.id==='space_warp');
+ if(spaceWarp)applySpaceWarpEffect(w,h,elapsed,spaceWarp);
  if(st.flashback){ctx.save();ctx.globalCompositeOperation='soft-light';ctx.fillStyle='rgba(255,205,135,.34)';ctx.fillRect(0,0,w,h);ctx.globalCompositeOperation='source-over';ctx.fillStyle='rgba(255,231,185,.10)';ctx.fillRect(0,0,w,h);const memoryVignette=ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.22,w/2,h/2,Math.max(w,h)*.76);memoryVignette.addColorStop(0,'rgba(90,53,25,0)');memoryVignette.addColorStop(1,'rgba(75,43,20,.24)');ctx.fillStyle=memoryVignette;ctx.fillRect(0,0,w,h);ctx.restore()}if(st.sceneTransition){const fade=Math.max(0,1-Math.max(0,Number(elapsed)||0)/.7);if(fade>0){ctx.save();ctx.fillStyle='rgba(0,0,0,'+fade+')';ctx.fillRect(0,0,w,h);ctx.restore()}}
  if(st.dialogueLayer&&!speakingCharacterId)ctx.drawImage(st.dialogueLayer,0,0);else drawDialogue(w,h);
 }
