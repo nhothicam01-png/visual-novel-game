@@ -1102,35 +1102,51 @@ function drawFrameUnsafe(elapsed,st){
  const director=String(cameraSpec.director||'auto').toLowerCase();
  const sceneLines=getCurrentScene()?.lines||[],lineIndex=Math.max(0,activeLineIndex);
  const speakerTarget=String(sourceCameraFrame.nhan_vat||getCurrentLine()?.speakerId||speakingCharacterId||'');
- // Mặc định tự đạo diễn: luân phiên cận mặt, bán thân, cận mặt, toàn thân, bán thân, toàn cảnh nhóm.
- // Chỉ camera thay đổi; tọa độ và kích thước gốc của các nhân vật không đổi theo người nói.
- const autoShots=['close_up','bust','close_up','full_body','bust','group'];
- const autoShot=autoShots[lineIndex%autoShots.length];
+ // Đạo diễn theo NHỊP CẢNH, không đổi máy quay theo từng câu thoại.
+ // Mỗi shot được giữ ngẫu nhiên ổn định 2–4 câu; seed theo scene để kết quả lặp lại
+ // nhất quán khi tua, phát lại hoặc xuất video.
+ const sceneKey=String(getCurrentScene()?.id||sourceCameraFrame.scene_id||activeSceneIndex||'scene');
+ let sceneSeed=0;for(let si=0;si<sceneKey.length;si++)sceneSeed=(sceneSeed*31+sceneKey.charCodeAt(si))>>>0;
+ let cueIndex=0,cueStart=0,cueSpan=2+(sceneSeed%3);
+ while(lineIndex>=cueStart+cueSpan&&cueIndex<sceneLines.length){
+  cueStart+=cueSpan;cueIndex++;
+  cueSpan=2+((sceneSeed+cueIndex*7+3)%3);
+ }
+ const cueLine=sceneLines[cueStart]||getCurrentLine()||{};
+ const cueSource=cueLine.sourceFrame||cueLine;
+ const cueSpeaker=String(cueLine.speakerId||cueSource.nhan_vat||speakerTarget);
+ const shotPattern=['bust','group','close_up','bust','full_body','group','bust','close_up'];
+ const patternOffset=sceneSeed%shotPattern.length;
+ const autoShot=shotPattern[(cueIndex+patternOffset)%shotPattern.length];
  const shot=director==='manual'
   ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
   :autoShot;
  const cameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
-  :(shot==='group'?'':speakerTarget);
- const defaultZoom=shot==='close_up'?1.58:shot==='bust'?1.27:shot==='full_body'?1.035:shot==='group'?1:1;
- const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.52:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.18:shot==='over_shoulder'||shot==='qua_vai'?1.32:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
+  :(shot==='group'?'':cueSpeaker);
+ const defaultZoom=shot==='close_up'?1.38:shot==='bust'?1.16:shot==='full_body'?1.035:shot==='group'?1:1;
+ const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.42:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
  const rawShotCamera=shot==='group'?null:computeShotCamera(w,h,shotZoom,cameraTarget,charLayerVideos,isPortrait,shot);
- // Camera pan: luôn bắt đầu từ vị trí camera hiện tại, chỉ lia ngang.
- // Không kéo camera về tâm toàn cảnh ở mỗi câu; chuyển động chậm, có tăng/giảm tốc.
- const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startZoom:1,targetX:null,targetZoom:1});
- const panMarker=String(lineMotionStartElapsed)+'|'+String(cameraTarget)+'|'+String(shot);
+ // Chỉ bắt đầu lia khi có một cue camera mới. Giữ nguyên vị trí và zoom trong các
+ // câu còn lại của cùng shot, kể cả khi người nói thay đổi.
+ const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startZoom:1,targetX:null,targetZoom:1,startElapsed:0});
+ const panMarker=director==='manual'
+  ?'manual|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom)
+  :'auto|'+sceneKey+'|'+String(cueIndex)+'|'+String(cameraTarget)+'|'+String(shot);
  if(panState.marker!==panMarker){
   panState.marker=panMarker;
-  // Normalize stale preview state: camera zoom must never fall below the original background scale.
+  panState.startElapsed=elapsed;
+  // Camera bắt đầu đúng tại vị trí cuối của shot trước, không reset về toàn cảnh.
   panState.startZoom=Math.max(1,Math.min(1.8,Number.isFinite(panState.zoom)?panState.zoom:1));
   const startHalfW=w/(2*panState.startZoom);
   panState.startX=Math.max(startHalfW,Math.min(w-startHalfW,Number.isFinite(panState.x)?panState.x:w/2));
   panState.targetZoom=Math.max(1,Math.min(1.8,rawShotCamera?rawShotCamera.zoom:1));
   panState.targetX=rawShotCamera?rawShotCamera.cx:w/2;
  }
- const panDuration=1.35;
- const panT=Math.max(0,Math.min(1,(elapsed-lineMotionStartElapsed)/panDuration));
+ const panDistance=Math.abs(panState.targetX-panState.startX)/Math.max(1,w);
+ const panDuration=Math.max(1.8,Math.min(2.8,1.8+panDistance*1.2));
+ const panT=Math.max(0,Math.min(1,(elapsed-panState.startElapsed)/panDuration));
  const panEase=panT<.5?4*panT*panT*panT:1-Math.pow(-2*panT+2,3)/2;
  const cameraZoom=Math.max(1,panState.startZoom+(panState.targetZoom-panState.startZoom)*panEase);
  const halfViewportW=w/(2*cameraZoom);
