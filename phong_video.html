@@ -1345,7 +1345,24 @@ function drawFrameUnsafe(elapsed,st){
   if(item.type==='code'&&item.id!=='space_warp')drawCodeEnvironmentEffect(item.id,item,w,h,elapsed);
  };
  const renderLayers=[];
- if(charLayerVideos.length)charLayerVideos.forEach((layer,index)=>renderLayers.push({kind:'character',z:Number(layer.spec?.z_index??index+1),order:1,draw:()=>drawOneCharacter(layer.media,layer.spec)}));
+ if(charLayerVideos.length)charLayerVideos.forEach((layer,index)=>{
+  const spec=layer.spec||{},move=spec.motion&&typeof spec.motion==='object'?spec.motion:null;
+  const duration=Math.max(.01,Number(move?.duration_seconds)||1),t=move?Math.max(0,Math.min(1,(elapsed-lineMotionStartElapsed)/duration)):1;
+  const ease=move?.easing==='linear'?t:t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const from=move?.from||{},to=move?.to||{},lerp=(a,b,k)=>Number(a)+(Number(b)-Number(a))*k;
+  let footY=move?lerp(from.y??spec.y??92,to.y??spec.y??92,ease):Number(spec.y??92);
+  const keys=Array.isArray(move?.keyframes)?move.keyframes:[];
+  if(keys.length>1){
+   const sorted=keys.filter(k=>k&&Number.isFinite(Number(k.t))).slice().sort((a,b)=>Number(a.t)-Number(b.t));
+   let a=sorted[0],b=sorted[sorted.length-1];
+   for(let j=0;j<sorted.length-1;j++){if(t>=Number(sorted[j].t)&&t<=Number(sorted[j+1].t)){a=sorted[j];b=sorted[j+1];break}}
+   const u=Math.max(0,Math.min(1,(t-Number(a.t))/Math.max(.0001,Number(b.t)-Number(a.t))));
+   if(a.y!=null||b.y!=null)footY=lerp(a.y??footY,b.y??footY,u);
+  }
+  // Cùng z_index thì nhân vật có chân thấp hơn (Y lớn hơn) luôn được vẽ phía trước.
+  const baseZ=Number(spec.z_index??index+1),depthOrder=clampCharacterGroundY(footY)/1000;
+  renderLayers.push({kind:'character',z:baseZ+depthOrder,order:1,draw:()=>drawOneCharacter(layer.media,spec)});
+ });
  else if(charVideo)renderLayers.push({kind:'character',z:1,order:1,draw:()=>drawOneCharacter(frameOverride.char||charVideo,{x:50,y:100,scale:1,z_index:1})});
  sceneEffectLayers.filter(item=>item.id!=='space_warp').forEach((item,index)=>renderLayers.push({kind:'effect',z:Number(item.z_index??20+index),order:0,draw:()=>drawSceneEffectItem(item)}));
  renderLayers.sort((a,b)=>a.z-b.z||a.order-b.order).forEach(layer=>{
