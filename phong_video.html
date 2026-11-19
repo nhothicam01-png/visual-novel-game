@@ -656,6 +656,7 @@ function getCharacterShadowCanvas(media,color){
  let entry=characterShadowCanvasCache.get(media);if(!entry||entry.canvas.width!==sw||entry.canvas.height!==sh){const canvas=document.createElement('canvas');canvas.width=sw;canvas.height=sh;entry={canvas,ctx:canvas.getContext('2d')};characterShadowCanvasCache.set(media,entry)}
  const c=entry.ctx;c.clearRect(0,0,sw,sh);c.globalCompositeOperation='source-over';c.drawImage(media,0,0,sw,sh);c.globalCompositeOperation='source-in';c.fillStyle=color;c.fillRect(0,0,sw,sh);c.globalCompositeOperation='source-over';return entry.canvas;
 }
+const CODE_VFX_ALIASES={rain:['rain','mua'],snow:['snow','tuyet'],lightning:['lightning','thunder','sam_set'],storm:['storm','bao','bao_lon','mua_bao_sam_set'],leaves:['leaves','la_roi'],petals:['petals','canh_hoa'],dust:['dust','bui'],fog:['fog','suong','khoi'],wind:['wind','gio'],bubbles:['bubbles','bot_khi'],embers:['embers','tan_lua'],fire:['fire','lua'],sunlight:['sunlight','tia_nang'],aura:['aura','hao_quang'],impact:['impact','va_cham'],shockwave:['shockwave','chan_dong'],earthquake:['earthquake','dong_dat','rung_chan'],rockfall:['rockfall','da_roi','sat_lo'],cracks:['cracks','vet_nut'],wound:['wound','vet_thuong'],sparkles:['sparkles','lap_lanh'],motion_blur:['motion_blur','nhoe_chuyen_dong'],transition:['transition','chuyen_canh'],explosion:['explosion','vu_no']};
 function normalizeSceneEffects(values){
  const list=Array.isArray(values)?values:(values?[values]:[]);
  return list.map((value,index)=>{
@@ -664,7 +665,7 @@ function normalizeSceneEffects(values){
   const raw=String(value.id||value.effect||value.path||value.file||value.name||'').trim();
   if(!raw)return null;
   const base=raw.split('/').pop().replace(/\.[^.]+$/,'').toLowerCase();
-  const id=Object.keys(CODE_VFX_ALIASES).find(key=>CODE_VFX_ALIASES[key].includes(base))||base;
+  const id=Object.keys(CODE_VFX_ALIASES).find(key=>key===base||CODE_VFX_ALIASES[key].includes(base))||base;
   if(!Object.prototype.hasOwnProperty.call(CODE_VFX_ALIASES,id))return null;
   return {id,type:'code',loop:true,opacity:Math.max(.05,Math.min(1,Number(value.opacity??1))),z_index:Number(value.z_index??20+index),config:value.config&&typeof value.config==='object'?value.config:{}};
  }).filter(Boolean);
@@ -2863,7 +2864,7 @@ async function selectScene(i){
 function newLine(){return {speaker:'Nhân vật 1',text:'',effectSettings:[],effectStrength:50,profileId:'',lang:$('tts-lang').value||'vi-VN',voiceId:$('piper-voice').value||'',pauseAfter:.3,wavBlob:null,cacheKey:''}}
 $('scene-select').addEventListener('change',e=>selectScene(Number(e.target.value)));
 $('scene-flashback').addEventListener('change',()=>{const sc=getCurrentScene();if(!sc)return;sc.isFlashback=$('scene-flashback').checked;sc.lines.forEach(line=>line.isFlashback=sc.isFlashback);drawFrame(0)});
-$('scene-effect-loop').addEventListener('change',()=>{const sc=getCurrentScene();if(!sc)return;sc.visual.sceneEffects=normalizeSceneEffects(sc.visual.sceneEffects).map(x=>({...x,loop:x.type==='video'?$('scene-effect-loop').checked:false}));saveCurrentScene();updateAssets()});
+// Hiệu ứng Canvas chạy theo timeline; không có media loop control.
 $('scene-effect-opacity').addEventListener('input',()=>{$('scene-effect-opacity-value').textContent=$('scene-effect-opacity').value+'%';const sc=getCurrentScene();if(!sc)return;sc.visual.sceneEffects=normalizeSceneEffects(sc.visual.sceneEffects).map(x=>({...x,opacity:Number($('scene-effect-opacity').value)/100}));updateAssets()});
 $('add-scene').addEventListener('click',async()=>{
  saveCurrentLine();saveCurrentScene();
