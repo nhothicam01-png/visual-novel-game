@@ -1205,6 +1205,7 @@ function drawFrame(elapsed,st){
    ctx.drawImage(spaceWarpBuffer,chroma,0,w,h);ctx.globalAlpha=opacity*.06;
    ctx.drawImage(spaceWarpBuffer,-chroma,0,w,h);ctx.restore()}
  }
+function updateCameraDebugStatus(text){const el=document.getElementById('camera-debug-status');if(el)el.textContent=text;}
 function drawFrameUnsafe(elapsed,st){
  const w=canvas.width,h=canvas.height;
  const quakeElapsed=Math.max(0,elapsed-lineMotionStartElapsed);
