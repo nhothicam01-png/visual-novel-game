@@ -848,9 +848,17 @@ async function updateAssets(){
    const locomotionActions=new Set(['walking','running','running_pose','moving','locomotion']);
    let assetSemantic=semantic,motionClipMatched=false,motionClipCommunication='';
    let selection,expression='',url='';
+   // Cho phép DemoStudio ghim một WEBM cụ thể cho từng nhân vật/đoạn thoại.
+   const explicitWebm=String(spec?.webm_file||spec?.animation_file||'').trim();
+   if(explicitWebm){
+    const paths=expressionFilesByFolder[String(folder||'')]||[];
+    const wanted=explicitWebm.replace(/\\\\/g,'/');
+    const chosenPath=paths.find(path=>path===wanted||path.endsWith('/'+wanted.split('/').pop())||path.split('/').pop()===wanted.split('/').pop());
+    if(chosenPath){expression=chosenPath.split('/').pop().replace(/\\.webm$/i,'');url=BASE+'NhanVat/'+folder+'/'+chosenPath.split('/').pop();const chosenMeta=animationMeta(chosenPath);selection={file:expression,matched:true,mirrored:false,reason:'WEBM được chọn thủ công trong DemoStudio'};assetSemantic={...semantic,...Object.fromEntries(['communication','emotion','pose','action','direction','face_angle','view_angle','interaction_target'].map(k=>[k,chosenMeta[k]||semantic[k]]))};}
+   }
    // Chọn WEBM locomotion thật theo metadata, không lấy một frame đứng yên rồi kéo sprite.
    // Nếu đang nói, ưu tiên clip walking/running có khẩu hình speaking; chỉ dùng silent khi thư viện không có clip speaking tương ứng.
-   if(motion&&locomotionActions.has(motionAction)){
+   if(!selection&&motion&&locomotionActions.has(motionAction)){
     const dx=Number(motion?.to?.x)-Number(motion?.from?.x);
     const moveDirection=Number.isFinite(dx)&&Math.abs(dx)>.05?(dx<0?'left':'right'):canonicalAnimationValue('direction',motion.direction||semantic.direction||'right');
     const paths=expressionFilesByFolder[String(folder||'')]||[];
