@@ -1564,8 +1564,12 @@ function prefetchSceneEffectsFor(items){
  const seen=new Set(),queue=[];
  items.forEach(item=>{const scene=scenes[item.sceneIndex],line=scene?.lines?.[item.lineIndex];
   normalizeSceneEffects(scene?.visual?.sceneEffects||line?.sourceFrame?.hieu_ung_canh||[]).forEach(effect=>{
-   const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+effect.path.split('/').map(encodeURIComponent).join('/');
-   if(seen.has(url))return;seen.add(url);queue.push(()=>(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(err=>console.warn('Nạp trước hiệu ứng thất bại:',effect.path,err)));
+   // Hiệu ứng Canvas (type=code) được vẽ trực tiếp, không có tệp path để tải trước.
+   // Chỉ prefetch các hiệu ứng dạng ảnh/video có đường dẫn tài nguyên thực.
+   const path=String(effect?.path||'').trim();
+   if(effect?.type==='code'||!path)return;
+   const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path.split('/').map(encodeURIComponent).join('/');
+   if(seen.has(url))return;seen.add(url);queue.push(()=>(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(err=>console.warn('Nạp trước hiệu ứng thất bại:',path,err)));
   })});
  void (async()=>{for(let i=0;i<queue.length;i+=2)await Promise.all(queue.slice(i,i+2).map(job=>job()))})();
 }
