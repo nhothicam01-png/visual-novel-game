@@ -1664,9 +1664,9 @@ async function playLineAudio(line){
  if(bgm!==previewLineBgmName){
   if(previewAudio.bgm){previewAudio.bgm.pause();previewAudio.bgm=null}
   previewLineBgmName=bgm;
-  if(bgm){const url=/^(blob:|https?:\/\/)/i.test(bgm)?bgm:BASE+'AmThanh/Nen/'+bgm;previewAudio.bgm=audioElement(url,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
+  if(bgm){const url=/^(blob:|https?:\/\/)/i.test(bgm)?bgm:bgm.startsWith('assets/')?BASE+bgm.slice(7):BASE+'AmThanh/Nen/'+bgm;previewAudio.bgm=audioElement(url,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
  }
- const sfx=resolvedLineAudio(line,'sfx'),sfxUrl=/^(blob:|https?:\/\/)/i.test(sfx)?sfx:getPreviewSfxUrl();
+ const sfx=resolvedLineAudio(line,'sfx'),sfxUrl=/^(blob:|https?:\/\/)/i.test(sfx)?sfx:sfx?(sfx.startsWith('assets/')?BASE+sfx.slice(7):BASE+'AmThanh/HieuUng/'+sfx):getPreviewSfxUrl();
  if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}
  previewLineSfxName=sfx;
  if(sfx&&sfxUrl){previewAudio.sfx=audioElement(sfxUrl,false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
