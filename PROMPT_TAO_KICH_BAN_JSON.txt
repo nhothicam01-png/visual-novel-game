@@ -564,27 +564,26 @@ Quy tắc:
 - Không dùng trường hiệu ứng cũ hoặc các ID cũ chỉ vì chúng từng xuất hiện trong prompt trước.
 - `anh_hieu_ung` không được dùng cho hiệu ứng môi trường; không tạo đường dẫn ảnh/video hiệu ứng.
 - Hiệu ứng toàn cảnh khai báo bằng `hieu_ung_canh` dưới dạng mảng object `{ id, type:"code", opacity, z_index }`.
-- ID hợp lệ: rain, snow, lightning, leaves, petals, dust, fog, wind, bubbles, embers, fire, sunlight, aura, impact, cracks, wound, sparkles, motion_blur, transition, explosion.
+- ID hợp lệ: rain, snow, lightning, storm, leaves, petals, dust, fog, wind, bubbles, embers, fire, sunlight, aura, impact, shockwave, earthquake, rockfall, cracks, wound, sparkles, motion_blur, transition, explosion.
 - Hiệu ứng môi trường được vẽ bằng Canvas procedural, không có file nguồn, không có loop/file path. Mặc định đặt sau nhân vật (`z_index:-10`); chỉ đặt trước nhân vật (`z_index:100`) khi có chủ ý.
 - Player ánh xạ tên file lịch sử sang ID code để tương thích truyện cũ; JSON mới chỉ ghi ID.
 
 
 ĐẠO DIỄN SỰ KIỆN ĐỘNG ĐẤT — BẮT BUỘC TỰ ĐỘNG HÓA
-- Khi truyện/mô tả cảnh có động đất, rung chấn, dư chấn hoặc mặt đất rung chuyển, AI phải tự chuyển mô tả đó thành hiệu ứng hình ảnh thực sự chạy khi phát video; tuyệt đối không chỉ kể bằng lời thoại.
-- Dùng các ID đã có trong effects.js:
-  - `nen: ["bg_earthquake"]` để nền rung ngang/dọc và nghiêng nhẹ.
-  - `camera: ["camera-shake"]` để toàn khung hình rung theo nhịp địa chấn.
-  - `nhan_vat: ["char_fear_shake"]` cho nhân vật đang hoảng sợ/mất thăng bằng; chỉ áp dụng ở các lượt phù hợp, không bắt buộc mọi nhân vật rung liên tục.
-- Khi bắt đầu động đất, bật các hiệu ứng phù hợp ngay tại lượt bắt đầu; duy trì chúng ở các lượt tiếp theo trong toàn bộ khoảng thời gian động đất. Khi động đất chấm dứt, bỏ các hiệu ứng rung ở lượt kế tiếp và thể hiện dư chấn nhẹ nếu nội dung có.
-- Phân biệt cường độ: rung nhẹ dùng camera/nền vừa phải; động đất mạnh kết hợp nền + camera + phản ứng nhân vật; dư chấn giảm cường độ hoặc chỉ giữ rung nhẹ. Không lạm dụng zoom, xoay camera hay di chuyển vị trí sprite.
-- Nếu động đất làm đồ vật rơi, tường nứt hoặc bụi văng, chỉ dùng hiệu ứng Canvas tương ứng khi phù hợp và có ID hợp lệ; không tự bịa đạo cụ/tài nguyên.
-- Không tạo ID mới như `earthquake` nếu danh mục không có. Các ID cụ thể ở trên là ID phải dùng cho hiệu ứng động đất.
-- Trước khi lưu, kiểm tra toàn bộ đoạn sự kiện: hiệu ứng phải bắt đầu đúng lúc, không tự biến mất giữa các câu thoại khi địa chấn vẫn đang diễn ra, và phải tắt khi sự kiện kết thúc.
+- Khi truyện/mô tả cảnh có động đất, rung chấn, dư chấn hoặc mặt đất rung chuyển, AI phải thêm hiệu ứng hình ảnh thực sự vào `hieu_ung_canh`; không chỉ kể bằng lời thoại.
+- ID Canvas dành cho sự kiện địa chấn: `earthquake` (rung camera + bụi/mảnh vụn), `shockwave` (vòng sóng chấn động), `cracks` (vết nứt lan rộng), `rockfall` (đá rơi/sạt lở), `impact` (vòng va chạm). Có thể kết hợp `storm` hoặc `lightning` nếu đồng thời có bão/sét.
+- Ví dụ: `hieu_ung_canh: [{"id":"earthquake","type":"code","opacity":1,"z_index":-10},{"id":"cracks","type":"code","opacity":0.9,"z_index":-10}]`.
+- Khi động đất bắt đầu, bật các hiệu ứng phù hợp ngay ở dòng mở đầu và giữ `hieu_ung_canh` nhất quán trên mọi dòng thuộc thời gian sự kiện. Khi kết thúc, bỏ hiệu ứng ở dòng tiếp theo; nếu có dư chấn, dùng `earthquake` với cường độ thấp hơn qua `config.intensity`.
+- Có thể kết hợp `camera: ["camera-shake"]` và `nhan_vat: ["char_fear_shake"]` từ `effects.js` để tăng phản ứng; chỉ rung nhân vật đang hoảng sợ, không rung toàn bộ nhân vật vô cớ.
+- Không lạm dụng zoom/xoay camera hoặc thay đổi tọa độ sprite. Đồ vật rơi, nứt tường, bụi và đá phải được thể hiện bằng ID Canvas tương ứng, không tự bịa asset.
+- Trước khi lưu, kiểm tra hiệu ứng bắt đầu đúng lúc, duy trì xuyên suốt các dòng sự kiện, và tắt khi sự kiện kết thúc.
 
 QUY TRÌNH KIỂM TRA HIỆU ỨNG CODE
 - Chỉ dùng ID thuộc danh mục hiệu ứng Canvas đã nêu; không kiểm kê hoặc tham chiếu file ảnh/video hiệu ứng.
 - Xác thực id hợp lệ, opacity trong 0..1, z_index hữu hạn, đúng thời điểm bắt đầu/kết thúc và đúng lớp trước/sau nhân vật.
-- Sét phải là tia phân nhánh vẽ bằng code kèm flash ngắn; không dùng ảnh phủ toàn màn hình.
+- Sét phải là tia phân nhánh vẽ bằng code kèm flash ngắn; `storm` kết hợp mưa xiên và sét chớp theo chu kỳ.
+- `earthquake` phải rung cả camera và sinh bụi/mảnh vụn; `shockwave` tạo vòng chấn động lan rộng; `cracks` tạo vết nứt phân nhánh; `rockfall` tạo đá rơi; `impact` tạo vòng va chạm.
+- Các ID này thuộc thư viện Canvas trong `phong_video.html`, không thuộc `environment-effects.js` hoặc `effects.js`. Luôn đọc danh mục `CODE_VFX_CATALOG` trong player trước khi viết JSON.
 
 ==================================================
 VI. QUY TẮC ÂM THANH – CẤU TRÚC MỚI
@@ -1497,7 +1496,7 @@ HỆ THỐNG HIỆU ỨNG MÔI TRƯỜNG THUẦN CODE — QUY CHUẨN MỚI
 - Không sử dụng, tạo mới hoặc tham chiếu file ảnh/video trong thư viện hiệu ứng Canvas. Thư viện tài nguyên HieuUng đã được thay bằng hiệu ứng Canvas procedural tích hợp trong player.
 - Hiệu ứng toàn cảnh khai báo bằng ID trong hieu_ung_canh hoặc visual.sceneEffects, ví dụ:
   {"id":"rain","type":"code","opacity":0.7,"z_index":-10}
-- ID hợp lệ: rain, snow, lightning, leaves, dust, fog, fire, sunlight, aura, impact, cracks, wound, sparkles, motion_blur, transition, explosion.
+- ID hợp lệ: rain, snow, lightning, storm, leaves, petals, dust, fog, wind, bubbles, embers, fire, sunlight, aura, impact, shockwave, earthquake, rockfall, cracks, wound, sparkles, motion_blur, transition, explosion.
 - Không khai báo file/path/extension cho hiệu ứng code. Không tạo URL hay tải media cho các hiệu ứng này.
 - Hiệu ứng có thể cấu hình bằng config nếu player hỗ trợ; không tự ý thêm thuộc tính chưa được engine hỗ trợ.
 - Chọn lớp z_index theo yêu cầu cảnh: số âm hoặc dưới 50 đặt sau nhân vật; từ 50 trở lên đặt trước nhân vật. Mặc định ưu tiên phía sau để không che mặt.
