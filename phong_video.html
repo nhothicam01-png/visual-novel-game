@@ -1249,9 +1249,14 @@ function drawFrameUnsafe(elapsed,st){
  const shot=director==='manual'
   ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
   :(emotionalEmphasis?'close_up':(visibleCount>1?'group':'bust'));
+ // Shot tự động giữ một chủ thể trong 2–4 câu theo nhịp cảnh; lấy người mở đầu
+ // cụm làm điểm ngắm để máy quay có thời gian lia sang nhân vật đối thoại kế tiếp.
+ const cueLine=sceneLines[cueStart]||currentLine;
+ const cueSource=cueLine.sourceFrame||cueLine;
+ const cueTarget=String(cueSource.nhan_vat||cueLine.speakerId||speakerTarget);
  const cameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
-  :speakerTarget;
+  :(cueTarget||speakerTarget);
  const defaultZoom=director==='manual'?1:(emotionalEmphasis?1.34:(visibleCount>1?(visibleCount>=3?1.015:1.035):1.14));
  const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.42:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
@@ -1262,7 +1267,7 @@ function drawFrameUnsafe(elapsed,st){
  const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startZoom:1,targetX:null,targetZoom:1,startElapsed:0,followOffset:0,followElapsed:elapsed,baseSubjectX:null});
  const panMarker=director==='manual'
   ?'manual|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom)
-  :'auto|'+sceneKey+'|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom);
+  :'auto|'+sceneKey+'|cue-'+String(cueIndex)+'|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom);
  if(panState.marker!==panMarker){
   panState.marker=panMarker;
   panState.startElapsed=elapsed;
