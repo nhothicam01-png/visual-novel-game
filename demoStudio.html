@@ -95,7 +95,9 @@ function renderInspector(){
  }else if(kind==='scene'){
   html+=select('Mã cảnh','editScene',r.scene_id||'',sceneOptions)+select('Ảnh nền','editBg',r.anh_nen||'',bgOptions);
  }else if(kind==='camera'){
-  html+='<div class="field"><label>Camera (JSON)</label><textarea id="objJson">'+esc(JSON.stringify(r.camera||{},null,2))+'</textarea></div>';
+  const cameraOptions=[...new Map(rows.filter(x=>x.camera&&Object.keys(x.camera).length).map(x=>[JSON.stringify(x.camera),x.camera])).entries()];
+  const currentCamera=JSON.stringify(r.camera||{});
+  html+='<div class="field"><label>Cấu hình camera có trong kịch bản</label><select id="objCamera">'+cameraOptions.map(([json,obj],i)=>'<option value="'+attr(json)+'" '+(json===currentCamera?'selected':'')+'>Cấu hình '+(i+1)+' · '+esc(Object.keys(obj).slice(0,3).join(', '))+'</option>').join('')+'</select></div><p class="hint">Chọn một cấu hình camera đã được sử dụng ở đoạn khác để tránh nhập sai cấu trúc.</p>';
  }else if(kind==='motion'){
   html+=select('Hành động','objAction',ex.action||spec?.expression_id?.action,opts('action',['idle','walking','running','jumping','turning']));
   html+=select('Hướng','objDirection',ex.direction,opts('direction',['left','right','front','back']));
@@ -122,7 +124,7 @@ function renderInspector(){
    let targetSpec=specList.find(x=>String(x.id)===target);if(!targetSpec&&kind==='character'){targetSpec={id:target,expression_id:{}};specList.push(targetSpec);r.nhan_vat_hien_thi=specList}
    if(targetSpec){if(kind==='character'){if(webmPendingSelection)targetSpec.webm_file=webmPendingSelection;else delete targetSpec.webm_file;}targetSpec.expression_id=targetSpec.expression_id||{};for(const [id,key] of [['objPose','pose'],['objAction','action'],['objDirection','direction'],['objFace','face_angle'],['objView','view_angle'],['objComm','communication'],['objEmotion','emotion'],['objTarget','interaction_target']])if($(id))targetSpec.expression_id[key]=$(id).value;if(kind==='character'&&target===speakerId)r.expression_id={...r.expression_id,...targetSpec.expression_id}}
   }
-  if(kind==='camera'){try{r.camera=JSON.parse($('objJson').value)}catch(e){alert('JSON camera không hợp lệ: '+e.message);return}}
+  if(kind==='camera'){try{r.camera=JSON.parse($('objCamera').value||'{}')}catch(e){alert('Cấu hình camera không hợp lệ: '+e.message);return}}
   if(kind==='music'||kind==='sfx'){r.am_thanh=r.am_thanh||{};const key=kind==='music'?'nhac_nen':'hieu_ung_am_thanh';r.am_thanh[key]=r.am_thanh[key]||{};r.am_thanh[key].tep=$('objAudio').value.trim()}
   const oldTime=segments[selected]?.start||0;buildSegments();renderAll();seek(oldTime);syncPreviewLine(selected,true);
  };
