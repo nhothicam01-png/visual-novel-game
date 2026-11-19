@@ -1,0 +1,135 @@
+{
+  "schema_version": 2,
+  "world_name": "Căn phòng của bà",
+  "slug": "CanPhongCuaBa",
+  "genre": "Chính kịch tình cảm, gia đình, hiện thực xã hội",
+  "premise": "Bubu rời nhà và thuê căn phòng của Rerin để cô có tiền chăm bà ngoại đang bệnh nặng. Tình yêu giữa hai cô gái trưởng thành nảy nở trong những ngày bệnh viện, rồi bị họ hàng và gia đình lợi dụng làm vũ khí trong tranh chấp căn nhà.",
+  "setting": "Một khu phố cũ với căn nhà nhỏ hai tầng, bệnh viện, trường đại học, văn phòng luật sư và căn phòng trọ mới. Câu chuyện diễn ra trong gần một năm, từ lúc Bubu buộc phải rời nhà đến sau phán quyết chia tài sản.",
+  "tone": "Đời thường, dịu dàng nhưng day dứt; tình cảm phát triển chậm, xung đột xã hội và pháp lý được thể hiện qua hành động cùng hệ quả, kết thúc buồn nhưng còn hy vọng.",
+  "extra": "Ba nhân vật chính giữ nguyên character_id và assetFolder Bubu, Pipun, Rerin từ thư viện hiện có. Các vai phụ không có tài nguyên hình ảnh được để assetFolder rỗng, không mượn WEBM của nhân vật khác.",
+  "mode": "guided",
+  "places": [
+    {
+      "name": "Nhà của Rerin",
+      "description": "Căn nhà nhỏ hai tầng trong khu phố cũ; tầng dưới là nơi Rerin sinh hoạt, căn phòng tầng hai được cho thuê."
+    },
+    {
+      "name": "Bệnh viện",
+      "description": "Nơi Rerin chăm bà ngoại trong thời gian dài và nơi hai người dần dựa vào nhau."
+    },
+    {
+      "name": "Nhà Bubu",
+      "description": "Căn nhà chật nơi Bubu buộc phải nhường phòng cho em trai chuẩn bị thi đại học."
+    },
+    {
+      "name": "Trường đại học",
+      "description": "Nơi Bubu bị gọi lên làm việc sau khi hình ảnh riêng tư bị phát tán."
+    },
+    {
+      "name": "Văn phòng luật sư",
+      "description": "Nơi Bubu và Rerin tìm cách bảo vệ quyền tài sản và danh dự."
+    },
+    {
+      "name": "Phòng trọ mới",
+      "description": "Không gian nhỏ hơn, lạnh hơn nhưng là nơi hai người tự chọn ở lại bên nhau."
+    }
+  ],
+  "characters": [
+    {
+      "character_id": "char_bubu_char_01",
+      "name": "Bubu",
+      "role": "Nhân vật A; sinh viên năm cuối đại học, cuối tuổi đôi mươi",
+      "personality": "Tự trọng, biết quan tâm, ban đầu bị tổn thương vì gia đình quyết định thay mình; dần mạnh mẽ và chủ động bảo vệ tình yêu.",
+      "relationships": "Bạn thân của Pipun; người thuê phòng rồi trở thành người yêu của Rerin.",
+      "assetFolder": "Bubu",
+      "selected": true,
+      "asset_status": "linked"
+    },
+    {
+      "character_id": "char_pipun_char_02",
+      "name": "Pipun",
+      "role": "Nhân vật B; bạn thân và cầu nối giữa Bubu với Rerin",
+      "personality": "Thực tế, chân thành, biết lo lắng nhưng kiên định đứng về phía bạn.",
+      "relationships": "Bạn thân của Bubu và Rerin; nhân chứng về quá trình Rerin chăm sóc bà.",
+      "assetFolder": "Pipun",
+      "selected": true,
+      "asset_status": "linked"
+    },
+    {
+      "character_id": "char_rerin_char_03",
+      "name": "Rerin",
+      "role": "Nhân vật C; người chăm sóc bà ngoại và chủ căn nhà",
+      "personality": "Trầm tính, chịu đựng, trách nhiệm; dễ tự trách mình khi biến cố xảy ra.",
+      "relationships": "Cháu gái của bà ngoại; người cho Bubu thuê phòng rồi trở thành người yêu của Bubu.",
+      "assetFolder": "Rerin",
+      "selected": true,
+      "asset_status": "linked"
+    }
+  ],
+  "rules": [
+    {
+      "name": "Nhân vật chính",
+      "description": "Bubu, Pipun và Rerin giữ nguyên character_id và assetFolder hiện có; cả ba đều là phụ nữ trưởng thành."
+    },
+    {
+      "name": "Tính hiện thực",
+      "description": "Không có phép màu hay cứu viện bất ngờ; kết quả đến từ hành động, bằng chứng, lựa chọn và giới hạn tài chính."
+    },
+    {
+      "name": "Đời tư",
+      "description": "Tình yêu đồng giới không phải căn cứ để kết luận một người mất năng lực; họ hàng dùng định kiến để gây áp lực xã hội và làm tổn thương hai nhân vật."
+    },
+    {
+      "name": "Pháp lý",
+      "description": "Tranh chấp tài sản được giải thích qua chứng cứ, quyền thừa kế và tính không thể chia hiện vật của căn nhà; không khẳng định xu hướng tính dục làm mất quyền sở hữu."
+    }
+  ],
+  "events": [
+    {
+      "name": "Bubu rời nhà",
+      "description": "Gia đình dành phòng cho em trai chuẩn bị thi đại học, buộc Bubu tự tìm chỗ ở; Pipun giới thiệu căn phòng của Rerin.",
+      "importance": "Mở đầu và tạo hoàn cảnh hai nhân vật gặp nhau."
+    },
+    {
+      "name": "Những đêm bệnh viện",
+      "description": "Bubu chứng kiến Rerin chăm bà ngoại, cùng chia sẻ bữa ăn khuya và dần trở thành chỗ dựa của nhau.",
+      "importance": "Phát triển tình cảm tự nhiên, chậm rãi."
+    },
+    {
+      "name": "Tình yêu và mất mát",
+      "description": "Sau tin xấu và cái chết của bà, hai người tiếp tục ở bên nhau; họ hàng bắt đầu tranh quyền quản lý căn nhà.",
+      "importance": "Bước ngoặt từ tình cảm riêng tư sang xung đột xã hội."
+    },
+    {
+      "name": "Đời tư thành vũ khí",
+      "description": "Họ hàng quay lén và phát tán hình ảnh, gia đình Bubu từ mặt, Rerin mất việc và Bubu bị nhà trường gọi lên.",
+      "importance": "Đẩy hai nhân vật vào khủng hoảng và kiện tụng."
+    },
+    {
+      "name": "Tranh chấp và phán quyết",
+      "description": "Bubu, Rerin và Pipun tìm luật sư, thu thập chứng cứ; sau gần một năm, Rerin giữ được một phần quyền nhưng căn nhà phải bán để chia phần.",
+      "importance": "Cao trào pháp lý và mất mát vật chất."
+    },
+    {
+      "name": "Căn phòng nhỏ hơn",
+      "description": "Hai người chuyển đến phòng trọ mới, không còn gia đình hay căn nhà cũ nhưng vẫn chọn ở lại bên nhau.",
+      "importance": "Kết thúc buồn, thực tế và còn ánh sáng."
+    }
+  ],
+  "story_ideas": [
+    {
+      "title": "Căn phòng của bà",
+      "logline": "Một căn phòng cho thuê để cứu lấy viện phí trở thành nơi hai cô gái tìm thấy tình yêu, rồi phải trả giá khi định kiến bị biến thành vũ khí trong cuộc tranh chấp căn nhà.",
+      "arc": "Từ cuộc gặp gỡ đời thường, những đêm bệnh viện, tình yêu nảy nở, tang lễ, tranh chấp tài sản, kiện tụng kéo dài đến căn phòng trọ nhỏ trong buổi sáng mưa."
+    }
+  ],
+  "story_folders": [
+    {
+      "title": "Căn phòng của bà",
+      "folder": "CanPhongCuaBa",
+      "path": "assets/KichBan/CanPhongCuaBa",
+      "json_path": "assets/KichBan/CanPhongCuaBa/CanPhongCuaBa.json"
+    }
+  ],
+  "updated_at": "2026-11-19T16:47:00.000Z"
+}
