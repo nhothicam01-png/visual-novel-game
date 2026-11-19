@@ -106,6 +106,7 @@ function renderInspector(){
  const r=rows[selected],kind=selectedKind||'dialogue',chars=Object.entries(data.nhan_vat||{});
  const field=(label,id,value,type='text')=>'<div class="field"><label>'+label+'</label><input id="'+id+'" type="'+type+'" value="'+attr(value??'')+'"></div>';
  const select=(label,id,value,options)=>'<div class="field"><label>'+label+'</label><select id="'+id+'">'+options.map(x=>'<option value="'+attr(x)+'" '+(String(x)===String(value)?'selected':'')+'>'+esc(x||'(trống)')+'</option>').join('')+'</select></div>';
+ const selectWithLocal=(label,id,value,options,category)=>'<div class="field"><label>'+label+'</label><select id="'+id+'">'+options.map(x=>'<option value="'+attr(x)+'" '+(String(x)===String(value)?'selected':'')+'>'+esc(x||'(trống)')+'</option>').join('')+(assetItems.filter(x=>x.category===category).length?'<optgroup label="Kho tài nguyên cục bộ">'+assetItems.filter(x=>x.category===category).map(x=>'<option value="localasset:'+attr(x.id)+'" '+('localasset:'+x.id===String(value)?'selected':'')+'>'+esc(x.name)+'</option>').join('')+'</optgroup>':'')+'</select></div>';
  const specList=Array.isArray(r.nhan_vat_hien_thi)?r.nhan_vat_hien_thi:[];
  const speakerId=String(r.nhan_vat||'');
  const selectedCharacterId=selectedKind==='character'?(selectedObjectId||speakerId):speakerId;const spec=specList.find(x=>String(x.id)===selectedCharacterId)||specList.find(x=>String(x.id)===speakerId)||specList[0]||null;
@@ -120,7 +121,7 @@ function renderInspector(){
  if(kind==='dialogue'){
   html+=select('Người nói','editSpeaker',speakerId,chars.map(([id])=>id));
   html+= '<div class="field"><label>Nội dung thoại</label><textarea id="editText">'+esc(r.noi_dung||'')+'</textarea></div>';
-  html+=field('Thời lượng (giây)','editDuration',dur(r),'number')+select('Mã cảnh','editScene',r.scene_id||'',sceneOptions)+select('Ảnh nền','editBg',r.anh_nen||'',bgOptions)+'<div class="field"><label>Hiệu ứng cảnh · chọn nhiều mục (Ctrl/Cmd để chọn nhiều)</label><select id="editEffects" multiple>'+[...new Set([...effectCatalog,...effectOptions])].map(id=>'<option value="'+attr(id)+'" '+((r.hieu_ung_canh||[]).some(x=>(x.id||x)===id)?'selected':'')+'>'+esc(id)+'</option>').join('')+'</select></div>';
+  html+=field('Thời lượng (giây)','editDuration',dur(r),'number')+select('Mã cảnh','editScene',r.scene_id||'',sceneOptions)+selectWithLocal('Ảnh nền','editBg',r.anh_nen||'',bgOptions,'background')+'<div class="field"><label>Hiệu ứng cảnh · chọn nhiều mục (Ctrl/Cmd để chọn nhiều)</label><select id="editEffects" multiple>'+[...new Set([...effectCatalog,...effectOptions])].map(id=>'<option value="'+attr(id)+'" '+((r.hieu_ung_canh||[]).some(x=>(x.id||x)===id)?'selected':'')+'>'+esc(id)+'</option>').join('')+'</select></div>';
  }else if(kind==='character'){
   html+=select('Nhân vật','objChar',spec?.id||speakerId,chars.map(([id])=>id));
   html+=select('Tư thế (pose)','objPose',ex.pose,opts('pose',['standing','sitting','lying','crouching']));
@@ -131,9 +132,9 @@ function renderInspector(){
   html+=select('Giao tiếp','objComm',ex.communication,opts('communication',['speaking','listening','silent','reacting']));
   html+=select('Cảm xúc','objEmotion',ex.emotion,opts('emotion',['neutral','happy','sad','angry','anxious','embarrassed','fearful','surprised']));
   html+=select('Đối tượng tương tác','objTarget',ex.interaction_target||'',opts('interaction_target',['',...chars.map(([id])=>id)]));
-  html+='<div class="webm-picker"><strong>🎞 Thư viện WEBM thực tế</strong><p class="hint">Tìm, lọc và xem thử clip từ đúng thư mục nhân vật trên GitHub. Chọn clip rồi áp dụng để ghim clip này cho riêng đoạn hiện tại.</p><input id="webmSearch" class="search" placeholder="Tìm tên file, hành động, cảm xúc..."><div class="grid2"><label class="field"><label>Hành động</label><select id="webmActionFilter"><option value="">Tất cả</option></select></label><label class="field"><label>Cảm xúc</label><select id="webmEmotionFilter"><option value="">Tất cả</option></select></label></div><div id="webmResults" class="webm-results"><div class="empty">Đang tải thư viện WEBM...</div></div><video id="webmPreview" controls muted playsinline style="width:100%;max-height:190px;background:#050811;border-radius:8px;margin-top:8px"></video><div class="hint" id="webmSelectedLabel">Clip đang ghim: '+esc(spec?.webm_file||'Tự động theo metadata')+'</div><button id="clearWebm" type="button">↺ Bỏ ghim · để trình phát tự chọn</button></div>';
+  html+='<div class="webm-picker"><strong>🎞 Thư viện WEBM thực tế</strong><p class="hint">Tìm, lọc và xem thử clip từ đúng thư mục nhân vật trên GitHub. Chọn clip rồi áp dụng để ghim clip này cho riêng đoạn hiện tại.</p><input id="webmSearch" class="search" placeholder="Tìm tên file, hành động, cảm xúc..."><div class="grid2"><label class="field"><label>Hành động</label><select id="webmActionFilter"><option value="">Tất cả</option></select></label><label class="field"><label>Cảm xúc</label><select id="webmEmotionFilter"><option value="">Tất cả</option></select></label></div><div id="webmResults" class="webm-results"><div class="empty">Đang tải thư viện WEBM...</div></div><div class="field"><label>Hoặc chọn WEBM/video trong kho cục bộ</label><select id="localWebmSelect"><option value="">Tự động theo metadata / GitHub</option>'+assetItems.filter(x=>x.category==='character').map(x=>'<option value="localasset:'+attr(x.id)+'" '+('localasset:'+x.id===String(spec?.webm_file||'')?'selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div><video id="webmPreview" controls muted playsinline style="width:100%;max-height:190px;background:#050811;border-radius:8px;margin-top:8px"></video><div class="hint" id="webmSelectedLabel">Clip đang ghim: '+esc(spec?.webm_file||'Tự động theo metadata')+'</div><button id="clearWebm" type="button">↺ Bỏ ghim · để trình phát tự chọn</button></div>';
  }else if(kind==='scene'){
-  html+=select('Mã cảnh','editScene',r.scene_id||'',sceneOptions)+select('Ảnh nền','editBg',r.anh_nen||'',bgOptions);
+  html+=select('Mã cảnh','editScene',r.scene_id||'',sceneOptions)+selectWithLocal('Ảnh nền','editBg',r.anh_nen||'',bgOptions,'background');
  }else if(kind==='camera'){
   const cameraOptions=[...new Map(rows.filter(x=>x.camera&&Object.keys(x.camera).length).map(x=>[JSON.stringify(x.camera),x.camera])).entries()];
   const currentCamera=JSON.stringify(r.camera||{});
@@ -147,7 +148,7 @@ function renderInspector(){
  }else if(kind==='music'||kind==='sfx'){
   const path=kind==='music'?'am_thanh.nhac_nen.tep':'am_thanh.hieu_ung_am_thanh.tep';
   const val=kind==='music'?r.am_thanh?.nhac_nen?.tep:r.am_thanh?.hieu_ung_am_thanh?.tep;
-  html+=select('Chọn đường dẫn tệp','objAudio',val||'',audioOptions(kind))+'<p class="hint">Danh sách lấy từ các đường dẫn đã có trong kịch bản.</p>';
+  html+=selectWithLocal('Chọn đường dẫn tệp','objAudio',val||'',audioOptions(kind),kind==='music'?'music':'sfx')+'<p class="hint">Có thể chọn file đã dùng trong kịch bản hoặc lấy trực tiếp từ Kho tài nguyên cục bộ.</p>';
  }
  html+='<div class="row" style="flex-wrap:wrap"><button class="primary" id="applyObject">Áp dụng thay đổi</button><button id="prevLine">← Trước</button><button id="nextLine">Tiếp →</button></div><p class="hint" style="margin-top:12px">Các trường không chỉnh sửa được vẫn được giữ nguyên trong JSON.</p>';
  el.innerHTML=html;
@@ -196,6 +197,7 @@ function setupWebmPicker(characterId,currentPath){
   if(picked){const found=items.find(x=>x.path===picked);if(found){video.src=found.url;video.load()}}
   render();
  }).catch(e=>{results.innerHTML='<div class="empty">Không tải được thư viện WEBM: '+esc(e.message)+'</div>'});
+ const localSelect=$('localWebmSelect');if(localSelect)localSelect.onchange=async()=>{picked=localSelect.value;webmPendingSelection=picked;if(picked.startsWith('localasset:')){const asset=await getAsset(picked.slice(11));if(asset){video.src=URL.createObjectURL(asset.blob);video.load();video.play().catch(()=>{});$('webmSelectedLabel').textContent='WEBM cục bộ: '+asset.name}}else if(!picked){video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata'}render()};
  search.oninput=render;$('webmActionFilter').onchange=render;$('webmEmotionFilter').onchange=render;
  $('clearWebm').onclick=()=>{picked='';webmPendingSelection='';video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata';};
 }
