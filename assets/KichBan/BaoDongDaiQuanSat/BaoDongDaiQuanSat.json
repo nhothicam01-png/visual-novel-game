@@ -1,0 +1,2375 @@
+{
+  "phien_ban": 3,
+  "world_id": "TinHieuTuDaiQuanSat",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.35,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_bubu_char_01": {
+      "character_id": "char_bubu_char_01",
+      "ten_hien_thi": "Bubu",
+      "assetFolder": "Bubu",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_pipun_char_02": {
+      "character_id": "char_pipun_char_02",
+      "ten_hien_thi": "Pipun",
+      "assetFolder": "Pipun",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_rerin_char_03": {
+      "character_id": "char_rerin_char_03",
+      "ten_hien_thi": "Rerin",
+      "assetFolder": "Rerin",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Tối nay câu lạc bộ mở buổi kiểm tra hệ thống đài quan sát. Mọi thứ đang bình thường, nên câu này không cần hiệu ứng nào cả.",
+      "thoi_luong": 3.6,
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Mình sẽ thử chuyển động nhân vật trước: nhấp nhô, đung đưa, rung nhẹ và lắc vì sợ.",
+      "thoi_luong": 3.6,
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-bob",
+          "char-sway",
+          "char-shake",
+          "char_fear_shake"
+        ],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Đến lượt mình. Phóng to, trôi nhẹ, thở, bước vào, mờ dần và đung đưa mềm đều là chuyển động của nhân vật.",
+      "thoi_luong": 3.6,
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-zoom",
+          "char-float",
+          "char-breathe",
+          "char-enter",
+          "char-fade",
+          "soft-sway"
+        ],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Câu này chỉ nói về các hiệu ứng vừa thử, nhưng không yêu cầu bật lại chúng. Màn hình phải trở về bình thường.",
+      "thoi_luong": 3.6,
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Bây giờ thử nền: phóng gần, trượt trái, trượt phải, trôi, làm mờ và nhịp sáng.",
+      "thoi_luong": 3.6,
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg-zoom",
+          "bg-left",
+          "bg-right",
+          "bg-float",
+          "bg-blur",
+          "bg-pulse"
+        ],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Mình chỉ muốn camera rung, zoom gần, kéo ra và trôi nhẹ. Không di chuyển vị trí sprite nhé.",
+      "thoi_luong": 3.6,
+      "anh_nen": "lop_hoc_chieu.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera-shake",
+          "camera-zoom",
+          "camera-pull",
+          "camera-drift"
+        ],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Ngoài sân, gió bắt đầu thổi. Lá và cánh hoa bay qua, bụi mịn lấp lánh trong không khí.",
+      "thoi_luong": 3.6,
+      "anh_nen": "canh_dong_hoa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "leaves",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "petals",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "dust",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "wind",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "sparkles",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Đã dừng gió và lá rồi. Câu này không có hiệu ứng; mình cần thấy cảnh đứng yên để kiểm tra việc bỏ tick.",
+      "thoi_luong": 3.6,
+      "anh_nen": "canh_dong_hoa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Không khí lạnh đi: tuyết rơi, sương mù phủ thấp, bong bóng nổi lên và những tia nắng xuyên qua mây.",
+      "thoi_luong": 3.6,
+      "anh_nen": "canh_dong_hoa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "snow",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "fog",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "bubbles",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "sunlight",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Mình chỉ đang nhắc đến sương và tuyết trong lời thoại, không bật lại chúng ở câu này.",
+      "thoi_luong": 3.6,
+      "anh_nen": "canh_dong_hoa.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Trên đường đèo, mưa kéo đến, bầu trời tối sầm rồi sét phân nhánh lóe sáng liên tục!",
+      "thoi_luong": 3.6,
+      "anh_nen": "duong_nui.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "rain",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "storm",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "lightning",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Cơn mưa đã tạnh. Không còn mưa, không còn sét; câu này phải có mảng hiệu ứng rỗng.",
+      "thoi_luong": 3.6,
+      "anh_nen": "duong_nui.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Mặt đất rung chuyển! Bụi đá rơi xuống, vết nứt lan ra và một đợt sóng xung kích quét ngang con đường!",
+      "thoi_luong": 3.6,
+      "anh_nen": "duong_nui.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "earthquake",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "rockfall",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "cracks",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "shockwave",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "impact",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Đứng lại đã. Mình muốn xác nhận cảnh đã hết rung và không tự lặp lại hiệu ứng động đất.",
+      "thoi_luong": 3.6,
+      "anh_nen": "duong_nui.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Một luồng lửa bùng lên ở mô hình thử nghiệm, tàn lửa bay ra rồi vụ nổ lóe sáng trong chớp mắt.",
+      "thoi_luong": 3.6,
+      "anh_nen": "duong_nui.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": [
+          "flash"
+        ]
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "fire",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "embers",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "explosion",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Mô hình đã tắt. Đây là câu thoại bình thường, không có lửa hay vụ nổ nào được phép còn sót lại.",
+      "thoi_luong": 3.6,
+      "anh_nen": "duong_nui.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Có một quầng sáng bao quanh thiết bị, những tia lấp lánh xuất hiện và góc hình tối dần như đang bước vào vùng bí ẩn.",
+      "thoi_luong": 3.6,
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": [
+          "vignette",
+          "rays"
+        ]
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "aura",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "sparkles",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Đừng nhầm hiệu ứng ánh sáng với biến dạng không gian. Mình chưa bật biến dạng ở câu này đâu.",
+      "thoi_luong": 3.6,
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Bây giờ mới kích hoạt biến dạng không gian: mặt cảnh gợn sóng, các dải hình ảnh lệch đi và viền màu tách nhẹ!",
+      "thoi_luong": 3.6,
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "space_warp",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1.08
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Biến dạng đã kết thúc. Câu tiếp theo phải sạch hiệu ứng, không được kế thừa space_warp.",
+      "thoi_luong": 3.6,
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Thử thêm vết thương giả trên hình minh họa, làm nhòe chuyển động và chuyển cảnh mượt sang màn hình kết thúc.",
+      "thoi_luong": 3.6,
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "wound",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "motion_blur",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        },
+        {
+          "id": "transition",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Bài kiểm tra hoàn tất! Mình sẽ xem lại từng dòng để chắc rằng chỉ những hiệu ứng được lưu trong JSON mới xuất hiện.",
+      "thoi_luong": 3.6,
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_pipun_char_02"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_pipun_char_02"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Mình kiểm tra checkbox: dòng có ID phải được tick đúng, dòng mảng rỗng phải bỏ tick hết.",
+      "thoi_luong": 3.6,
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_pipun_char_02",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Nếu chuyển qua lại giữa các câu mà hiệu ứng không rò rỉ, vậy là hệ thống đã đồng bộ đúng một nguồn dữ liệu.",
+      "thoi_luong": 3.6,
+      "anh_nen": "con_duong_dem.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "curious",
+        "pose": "standing",
+        "direction": "left",
+        "face_angle": "135°",
+        "view_angle": "full body",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 28,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 53,
+          "y": 0,
+          "scale": 0.66,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "curious",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 77,
+          "y": 0,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "manual",
+        "shot": "medium",
+        "target": "char_rerin_char_03",
+        "zoom": 1
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    }
+  ]
+}
