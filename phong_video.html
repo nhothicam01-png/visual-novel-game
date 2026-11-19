@@ -1648,8 +1648,8 @@ async function stopDirectRecorder(){
 }
 
 function resolvedLineAudio(line,kind){
- if(kind==='bgm')return String($('bgm')?.value||'').trim();
- if(kind==='sfx')return String($('sfx-file')?.files?.[0]?.name||'').trim();
+ if(kind==='bgm')return String(line?.sourceAudio?.bgm||line?.sourceFrame?.am_thanh?.nhac_nen?.tep||$('bgm')?.value||'').trim();
+ if(kind==='sfx')return String(line?.sourceAudio?.sfx||line?.sourceFrame?.am_thanh?.hieu_ung_am_thanh?.tep||$('sfx-file')?.files?.[0]?.name||'').trim();
  return '';
 }
 let previewLineBgmName='',previewLineSfxName='',previewSfxFile=null,previewSfxUrl='';
@@ -1664,9 +1664,9 @@ async function playLineAudio(line){
  if(bgm!==previewLineBgmName){
   if(previewAudio.bgm){previewAudio.bgm.pause();previewAudio.bgm=null}
   previewLineBgmName=bgm;
-  if(bgm){previewAudio.bgm=audioElement(BASE+'AmThanh/Nen/'+bgm,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
+  if(bgm){const url=/^(blob:|https?:\/\/)/i.test(bgm)?bgm:BASE+'AmThanh/Nen/'+bgm;previewAudio.bgm=audioElement(url,true,Number($('bgm-volume').value));previewAudio.bgm.play().catch(()=>{})}
  }
- const sfx=resolvedLineAudio(line,'sfx'),sfxUrl=getPreviewSfxUrl();
+ const sfx=resolvedLineAudio(line,'sfx'),sfxUrl=/^(blob:|https?:\/\/)/i.test(sfx)?sfx:getPreviewSfxUrl();
  if(previewAudio.sfx){previewAudio.sfx.pause();previewAudio.sfx=null}
  previewLineSfxName=sfx;
  if(sfx&&sfxUrl){previewAudio.sfx=audioElement(sfxUrl,false,Number($('sfx-volume').value));previewAudio.sfx.play().catch(()=>{})}
