@@ -1051,7 +1051,7 @@ function wrapText(text,maxWidth){
  if(line)lines.push(line);return lines;
 }
 // [TỐI ƯU] Đọc DOM một lần cho mỗi câu thoại thay vì mỗi khung hình.
-let frameOverride={bg:null,char:null,sceneEffects:null};
+let frameOverride={bg:null,char:null,charLayers:null,sceneEffects:null};
 function readFrameState(){
  const effects=(group,target)=>Array.from(document.querySelectorAll('[data-effect="'+group+'"]:checked')).map(x=>target&&window.VNEffects?window.VNEffects.renderKey(target,x.value):x.value);
  return{bgFx:effects('bg','background'),charFx:effects('char','character'),camFx:effects('camera','camera'),atmFx:effects('atm'),strength:Number($('effect-strength')?.value||50)/50,flashback:!!(getCurrentScene()?.isFlashback||getCurrentLine()?.isFlashback),sceneTransition:!!(activeLineIndex===0&&(getCurrentScene()?.isFlashback||scenes[activeSceneIndex-1]?.isFlashback)),dialogueLayer:null};
@@ -1330,19 +1330,24 @@ function drawFrameUnsafe(elapsed,st){
  // Nhiều nhân vật: nếu JSON có nhan_vat_hien_thi thì dựng từng lớp độc lập.
  // Nếu không có trường này, giữ nguyên cách dựng một nhân vật của JSON cũ.
  const drawOneCharacter=(media,spec)=>{
-  // Layer có thể đã đổi sang WEBM trạng thái kết thúc sau khi motion hoàn tất.
-  media=spec?.__layer?.media||media;
-  if(!media)return;
   const move=spec?.motion&&typeof spec.motion==='object'?spec.motion:null,duration=Math.max(.01,Number(move?.duration_seconds)||1),motionElapsed=Math.max(0,elapsed-lineMotionStartElapsed);
-  // Khi nhân vật hoàn tất chuyển động, tự đổi từ WEBM hành động sang WEBM trạng thái kết thúc.
-  // Thay media ngay trên layer để pause/resume/stop luôn điều khiển đúng clip đang hiển thị.
-  if(move&&spec?.motionEndMedia&&!spec.__motionEndActivated&&motionElapsed>=duration){
-   spec.__motionEndActivated=true;
-   try{media.pause();spec.motionEndMedia.currentTime=0}catch(e){}
-   if(spec.__layer)spec.__layer.media=spec.motionEndMedia;
-   spec.motionEndMedia.play?.().catch?.(error=>console.warn('Không thể phát WEBM trạng thái kết thúc:',error));
+  // Khi xuất MP4, chọn khung nhân vật theo timestamp của timeline; không lấy frame từ video đang chạy theo đồng hồ thật.
+  const exportFrames=frameOverride.charLayers;
+  if(exportFrames instanceof Map){
+   const source=move&&spec?.motionEndMedia&&motionElapsed>=duration?spec.motionEndMedia:(spec?.__layer?.media||media);
+   media=exportFrames.get(source)||source;
+  }else{
+   // Preview: Layer có thể đổi sang WEBM trạng thái kết thúc khi chuyển động hoàn tất.
+   media=spec?.__layer?.media||media;
+   if(move&&spec?.motionEndMedia&&!spec.__motionEndActivated&&motionElapsed>=duration){
+    spec.__motionEndActivated=true;
+    try{media.pause();spec.motionEndMedia.currentTime=0}catch(e){}
+    if(spec.__layer)spec.__layer.media=spec.motionEndMedia;
+    spec.motionEndMedia.play?.().catch?.(error=>console.warn('Không thể phát WEBM trạng thái kết thúc:',error));
+   }
+   if(spec?.__motionEndActivated&&spec.motionEndMedia)media=spec.motionEndMedia;
   }
-  if(spec?.__motionEndActivated&&spec.motionEndMedia)media=spec.motionEndMedia;
+  if(!media)return;
   const rawT=move?Math.max(0,Math.min(1,motionElapsed/duration)):1,ease=move?.easing==='linear'?rawT:rawT<.5?2*rawT*rawT:1-Math.pow(-2*rawT+2,2)/2;
   const from=move?.from||{},to=move?.to||{},baseX=Number.isFinite(Number(spec?.x))?Math.max(0,Math.min(100,Number(spec.x))):50,baseY=clampCharacterGroundY(spec?.y),lerp=(a,b,t)=>Number(a)+(Number(b)-Number(a))*t,keys=Array.isArray(move?.keyframes)?move.keyframes:[];let st={x:move?lerp(from.x??baseX,to.x??baseX,ease):baseX,y:move?lerp(from.y??baseY,to.y??baseY,ease):baseY,scale:move?lerp(from.scale??(Number(spec?.scale)||1),to.scale??(Number(spec?.scale)||1),ease):(Number(spec?.scale)||1),rotation_degrees:move?lerp(from.rotation_degrees??(Number(spec?.rotation_degrees)||0),to.rotation_degrees??(Number(spec?.rotation_degrees)||0),ease):(Number(spec?.rotation_degrees)||0),opacity:move?lerp(from.opacity??1,to.opacity??1,ease):1};if(keys.length>1){const sorted=keys.filter(k=>k&&Number.isFinite(Number(k.t))).slice().sort((a,b)=>Number(a.t)-Number(b.t));let a=sorted[0],b=sorted[sorted.length-1];for(let j=0;j<sorted.length-1;j++){if(rawT>=Number(sorted[j].t)&&rawT<=Number(sorted[j+1].t)){a=sorted[j];b=sorted[j+1];break}}const u=Math.max(0,Math.min(1,(rawT-Number(a.t))/Math.max(.0001,Number(b.t)-Number(a.t))));['x','y','scale','rotation_degrees','opacity'].forEach(k=>{if(a[k]!=null||b[k]!=null)st[k]=lerp(a[k]??st[k],b[k]??st[k],u)})}const px=st.x,py=st.y,groundY=clampCharacterGroundY(py),x=w*px/100;let y=h*groundY/100;const requestedScale=Number(spec?.scale),baseScale=Number.isFinite(requestedScale)?Math.max(.1,Math.min(2.5,requestedScale)):.68,scale=getCharacterDepthScale(groundY,st.scale??baseScale),baseRotation=Number(spec?.rotation_degrees)||0,rotation=st.rotation_degrees??baseRotation;
   const sw=media.videoWidth||media.naturalWidth||media.width,sh=media.videoHeight||media.naturalHeight||media.height;
@@ -2333,7 +2338,11 @@ async function primeClipFrames(video,fps){
  }
 }
 async function primeActiveSceneClips(fps){
- const videos=[bgVideo,charVideo,...sceneEffectLayers.filter(x=>x.type==='video'&&x.media).map(x=>x.media)];
+ // Character layers are independent WEBM elements; pause them and predecode both action and end-state clips.
+ charLayerVideos.forEach(layer=>{pauseMedia(layer.media);pauseMedia(layer.motionEndMedia)});
+ const videos=[bgVideo,charVideo,
+  ...charLayerVideos.flatMap(layer=>[layer.media,layer.motionEndMedia]),
+  ...sceneEffectLayers.filter(x=>x.type==='video'&&x.media).map(x=>x.media)];
  const unique=[...new Set(videos.filter(v=>v&&Number.isFinite(v.duration)&&v.duration>0))];
  for(const video of unique)await primeClipFrames(video,fps);
 }
@@ -2446,7 +2455,7 @@ async function exportVideo(){
   for(let si=0;si<prepared.length;si++){
    const pack=prepared[si];if(!pack.lines.length)continue;
    activeSceneIndex=si;applyVisual(pack.visual);await updateAssets();
-   bgVideo?.pause();charVideo?.pause();sceneEffectLayers.forEach(x=>pauseMedia(x.media)); // seek thủ công, không để video tự chạy
+   bgVideo?.pause();charVideo?.pause();charLayerVideos.forEach(x=>{pauseMedia(x.media);pauseMedia(x.motionEndMedia)});sceneEffectLayers.forEach(x=>pauseMedia(x.media)); // seek thủ công, không để video tự chạy
    lastAssetSig=$('background').value+'|'+$('character').value+'|'+normalizeExpression($('expression').value);
    let sceneElapsed=0;
    for(const entry of pack.lines){
@@ -2458,11 +2467,12 @@ async function exportVideo(){
      if(frame.anh_nen)$('background').value=frame.anh_nen;
      applyLineEffects(entry.line);
      const sig=$('background').value+'|'+$('character').value+'|'+normalizeExpression($('expression').value);
-     if(sig!==lastAssetSig){await updateAssets();bgVideo?.pause();charVideo?.pause();lastAssetSig=sig}
+     if(sig!==lastAssetSig){await updateAssets();bgVideo?.pause();charVideo?.pause();charLayerVideos.forEach(x=>{pauseMedia(x.media);pauseMedia(x.motionEndMedia)});lastAssetSig=sig}
     }
     // [TỐI ƯU] Chốt trạng thái hiệu ứng + hộp thoại một lần cho cả câu thoại.
+    lineMotionStartElapsed=sceneElapsed;
     const st=readFrameState();st.dialogueLayer=buildDialogueLayer(renderCanvas.width,renderCanvas.height);
-    // Giải mã và cache trước các clip của đoạn thoại; vòng render bên dưới chỉ đọc khung đã nạp.
+    // Giải mã và cache trước cả WEBM của từng nhân vật; vòng render chỉ lấy frame theo timestamp.
     await primeActiveSceneClips(clipFps);
     const lineEndFrame=Math.min(frameCount,Math.round((entry.start+entry.duration+entry.pause)*fps));
     const lineFrames=Math.max(0,lineEndFrame-frameIndex);
@@ -2473,7 +2483,14 @@ async function exportVideo(){
      const t0=performance.now();
      let rb=bgVideo?clipFrame(bgVideo,tt,clipFps):null;if(rb instanceof Promise)rb=await rb;
      let rc=charVideo?clipFrame(charVideo,tt,clipFps):null;if(rc instanceof Promise)rc=await rc;
-     frameOverride.bg=rb;frameOverride.char=rc;frameOverride.sceneEffects={};
+     frameOverride.bg=rb;frameOverride.char=rc;frameOverride.charLayers=new Map();frameOverride.sceneEffects={};
+     for(const layer of charLayerVideos){
+      const spec=layer.spec||{},move=spec.motion&&typeof spec.motion==='object'?spec.motion:null,duration=Math.max(.01,Number(move?.duration_seconds)||1);
+      const source=move&&layer.motionEndMedia&&Math.max(0,tt-lineMotionStartElapsed)>=duration?layer.motionEndMedia:(spec.__layer?.media||layer.media);
+      if(!source)continue;
+      let characterFrame=clipFrame(source,tt,clipFps);if(characterFrame instanceof Promise)characterFrame=await characterFrame;
+      frameOverride.charLayers.set(source,characterFrame);
+     }
      for(const effect of sceneEffectLayers){if(effect.type!=='video'||!effect.media)continue;if(effect.loop===false&&tt>=effect.media.duration){frameOverride.sceneEffects[effect.path]=null;continue}let frame=clipFrame(effect.media,tt,clipFps);if(frame instanceof Promise)frame=await frame;frameOverride.sceneEffects[effect.path]=frame}
      const t1=performance.now();
      drawFrame(tt,st);
@@ -2506,7 +2523,7 @@ async function exportVideo(){
   try{await audioContext?.close()}catch(_){}
   // Trả lại canvas preview sau khi hoàn tất hoặc lỗi khi xuất.
   canvas=previewCanvas;ctx=previewCtx;renderCanvas=null;renderCtx=null;
-  frameOverride={bg:null,char:null,sceneEffects:null};clearClipFrameCache();
+  frameOverride={bg:null,char:null,charLayers:null,sceneEffects:null};clearClipFrameCache();
   activeSceneIndex=originalScene;activeLineIndex=originalLine;
   if(scenes[activeSceneIndex]){applyVisual(scenes[activeSceneIndex].visual);loadLineToEditor(scenes[activeSceneIndex].lines[activeLineIndex]);await updateAssets()}
   recording=false;$('export-video').disabled=false;renderSceneList();renderLineList();
