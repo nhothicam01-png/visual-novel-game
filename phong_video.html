@@ -3211,11 +3211,13 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
     demoStudioStoryLoaded=true;
     if(request!==demoStudioBridgeRequest)return;
     await seekSourceLine(Math.max(0,Number(message.index)||0));
-    if(request===demoStudioBridgeRequest)window.parent.postMessage({type:'DEMO_STUDIO_READY',index:currentSourceIndex()},location.origin);
+    if(request!==demoStudioBridgeRequest)return;
+    previewing=true;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();
+    window.parent.postMessage({type:'DEMO_STUDIO_READY',index:currentSourceIndex()},location.origin);
    }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
   }else if(message.type==='DEMO_STUDIO_SEEK'&&demoStudioStoryLoaded){
    const request=++demoStudioBridgeRequest;
-   try{await seekSourceLine(Math.max(0,Number(message.index)||0));if(request!==demoStudioBridgeRequest)return;drawFrame(0);window.parent.postMessage({type:'DEMO_STUDIO_FRAME',index:currentSourceIndex()},location.origin)}
+   try{await seekSourceLine(Math.max(0,Number(message.index)||0));if(request!==demoStudioBridgeRequest)return;previewing=true;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();window.parent.postMessage({type:'DEMO_STUDIO_FRAME',index:currentSourceIndex()},location.origin)}
    catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
   }
  });
