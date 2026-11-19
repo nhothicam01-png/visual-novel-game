@@ -350,13 +350,17 @@ function ensureBackgroundOption(value){
 function backgroundAssetUrl(value){
  const raw=String(value||'').trim();
  if(!raw)return '';
- if(/^https?:\/\//i.test(raw))return raw;
+ if(/^https?:\/\//i.test(raw)||/^blob:/i.test(raw))return raw;
  const path=raw.replace(/\\/g,'/').replace(/^\.\//,'').replace(/^\/+/, '');
  if(/^assets\//i.test(path))return BASE+path.slice(7);
  if(/^Nen\//i.test(path))return BASE+path;
  return BASE+'Nen/'+path;
 }
 function isVideoBackground(value){return /\.(mp4|webm)(?:[?#]|$)/i.test(String(value||''));}
+const localAssetObjectUrls=new Map();let localAssetDbPromise=null;
+function openLocalAssetDb(){if(localAssetDbPromise)return localAssetDbPromise;localAssetDbPromise=new Promise((resolve,reject)=>{const req=indexedDB.open('demoStudioAssetVault',1);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||new Error('Không mở được kho tài nguyên cục bộ'));req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('assets')){const st=db.createObjectStore('assets',{keyPath:'id'});st.createIndex('name','name',{unique:false});st.createIndex('category','category',{unique:false})}}});return localAssetDbPromise}
+async function localAssetUrl(value){const raw=String(value||'');if(!raw.startsWith('localasset:'))return raw;const id=raw.slice(11);if(localAssetObjectUrls.has(id))return localAssetObjectUrls.get(id);const db=await openLocalAssetDb(),item=await new Promise((resolve,reject)=>{const tx=db.transaction('assets','readonly'),req=tx.objectStore('assets').get(id);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error)});if(!item?.blob)throw new Error('Không tìm thấy tài nguyên cục bộ: '+id);const url=URL.createObjectURL(item.blob)+'#'+encodeURIComponent(item.name||'asset');localAssetObjectUrls.set(id,url);return url}
+async function hydrateLocalAssetRefs(story){const rows=Array.isArray(story?.danh_sach)?story.danh_sach:[];for(const row of rows){if(typeof row.anh_nen==='string'&&row.anh_nen.startsWith('localasset:'))row.anh_nen=await localAssetUrl(row.anh_nen);for(const key of ['nhac_nen','hieu_ung_am_thanh']){const a=row.am_thanh?.[key];if(a&&typeof a.tep==='string'&&a.tep.startsWith('localasset:'))a.tep=await localAssetUrl(a.tep)}if(Array.isArray(row.nhan_vat_hien_thi))for(const spec of row.nhan_vat_hien_thi)if(typeof spec?.webm_file==='string'&&spec.webm_file.startsWith('localasset:'))spec.webm_file=await localAssetUrl(spec.webm_file)}const bgm=story?.am_thanh_mac_dinh?.nhac_nen;if(typeof bgm==='string'&&bgm.startsWith('localasset:'))story.am_thanh_mac_dinh.nhac_nen=await localAssetUrl(bgm);else if(typeof bgm?.tep==='string'&&bgm.tep.startsWith('localasset:'))bgm.tep=await localAssetUrl(bgm.tep);return story}
 const $=id=>document.getElementById(id);
 let canvas=$('preview-canvas'),ctx=canvas.getContext('2d',{alpha:false});
 const previewCanvas=canvas,previewCtx=ctx;
@@ -851,10 +855,11 @@ async function updateAssets(){
    // Cho phép DemoStudio ghim một WEBM cụ thể cho từng nhân vật/đoạn thoại.
    const explicitWebm=String(spec?.webm_file||spec?.animation_file||'').trim();
    if(explicitWebm){
-    const paths=expressionFilesByFolder[String(folder||'')]||[];
-    const wanted=explicitWebm.replace(/\\\\/g,'/');
+    if(/^blob:/i.test(explicitWebm)){expression=explicitWebm.split('#').pop()||'local-webm';url=explicitWebm;selection={file:expression,matched:true,mirrored:false,reason:'WEBM lấy từ Kho tài nguyên cục bộ'};}
+    else{const paths=expressionFilesByFolder[String(folder||'')]||[];
+    const wanted=explicitWebm.replace(/\\/g,'/');
     const chosenPath=paths.find(path=>path===wanted||path.endsWith('/'+wanted.split('/').pop())||path.split('/').pop()===wanted.split('/').pop());
-    if(chosenPath){expression=chosenPath.split('/').pop().replace(/\\.webm$/i,'');url=BASE+'NhanVat/'+folder+'/'+chosenPath.split('/').pop();const chosenMeta=animationMeta(chosenPath);selection={file:expression,matched:true,mirrored:false,reason:'WEBM được chọn thủ công trong DemoStudio'};assetSemantic={...semantic,...Object.fromEntries(['communication','emotion','pose','action','direction','face_angle','view_angle','interaction_target'].map(k=>[k,chosenMeta[k]||semantic[k]]))};}
+    if(chosenPath){expression=chosenPath.split('/').pop().replace(/\.webm$/i,'');url=BASE+'NhanVat/'+folder+'/'+chosenPath.split('/').pop();const chosenMeta=animationMeta(chosenPath);selection={file:expression,matched:true,mirrored:false,reason:'WEBM được chọn thủ công trong DemoStudio'};assetSemantic={...semantic,...Object.fromEntries(['communication','emotion','pose','action','direction','face_angle','view_angle','interaction_target'].map(k=>[k,chosenMeta[k]||semantic[k]]))};}}
    }
    // Chọn WEBM locomotion thật theo metadata, không lấy một frame đứng yên rồi kéo sprite.
    // Nếu đang nói, ưu tiên clip walking/running có khẩu hình speaking; chỉ dùng silent khi thư viện không có clip speaking tương ứng.
@@ -2782,6 +2787,7 @@ async function loadWorldCharacterFolderMap(data,storyPath){
 async function applyStoryData(data,name,path){
  stopPreview();const rows=data?.danh_sach;
  if(!Array.isArray(rows)||!rows.length)throw new Error('File JSON không có danh_sach hợp lệ.');
+ await hydrateLocalAssetRefs(data);
  if(Number(data.phien_ban)!==3||!String(data.world_id||'').trim())throw new Error('File JSON phải dùng phien_ban: 3 và world_id hợp lệ.');
  activeStoryData=data;activeStoryName=String(name||'Kịch bản import').replace(/\.json$/i,'');activeStoryPath=String(path||('assets/KichBan/'+activeStoryName+'/'+activeStoryName+'.json'));sourceLineCount=rows.length;
  characterDirectory=uniqueCharacters(data);
