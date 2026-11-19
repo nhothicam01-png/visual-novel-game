@@ -1136,32 +1136,25 @@ function getCharacterCameraLayers(layers,elapsed){
   return {...layer,spec:{...spec,x,y,scale:getCharacterDepthScale(y,Number(spec.scale)||.68)}};
  });
 }
-// Zoom mặc định theo tên shot (hỗ trợ cả tên tiếng Việt/đồng nghĩa). Tên lạ → trung cảnh bám mục tiêu
-// thay vì âm thầm rơi về toàn cảnh. Nhóm >=3 người dùng trung cảnh nhẹ hơn để còn thấy người bên cạnh.
-// Đạo diễn khung hình theo kích thước chủ thể, độc lập với tỷ lệ 9:16 / 16:9.
-function cameraShotDefaultZoom(shot,visibleCount=1,baseScale=.68){
- const key=String(shot||'medium').toLowerCase().replace(/[- ]+/g,'_');
- const scale=Math.max(.1,Math.min(2.5,Number(baseScale)||.68));
- if(['wide','wide_shot','toan_canh','long_shot','full_body','fullbody','group','establishing'].includes(key))return 1;
- if(['close_up','closeup','can_canh','extreme_close_up'].includes(key))return Math.max(2.05,Math.min(3.2,(.68/scale)*2.15));
- if(['bust','half_body','ban_than','bán_thân','medium_close_up','medium_closeup','medium','trung_canh'].includes(key))return Math.max(1.08,Math.min(1.65,(.68/scale)*1.12));
- return visibleCount>=3?1.12:1.22;
-}
-// Trả về tâm chủ thể và độ phóng phù hợp. Cận: mặt + vai; bán thân: đầu tới eo/đùi;
-// toàn cảnh: toàn bộ nhân vật. Tâm viewport luôn bị kẹp trong canvas để không lộ nền đen.
+// Camera shot: trả {zoom,cx,cy} (tâm vùng nhìn trong khung w×h) hoặc null nếu không zoom.
+// Kích thước/đáy nhân vật tính đúng như drawOneCharacter (cao = h*scale, chân neo tại y%).
+// Tâm bị kẹp để vùng nhìn luôn nằm TRỌN trong khung: không lộ viền nền, và khi nhân vật neo ở đáy khung
+// thì chân vẫn chạm đáy màn hình thay vì bị nhấc lên.
 function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
- const layer=(layers||[]).find(item=>String(item.spec?.id||'')===String(targetId));if(!layer)return null;
- const spec=layer.spec||{},clamp=(lo,hi,v)=>Math.max(lo,Math.min(hi,v));
- const requested=Number(spec.scale),baseScale=Number.isFinite(requested)?clamp(.1,2.5,requested):.68;
- const scale=getCharacterDepthScale(spec.y,baseScale),dh=h*scale;
+ if(!(shotZoom>1))return null;
+ const layer=(layers||[]).find(item=>String(item.spec?.id||'')===targetId);if(!layer)return null;
+ const count=Math.max(1,layers.length),zoom=portrait&&count===1?1:Math.max(1,Math.min(1.8,shotZoom));
+ if(zoom<=1)return null;
+ const spec=layer.spec||{},requested=Number(spec.scale),clamp=(lo,hi,v)=>Math.max(lo,Math.min(hi,v));
+ const baseScale=Number.isFinite(requested)?clamp(.1,2.5,requested):.68,scale=getCharacterDepthScale(spec.y,baseScale),dh=h*scale;
  const px=Number.isFinite(Number(spec.x))?clamp(0,100,Number(spec.x)):50,py=clampCharacterGroundY(spec.y);
+ // Phải dùng đúng vị trí chân sau khi áp dụng cùng giới hạn 10% đầu an toàn như lúc vẽ sprite.
  const feet=Math.max(dh+h*.10,Math.min(h,h*py/100));
- const key=String(shot||'medium').toLowerCase().replace(/[- ]+/g,'_');
- const close=['close_up','closeup','can_canh','extreme_close_up'].includes(key);
- const wide=['wide','wide_shot','toan_canh','long_shot','full_body','fullbody','group','establishing'].includes(key);
- const zoom=clamp(1,3.2,Number(shotZoom)||1);
- // Cận lấy vùng từ đỉnh đầu tới vai; bán thân lấy đầu tới eo/đùi; toàn cảnh lấy trọn dáng.
- const focusRatio=wide?.50:(close?.86:.68);
+ // Cận cảnh và mọi cú lia bám theo vùng đầu: tâm nhìn nằm khoảng 12% chiều cao tính từ đỉnh sprite.
+ // Chỉ toàn thân mới lấy tâm giữa cơ thể để giữ trọn dáng nhân vật.
+ const normalizedShot=String(shot||'').toLowerCase().replace(/[- ]+/g,'_');
+ const focusRatio=['full_body','fullbody','wide','wide_shot','toan_canh','long_shot'].includes(normalizedShot)?.50
+  :(['medium','medium_shot','trung_canh','medium_close_up','medium_closeup'].includes(normalizedShot)?.70:.88);
  const focusY=feet-dh*focusRatio;
  const halfW=w/(2*zoom),halfH=h/(2*zoom);
  return {zoom,cx:clamp(halfW,w-halfW,w*px/100),cy:clamp(halfH,h-halfH,focusY)};
@@ -1233,67 +1226,86 @@ function drawFrameUnsafe(elapsed,st){
  const sourceCameraFrame=getCurrentLine()?.sourceFrame||{},cameraSpec=sourceCameraFrame.camera&&typeof sourceCameraFrame.camera==='object'?sourceCameraFrame.camera:{};
  const director=String(cameraSpec.director||'auto').toLowerCase();
  const sceneLines=getCurrentScene()?.lines||[],lineIndex=Math.max(0,activeLineIndex);
- const currentLine=getCurrentLine()||{},currentSource=currentLine.sourceFrame||sourceCameraFrame;
- const speakerTarget=String(currentSource.nhan_vat||currentLine.speakerId||speakingCharacterId||'');
+ const speakerTarget=String(sourceCameraFrame.nhan_vat||getCurrentLine()?.speakerId||speakingCharacterId||'');
+ // Đạo diễn theo NHỊP CẢNH, không đổi máy quay theo từng câu thoại.
+ // Mỗi shot được giữ ngẫu nhiên ổn định 2–4 câu; seed theo scene để kết quả lặp lại
+ // nhất quán khi tua, phát lại hoặc xuất video.
  const sceneKey=String(getCurrentScene()?.id||sourceCameraFrame.scene_id||activeSceneIndex||'scene');
+ let sceneSeed=0;for(let si=0;si<sceneKey.length;si++)sceneSeed=(sceneSeed*31+sceneKey.charCodeAt(si))>>>0;
+ let cueIndex=0,cueStart=0,cueSpan=2+(sceneSeed%3);
+ while(lineIndex>=cueStart+cueSpan&&cueIndex<sceneLines.length){
+  cueStart+=cueSpan;cueIndex++;
+  cueSpan=2+((sceneSeed+cueIndex*7+3)%3);
+ }
+ const currentLine=getCurrentLine()||{};
+ const currentSource=currentLine.sourceFrame||sourceCameraFrame;
  const visibleCount=Math.max(1,charLayerVideos.length);
- const cameraLayers=getCharacterCameraLayers(charLayerVideos,elapsed);
- const layerIds=cameraLayers.map(l=>String(l.spec?.id||''));
- const cameraTarget=(director==='manual'
-  ?[String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget),speakerTarget,layerIds[0]]
-  :[speakerTarget,layerIds[0]]).find(id=>id&&layerIds.includes(id))||'';
- const targetLayer=cameraLayers.find(l=>String(l.spec?.id||'')===cameraTarget);
- const targetScale=Number(targetLayer?.spec?.scale)||.68;
  const speakerSemantic=normalizeSemantic(currentSource.expression_id||currentLine.expressionId||{});
  const emotion=canonicalAnimationValue('emotion',speakerSemantic.emotion||'neutral');
  const viewAngle=canonicalAnimationValue('view_angle',speakerSemantic.view_angle||'');
  const emphasisEmotions=new Set(['angry','afraid','surprised','crying','determined']);
  const explicitCloseup=/close.?up|can canh/i.test(String(viewAngle));
- const explicitWide=/wide|toan.?canh|full.?body|long.?shot/i.test(String(viewAngle));
  const emotionalEmphasis=emphasisEmotions.has(emotion)||explicitCloseup||cameraSpec.emphasis===true;
- // Mỗi lượt thoại lấy chính người đang nói làm chủ thể. Không gom 2–4 câu thành một cue,
- // không chèn toàn cảnh giữa hai người: shot mới bắt đầu trực tiếp từ camera hiện tại.
+ // Mặc định là khung hình đối thoại: giữ cả nhóm trong ảnh, chỉ dịch rất nhẹ về người nói.
+ // Cận cảnh chỉ xuất hiện khi dữ liệu biểu cảm/góc nhìn hoặc đạo diễn chỉ định nhấn mạnh.
+ const autoShot=emotionalEmphasis?'close_up'
+  :(visibleCount>=3?'wide'
+   :(visibleCount===2?(cueIndex%3===0?'wide':'medium')
+    :(cueIndex%3===2?'wide':'medium')));
  const shot=director==='manual'
-  ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'medium').toLowerCase().replace(/[- ]+/g,'_')
-  :(emotionalEmphasis?'close_up':(explicitWide?'wide':'medium'));
- const explicitZoom=Number(cameraSpec.zoom);
- const shotZoom=director==='manual'&&explicitZoom>1
-  ?Math.max(1,Math.min(3.2,explicitZoom))
-  :cameraShotDefaultZoom(shot,visibleCount,targetScale);
+  ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
+  :autoShot;
+ // Shot tự động giữ một chủ thể trong 2–4 câu theo nhịp cảnh; lấy người mở đầu
+ // cụm làm điểm ngắm để máy quay có thời gian lia sang nhân vật đối thoại kế tiếp.
+ const cueLine=sceneLines[cueStart]||currentLine;
+ const cueSource=cueLine.sourceFrame||cueLine;
+ const cueTarget=String(cueSource.nhan_vat||cueLine.speakerId||speakerTarget);
+ const cameraTarget=director==='manual'
+  ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
+  :(cueTarget||speakerTarget);
+ const defaultZoom=director==='manual'?1
+  :(shot==='close_up'?1.42:(shot==='medium'?1.14:1));
+ const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.42:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
+ let cameraSaved=false;
+ const cameraLayers=getCharacterCameraLayers(charLayerVideos,elapsed);
  const rawShotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,cameraLayers,isPortrait,shot);
- const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startY:null,startZoom:1,targetX:null,targetY:null,targetZoom:1,startElapsed:0,followOffset:0,followOffsetY:0,followElapsed:elapsed,baseSubjectX:null,baseSubjectY:null,lastElapsed:elapsed});
- if(elapsed<(Number(panState.lastElapsed)||0)-.25)Object.assign(panState,{marker:null,x:null,y:null,zoom:1,followOffset:0,followOffsetY:0,followElapsed:elapsed});
- panState.lastElapsed=elapsed;
- const panMarker=(director==='manual'?'manual':'auto')+'|'+sceneKey+'|line-'+lineIndex+'|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom);
+ // Chỉ bắt đầu lia khi có một cue camera mới. Giữ nguyên vị trí và zoom trong các
+ // câu còn lại của cùng shot, kể cả khi người nói thay đổi.
+ const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startZoom:1,targetX:null,targetZoom:1,startElapsed:0,followOffset:0,followElapsed:elapsed,baseSubjectX:null});
+ const panMarker=director==='manual'
+  ?'manual|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom)
+  :'auto|'+sceneKey+'|cue-'+String(cueIndex)+'|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom);
  if(panState.marker!==panMarker){
-  panState.marker=panMarker;panState.startElapsed=elapsed;
-  panState.startZoom=Math.max(1,Math.min(3.2,Number.isFinite(panState.zoom)?panState.zoom:1));
-  const startHalfW=w/(2*panState.startZoom),startHalfH=h/(2*panState.startZoom);
+  panState.marker=panMarker;
+  panState.startElapsed=elapsed;
+  // Camera bắt đầu đúng tại vị trí cuối của shot trước, không reset về toàn cảnh.
+  panState.startZoom=Math.max(1,Math.min(1.8,Number.isFinite(panState.zoom)?panState.zoom:1));
+  const startHalfW=w/(2*panState.startZoom);
   panState.startX=Math.max(startHalfW,Math.min(w-startHalfW,Number.isFinite(panState.x)?panState.x:w/2));
-  panState.startY=Math.max(startHalfH,Math.min(h-startHalfH,Number.isFinite(panState.y)?panState.y:h/2));
-  panState.targetZoom=Math.max(1,Math.min(3.2,rawShotCamera?rawShotCamera.zoom:1));
+  panState.targetZoom=Math.max(1,Math.min(1.8,rawShotCamera?rawShotCamera.zoom:1));
   panState.targetX=rawShotCamera?rawShotCamera.cx:w/2;
-  panState.targetY=rawShotCamera?rawShotCamera.cy:h/2;
-  panState.baseSubjectX=panState.targetX;panState.baseSubjectY=panState.targetY;
-  panState.followOffset=0;panState.followOffsetY=0;panState.followElapsed=elapsed;
+  panState.baseSubjectX=rawShotCamera?rawShotCamera.cx:w/2;
+  panState.followOffset=0;panState.followElapsed=elapsed;
  }
- const panDistance=Math.hypot((panState.targetX-panState.startX)/Math.max(1,w),(panState.targetY-panState.startY)/Math.max(1,h));
- const panDuration=Math.max(.72,Math.min(1.25,.72+panDistance*.55));
+ const panDistance=Math.abs(panState.targetX-panState.startX)/Math.max(1,w);
+ const panDuration=Math.max(1.8,Math.min(2.8,1.8+panDistance*1.2));
  const panT=Math.max(0,Math.min(1,(elapsed-panState.startElapsed)/panDuration));
  const panEase=panT<.5?4*panT*panT*panT:1-Math.pow(-2*panT+2,3)/2;
  const cameraZoom=Math.max(1,panState.startZoom+(panState.targetZoom-panState.startZoom)*panEase);
- const halfViewportW=w/(2*cameraZoom),halfViewportH=h/(2*cameraZoom);
+ const halfViewportW=w/(2*cameraZoom);
  const cameraBaseX=panState.startX+(panState.targetX-panState.startX)*panEase;
- const cameraBaseY=panState.startY+(panState.targetY-panState.startY)*panEase;
+ // Bám theo vị trí nội suy thật của nhân vật; khung nhóm chỉ dịch nhẹ để vẫn giữ các nhân vật còn lại.
  const movingSubject=rawShotCamera&&panState.baseSubjectX!=null?rawShotCamera.cx-panState.baseSubjectX:0;
- const movingSubjectY=rawShotCamera&&panState.baseSubjectY!=null?rawShotCamera.cy-panState.baseSubjectY:0;
- const followAlpha=1-Math.exp(-Math.max(0,Math.min(.25,elapsed-(Number(panState.followElapsed)||elapsed)))/.32);
- panState.followOffset=(Number(panState.followOffset)||0)+(movingSubject*.72-(Number(panState.followOffset)||0))*followAlpha;
- panState.followOffsetY=(Number(panState.followOffsetY)||0)+(movingSubjectY*.72-(Number(panState.followOffsetY)||0))*followAlpha;
+ const followStrength=(shot==='group'||visibleCount>1)?.22:((shot==='close_up'||shot==='closeup')?.88:.68);
+ const desiredFollow=movingSubject*followStrength,followDt=Math.max(0,Math.min(.25,elapsed-(Number(panState.followElapsed)||elapsed)));
+ const followAlpha=1-Math.exp(-followDt/.32);
+ panState.followOffset=(Number(panState.followOffset)||0)+(desiredFollow-(Number(panState.followOffset)||0))*followAlpha;
  panState.followElapsed=elapsed;
+ const cameraX=cameraBaseX+panState.followOffset;
+ // Keep the viewport inside the cover-fitted background at every point of the pan.
  const shotCamera={zoom:cameraZoom,
-  cx:Math.max(halfViewportW,Math.min(w-halfViewportW,cameraBaseX+panState.followOffset)),
-  cy:Math.max(halfViewportH,Math.min(h-halfViewportH,cameraBaseY+panState.followOffsetY))};
+  cx:Math.max(halfViewportW,Math.min(w-halfViewportW,cameraX)),
+  cy:h/2};
  panState.x=shotCamera.cx;panState.y=shotCamera.cy;panState.zoom=shotCamera.zoom;
  if(shotCamera){ctx.save();cameraSaved=true;ctx.translate(w/2,h/2);ctx.scale(shotCamera.zoom,shotCamera.zoom);ctx.translate(-shotCamera.cx,-shotCamera.cy)}
  // Nền có lớp biến đổi riêng, áp dụng được cho cả ảnh PNG/JPG lẫn video nền.
