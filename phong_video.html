@@ -119,9 +119,9 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 
 /* Embedded real renderer mode for demoStudio */
 @media all{
- body.demo-studio-embed{padding:0!important;margin:0!important;min-height:100vh!important;justify-content:center!important;gap:0!important;background:#000!important;overflow:hidden!important}
+ body.demo-studio-embed{position:relative!important;padding:0!important;margin:0!important;min-height:100vh!important;height:100vh!important;justify-content:center!important;gap:0!important;background:#000!important;overflow:hidden!important}
  body.demo-studio-embed> :not(#game-container){display:none!important}
- body.demo-studio-embed #game-container{width:100%!important;max-width:none!important;max-height:none!important;height:100%!important;aspect-ratio:auto!important;border-radius:0!important;box-shadow:none!important}
+ body.demo-studio-embed #game-container{position:absolute!important;inset:0!important;width:100%!important;max-width:none!important;max-height:none!important;height:100%!important;aspect-ratio:auto!important;border-radius:0!important;box-shadow:none!important}
  body.demo-studio-embed #preview-canvas{width:100%!important;height:100%!important;object-fit:contain!important}
  body.demo-studio-embed #preview-loading{font-size:12px!important}
 }
@@ -3255,6 +3255,7 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
    const request=++demoStudioBridgeRequest;
    try{
     await applyStoryData(message.data,message.name||'demoStudio Preview',message.path||'assets/KichBan/demoStudio/demoStudio.json');
+    setPreviewAspectRatio(message.ratio||previewAspectRatio);
     demoStudioStoryLoaded=true;
     if(request!==demoStudioBridgeRequest)return;
     await seekSourceLine(Math.max(0,Number(message.index)||0));
@@ -3271,8 +3272,11 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
     $('fps').value=String([24,30,50,60].includes(Number(message.fps))?Number(message.fps):30);
     $('export-quality').value=String([540,720,1080].includes(Number(message.quality))?Number(message.quality):720);
     window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_PROGRESS',message:'Đang dựng MP4 bằng WebCodecs…'},location.origin);
+    if(!window.VideoEncoder||!window.AudioEncoder)throw new Error('Trình duyệt chưa hỗ trợ WebCodecs. Hãy dùng Chrome hoặc Edge mới.');
     await exportVideo();
-    window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_DONE',message:'Đã hoàn tất tiến trình xuất MP4. Kiểm tra tệp tải xuống của trình duyệt.'},location.origin);
+    const exportResult=$('export-status').textContent||'';
+    if(!exportResult.startsWith('Đã xuất MP4'))throw new Error(exportResult||'Bộ xuất video chưa hoàn tất.');
+    window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_DONE',message:exportResult},location.origin);
    }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_ERROR',message:error?.message||String(error)},location.origin)}
   }else if(message.type==='DEMO_STUDIO_GENERATE_AUDIO'&&demoStudioStoryLoaded){
    if(previewing||previewPreparing){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:'Hãy dừng phát trước khi tạo WAV.'},location.origin);return}
