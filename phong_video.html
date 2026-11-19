@@ -771,6 +771,11 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
  }
  // Tọa độ chỉ điều khiển vị trí. Loại hành động phải do AI phân tích nội dung và ghi rõ trong motion.action.
  if(motion&&typeof motion.action==='string'&&motion.action.trim())semantic.action=motion.action.trim();
+ // Khi đang đi bộ, hướng hoạt ảnh phải theo chiều dịch chuyển thực tế, không theo hướng nhìn/người đối thoại.
+ if(String(semantic.action||'').toLowerCase()==='walking'&&motion?.from&&motion?.to){
+  const dx=Number(motion.to.x)-Number(motion.from.x);
+  if(Number.isFinite(dx)&&Math.abs(dx)>.05)semantic.direction=dx<0?'left':'right';
+ }
  // Cho phép motion khai báo hướng nhìn tường minh để ghi đè đạo diễn tự động.
  ['direction','face_angle','view_angle','pose','emotion','interaction_target'].forEach(k=>{if(motion&&motion[k]!=null&&String(motion[k]).trim())semantic[k]=String(motion[k]).trim()});
  // Góc chính diện chỉ chuẩn hóa face_angle; tuyệt đối giữ nguyên emotion và communication.
