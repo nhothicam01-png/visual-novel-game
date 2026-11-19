@@ -213,4 +213,5 @@ window.addEventListener('keydown',e=>{const tag=(e.target?.tagName||'').toLowerC
 $('playBtn').onclick=togglePlay;$('toStart').onclick=()=>seek(0);$('toEnd').onclick=()=>seek(total);$('zoomIn').onclick=()=>{zoom=Math.min(4,zoom*1.25);renderTimeline()};$('zoomOut').onclick=()=>{zoom=Math.max(.25,zoom/1.25);renderTimeline()};$('fitBtn').onclick=()=>{if(!total)return;const available=$('timelineScroll').clientWidth-140;zoom=Math.max(.2,Math.min(3,available/(total*pxPerSec)));renderTimeline()};
 $('timelineScroll').addEventListener('click',e=>{if(!data||e.target.closest('.clip'))return;const rect=$('timelineInner').getBoundingClientRect(),t=(e.clientX-rect.left-108)/(pxPerSec*zoom);seek(t)});
 $('timelineScroll').addEventListener('scroll',()=>{});
+try{const cached=JSON.parse(localStorage.getItem(AUTOSAVE_KEY)||'null');if(cached?.snapshot?.data?.danh_sach?.length&&confirm('Tìm thấy bản tự lưu DemoStudio ('+new Date(cached.savedAt||0).toLocaleString('vi-VN')+'). Bạn có muốn khôi phục phiên làm việc gần nhất không?'))restoreSnapshot(cached.snapshot);}catch(e){console.warn('Không thể khôi phục bản tự lưu DemoStudio:',e)}
 </script></body></html>
