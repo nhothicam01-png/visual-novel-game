@@ -6,7 +6,7 @@
   "premise": "Bubu rời nhà và thuê căn phòng của Rerin để cô có tiền chăm bà ngoại đang bệnh nặng. Tình yêu giữa hai cô gái trưởng thành nảy nở trong những ngày bệnh viện, rồi bị họ hàng và gia đình lợi dụng làm vũ khí trong tranh chấp căn nhà.",
   "setting": "Một khu phố cũ với căn nhà nhỏ hai tầng, bệnh viện, trường đại học, văn phòng luật sư và căn phòng trọ mới. Câu chuyện diễn ra trong gần một năm, từ lúc Bubu buộc phải rời nhà đến sau phán quyết chia tài sản.",
   "tone": "Đời thường, dịu dàng nhưng day dứt; tình cảm phát triển chậm, xung đột xã hội và pháp lý được thể hiện qua hành động cùng hệ quả, kết thúc buồn nhưng còn hy vọng.",
-  "extra": "Ba nhân vật chính giữ nguyên character_id và assetFolder Bubu, Pipun, Rerin từ thư viện hiện có. Các vai phụ không có tài nguyên hình ảnh được để assetFolder rỗng, không mượn WEBM của nhân vật khác.",
+  "extra": "Bubu, Pipun và Rerin có WEBM riêng. Các vai phụ được khai báo đầy đủ để lời thoại hoạt động; assetFolder rỗng được hiểu là nhân vật chỉ có thoại, không yêu cầu WEBM.",
   "mode": "guided",
   "places": [
     {
@@ -64,6 +64,96 @@
       "assetFolder": "Rerin",
       "selected": true,
       "asset_status": "linked"
+    },
+    {
+      "character_id": "char_ba_ngoai_rerin",
+      "name": "Bà ngoại của Rerin",
+      "role": "Bà ngoại của Rerin; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
+    },
+    {
+      "character_id": "char_me_bubu",
+      "name": "Mẹ Bubu",
+      "role": "Mẹ của Bubu; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
+    },
+    {
+      "character_id": "char_bo_bubu",
+      "name": "Bố Bubu",
+      "role": "Bố của Bubu; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
+    },
+    {
+      "character_id": "char_em_trai_bubu",
+      "name": "Em trai Bubu",
+      "role": "Em trai Bubu; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
+    },
+    {
+      "character_id": "char_co_rerin",
+      "name": "Cô ruột của Rerin",
+      "role": "Cô ruột của Rerin; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
+    },
+    {
+      "character_id": "char_nguoi_ho_rerin",
+      "name": "Người họ hàng của Rerin",
+      "role": "Người họ hàng của Rerin; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
+    },
+    {
+      "character_id": "char_bac_si",
+      "name": "Bác sĩ",
+      "role": "Bác sĩ; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
+    },
+    {
+      "character_id": "char_luat_su",
+      "name": "Luật sư",
+      "role": "Luật sư; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
+    },
+    {
+      "character_id": "char_can_bo_truong",
+      "name": "Cán bộ nhà trường",
+      "role": "Cán bộ nhà trường; vai phụ chỉ có thoại, không có WEBM.",
+      "personality": "Nhân vật phụ; không có tài nguyên hình ảnh riêng.",
+      "relationships": "Vai phụ trong câu chuyện Căn phòng của bà.",
+      "assetFolder": "",
+      "selected": true,
+      "asset_status": "voice_only"
     }
   ],
   "rules": [
