@@ -1803,7 +1803,7 @@ async function preparePreviewPlayback(items,useBrowser){
   const item=items[index];
   await loadSourceLineForPlayback(item);
   if(!useBrowser&&$('dialogue').value.trim()){
-   let blob=await ensureTtsReady();
+   let blob=null;try{blob=await ensureTtsReady()}catch(error){console.warn('Không tạo được WAV cho câu '+(Number(item.sourceIndex)+1)+':',error)}
    if(blob){
     blob=await convertTtsBlobToWav(blob);const generatedLine=getCurrentLine();generatedLine.wavBlob=blob;generatedLine.cacheKey=ttsRequestKey();
     const duration=await new Promise(resolve=>{const url=URL.createObjectURL(blob),audio=new Audio();audio.preload='metadata';audio.onloadedmetadata=()=>{const value=Number.isFinite(audio.duration)?audio.duration:0;URL.revokeObjectURL(url);resolve(value)};audio.onerror=()=>{URL.revokeObjectURL(url);resolve(0)};audio.src=url});
