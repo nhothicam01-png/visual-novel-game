@@ -1051,10 +1051,12 @@ function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
  const spec=layer.spec||{},requested=Number(spec.scale),clamp=(lo,hi,v)=>Math.max(lo,Math.min(hi,v));
  const scale=count===1?1:(Number.isFinite(requested)?clamp(.1,2.5,requested):.72),dh=h*scale;
  const px=Number.isFinite(Number(spec.x))?clamp(0,100,Number(spec.x)):50,py=Number.isFinite(Number(spec.y))?clamp(0,110,Number(spec.y)):102;
- const feet=Math.max(dh+h*.015,Math.min(h*1.02,h*py/100));
- // Cận mặt ưu tiên vùng đầu/ngực; bán thân lấy vùng ngực; toàn thân giữ trọn chiều cao nhân vật.
- const focusRatio=shot==='close_up'?.86:shot==='bust'?.70:shot==='full_body'?.50:(portrait?.62:.70);
- const focusY=Math.max(dh*.08,feet-dh*focusRatio);
+ // Phải dùng đúng vị trí chân sau khi áp dụng cùng giới hạn 10% đầu an toàn như lúc vẽ sprite.
+ const feet=Math.max(dh+h*.10,Math.min(h*1.02,h*py/100));
+ // Cận cảnh và mọi cú lia bám theo vùng đầu: tâm nhìn nằm khoảng 12% chiều cao tính từ đỉnh sprite.
+ // Chỉ toàn thân mới lấy tâm giữa cơ thể để giữ trọn dáng nhân vật.
+ const focusRatio=shot==='full_body'||shot==='fullbody'||shot==='wide'||shot==='wide_shot'?.50:.88;
+ const focusY=feet-dh*focusRatio;
  const halfW=w/(2*zoom),halfH=h/(2*zoom);
  return {zoom,cx:clamp(halfW,w-halfW,w*px/100),cy:clamp(halfH,h-halfH,focusY)};
 }
