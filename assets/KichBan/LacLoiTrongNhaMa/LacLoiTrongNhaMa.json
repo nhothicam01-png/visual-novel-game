@@ -985,204 +985,8 @@
     {
       "scene_id": "SC002",
       "hoi_tuong": false,
-      "nhan_vat": "char_rerin_char_03",
-      "noi_dung": "Bubu, Pipun, hai cậu ở ngay sau mình chứ? Sao mình nghe tiếng bước chân ở phía trước?",
-      "thoi_luong": 5.2,
-      "anh_nen": "hanh_lang_toi.png",
-      "anh_hieu_ung": "",
-      "expression_id": {
-        "communication": "speaking",
-        "emotion": "afraid",
-        "pose": "standing",
-        "direction": "right",
-        "face_angle": "135°",
-        "view_angle": "close up",
-        "interaction_target": "char_bubu_char_01"
-      },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bubu_char_01",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "right",
-            "face_angle": "135°",
-            "view_angle": "full body",
-            "interaction_target": "none"
-          },
-          "x": 24,
-          "y": 0,
-          "scale": 0.68,
-          "z_index": 1
-        },
-        {
-          "id": "char_pipun_char_02",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "right",
-            "face_angle": "135°",
-            "view_angle": "full body",
-            "interaction_target": "none"
-          },
-          "x": 51,
-          "y": 0,
-          "scale": 0.68,
-          "z_index": 2
-        },
-        {
-          "id": "char_rerin_char_03",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "left",
-            "face_angle": "135°",
-            "view_angle": "full body",
-            "interaction_target": "char_bubu_char_01"
-          },
-          "x": 78,
-          "y": 0,
-          "scale": 0.68,
-          "z_index": 3
-        }
-      ],
-      "hieu_ung": {
-        "nhan_vat": [
-          "char-sway"
-        ],
-        "nen": [],
-        "camera": [],
-        "moi_truong": []
-      },
-      "hieu_ung_canh": [
-        {
-          "id": "fog",
-          "type": "code",
-          "opacity": 0.5,
-          "z_index": -10
-        },
-        {
-          "id": "dust",
-          "type": "code",
-          "opacity": 0.72,
-          "z_index": -10
-        }
-      ],
-      "camera": {
-        "director": "auto"
-      },
-      "am_thanh": {
-        "nhac_nen": {
-          "tep": ""
-        },
-        "hieu_ung_am_thanh": {
-          "tep": ""
-        }
-      }
-    },
-    {
-      "scene_id": "SC002",
-      "hoi_tuong": false,
-      "nhan_vat": "char_pipun_char_02",
-      "noi_dung": "Mình đang ở đây. Nhưng Bubu vừa chạy theo cái bóng ở cuối hành lang rồi!",
-      "thoi_luong": 5.2,
-      "anh_nen": "hanh_lang_toi.png",
-      "anh_hieu_ung": "",
-      "expression_id": {
-        "communication": "speaking",
-        "emotion": "surprised",
-        "pose": "standing",
-        "direction": "right",
-        "face_angle": "135°",
-        "view_angle": "close up",
-        "interaction_target": "char_bubu_char_01"
-      },
-      "nhan_vat_hien_thi": [
-        {
-          "id": "char_bubu_char_01",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "right",
-            "face_angle": "135°",
-            "view_angle": "full body",
-            "interaction_target": "none"
-          },
-          "x": 24,
-          "y": 0,
-          "scale": 0.68,
-          "z_index": 1
-        },
-        {
-          "id": "char_pipun_char_02",
-          "expression_id": {
-            "communication": "speaking",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "right",
-            "face_angle": "135°",
-            "view_angle": "full body",
-            "interaction_target": "char_rerin_char_03"
-          },
-          "x": 51,
-          "y": 0,
-          "scale": 0.68,
-          "z_index": 2
-        },
-        {
-          "id": "char_rerin_char_03",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "left",
-            "face_angle": "135°",
-            "view_angle": "full body",
-            "interaction_target": "none"
-          },
-          "x": 78,
-          "y": 0,
-          "scale": 0.68,
-          "z_index": 3
-        }
-      ],
-      "hieu_ung": {
-        "nhan_vat": [
-          "soft-sway"
-        ],
-        "nen": [],
-        "camera": [],
-        "moi_truong": []
-      },
-      "hieu_ung_canh": [
-        {
-          "id": "wind",
-          "type": "code",
-          "opacity": 0.72,
-          "z_index": -10
-        }
-      ],
-      "camera": {
-        "director": "auto"
-      },
-      "am_thanh": {
-        "nhac_nen": {
-          "tep": ""
-        },
-        "hieu_ung_am_thanh": {
-          "tep": ""
-        }
-      }
-    },
-    {
-      "scene_id": "SC002",
-      "hoi_tuong": false,
       "nhan_vat": "char_bubu_char_01",
-      "noi_dung": "Mình thấy có một cánh cửa hé mở. Chỉ nhìn một chút thôi, hai cậu đợi mình nhé!",
+      "noi_dung": "Mình thấy có một cánh cửa hé mở ở cuối hành lang. Mình ra kiểm tra một chút thôi, hai cậu đợi mình nhé!",
       "thoi_luong": 5.2,
       "anh_nen": "hanh_lang_toi.png",
       "anh_hieu_ung": "",
@@ -1257,7 +1061,45 @@
               "action": "standing"
             }
           }
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
         },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Pipun, cậu vẫn ở phía sau mình chứ? Bubu đâu rồi?",
+      "thoi_luong": 5.2,
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "close up",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
         {
           "id": "char_pipun_char_02",
           "expression_id": {
@@ -1270,7 +1112,92 @@
             "interaction_target": "none"
           },
           "x": 51,
-          "y": 92,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_bubu_char_01"
+          },
+          "x": 78,
+          "y": 0,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [
+          "char-sway"
+        ],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [
+        {
+          "id": "fog",
+          "type": "code",
+          "opacity": 0.5,
+          "z_index": -10
+        },
+        {
+          "id": "dust",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Mình vẫn ở đây. Bubu vừa nói đi kiểm tra cánh cửa hé mở rồi rẽ khỏi hành lang. Mình không thấy cậu ấy nữa!",
+      "thoi_luong": 5.2,
+      "anh_nen": "hanh_lang_toi.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "direction": "right",
+        "face_angle": "135°",
+        "view_angle": "close up",
+        "interaction_target": "char_bubu_char_01"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "char_rerin_char_03"
+          },
+          "x": 51,
+          "y": 0,
           "scale": 0.68,
           "z_index": 2
         },
@@ -1286,18 +1213,27 @@
             "interaction_target": "none"
           },
           "x": 78,
-          "y": 92,
+          "y": 0,
           "scale": 0.68,
           "z_index": 3
         }
       ],
       "hieu_ung": {
-        "nhan_vat": [],
+        "nhan_vat": [
+          "soft-sway"
+        ],
         "nen": [],
         "camera": [],
         "moi_truong": []
       },
-      "hieu_ung_canh": [],
+      "hieu_ung_canh": [
+        {
+          "id": "wind",
+          "type": "code",
+          "opacity": 0.72,
+          "z_index": -10
+        }
+      ],
       "camera": {
         "director": "auto"
       },
