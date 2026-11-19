@@ -564,7 +564,7 @@ Quy tắc:
 - Không dùng trường hiệu ứng cũ hoặc các ID cũ chỉ vì chúng từng xuất hiện trong prompt trước.
 - `anh_hieu_ung` không được dùng cho hiệu ứng môi trường; không tạo đường dẫn ảnh/video hiệu ứng.
 - Hiệu ứng toàn cảnh khai báo bằng `hieu_ung_canh` dưới dạng mảng object `{ id, type:"code", opacity, z_index }`.
-- ID hợp lệ: rain, snow, lightning, storm, leaves, petals, dust, fog, wind, bubbles, embers, fire, sunlight, aura, impact, shockwave, earthquake, rockfall, cracks, wound, sparkles, motion_blur, transition, explosion.
+- ID hợp lệ: rain, snow, lightning, storm, leaves, petals, dust, fog, wind, bubbles, embers, fire, sunlight, aura, impact, shockwave, earthquake, rockfall, cracks, space_warp, wound, sparkles, motion_blur, transition, explosion.
 - Hiệu ứng môi trường được vẽ bằng Canvas procedural, không có file nguồn, không có loop/file path. Mặc định đặt sau nhân vật (`z_index:-10`); chỉ đặt trước nhân vật (`z_index:100`) khi có chủ ý.
 - Player ánh xạ tên file lịch sử sang ID code để tương thích truyện cũ; JSON mới chỉ ghi ID.
 
@@ -582,6 +582,7 @@ QUY TRÌNH KIỂM TRA HIỆU ỨNG CODE
 - Chỉ dùng ID thuộc danh mục hiệu ứng Canvas đã nêu; không kiểm kê hoặc tham chiếu file ảnh/video hiệu ứng.
 - Xác thực id hợp lệ, opacity trong 0..1, z_index hữu hạn, đúng thời điểm bắt đầu/kết thúc và đúng lớp trước/sau nhân vật.
 - Sét phải là tia phân nhánh vẽ bằng code kèm flash ngắn; `storm` kết hợp mưa xiên và sét chớp theo chu kỳ.
+- `space_warp`: biến dạng toàn bộ lớp hình ảnh đã compositing (nền + nhân vật + hiệu ứng) bằng gợn sóng không gian, lệch dải hình và tách viền màu rất nhẹ. Dùng khi có méo không gian, cổng dịch chuyển, thực tại rung chuyển hoặc năng lực bẻ cong không gian; có thể chỉnh `config.intensity` (0.15–2.5), `config.speed` (0.1–4), `config.frequency` (0.5–4). Không dùng thay cho `earthquake`: đây là biến dạng thực tại, không phải rung mặt đất.
 - `earthquake` phải rung cả camera và sinh bụi/mảnh vụn; `shockwave` tạo vòng chấn động lan rộng; `cracks` tạo vết nứt phân nhánh; `rockfall` tạo đá rơi; `impact` tạo vòng va chạm.
 - Các ID này thuộc thư viện Canvas trong `phong_video.html`, không thuộc `environment-effects.js` hoặc `effects.js`. Luôn đọc danh mục `CODE_VFX_CATALOG` trong player trước khi viết JSON.
 
