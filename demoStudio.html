@@ -226,8 +226,10 @@ function assetUrl(p){if(/^https?:/i.test(p))return p;return './assets/BoiCanh/'+
 function findLine(t){return segments.findIndex(s=>t>=s.start&&t<s.end)}
 function selectLine(i,move){selected=Math.max(0,Math.min(rows.length-1,i));const seg=segments[selected];if(move)seek(seg.start);renderAll();syncPreviewLine(selected)}
 function seek(t){playhead=Math.max(0,Math.min(total,t));const i=findLine(playhead);if(i>=0&&i!==selected){selected=i;renderInspector();renderScenes();renderMonitor();syncPreviewLine(i)}const ph=$('playhead');if(ph)ph.style.left=(108+playhead*pxPerSec*zoom)+'px';$('timeReadout').textContent=fmt(playhead)+' / '+fmt(total)}
-let playerPlaybackStarted=false;
+let playerPlaybackStarted=false,previewStorySent=false,previewRequestIndex=-1,studioDirectRecording=false,playerObserver=null;
 const PREVIEW_RATIOS={'16:9':[16,9],'9:16':[9,16],'1:1':[1,1]};
+function playerWindow(){try{return $('enginePreview').contentWindow}catch(_){return null}}
+function playerDocument(){try{return $('enginePreview').contentDocument}catch(_){return null}}
 function fitPreviewFrame(){
  const stage=document.querySelector('.stage'),frame=$('enginePreview');if(!stage||!frame)return;
  const rect=stage.getBoundingClientRect(),ratio=PREVIEW_RATIOS[$('previewRatio').value]||PREVIEW_RATIOS['16:9'];
@@ -238,43 +240,97 @@ function fitPreviewFrame(){
 }
 const previewStageObserver=typeof ResizeObserver!=='undefined'?new ResizeObserver(fitPreviewFrame):null;
 if(previewStageObserver)previewStageObserver.observe(document.querySelector('.stage'));
+function applyPlayerSettings(){
+ const d=playerDocument(),w=playerWindow();if(!d||!w)return;
+ const dialogue=d.getElementById('show-dialogue');if(dialogue){dialogue.checked=$('studioShowDialogue').checked;dialogue.dispatchEvent(new Event('change',{bubbles:true}))}
+ const scope=d.getElementById('preview-scope');if(scope)scope.value='full';
+ const quality=d.getElementById('export-quality');if(quality)quality.value=$('exportQuality').value;
+ const fps=d.getElementById('fps');if(fps)fps.value=$('exportFps').value;
+ const wanted=$('previewRatio').value,portrait=w.document.querySelector('#stage')?.classList.contains('portrait');
+ if(wanted==='9:16'&&!portrait||wanted!=='9:16'&&portrait)d.getElementById('ratio-toggle')?.click();
+ if(wanted==='1:1')$('previewStatus').textContent='Phòng tạo video hiện hỗ trợ 16:9 và 9:16; đang dùng 16:9.';
+}
+function observePlayerState(){
+ const d=playerDocument();if(!d)return;
+ const play=d.getElementById('play-preview'),record=d.getElementById('direct-record-button'),status=d.getElementById('status')||d.querySelector('.status');
+ if(playerObserver)playerObserver.disconnect();
+ playerObserver=new MutationObserver(()=>{
+  if(play){const label=play.textContent||'';const active=/Tạm dừng|⏸/.test(label);playing=active;$('playBtn').textContent=active?'Ⅱ Tạm dừng':'▶ Phát';}
+  if(record){const active=/Dừng ghi|⏹/.test(record.textContent||'');studioDirectRecording=active;$('recordDirectBtn').disabled=false;$('recordDirectBtn').textContent=active?'⏹ Dừng ghi':'⏺ Ghi trực tiếp';}
+  if(status&&status.textContent)$('exportStatus').textContent=status.textContent;
+ });
+ [play,record,status].filter(Boolean).forEach(el=>playerObserver.observe(el,{childList:true,subtree:true,characterData:true,attributes:true}));
+}
+async function loadStoryIntoPlayer(){
+ if(!data||!previewEngineReady)return false;
+ const w=playerWindow();if(!w||typeof w.applyStoryData!=='function'){ $('previewStatus').textContent='Bộ dựng phong_video chưa sẵn sàng. Hãy tải lại trang.';return false}
+ playing=false;playerPlaybackStarted=false;previewStorySent=false;previewRequestIndex=-1;$('playBtn').textContent='▶ Phát';
+ $('previewStatus').textContent='Đang nạp kịch bản vào trình phát phong_video…';
+ try{
+  await w.applyStoryData(JSON.parse(JSON.stringify(data)),$('projectName').textContent,activeStoryPath);
+  applyPlayerSettings();observePlayerState();previewStorySent=true;
+  if(selected>0&&typeof w.seekSourceLine==='function')await w.seekSourceLine(selected);
+  $('previewStatus').textContent='Đã nạp kịch bản · dùng bộ phát và ghi trực tiếp của phòng tạo video.';
+  return true;
+ }catch(error){$('previewStatus').textContent='Không nạp được kịch bản vào trình phát: '+(error.message||error);return false}
+}
 function applyPreviewRatio(ratio,notify=true){
  const value=PREVIEW_RATIOS[ratio]?ratio:'16:9',stage=document.querySelector('.stage');
- $('previewRatio').value=value;
- if(stage)stage.style.setProperty('--preview-ratio',PREVIEW_RATIOS[value].join('/'));
- fitPreviewFrame();
- if(notify&&previewEngineReady)$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_SET_RATIO',ratio:value},location.origin);
+ $('previewRatio').value=value;if(stage)stage.style.setProperty('--preview-ratio',PREVIEW_RATIOS[value].join('/'));fitPreviewFrame();
+ if(notify&&previewEngineReady)applyPlayerSettings();
 }
 $('previewRatio').addEventListener('change',()=>applyPreviewRatio($('previewRatio').value));
 $('studioShowDialogue').addEventListener('change',()=>{
- const visible=$('studioShowDialogue').checked;
- if(previewEngineReady)$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_SET_DIALOGUE_VISIBILITY',visible},location.origin);
- $('previewStatus').textContent=visible?'Đã bật khung thoại trong preview và video xuất.':'Đã ẩn khung thoại; giọng đọc và âm thanh vẫn được giữ.';
+ if(previewEngineReady)applyPlayerSettings();
+ $('previewStatus').textContent=$('studioShowDialogue').checked?'Đã bật khung thoại trong trình phát.':'Đã ẩn khung thoại; âm thanh vẫn được giữ.';
 });
 function studioSpeechMotionSettings(){return {enabled:$('studioSpeechMotionEnabled').checked,speed:Number($('studioMotionSpeed').value),intensity:Number($('studioMotionIntensity').value),tilt:Number($('studioMotionTilt').value)}}
-function sendStudioSpeechMotion(){const cfg=studioSpeechMotionSettings();$('studioMotionSpeedValue').textContent=cfg.speed;$('studioMotionIntensityValue').textContent=cfg.intensity;$('studioMotionTiltValue').textContent=cfg.tilt;if(previewEngineReady)$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_SET_SPEECH_MOTION',settings:cfg},location.origin)}
+function sendStudioSpeechMotion(){const cfg=studioSpeechMotionSettings();$('studioMotionSpeedValue').textContent=cfg.speed;$('studioMotionIntensityValue').textContent=cfg.intensity;$('studioMotionTiltValue').textContent=cfg.tilt}
 ['studioSpeechMotionEnabled','studioMotionSpeed','studioMotionIntensity','studioMotionTilt'].forEach(id=>$(id).addEventListener('input',sendStudioSpeechMotion));
-let studioDirectRecording=false;
-$('recordDirectBtn').onclick=()=>{
- if(!data||!previewEngineReady){$('exportStatus').textContent='Hãy import kịch bản và chờ Player sẵn sàng.';return}
- if(playing){$('exportStatus').textContent='Hãy dừng phát trước khi ghi trực tiếp.';return}
- if(studioDirectRecording){$('recordDirectBtn').disabled=true;$('recordDirectBtn').textContent='⏳ Đang kết thúc…';$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_STOP_DIRECT_RECORD'},location.origin);return}
- studioDirectRecording=true;$('recordDirectBtn').disabled=true;$('recordDirectBtn').textContent='⏳ Đang chuẩn bị…';$('exportStatus').textContent='Đang chuẩn bị tài nguyên rồi sẽ ghi toàn bộ kịch bản theo thời gian thực…';
- $('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_RECORD_DIRECT',quality:Number($('exportQuality').value),fps:Number($('exportFps').value),ratio:$('previewRatio').value,speechMotion:studioSpeechMotionSettings()},location.origin);
+$('recordDirectBtn').onclick=async()=>{
+ if(!data||!previewEngineReady){$('exportStatus').textContent='Hãy import kịch bản và chờ phong_video sẵn sàng.';return}
+ const d=playerDocument();if(!d)return;
+ const record=d.getElementById('direct-record-button');if(!record){$('exportStatus').textContent='Không tìm thấy nút ghi trực tiếp của phong_video.';return}
+ if(studioDirectRecording){record.click();$('exportStatus').textContent='Đang kết thúc bản ghi…';return}
+ if(playing)d.getElementById('play-preview')?.click();
+ if(!previewStorySent&&!await loadStoryIntoPlayer())return;
+ applyPlayerSettings();
+ const mode=d.getElementById('preview-tts-mode');if(mode)mode.value='render';
+ record.click();studioDirectRecording=true;$('recordDirectBtn').textContent='⏳ Đang chuẩn bị…';
+ $('exportStatus').textContent='Đang chuẩn bị tài nguyên · ghi trực tiếp bằng bộ ghi gốc của phong_video…';
 };
-$('exportVideoBtn').onclick=()=>{
- if(!data||!previewEngineReady){$('exportStatus').textContent='Hãy import kịch bản và chờ Player sẵn sàng.';return}
- if(playing){$('exportStatus').textContent='Hãy dừng phát trước khi xuất video.';return}
- $('exportVideoBtn').disabled=true;$('exportStatus').textContent='Đang chuẩn bị xuất MP4…';
- $('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_EXPORT_VIDEO',quality:Number($('exportQuality').value),fps:Number($('exportFps').value),ratio:$('previewRatio').value,speechMotion:studioSpeechMotionSettings()},location.origin);
+$('exportVideoBtn').onclick=async()=>{
+ if(!data||!previewEngineReady){$('exportStatus').textContent='Hãy import kịch bản và chờ phong_video sẵn sàng.';return}
+ const d=playerDocument();if(!d)return;
+ if(!previewStorySent&&!await loadStoryIntoPlayer())return;
+ applyPlayerSettings();
+ const q=d.getElementById('export-quality'),fps=d.getElementById('fps');if(q)q.value=$('exportQuality').value;if(fps)fps.value=$('exportFps').value;
+ const button=d.getElementById('export-video');if(button){button.click();$('exportStatus').textContent='Đang xuất bằng bộ xuất video gốc của phong_video…'}else $('exportStatus').textContent='Phiên bản phong_video này không có nút xuất MP4 tương thích.';
 };
 window.addEventListener('resize',()=>applyPreviewRatio($('previewRatio')?.value||'16:9',false));
+$('enginePreview').addEventListener('load',()=>{
+ const w=playerWindow();previewEngineReady=!!(w&&typeof w.applyStoryData==='function');
+ if(previewEngineReady){applyPreviewRatio($('previewRatio').value,false);observePlayerState();if(data)loadStoryIntoPlayer()}
+ else $('previewStatus').textContent='Không tải được bộ phát phong_video.';
+});
 applyPreviewRatio('16:9',false);
-function togglePlay(){if(!data)return;if(!previewEngineReady){$('previewStatus').textContent='Đang chờ bộ dựng video sẵn sàng…';return}if(playing){playing=false;$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_PAUSE'},location.origin);$('playBtn').textContent='▶ Phát';$('previewStatus').textContent='Đã tạm dừng tại '+fmt(playhead);return}playing=true;$('playBtn').textContent='Ⅱ Tạm dừng';if(playerPlaybackStarted){$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_RESUME'},location.origin)}else{$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_PLAY'},location.origin)}$('previewStatus').textContent='Đang phát thật · đồng bộ thoại, nhạc và hiệu ứng';}
-
-function sendPreviewLoad(){if(!data||!previewEngineReady)return;playerPlaybackStarted=false;playing=false;$('playBtn').textContent='▶ Phát';previewStorySent=false;previewRequestIndex=-1;$('previewStatus').textContent='Đang nạp kịch bản vào bộ dựng thật…';$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_LOAD',data,name:$('projectName').textContent,path:activeStoryPath,index:Math.max(0,selected),ratio:$('previewRatio').value,dialogueVisible:$('studioShowDialogue').checked,speechMotion:studioSpeechMotionSettings()},location.origin)}
-function syncPreviewLine(index,force=false){if(!data||!previewEngineReady)return;if(force){sendPreviewLoad();return}playerPlaybackStarted=false;playing=false;$('playBtn').textContent='▶ Phát';if(!previewStorySent){sendPreviewLoad();return}if(previewRequestIndex===index&&!force)return;previewRequestIndex=index;$('previewStatus').textContent='Đang dựng đoạn '+(index+1)+'/'+rows.length+'…';$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_SEEK',index},location.origin)}
-window.addEventListener('message',event=>{if(event.origin!==location.origin||event.source!==$('enginePreview').contentWindow)return;const m=event.data||{};if(m.type==='DEMO_STUDIO_ENGINE_READY'){previewEngineReady=true;applyPreviewRatio($('previewRatio').value);if(data)sendPreviewLoad()}else if(m.type==='DEMO_STUDIO_RECORD_STARTED'){$('recordDirectBtn').disabled=false;$('recordDirectBtn').textContent='⏹ Dừng ghi';$('exportStatus').textContent=m.message||'Đang ghi trực tiếp…'}else if(m.type==='DEMO_STUDIO_RECORD_DONE'){studioDirectRecording=false;$('recordDirectBtn').disabled=false;$('recordDirectBtn').textContent='⏺ Ghi trực tiếp';$('exportStatus').textContent=(m.message||'Đã ghi trực tiếp.')+(m.extension==='webm'?' · Trình duyệt này lưu dạng WebM, không phải MP4.':'')}else if(m.type==='DEMO_STUDIO_RECORD_ERROR'){studioDirectRecording=false;$('recordDirectBtn').disabled=false;$('recordDirectBtn').textContent='⏺ Ghi trực tiếp';$('exportStatus').textContent='Ghi trực tiếp thất bại: '+(m.message||'Lỗi không xác định')}else if(m.type==='DEMO_STUDIO_EXPORT_PROGRESS'){$('exportStatus').textContent=m.message||'Đang xuất video…'}else if(m.type==='DEMO_STUDIO_EXPORT_DONE'){$('exportVideoBtn').disabled=false;$('exportStatus').textContent=m.message||'Đã hoàn tất xuất video.'}else if(m.type==='DEMO_STUDIO_EXPORT_ERROR'){$('exportVideoBtn').disabled=false;$('exportStatus').textContent='Xuất video thất bại: '+(m.message||'Lỗi không xác định')}else if(m.type==='DEMO_STUDIO_READY'){previewStorySent=true;previewRequestIndex=Number(m.index);$('previewStatus').textContent='Preview thật · '+(m.index+1)+'/'+rows.length+' · nền, WEBM, biểu cảm, camera, hiệu ứng'}else if(m.type==='DEMO_STUDIO_FRAME'){$('previewStatus').textContent='Preview thật · đoạn '+(Number(m.index)+1)+'/'+rows.length}else if(m.type==='DEMO_STUDIO_PROGRESS'){const i=Math.max(0,Math.min(rows.length-1,Number(m.index)||0));playerPlaybackStarted=true;selected=i;playhead=segments[i]?.start||0;renderScenes();renderTimeline();renderInspector();renderMonitor();$('timeReadout').textContent=fmt(playhead)+' / '+fmt(total);$('playBtn').textContent='Ⅱ Tạm dừng';playing=true;}else if(m.type==='DEMO_STUDIO_PLAYBACK_ENDED'){playerPlaybackStarted=false;playing=false;playhead=total;selected=Math.max(0,rows.length-1);renderScenes();renderTimeline();renderInspector();renderMonitor();$('timeReadout').textContent=fmt(total)+' / '+fmt(total);$('playBtn').textContent='▶ Phát';$('previewStatus').textContent='Đã phát hết kịch bản · thoại, nhạc và SFX đã kết thúc'}else if(m.type==='DEMO_STUDIO_AUDIO_PROGRESS'){$('previewStatus').textContent='Đang tạo WAV '+Number(m.done||0)+'/'+Number(m.total||0)+'…'}else if(m.type==='DEMO_STUDIO_AUDIO_READY'){studioAudioWriteQueue=studioAudioWriteQueue.then(()=>storeGeneratedAudio(m)).catch(error=>{$('previewStatus').textContent='Không lưu được WAV: '+(error.message||error)})}else if(m.type==='DEMO_STUDIO_AUDIO_DONE'){studioAudioWriteQueue.then(()=>{buildSegments();renderAll();persistAutosave();$('previewStatus').textContent='Đã tạo '+Number(m.done||0)+'/'+Number(m.total||0)+' file WAV · '+Number(m.failed||0)+' lỗi';$('generateAudioBtn').disabled=false;$('generateAudioBtn').textContent='🎙 Tạo WAV toàn bộ'});}else if(m.type==='DEMO_STUDIO_ERROR'){playing=false;playerPlaybackStarted=false;$('playBtn').textContent='▶ Phát';studioAudioWriteQueue.then(()=>{$('generateAudioBtn').disabled=false;$('generateAudioBtn').textContent='🎙 Tạo WAV toàn bộ';buildSegments();renderAll();persistAutosave()});$('previewStatus').textContent='Lỗi preview: '+m.message;$('exportVideoBtn').disabled=false}});
+function togglePlay(){
+ if(!data)return;if(!previewEngineReady){$('previewStatus').textContent='Đang chờ phong_video tải xong…';return}
+ const d=playerDocument();if(!d)return;
+ if(!previewStorySent){loadStoryIntoPlayer().then(ok=>{if(ok)d.getElementById('play-preview')?.click()});return}
+ d.getElementById('play-preview')?.click();
+}
+async function sendPreviewLoad(){if(!data||!previewEngineReady)return;await loadStoryIntoPlayer()}
+async function syncPreviewLine(index,force=false){
+ if(!data||!previewEngineReady)return;
+ if(force||!previewStorySent){await loadStoryIntoPlayer();return}
+ if(previewRequestIndex===index)return;
+ previewRequestIndex=index;playing=false;$('playBtn').textContent='▶ Phát';
+ const w=playerWindow();if(w&&typeof w.seekSourceLine==='function'){
+  try{await w.seekSourceLine(index);$('previewStatus').textContent='Đã chuyển đến thoại '+(index+1)+'/'+rows.length+' trong trình phát.'}
+  catch(error){$('previewStatus').textContent='Không tua được đến thoại: '+(error.message||error)}
+ }
+}
 function esc(v){return String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}function attr(v){return esc(v).replace(/'/g,'&#39;')}
 let studioAudioWriteQueue=Promise.resolve();
 async function storeGeneratedAudio(message){
