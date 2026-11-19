@@ -571,6 +571,16 @@ Quy tắc:
 
 QUY TẮC ĐỒNG BỘ NGỮ NGHĨA VỚI HIỆU ỨNG — BẮT BUỘC CHO MỌI KỊCH BẢN
 
+QUY ƯỚC DỮ LIỆU HIỆU ỨNG THEO TỪNG DÒNG — NGUỒN SỰ THẬT DUY NHẤT
+
+- MỌI phần tử trong danh_sach bắt buộc có trường hieu_ung_canh dạng mảng. Không có hiệu ứng thì ghi [] (không được bỏ trường, không được null).
+- Mảng hieu_ung_canh của một dòng là danh sách đầy đủ hiệu ứng phải chạy trong chính dòng đó. Mỗi phần tử phải có id hợp lệ trong CODE_VFX_CATALOG; có thể dùng chuỗi ID hoặc object {id,type:"code",opacity,z_index,config}. Ưu tiên object khi cần cấu hình lớp/vị trí/cường độ.
+- Không tạo hiệu ứng bằng cách kế thừa từ dòng trước, cảnh trước hoặc visual của cảnh. Nếu một hiệu ứng tiếp tục qua 3 dòng thì phải khai báo lại trong cả 3 mảng; khi hết hiệu ứng, dòng kế tiếp ghi [] hoặc danh sách mới.
+- Không tạo một mảng tổng ở cấp cảnh để trình phát tự suy ra hiệu ứng cho các câu. Chỉ hieu_ung_canh của từng dòng quyết định hiệu ứng của dòng đó.
+- Trước khi xuất JSON, kiểm tra tất cả dòng: trường hieu_ung_canh tồn tại và là mảng; mọi ID hợp lệ; lời thoại/hành động có mô tả hiệu ứng đang xảy ra thì ID tương ứng phải có trong mảng cùng dòng; không có hiện tượng thì dùng [].
+- Đây là dữ liệu đã được đạo diễn/AI phân tích trước khi phát. Trình phát không được suy luận ngữ nghĩa lời thoại, tìm từ khóa, hoặc tự thêm hiệu ứng trong lúc chạy; chỉ đọc và thực thi mảng đã lưu.
+
+
 - Không được chỉ viết hiệu ứng trong lời thoại/mô tả rồi để JSON không có hiệu ứng tương ứng. Lời thoại mô tả một hiện tượng nhìn thấy được là tín hiệu để đạo diễn chọn và khai báo hiệu ứng thật trong dữ liệu.
 - Với TỪNG dòng thoại và hành động, phải đối chiếu nội dung ngữ nghĩa với danh mục CODE_VFX_CATALOG. Nếu lời thoại nói hiệu ứng đang được bật, yêu cầu bật, đang diễn ra, hoặc mô tả rõ hiện tượng thuộc một hiệu ứng trong danh mục, bắt buộc thêm đúng ID vào hieu_ung_canh của chính dòng đó (hoặc dòng mở đầu sự kiện nếu hiệu ứng được duy trì xuyên các dòng).
 - Ánh xạ tối thiểu, không phân biệt chữ hoa/thường và dấu tiếng Việt:
