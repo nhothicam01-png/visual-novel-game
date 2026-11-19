@@ -184,24 +184,24 @@ async function getWebmLibrary(folder){
 }
 function setupWebmPicker(characterId,currentPath){
  const host=$('inspector'),search=$('webmSearch'),results=$('webmResults'),video=$('webmPreview');if(!results)return;
- let choices=[],picked=currentPath||'';webmPendingSelection=picked;
+ let choices=[],picked=currentPath||'',localPreviewUrl='';webmPendingSelection=picked;
  const render=()=>{
   const q=(search.value||'').toLocaleLowerCase('vi'),a=$('webmActionFilter').value,e=$('webmEmotionFilter').value;
   const list=choices.filter(x=>{const u=x.meta.user_metadata||{},hay=(x.path+' '+JSON.stringify(x.meta)).toLocaleLowerCase('vi');return (!q||hay.includes(q))&&(!a||String(u.action||x.meta.action||'')===a)&&(!e||String(u.emotion||'')===e)});
   results.innerHTML=list.length?list.map(x=>{const u=x.meta.user_metadata||{},tags=[u.communication,u.action,u.emotion,u.pose,u.direction,u.face_angle].filter(Boolean).join(' · ');return '<button type="button" class="github-item" data-webm-path="'+attr(x.path)+'" style="text-align:left;border-color:'+(picked===x.path?'#9b8cff':'#343b4b')+'"><b>'+esc(x.path.split('/').pop())+'</b><small>'+esc(tags||x.meta.summary||'Chưa có metadata')+'</small></button>'}).join(''):'<div class="empty">Không có clip khớp bộ lọc.</div>';
-  results.querySelectorAll('[data-webm-path]').forEach(b=>b.onclick=()=>{picked=b.dataset.webmPath;webmPendingSelection=picked;const item=choices.find(x=>x.path===picked);video.src=item.url;video.load();video.play().catch(()=>{});$('webmSelectedLabel').textContent='Đang xem thử: '+picked;render()});
+  results.querySelectorAll('[data-webm-path]').forEach(b=>b.onclick=()=>{picked=b.dataset.webmPath;webmPendingSelection=picked;const item=choices.find(x=>x.path===picked);if(localPreviewUrl){URL.revokeObjectURL(localPreviewUrl);localPreviewUrl=''}video.src=item.url;video.load();video.play().catch(()=>{});$('localWebmSelect').value='';$('webmSelectedLabel').textContent='Đang xem thử: '+picked;render()});
  };
  getWebmLibrary(String(data.nhan_vat?.[characterId]?.assetFolder||characterId)).then(items=>{
   choices=items;
   const actions=[...new Set(items.map(x=>String(x.meta.user_metadata?.action||x.meta.action||'')).filter(Boolean))].sort(),emotions=[...new Set(items.map(x=>String(x.meta.user_metadata?.emotion||'')).filter(Boolean))].sort();
   $('webmActionFilter').innerHTML='<option value="">Tất cả</option>'+actions.map(x=>'<option>'+esc(x)+'</option>').join('');
   $('webmEmotionFilter').innerHTML='<option value="">Tất cả</option>'+emotions.map(x=>'<option>'+esc(x)+'</option>').join('');
-  if(picked){const found=items.find(x=>x.path===picked);if(found){video.src=found.url;video.load()}}
+  if(picked){const found=items.find(x=>x.path===picked);if(found){video.src=found.url;video.load()}else if(picked.startsWith('localasset:'))getAsset(picked.slice(11)).then(asset=>{if(!asset)return;if(localPreviewUrl)URL.revokeObjectURL(localPreviewUrl);localPreviewUrl=URL.createObjectURL(asset.blob);video.src=localPreviewUrl;video.load();$('webmSelectedLabel').textContent='WEBM cục bộ: '+asset.name}).catch(()=>{})}
   render();
  }).catch(e=>{results.innerHTML='<div class="empty">Không tải được thư viện WEBM: '+esc(e.message)+'</div>'});
- const localSelect=$('localWebmSelect');if(localSelect)localSelect.onchange=async()=>{picked=localSelect.value;webmPendingSelection=picked;if(picked.startsWith('localasset:')){const asset=await getAsset(picked.slice(11));if(asset){video.src=URL.createObjectURL(asset.blob);video.load();video.play().catch(()=>{});$('webmSelectedLabel').textContent='WEBM cục bộ: '+asset.name}}else if(!picked){video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata'}render()};
+ const localSelect=$('localWebmSelect');if(localSelect)localSelect.onchange=async()=>{picked=localSelect.value;webmPendingSelection=picked;if(picked.startsWith('localasset:')){const asset=await getAsset(picked.slice(11));if(asset){if(localPreviewUrl)URL.revokeObjectURL(localPreviewUrl);localPreviewUrl=URL.createObjectURL(asset.blob);video.src=localPreviewUrl;video.load();video.play().catch(()=>{});$('webmSelectedLabel').textContent='WEBM cục bộ: '+asset.name}}else if(!picked){if(localPreviewUrl){URL.revokeObjectURL(localPreviewUrl);localPreviewUrl=''}video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata'}render()};
  search.oninput=render;$('webmActionFilter').onchange=render;$('webmEmotionFilter').onchange=render;
- $('clearWebm').onclick=()=>{picked='';webmPendingSelection='';video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata';};
+ $('clearWebm').onclick=()=>{picked='';webmPendingSelection='';if(localPreviewUrl){URL.revokeObjectURL(localPreviewUrl);localPreviewUrl=''}if($('localWebmSelect'))$('localWebmSelect').value='';video.removeAttribute('src');video.load();$('webmSelectedLabel').textContent='Sẽ tự chọn theo metadata';};
 }
 function snapshot(){return {data:JSON.parse(JSON.stringify(data)),name:$('projectName').textContent,path:activeStoryPath,selected,playhead,selectedKind,selectedObjectId};}
 function pushHistory(){if(!data||historyBusy)return;undoStack.push(snapshot());if(undoStack.length>HISTORY_LIMIT)undoStack.shift();redoStack=[];updateHistoryControls();}
