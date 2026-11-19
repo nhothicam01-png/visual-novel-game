@@ -2122,7 +2122,7 @@ async function prefetchEdgeTts(){
 }
 function ttsRequestKey(){
  const profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
- return JSON.stringify({text:$('dialogue').value.trim(),voiceId,profile:profile||null,lang:$('tts-lang').value,engine:$('tts-engine').value+(edgeDead?'-x':''),eg:$('edge-gender').value});
+ return JSON.stringify({text:$('dialogue').value.trim(),voiceId,profile:profile||null,lang:$('tts-lang').value,engine:(profile?.engine||$('tts-engine').value)+(edgeDead?'-x':''),eg:$('edge-gender').value});
 }
 const piperMods=new Map();
 async function loadPiperModule(){
@@ -2153,7 +2153,7 @@ async function getPiperSession(voiceId){
 async function generatePiperAudio(){
  const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
  if(!text)throw new Error('Bạn chưa nhập lời thoại.');
- const useEdge=$('tts-engine').value==='edge'&&!edgeDead;
+ const useEdge=($('tts-engine').value==='edge'||profile?.engine==='edge')&&!edgeDead;
  if(!voiceId&&!useEdge)throw new Error('Chưa có giọng Piper. Hãy kiểm tra kết nối mạng rồi tải lại danh sách giọng.');
  const btn=$('generate-piper'),key=ttsRequestKey(),line=getCurrentLine();
  if(line){line.text=text;line.speaker=activeCharacterList().find(ch=>ch.id===$('speaker').value)?.name||$('speaker').value.trim()||'Nhân vật';line.profileId=profile?.id||'';line.lang=$('tts-lang').value;line.voiceId=voiceId}
