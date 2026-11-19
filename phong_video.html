@@ -2196,7 +2196,7 @@ window.generateStoryAudioForStudio=async function(){
  if(recording)throw new Error('Player đang xuất video; hãy chờ hoàn tất.');
  if(previewing)stopPreview();
  saveCurrentLine();saveCurrentScene();
- const previousScene=activeSceneIndex,previousLine=activeLineIndex,results=[];
+ const previousScene=activeSceneIndex,previousLine=activeLineIndex,results=[],errors=[];
  const AC=window.AudioContext||window.webkitAudioContext;
  if(!AC)throw new Error('Trình duyệt không hỗ trợ Web Audio API.');
  const audioContext=new AC();
@@ -2209,22 +2209,24 @@ window.generateStoryAudioForStudio=async function(){
     const line=scenes[si].lines[li];if(!String(line.text||'').trim())continue;
     activeLineIndex=li;loadLineToEditor(line);
     setTaskProgress('Tạo WAV thật · thoại '+(++done)+'/'+tasks,Math.round(done/Math.max(1,tasks)*100));
-    const blob=await ensureTtsReady();
-    if(!(blob instanceof Blob)||!blob.size)throw new Error('Không tạo được WAV ở thoại '+(Number(line.sourceIndex)+1)+'.');
-    const decoded=await audioContext.decodeAudioData(await blob.arrayBuffer());
-    line.duration=decoded.duration;
-    const channel=decoded.getChannelData(0),count=48,waveform=[];
-    for(let b=0;b<count;b++){
-     const from=Math.floor(b*channel.length/count),to=Math.max(from+1,Math.floor((b+1)*channel.length/count));
-     let peak=0;for(let k=from;k<to;k++)peak=Math.max(peak,Math.abs(channel[k]));
-     waveform.push(Math.max(.06,Math.min(1,peak)));
-    }
-    const profile=selectedVoiceProfile(),voiceOption=$('piper-voice')?.selectedOptions?.[0]?.textContent||'';
-    results.push({index:Number(line.sourceIndex),blob,duration:decoded.duration,cacheKey:String(line.cacheKey||''),profileId:String(profile?.id||line.profileId||''),voiceName:String(profile?.name||voiceOption||$('tts-engine').value),mime:blob.type||'audio/wav',waveform});
+    try{
+     const blob=await ensureTtsReady();
+     if(!(blob instanceof Blob)||!blob.size)throw new Error('Bộ TTS không trả về file âm thanh.');
+     const decoded=await audioContext.decodeAudioData(await blob.arrayBuffer());
+     line.duration=decoded.duration;
+     const channel=decoded.getChannelData(0),count=48,waveform=[];
+     for(let b=0;b<count;b++){
+      const from=Math.floor(b*channel.length/count),to=Math.max(from+1,Math.floor((b+1)*channel.length/count));
+      let peak=0;for(let k=from;k<to;k++)peak=Math.max(peak,Math.abs(channel[k]));
+      waveform.push(Math.max(.06,Math.min(1,peak)));
+     }
+     const profile=selectedVoiceProfile(),voiceOption=$('piper-voice')?.selectedOptions?.[0]?.textContent||'';
+     results.push({index:Number(line.sourceIndex),blob,duration:decoded.duration,cacheKey:String(line.cacheKey||''),profileId:String(profile?.id||line.profileId||''),voiceName:String(profile?.name||voiceOption||$('tts-engine').value),mime:blob.type||'audio/wav',waveform});
+    }catch(lineError){errors.push({index:Number(line.sourceIndex),message:lineError?.message||String(lineError)});console.warn('TTS failed at source line '+(Number(line.sourceIndex)+1),lineError)}
    }
   }
   finishTaskProgress('Đã tạo xong '+results.length+' file âm thanh');
-  return results;
+  return {items:results,errors};
  }finally{
   try{await audioContext.close()}catch(_){}
   activeSceneIndex=Math.max(0,Math.min(previousScene,scenes.length-1));
