@@ -1189,11 +1189,12 @@
       "expression_id": {
         "communication": "speaking",
         "emotion": "curious",
-        "pose": "standing",
+        "pose": "walking_pose",
         "direction": "right",
         "face_angle": "135°",
         "view_angle": "full body",
-        "interaction_target": "char_pipun_char_02"
+        "interaction_target": "char_pipun_char_02",
+        "action": "walking"
       },
       "nhan_vat_hien_thi": [
         {
@@ -1201,14 +1202,15 @@
           "expression_id": {
             "communication": "speaking",
             "emotion": "neutral",
-            "pose": "standing",
+            "pose": "walking_pose",
             "direction": "right",
             "face_angle": "135°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02"
+            "interaction_target": "char_pipun_char_02",
+            "action": "walking"
           },
           "x": 24,
-          "y": 0,
+          "y": 96,
           "scale": 0.68,
           "z_index": 1,
           "motion": {
@@ -1216,27 +1218,27 @@
             "easing": "linear",
             "from": {
               "x": 24,
-              "y": 0
+              "y": 96
             },
             "to": {
               "x": 50,
-              "y": 0
+              "y": 96
             },
             "keyframes": [
               {
                 "t": 0,
                 "x": 24,
-                "y": 0
+                "y": 96
               },
               {
                 "t": 0.55,
                 "x": 38,
-                "y": 0
+                "y": 96
               },
               {
                 "t": 1,
                 "x": 50,
-                "y": 0
+                "y": 96
               }
             ]
           }
@@ -1253,7 +1255,7 @@
             "interaction_target": "none"
           },
           "x": 51,
-          "y": 0,
+          "y": 96,
           "scale": 0.68,
           "z_index": 2
         },
@@ -1269,7 +1271,7 @@
             "interaction_target": "none"
           },
           "x": 78,
-          "y": 0,
+          "y": 96,
           "scale": 0.68,
           "z_index": 3
         }
