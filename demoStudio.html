@@ -408,8 +408,8 @@ $('generateAudioBtn').onclick=async()=>{
  $('previewStatus').textContent='Đang tổng hợp WAV thật bằng engine và giọng đang chọn trong Player…';
  try{
   applyPlayerSettings();
-  const generated=await w.generateStoryAudioForStudio();
-  if(!Array.isArray(generated)||!generated.length)throw new Error('Không có file âm thanh nào được tạo. Kiểm tra nội dung thoại và giọng TTS.');
+  const result=await w.generateStoryAudioForStudio(),generated=Array.isArray(result)?result:(result?.items||[]),errors=Array.isArray(result?.errors)?result.errors:[];
+  if(!generated.length)throw new Error('Không tạo được WAV nào. '+errors.slice(0,3).map(x=>'Thoại '+(x.index+1)+': '+x.message).join(' | '));
   pushHistory();if(!assetDb)await openAssetDb();
   let stored=0;
   for(const item of generated){
@@ -418,7 +418,7 @@ $('generateAudioBtn').onclick=async()=>{
   }
   data.danh_sach=rows;buildSegments();renderAll();persistAutosave();
   $('saveStatus').textContent='Đã tạo '+stored+' WAV thật · thời lượng lấy từ audio đã giải mã';
-  $('previewStatus').textContent='Hoàn tất: '+stored+' WAV đã được lưu trong kho cục bộ và thêm vào track WAV thoại.';
+  $('previewStatus').textContent='Hoàn tất: '+stored+' WAV đã được lưu trong kho cục bộ và thêm vào track WAV thoại.'+(errors.length?' Có '+errors.length+' câu lỗi: '+errors.slice(0,3).map(x=>'#'+(x.index+1)+' '+x.message).join(' · '):'');
  }catch(error){$('previewStatus').textContent='Tạo WAV thất bại: '+(error?.message||error);$('saveStatus').textContent='Tạo WAV chưa hoàn tất'}
  finally{$('generateAudioBtn').disabled=false;$('generateAudioBtn').textContent='🎙 Tạo WAV toàn bộ'}
 };
