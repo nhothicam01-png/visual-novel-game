@@ -837,19 +837,39 @@ async function updateAssets(){
    const motion=spec?.motion&&typeof spec.motion==='object'?spec.motion:null;
    const motionAction=canonicalAnimationValue('action',motion?.action||'');
    const locomotionActions=new Set(['walking','running','running_pose','moving','locomotion']);
-   let assetSemantic=semantic;
-   // WEBM chuyển động là lớp hình thể độc lập với TTS: ưu tiên clip locomotion silent,
-   // kể cả khi nhân vật đang nói. Nếu chưa có clip chạy, tự hạ xuống clip đi bộ cùng hướng.
+   let assetSemantic=semantic,motionClipMatched=false,motionClipCommunication='';
+   let selection,expression='',url='';
+   // Chọn WEBM locomotion thật theo metadata, không lấy một frame đứng yên rồi kéo sprite.
+   // Nếu đang nói, ưu tiên clip walking/running có khẩu hình speaking; chỉ dùng silent khi thư viện không có clip speaking tương ứng.
    if(motion&&locomotionActions.has(motionAction)){
     const dx=Number(motion?.to?.x)-Number(motion?.from?.x);
     const moveDirection=Number.isFinite(dx)&&Math.abs(dx)>.05?(dx<0?'left':'right'):canonicalAnimationValue('direction',motion.direction||semantic.direction||'right');
     const paths=expressionFilesByFolder[String(folder||'')]||[];
-    const requested=paths.some(path=>{const m=animationMeta(path);return canonicalAnimationValue('action',m.action)===motionAction&&canonicalAnimationValue('direction',m.direction)===moveDirection;});
-    const resolvedAction=requested?motionAction:'walking';
-    assetSemantic={...semantic,communication:'silent',emotion:'neutral',pose:resolvedAction==='walking'?'walking_pose':(motion.pose||'walking_pose'),action:resolvedAction,direction:moveDirection,face_angle:motion.face_angle||'135°',view_angle:'full body',interaction_target:'none'};
+    const hasAction=(action)=>paths.some(path=>{const m=animationMeta(path);return canonicalAnimationValue('action',m.action)===action&&['left','right'].includes(canonicalAnimationValue('direction',m.direction));});
+    const resolvedAction=hasAction(motionAction)?motionAction:'walking';
+    const candidates=paths.map(path=>{
+     const meta=animationMeta(path),action=canonicalAnimationValue('action',meta.action),direction=canonicalAnimationValue('direction',meta.direction),communication=canonicalAnimationValue('communication',meta.communication);
+     if(action!==resolvedAction||!['speaking','silent','listening'].includes(communication))return null;
+     let mirrored=false,dirScore=0;
+     if(direction===moveDirection)dirScore=100;
+     else if(oppositeHorizontalDirection(moveDirection)===direction&&meta.mirror_safe!==false&&String(meta.mirror_safe).toLowerCase()!=='false'){dirScore=85;mirrored=true}
+     else return null;
+     const speakingPreference=semantic.communication==='speaking'?(communication==='speaking'?1000:0):(communication==='speaking'?-50:communication==='silent'?100:50);
+     return {path,meta,mirrored,score:speakingPreference+dirScore+(canonicalAnimationValue('emotion',meta.emotion)===canonicalAnimationValue('emotion',semantic.emotion)?20:0)+(canonicalAnimationValue('face_angle',meta.face_angle)===canonicalAnimationValue('face_angle',motion?.face_angle||semantic.face_angle)?10:0)};
+    }).filter(Boolean).sort((a,b)=>b.score-a.score||a.path.localeCompare(b.path));
+    const chosen=candidates[0];
+    if(chosen){
+     expression=chosen.path.split('/').pop().replace(/\.webm$/i,'');
+     url=BASE+'NhanVat/'+folder+'/'+expression+'.webm';
+     motionClipMatched=true;motionClipCommunication=canonicalAnimationValue('communication',chosen.meta.communication);
+     selection={file:expression,matched:true,mirrored:!!chosen.mirrored,reason:'WEBM locomotion đã xác minh theo action/hướng/communication'};
+     assetSemantic={...semantic,communication:motionClipCommunication,pose:chosen.meta.pose||'walking_pose',action:resolvedAction,direction:moveDirection};
+    }else{
+     assetSemantic={...semantic,communication:semantic.communication==='speaking'?'speaking':'silent',emotion:semantic.emotion||'neutral',pose:'walking_pose',action:resolvedAction,direction:moveDirection,face_angle:motion?.face_angle||semantic.face_angle||'135°',view_angle:'full body',interaction_target:'none'};
+    }
    }
-   let selection=resolveSemanticAnimation(folder,assetSemantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
-   let isSpeakingClip=false;
+   if(!selection){selection=resolveSemanticAnimation(folder,assetSemantic);expression=selection.file;url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':''}
+   let isSpeakingClip=motionClipMatched&&motionClipCommunication==='speaking';
    if(!motionAction||!locomotionActions.has(motionAction))if(String(semantic.communication||'')==='speaking'&&folder&&!selection.neutralFallback){
     const selectedPath=(expressionFilesByFolder[String(folder)]||[]).find(path=>path.split('/').pop().replace(/\.webm$/i,'')===expression);
     isSpeakingClip=!!selectedPath&&canonicalAnimationValue('communication',animationMeta(selectedPath).communication)==='speaking';
@@ -894,7 +914,8 @@ async function updateAssets(){
     }
    }
    if(!media){media=makeFallbackCharacterCanvas({...spec,name:worldCharacterDirectory.find(ch=>String(ch.id)===String(spec.id))?.name||spec.id});usedFallback=true}
-   const canPlayAnimation=!usedFallback&&(selection.matched||isSpeakingClip||selection.speakingFallback||selection.neutralFallback);
+   // WEBM dự phòng đã tải thành công vẫn là video thật và phải được phát; chỉ canvas mô phỏng mới bị pause.
+   const canPlayAnimation=!!media&&typeof media.play==='function'&&(motionClipMatched||selection.matched||isSpeakingClip||selection.speakingFallback||selection.neutralFallback);
    let motionEndMedia=null,motionEndSelection=null;
    const motionEndSemantic=spec?.motion?.end_expression_id;
    if(!usedFallback&&folder&&motionEndSemantic&&typeof motionEndSemantic==='object'){
