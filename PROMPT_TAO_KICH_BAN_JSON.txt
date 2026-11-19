@@ -569,6 +569,23 @@ Quy tắc:
 - Player ánh xạ tên file lịch sử sang ID code để tương thích truyện cũ; JSON mới chỉ ghi ID.
 
 
+QUY TẮC ĐỒNG BỘ NGỮ NGHĨA VỚI HIỆU ỨNG — BẮT BUỘC CHO MỌI KỊCH BẢN
+
+- Không được chỉ viết hiệu ứng trong lời thoại/mô tả rồi để JSON không có hiệu ứng tương ứng. Lời thoại mô tả một hiện tượng nhìn thấy được là tín hiệu để đạo diễn chọn và khai báo hiệu ứng thật trong dữ liệu.
+- Với TỪNG dòng thoại và hành động, phải đối chiếu nội dung ngữ nghĩa với danh mục CODE_VFX_CATALOG. Nếu lời thoại nói hiệu ứng đang được bật, yêu cầu bật, đang diễn ra, hoặc mô tả rõ hiện tượng thuộc một hiệu ứng trong danh mục, bắt buộc thêm đúng ID vào hieu_ung_canh của chính dòng đó (hoặc dòng mở đầu sự kiện nếu hiệu ứng được duy trì xuyên các dòng).
+- Ánh xạ tối thiểu, không phân biệt chữ hoa/thường và dấu tiếng Việt:
+  + méo/biến dạng không gian, gợn sóng không gian, bẻ cong thực tại, cổng dịch chuyển, lệch hình/viền màu do không gian -> space_warp.
+  + mưa, tuyết, sấm sét, bão, lá rơi, cánh hoa, bụi/mảnh vụn, sương/khói, gió giật, bọt khí, tàn lửa, lửa, tia nắng, hào quang -> rain, snow, lightning, storm, leaves, petals, dust, fog, wind, bubbles, embers, fire, sunlight, aura tương ứng.
+  + va đập/cú đánh/vòng va chạm -> impact; sóng chấn động lan ra -> shockwave; động đất/rung mặt đất -> earthquake; đá rơi/sạt lở -> rockfall; vết nứt lan -> cracks; vết thương -> wound; lấp lánh -> sparkles; nhòe do chuyển động -> motion_blur; chuyển cảnh có hiệu ứng -> transition; vụ nổ -> explosion.
+- Không bắt buộc bật hiệu ứng chỉ vì nhân vật nhắc tên hiệu ứng như một ví dụ, phủ định, câu hỏi lý thuyết hoặc đang giải thích cách dùng. Phải phân biệt rõ: đang mô tả/ra lệnh thực hiện hiệu ứng trong cảnh hay chỉ đang nói về hiệu ứng.
+- Nếu câu thoại như “bật biến dạng không gian”, “hãy tạo mưa”, “mặt đất bắt đầu rung”, “tia sét xé ngang bầu trời” mô tả hành động đang xảy ra trong cảnh, hiệu ứng tương ứng phải được bật ngay ở dòng đó; không chờ đến câu thoại sau.
+- Khi một sự kiện kéo dài qua nhiều dòng, giữ hiệu ứng trên mọi dòng thuộc khoảng thời gian sự kiện; tắt ở dòng đầu tiên sau khi sự kiện kết thúc. Không dựa vào hiệu ứng của một dòng trước đó để ngầm áp dụng cho dòng sau.
+- Trước khi xuất JSON, chạy kiểm toán hai chiều:
+  1. Đọc từng dòng thoại/hành động, liệt kê các hiện tượng hình ảnh được nói đến và xác nhận ID tương ứng đã có trong hieu_ung_canh.
+  2. Đọc từng ID trong hieu_ung_canh, xác nhận nó có lý do xuất hiện trong hành động/bối cảnh dòng đó.
+- Nếu lời thoại khẳng định hiệu ứng đang chạy nhưng hieu_ung_canh không chứa ID tương ứng, JSON chưa hợp lệ và phải sửa trước khi lưu.
+- Mọi hiệu ứng Canvas phải nằm trong hieu_ung_canh, không ghi nhầm vào hieu_ung.moi_truong hoặc các nhóm effects.js/environment-effects.js.
+
 ĐẠO DIỄN SỰ KIỆN ĐỘNG ĐẤT — BẮT BUỘC TỰ ĐỘNG HÓA
 - Khi truyện/mô tả cảnh có động đất, rung chấn, dư chấn hoặc mặt đất rung chuyển, AI phải thêm hiệu ứng hình ảnh thực sự vào `hieu_ung_canh`; không chỉ kể bằng lời thoại.
 - ID Canvas dành cho sự kiện địa chấn: `earthquake` (rung camera + bụi/mảnh vụn), `shockwave` (vòng sóng chấn động), `cracks` (vết nứt lan rộng), `rockfall` (đá rơi/sạt lở), `impact` (vòng va chạm). Có thể kết hợp `storm` hoặc `lightning` nếu đồng thời có bão/sét.
