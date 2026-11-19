@@ -772,7 +772,7 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
  // Tọa độ chỉ điều khiển vị trí. Loại hành động phải do AI phân tích nội dung và ghi rõ trong motion.action.
  if(motion&&typeof motion.action==='string'&&motion.action.trim())semantic.action=motion.action.trim();
  // Khi đang đi bộ, hướng hoạt ảnh phải theo chiều dịch chuyển thực tế, không theo hướng nhìn/người đối thoại.
- if(String(semantic.action||'').toLowerCase()==='walking'&&motion?.from&&motion?.to){
+ if(['walking','running','running_pose','moving','locomotion'].includes(canonicalAnimationValue('action',semantic.action||''))&&motion?.from&&motion?.to){
   const dx=Number(motion.to.x)-Number(motion.from.x);
   if(Number.isFinite(dx)&&Math.abs(dx)>.05)semantic.direction=dx<0?'left':'right';
  }
@@ -834,9 +834,23 @@ async function updateAssets(){
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
    const folder=characterAssetFolder(spec.id),semantic=semanticForVisibleCharacter(spec,frame,currentLine);
-   let selection=resolveSemanticAnimation(folder,semantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
+   const motion=spec?.motion&&typeof spec.motion==='object'?spec.motion:null;
+   const motionAction=canonicalAnimationValue('action',motion?.action||'');
+   const locomotionActions=new Set(['walking','running','running_pose','moving','locomotion']);
+   let assetSemantic=semantic;
+   // WEBM chuyển động là lớp hình thể độc lập với TTS: ưu tiên clip locomotion silent,
+   // kể cả khi nhân vật đang nói. Nếu chưa có clip chạy, tự hạ xuống clip đi bộ cùng hướng.
+   if(motion&&locomotionActions.has(motionAction)){
+    const dx=Number(motion?.to?.x)-Number(motion?.from?.x);
+    const moveDirection=Number.isFinite(dx)&&Math.abs(dx)>.05?(dx<0?'left':'right'):canonicalAnimationValue('direction',motion.direction||semantic.direction||'right');
+    const paths=expressionFilesByFolder[String(folder||'')]||[];
+    const requested=paths.some(path=>{const m=animationMeta(path);return canonicalAnimationValue('action',m.action)===motionAction&&canonicalAnimationValue('direction',m.direction)===moveDirection;});
+    const resolvedAction=requested?motionAction:'walking';
+    assetSemantic={...semantic,communication:'silent',emotion:'neutral',pose:resolvedAction==='walking'?'walking_pose':(motion.pose||'walking_pose'),action:resolvedAction,direction:moveDirection,face_angle:motion.face_angle||'135°',view_angle:'full body',interaction_target:'none'};
+   }
+   let selection=resolveSemanticAnimation(folder,assetSemantic),expression=selection.file,url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':'';
    let isSpeakingClip=false;
-   if(String(semantic.communication||'')==='speaking'&&folder&&!selection.neutralFallback){
+   if(!motionAction||!locomotionActions.has(motionAction))if(String(semantic.communication||'')==='speaking'&&folder&&!selection.neutralFallback){
     const selectedPath=(expressionFilesByFolder[String(folder)]||[]).find(path=>path.split('/').pop().replace(/\.webm$/i,'')===expression);
     isSpeakingClip=!!selectedPath&&canonicalAnimationValue('communication',animationMeta(selectedPath).communication)==='speaking';
     if(!isSpeakingClip){
