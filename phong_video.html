@@ -121,7 +121,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 @media all{
  body.demo-studio-embed{padding:0!important;margin:0!important;min-height:100vh!important;justify-content:center!important;gap:0!important;background:#000!important;overflow:hidden!important}
  body.demo-studio-embed> :not(#game-container){display:none!important}
- body.demo-studio-embed #game-container{width:100vw!important;max-width:none!important;max-height:none!important;height:auto!important;aspect-ratio:16/9!important;border-radius:0!important;box-shadow:none!important}
+ body.demo-studio-embed #game-container{width:100%!important;max-width:none!important;max-height:none!important;height:100%!important;aspect-ratio:auto!important;border-radius:0!important;box-shadow:none!important}
  body.demo-studio-embed #preview-canvas{width:100%!important;height:100%!important;object-fit:contain!important}
  body.demo-studio-embed #preview-loading{font-size:12px!important}
 }
@@ -418,7 +418,7 @@ function renderEffectCatalogs(){
   }));
  }
 }
-function setStatus(s){$('export-status').textContent=s}
+function setStatus(s){$('export-status').textContent=s;if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_PROGRESS',message:String(s||'')},location.origin)}
 const ANIMATION_REGISTRY_FALLBACK={
  communication:["speaking","silent","listening","reacting","idle"],
  emotion:["neutral","happy","sad","angry","afraid","surprised","embarrassed","crying","laughing","worried","confused","determined","Trung tính","Vui vẻ","Buồn","Tức giận","Giận dữ","Sợ hãi","Hoảng sợ","Ngạc nhiên","Xấu hổ","Khóc","Cười","Lo lắng","Bối rối","Quyết tâm"],
@@ -608,6 +608,7 @@ async function pushExportMetadata(allAudio,manifest){
 
 function setTtsStatus(s){$('tts-status').textContent=s}
 function setTaskProgress(label,percent=null){
+ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_PROGRESS',message:String(label||'Đang xử lý…'),percent},location.origin);
  const box=$('task-progress'),fill=$('progress-fill');
  if(!box||!fill)return;
  box.hidden=false;
@@ -622,11 +623,16 @@ function finishTaskProgress(label){
  setTimeout(()=>{$('task-progress').hidden=true;$('task-progress').classList.remove('indeterminate');$('progress-fill').style.width='0%'},1800);
 }
 
-function updateRatioButtons(){
- const el=$('ratio-toggle');
- if(el)el.textContent='📐 Tỉ lệ: '+(isPortrait?'9:16':'16:9');
+let previewAspectRatio='16:9';
+function updateRatioButtons(){const el=$('ratio-toggle');if(el)el.textContent='📐 Tỉ lệ: '+previewAspectRatio}
+function setPreviewAspectRatio(ratio){
+ previewAspectRatio=['16:9','9:16','1:1'].includes(String(ratio))?String(ratio):'16:9';isPortrait=previewAspectRatio==='9:16';
+ stage.classList.toggle('portrait',isPortrait);stage.classList.toggle('square',previewAspectRatio==='1:1');stage.classList.remove('force-landscape','force-portrait');
+ if(document.fullscreenElement)stage.classList.add(isPortrait?'force-portrait':'force-landscape');
+ const dims=previewAspectRatio==='9:16'?[1080,1920]:previewAspectRatio==='1:1'?[1080,1080]:[1920,1080];canvas.width=dims[0];canvas.height=dims[1];
+ if(!dialogueFontSizeTouched){$('dialogue-font-size').value=String(Math.round(canvas.width*.027));$('dialogue-font-size-value').textContent='Tự động · '+$('dialogue-font-size').value+' px'}updateRatioButtons();drawFrame(0);
 }
-function toggleAspectRatio(){resizeCanvas(!isPortrait)}
+function toggleAspectRatio(){setPreviewAspectRatio(previewAspectRatio==='16:9'?'9:16':previewAspectRatio==='9:16'?'1:1':'16:9')}
 function resizeCanvas(portrait){
  isPortrait=!!portrait;stage.classList.toggle('portrait',isPortrait);
  stage.classList.remove('force-landscape','force-portrait');
@@ -1622,7 +1628,7 @@ async function startDirectRecorder(){
  if(!previewCanvas.captureStream||!window.MediaRecorder)throw new Error('Trình duyệt không hỗ trợ ghi trực tiếp.');
  const fps=Math.max(1,Number($('fps').value)||30),quality=Number($('export-quality').value)||720;
  const oldWidth=previewCanvas.width,oldHeight=previewCanvas.height,longEdge=quality===1080?1920:quality===540?960:1280,shortEdge=quality===1080?1080:quality===540?540:720;
- previewCanvas.width=isPortrait?shortEdge:longEdge;previewCanvas.height=isPortrait?longEdge:shortEdge;drawFrame(0);
+ previewCanvas.width=previewAspectRatio==='1:1'?quality:(isPortrait?shortEdge:longEdge);previewCanvas.height=previewAspectRatio==='1:1'?quality:(isPortrait?longEdge:shortEdge);drawFrame(0);
  const videoStream=previewCanvas.captureStream(fps);directRecordAudioContext=new (window.AudioContext||window.webkitAudioContext)();await directRecordAudioContext.resume();directRecordDestination=directRecordAudioContext.createMediaStreamDestination();
  const tracks=[...videoStream.getVideoTracks(),...directRecordDestination.stream.getAudioTracks()],stream=new MediaStream(tracks);
  const types=['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
@@ -2404,7 +2410,7 @@ async function exportVideo(){
   const mixedAudio=await offline.startRendering();allAudio.forEach(e=>{e.buffer=null});audioBuffers.bgm.clear();audioBuffers.sfx.clear();
   // Tạo canvas xuất riêng; preview tiếp tục dùng canvas và context gốc.
   renderCanvas=document.createElement('canvas');
-  {const q=Number($('export-quality').value)||720,L=q===1080?1920:q===540?960:1280,S=q===1080?1080:q===540?540:720;renderCanvas.width=isPortrait?S:L;renderCanvas.height=isPortrait?L:S}
+  {const q=Number($('export-quality').value)||720,L=q===1080?1920:q===540?960:1280,S=q===1080?1080:q===540?540:720;renderCanvas.width=previewAspectRatio==='1:1'?q:(isPortrait?S:L);renderCanvas.height=previewAspectRatio==='1:1'?q:(isPortrait?L:S)}
   renderCtx=renderCanvas.getContext('2d',{alpha:false});
   canvas=renderCanvas;ctx=renderCtx;
   const mb=await import('https://esm.sh/mediabunny@1.62.1');
@@ -3256,6 +3262,18 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
     previewing=false;previewPaused=false;previewStartedAt=performance.now();startRenderLoop();
     window.parent.postMessage({type:'DEMO_STUDIO_READY',index:currentSourceIndex()},location.origin);
    }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:error?.message||String(error)},location.origin)}
+  }else if(message.type==='DEMO_STUDIO_SET_RATIO'&&demoStudioStoryLoaded){
+   setPreviewAspectRatio(message.ratio);
+  }else if(message.type==='DEMO_STUDIO_EXPORT_VIDEO'&&demoStudioStoryLoaded){
+   if(recording){window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_ERROR',message:'Đang có một tiến trình xuất video.'},location.origin);return}
+   try{
+    setPreviewAspectRatio(message.ratio||previewAspectRatio);
+    $('fps').value=String([24,30,50,60].includes(Number(message.fps))?Number(message.fps):30);
+    $('export-quality').value=String([540,720,1080].includes(Number(message.quality))?Number(message.quality):720);
+    window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_PROGRESS',message:'Đang dựng MP4 bằng WebCodecs…'},location.origin);
+    await exportVideo();
+    window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_DONE',message:'Đã hoàn tất tiến trình xuất MP4. Kiểm tra tệp tải xuống của trình duyệt.'},location.origin);
+   }catch(error){window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_ERROR',message:error?.message||String(error)},location.origin)}
   }else if(message.type==='DEMO_STUDIO_GENERATE_AUDIO'&&demoStudioStoryLoaded){
    if(previewing||previewPreparing){window.parent.postMessage({type:'DEMO_STUDIO_ERROR',message:'Hãy dừng phát trước khi tạo WAV.'},location.origin);return}
    try{
