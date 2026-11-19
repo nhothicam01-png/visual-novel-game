@@ -684,6 +684,7 @@ function renderSceneEffectPicker(){
  const scene=getCurrentScene(),lineEffects=getCurrentLine()?.sourceFrame?.hieu_ung_canh;
  const selected=normalizeSceneEffects(Array.isArray(lineEffects)&&lineEffects.length?lineEffects:scene?.visual?.sceneEffects||[]);
  const ids=new Set(selected.map(x=>x.id));
+ document.querySelectorAll('[data-line-scene-effect]').forEach(input=>{input.checked=ids.has(input.dataset.lineSceneEffect)});
  if(selected.length){const opacity=Math.round(selected[0].opacity*100);$('scene-effect-opacity').value=String(opacity);$('scene-effect-opacity-value').textContent=opacity+'%';$('scene-effect-status').textContent=selected.length+' hiệu ứng code đang bật.'}else{$('scene-effect-status').textContent='Chưa chọn hiệu ứng môi trường.'}
  host.innerHTML=CODE_VFX_CATALOG.map(([id,name])=>{
   const current=selected.find(x=>x.id===id),z=Number(current?.z_index??-10),layer=z>=50?'front':'behind';
