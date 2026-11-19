@@ -1112,30 +1112,33 @@ function drawFrameUnsafe(elapsed,st){
   cueStart+=cueSpan;cueIndex++;
   cueSpan=2+((sceneSeed+cueIndex*7+3)%3);
  }
- const cueLine=sceneLines[cueStart]||getCurrentLine()||{};
- const cueSource=cueLine.sourceFrame||cueLine;
- const cueSpeaker=String(cueLine.speakerId||cueSource.nhan_vat||speakerTarget);
- const shotPattern=['bust','group','close_up','bust','full_body','group','bust','close_up'];
- const patternOffset=sceneSeed%shotPattern.length;
- const autoShot=shotPattern[(cueIndex+patternOffset)%shotPattern.length];
+ const currentLine=getCurrentLine()||{};
+ const currentSource=currentLine.sourceFrame||sourceCameraFrame;
+ const visibleCount=Math.max(1,charLayerVideos.length);
+ const speakerSemantic=normalizeSemantic(currentSource.expression_id||currentLine.expressionId||{});
+ const emotion=canonicalAnimationValue('emotion',speakerSemantic.emotion||'neutral');
+ const viewAngle=canonicalAnimationValue('view_angle',speakerSemantic.view_angle||'');
+ const emphasisEmotions=new Set(['angry','afraid','surprised','crying','determined']);
+ const explicitCloseup=/close.?up|can canh/i.test(String(viewAngle));
+ const emotionalEmphasis=emphasisEmotions.has(emotion)||explicitCloseup||cameraSpec.emphasis===true;
+ // Mặc định là khung hình đối thoại: giữ cả nhóm trong ảnh, chỉ dịch rất nhẹ về người nói.
+ // Cận cảnh chỉ xuất hiện khi dữ liệu biểu cảm/góc nhìn hoặc đạo diễn chỉ định nhấn mạnh.
  const shot=director==='manual'
   ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
-  :autoShot;
- // Shot type giữ theo nhịp 2–4 câu, nhưng chủ thể auto luôn bám người đang nói ở câu hiện tại.
- // Vì camera marker có cameraTarget, chỉ khi đổi người nói mới cần lia sang nhân vật mới.
+  :(emotionalEmphasis?'close_up':(visibleCount>1?'group':'bust'));
  const cameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
-  :(shot==='group'?'':speakerTarget);
- const defaultZoom=shot==='close_up'?1.38:shot==='bust'?1.16:shot==='full_body'?1.035:shot==='group'?1:1;
+  :speakerTarget;
+ const defaultZoom=director==='manual'?1:(emotionalEmphasis?1.34:(visibleCount>1?(visibleCount>=3?1.015:1.035):1.14));
  const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.42:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
- const rawShotCamera=shot==='group'?null:computeShotCamera(w,h,shotZoom,cameraTarget,charLayerVideos,isPortrait,shot);
+ const rawShotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,charLayerVideos,isPortrait,shot);
  // Chỉ bắt đầu lia khi có một cue camera mới. Giữ nguyên vị trí và zoom trong các
  // câu còn lại của cùng shot, kể cả khi người nói thay đổi.
  const panState=window.__vnCameraPanState||(window.__vnCameraPanState={marker:null,x:null,y:null,zoom:1,startX:null,startZoom:1,targetX:null,targetZoom:1,startElapsed:0});
  const panMarker=director==='manual'
   ?'manual|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom)
-  :'auto|'+sceneKey+'|'+String(cueIndex)+'|'+String(cameraTarget)+'|'+String(shot);
+  :'auto|'+sceneKey+'|'+String(cameraTarget)+'|'+String(shot)+'|'+String(shotZoom);
  if(panState.marker!==panMarker){
   panState.marker=panMarker;
   panState.startElapsed=elapsed;
