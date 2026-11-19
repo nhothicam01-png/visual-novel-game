@@ -236,7 +236,7 @@ body.direct-recording #preview-loading,body.direct-recording #task-progress{disp
 <label style="display:none!important" hidden class="field">Giọng Piper<select id="piper-voice"><option value="">Đang tải danh sách giọng…</option></select></label>
 </div>
 <label class="field">Nội dung lời thoại<textarea id="dialogue" placeholder="Nhập câu thoại muốn đọc..."></textarea></label>
-<label style="display:none!important" hidden class="field">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0.3"></label>
+<label style="display:none!important" hidden class="field">Khoảng nghỉ sau câu thoại (giây)<input id="line-pause" type="number" min="0" max="10" step="0.1" value="0"></label>
 <details class="effect-panel line-effects" open><summary>🎬 Bối cảnh & hiệu ứng cho thoại này</summary>
 <section class="visible-character-editor"><div class="visible-character-head"><span>👥 Nhân vật xuất hiện trong cảnh</span><span id="visible-character-count">0 nhân vật</span></div><div class="row"><label class="field" style="flex:1">Thêm nhân vật<select id="visible-character-add-select"></select></label><button class="btn" id="visible-character-add" type="button">＋ Thêm</button></div><div class="visible-character-list" id="visible-character-list"></div><div class="note">Mỗi nhân vật có biểu cảm, vị trí và kích thước riêng. Nhân vật nói được tự thêm vào khi bạn thêm nhân vật xuất hiện khác.</div></section>
 <div class="scene-groups">
@@ -1881,7 +1881,7 @@ async function playPreview(){
       URL.revokeObjectURL(url);if(previewAudio.tts===audio)previewAudio.tts=null;
      }else if(text){setTtsStatus('Thiếu WAV của câu thoại: '+(line.speaker||item.sourceIndex+1));}
     }finally{speakingCharacterId='';speechAnalyser=null;speechAnalyserData=null;speechAudioElement=null;speechTextIndex=0;speechMotionLevel=0;}
-    const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0)),motionDuration=Math.max(0,...(line.sourceFrame?.nhan_vat_hien_thi||[]).map(ch=>Number(ch.motion?.duration_seconds)||0)),requestedDuration=Math.max(0,Math.min(30,Number(line.sourceFrame?.thoi_luong)||0),motionDuration),lineElapsed=(performance.now()-previewStartedAt)/1000-lineMotionStartElapsed,hold=Math.max(pause,requestedDuration-lineElapsed);
+    const pause=Math.max(0,Math.min(10,Number(line.pauseAfter)||0)),motionDuration=Math.max(0,...(line.sourceFrame?.nhan_vat_hien_thi||[]).map(ch=>Number(ch.motion?.duration_seconds)||0)),lineElapsed=(performance.now()-previewStartedAt)/1000-lineMotionStartElapsed,hold=Math.max(pause,motionDuration-lineElapsed);
     if(directRecording){const lineEnd=(performance.now()-directRecordStartedAt)/1000;directRecordEntries.push({line,blob:line.wavBlob||null,gain:line.gain??1,sceneIndex:item.sceneIndex,duration:Math.max(.01,lineEnd-lineStart),start:lineStart,pause:hold})}
     let remaining=hold*1000;
     while(previewing&&run===previewRunId&&remaining>0){
@@ -2322,7 +2322,7 @@ async function exportVideo(){
     activeSceneIndex=si;activeLineIndex=li;loadLineToEditor(line);
     setTaskProgress('Đang chuẩn bị WAV · Cảnh '+(si+1)+' · Thoại '+(li+1)+'/'+scene.lines.length);
     const pre=edgePrefetched.get(line);let blob=pre?pre.blob:await ensureTtsReady();
-    const entry={line,blob,gain:pre?pre.gain:(line.gain??1),sceneIndex:si,duration:0,start:totalDuration,pause:Math.max(0,Number(line.pauseAfter??.3))};
+    const entry={line,blob,gain:pre?pre.gain:(line.gain??1),sceneIndex:si,duration:0,start:totalDuration,pause:Math.max(0,Number(line.pauseAfter??0))};
     prepared[si].lines.push(entry);allAudio.push(entry);
     // Decode từng câu ngay tại đây; nếu cache/Edge trả dữ liệu hỏng thì loại bỏ và tạo lại bằng Piper.
     const AC=window.AudioContext||window.webkitAudioContext;if(!audioContext)audioContext=new AC();
@@ -2774,7 +2774,7 @@ function resolveSemanticExpression(folder,semantic){const paths=expressionFilesB
 function semanticFromExpression(folder,file){const path=(expressionFilesByFolder[String(folder||'')]||[]).find(p=>p.split('/').pop().replace(/\.webm$/i,'')===normalizeExpression(file));return path?animationMeta(path):{}}
 function buildScenesFromJson(data){
  const rows=data?.danh_sach;if(!Array.isArray(rows)||!rows.length)throw new Error('JSON không có danh_sach hợp lệ.');if(Number(data.phien_ban)!==3||!String(data.world_id||'').trim())throw new Error('Chỉ hỗ trợ JSON phiên bản 3 có world_id hợp lệ.');
- const out=[];let current=null,lastBackground='',activeBgm=String(data.am_thanh_mac_dinh?.nhac_nen||'').trim(),characterMap=data.nhan_vat||{},pauseDefault=Number(data.thiet_lap_chung?.thoi_gian_cho_giua??0.5);
+ const out=[];let current=null,lastBackground='',activeBgm=String(data.am_thanh_mac_dinh?.nhac_nen||'').trim(),characterMap=data.nhan_vat||{},pauseDefault=Number(data.thiet_lap_chung?.thoi_gian_cho_giua??0);
  const inferSpeakerId=frame=>{const explicit=String(frame?.nhan_vat||'').trim();if(explicit)return explicit;const label=normalizeCharacterName(frame?.ten_hien_thi||'');if(label){const found=Object.entries(characterMap).find(([id,info])=>normalizeCharacterName(info?.ten_hien_thi||info?.name||id)===label);if(found)return found[0]}return ''};
  rows.forEach((frame,index)=>{const rawBg=String(frame.anh_nen||'').trim();if(rawBg)lastBackground=rawBg;const characterId=inferSpeakerId(frame),charInfo=characterMap[characterId]||{},folder=characterAssetFolder(characterId),expression=resolveSemanticExpression(folder,frame.expression_id);const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim(),sceneId=String(frame.scene_id??'').trim(),flashback=frame.hoi_tuong===true,starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
   frame.hieu_ung_canh=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung??[]);
@@ -3015,7 +3015,7 @@ function loadLineToEditor(line){
  line.expression=syncExpressionOptions($('character').value,preferred);
  if(line.sourceFrame&&typeof line.sourceFrame==='object')delete line.sourceFrame.bieu_cam
  if(line.background&&Array.from($('background').options).some(o=>o.value===line.background))$('background').value=line.background;
- $('dialogue').value=line.text||'';$('voice-profile').value=line.profileId||'';$('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??.3);
+ $('dialogue').value=line.text||'';$('voice-profile').value=line.profileId||'';$('tts-lang').value=line.lang||'vi-VN';$('line-pause').value=String(line.pauseAfter??0);
  const fillVoice=()=>{if(line.voiceId&&Array.from($('piper-voice').options).some(o=>o.value===line.voiceId))$('piper-voice').value=line.voiceId};fillVoice();
  generatedTtsBlob=line.wavBlob||null;generatedTtsKey=line.cacheKey||'';applyLineEffects(line);renderVisibleCharacters(line);renderSceneEffectPicker();renderSpeakerWebmPicker();$('line-editor-title').textContent='Chỉnh sửa câu thoại '+(activeLineIndex+1);
 }
@@ -3182,7 +3182,7 @@ async function selectScene(i){
  await updateAssets();if(getCurrentLine()?.speakerId)await applyVoiceForCurrentLine();
  if(getCurrentLine()?.sourceIndex!==undefined)preloadAdjacentAssets(getCurrentLine().sourceIndex+1);
 }
-function newLine(){return {speaker:'Nhân vật 1',text:'',effectSettings:[],effectStrength:50,profileId:'',lang:$('tts-lang').value||'vi-VN',voiceId:$('piper-voice').value||'',pauseAfter:.3,wavBlob:null,cacheKey:''}}
+function newLine(){return {speaker:'Nhân vật 1',text:'',effectSettings:[],effectStrength:50,profileId:'',lang:$('tts-lang').value||'vi-VN',voiceId:$('piper-voice').value||'',pauseAfter:0,wavBlob:null,cacheKey:''}}
 $('scene-select').addEventListener('change',e=>selectScene(Number(e.target.value)));
 $('scene-flashback').addEventListener('change',()=>{const sc=getCurrentScene();if(!sc)return;sc.isFlashback=$('scene-flashback').checked;sc.lines.forEach(line=>line.isFlashback=sc.isFlashback);drawFrame(0)});
 // Hiệu ứng Canvas chạy theo timeline; không có media loop control.
