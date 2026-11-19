@@ -350,6 +350,14 @@ Tránh việc cả nhóm luôn quay nghiêng vào nhau ở mọi câu thoại. P
 - Đây là tỷ lệ định hướng mềm, không phải quota cứng cho từng cảnh hoặc từng nhân vật. Không ép góc chính diện nếu ngữ cảnh không phù hợp.
 - Không chọn góc ngẫu nhiên chỉ để đạt tỷ lệ. Ưu tiên ý nghĩa câu thoại, người nghe và nhịp dựng.
 
+1A. CẢNH CHỈ CÓ MỘT NHÂN VẬT TRONG KHUNG HÌNH
+- Vẫn phối hợp linh hoạt chính diện và nghiêng; không mặc định mọi cảnh đơn nhân vật đều chính diện, cũng không để nhân vật liên tục nghiêng mặt.
+- Trên một chuỗi độc thoại/cảnh đơn nhân vật, hướng tới khoảng 60–70% chính diện và 30–40% nghiêng. Đây là tỷ lệ mềm để kiểm soát sự lặp lại, không phải quota bắt buộc.
+- Tránh dùng cùng một nhóm góc cho quá 2 dòng thoại liên tiếp nếu không có lý do diễn xuất rõ ràng; chủ động đổi góc ở nhịp cảm xúc, hành động hoặc điểm nhìn phù hợp.
+- Dùng góc nghiêng khi nhân vật thực sự quan sát/nhìn về một hướng, vật thể, gương, cửa, bóng ma hoặc phản ứng với thứ nằm ngoài trục camera. Dùng chính diện khi độc thoại, bộc lộ cảm xúc với khán giả hoặc cần thấy rõ gương mặt.
+- Nếu nhân vật đang nhìn một vật thể ở bên cạnh/sau lưng/dưới thấp, chọn direction và face_angle theo hướng nhìn thực tế; không đổi góc chỉ để đạt tỷ lệ.
+- Tính tỷ lệ trên cả chuỗi cảnh/đoạn thoại của nhân vật, không đánh giá từng dòng riêng lẻ. Nếu ngữ cảnh bắt buộc một góc kéo dài, giữ đúng diễn xuất và chấp nhận lệch tỷ lệ.
+
 2. KHI NÀO DÙNG GÓC NGHIÊNG
 - Khi gọi tên, hỏi, trả lời hoặc nói trực tiếp với một nhân vật cụ thể: ưu tiên hướng mặt về người đó.
 - Khi trao đổi qua lại giữa hai nhân vật: giữ hướng nhìn tương hỗ hợp lý, không quay lưng/nhìn ra ngoài khung nếu không có chủ đích.
