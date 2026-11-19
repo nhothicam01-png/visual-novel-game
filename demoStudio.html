@@ -246,7 +246,7 @@ function applyPlayerSettings(){
  const scope=d.getElementById('preview-scope');if(scope)scope.value='full';
  const quality=d.getElementById('export-quality');if(quality)quality.value=$('exportQuality').value;
  const fps=d.getElementById('fps');if(fps)fps.value=$('exportFps').value;
- const wanted=$('previewRatio').value,portrait=w.document.querySelector('#stage')?.classList.contains('portrait');
+ const wanted=$('previewRatio').value,portrait=w.document.getElementById('game-container')?.classList.contains('portrait');
  if(wanted==='9:16'&&!portrait||wanted!=='9:16'&&portrait)d.getElementById('ratio-toggle')?.click();
  if(wanted==='1:1')$('previewStatus').textContent='Phòng tạo video hiện hỗ trợ 16:9 và 9:16; đang dùng 16:9.';
 }
@@ -314,6 +314,7 @@ $('enginePreview').addEventListener('load',()=>{
  else $('previewStatus').textContent='Không tải được bộ phát phong_video.';
 });
 applyPreviewRatio('16:9',false);
+if(playerWindow()&&typeof playerWindow().applyStoryData==='function'){previewEngineReady=true;observePlayerState();if(data)loadStoryIntoPlayer()}
 function togglePlay(){
  if(!data)return;if(!previewEngineReady){$('previewStatus').textContent='Đang chờ phong_video tải xong…';return}
  const d=playerDocument();if(!d)return;
