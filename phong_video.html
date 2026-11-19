@@ -1576,7 +1576,7 @@ async function loadSourceLineForPlayback(item){
 function prefetchSceneEffectsFor(items){
  const seen=new Set(),queue=[];
  items.forEach(item=>{const scene=scenes[item.sceneIndex],line=scene?.lines?.[item.lineIndex];
-  normalizeSceneEffects(scene?.visual?.sceneEffects||line?.sourceFrame?.hieu_ung_canh||[]).forEach(effect=>{
+  normalizeSceneEffects(line?.sourceFrame?.hieu_ung_canh??[]).forEach(effect=>{
    // Hiệu ứng Canvas (type=code) được vẽ trực tiếp, không có tệp path để tải trước.
    // Chỉ prefetch các hiệu ứng dạng ảnh/video có đường dẫn tài nguyên thực.
    const path=String(effect?.path||'').trim();
@@ -2524,7 +2524,7 @@ function buildScenesFromJson(data){
  const inferSpeakerId=frame=>{const explicit=String(frame?.nhan_vat||'').trim();if(explicit)return explicit;const label=normalizeCharacterName(frame?.ten_hien_thi||'');if(label){const found=Object.entries(characterMap).find(([id,info])=>normalizeCharacterName(info?.ten_hien_thi||info?.name||id)===label);if(found)return found[0]}return ''};
  rows.forEach((frame,index)=>{const rawBg=String(frame.anh_nen||'').trim();if(rawBg)lastBackground=rawBg;const characterId=inferSpeakerId(frame),charInfo=characterMap[characterId]||{},folder=characterAssetFolder(characterId),expression=resolveSemanticExpression(folder,frame.expression_id);const bgmOverride=String(frame.am_thanh?.nhac_nen?.tep??'').trim();if(bgmOverride)activeBgm=bgmOverride;const sfx=String(frame.am_thanh?.hieu_ung_am_thanh?.tep??'').trim(),sceneId=String(frame.scene_id??'').trim(),flashback=frame.hoi_tuong===true,starts=!current||(sceneId?current.sceneId!==sceneId:!!rawBg&&rawBg!==current.visual.background);
   frame.hieu_ung_canh=normalizeSceneEffects(frame.hieu_ung_canh??frame.anh_hieu_ung??[]);
-  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1)
+  if(starts){if(current)out.push(current);current={name:'Cảnh '+(out.length+1),sceneId:sceneId||('scene_'+(out.length+1)),isFlashback:flashback,sourceStart:index,sourceEnd:index,visual:{...captureVisual(),background:lastBackground,character:characterId,expression,effects:mapJsonEffects(frame)},lines:[],sourceAudio:{bgm:activeBgm,sfx}}}
   current.sourceEnd=index;current.isFlashback=current.isFlashback||flashback;
  current.lines.push({sceneId:current.sceneId,isFlashback:current.isFlashback,background:lastBackground,speaker:String(charInfo.ten_hien_thi||frame.ten_hien_thi||characterId||'Nhân vật'),speakerId:characterId,speakerType:String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'character').toLowerCase(),isNarration:['narration','narrator','voiceover','loi_dan','loi_ke','nguoi_dan_chuyen','nguoi_ke_chuyen'].includes(String(frame.loai_phat_ngon||frame.speaker_type||frame.kieu_loi_thoai||'').toLowerCase()),text:String(frame.noi_dung||''),effectSettings:mapJsonEffects(frame),effectStrength:50,profileId:'',lang:'vi-VN',voiceId:'',pauseAfter:Math.max(0,pauseDefault),wavBlob:null,cacheKey:'',sourceIndex:index,sourceAudio:{bgm:activeBgm,sfx},audioOverride:{},sourceFrame:frame,characterAsset:characterId,expression,expressionId:frame.expression_id});current.sourceAudio={bgm:activeBgm,sfx}});
  if(current)out.push(current);return out;
