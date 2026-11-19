@@ -737,11 +737,43 @@ function semanticForVisibleCharacter(spec,frame,currentLine){
  const requestedCommunication=canonicalAnimationValue('communication',motion?.communication??base.communication);
  const communication=isSpeaking?'speaking':(['listening','reacting','idle','silent'].includes(requestedCommunication)?requestedCommunication:'silent');
  const semantic={...base,communication};
+ // Đạo diễn ánh mắt theo lượt thoại: người nghe nhìn người đang nói; người nói nhìn đối tượng giao tiếp.
+ // Chỉ áp dụng khi có đội hình nhiều nhân vật và không phải lời dẫn.
+ const participants=(Array.isArray(frame?.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:Array.isArray(currentLine?.visibleCharacters)?currentLine.visibleCharacters:[])
+  .filter(item=>item&&item.id!=null&&item.visible!==false&&item.remove_from_scene!==true);
+ const self=participants.find(item=>String(item.id)===String(spec?.id));
+ const speakerId=String(frame?.nhan_vat||currentLine?.speakerId||'');
+ const speaker=participants.find(item=>String(item.id)===speakerId);
+ const getX=item=>Number.isFinite(Number(item?.x))?Number(item.x):50;
+ const narrationLine=narration||!speakerId;
+ if(!narrationLine&&participants.length>1&&self){
+  let targetId='';
+  if(isSpeaking){
+   const explicit=String(base.interaction_target||'');
+   if(explicit&&explicit!=='none'&&participants.some(item=>String(item.id)===explicit))targetId=explicit;
+   if(!targetId){
+    const previous=(getCurrentScene()?.lines||[]).slice(0,Math.max(0,activeLineIndex)).reverse().find(item=>item?.speakerId&&String(item.speakerId)!==speakerId);
+    if(previous&&participants.some(item=>String(item.id)===String(previous.speakerId)))targetId=String(previous.speakerId);
+   }
+   if(!targetId){
+    const others=participants.filter(item=>String(item.id)!==String(spec.id)).sort((a,b)=>Math.abs(getX(a)-getX(self))-Math.abs(getX(b)-getX(self))||getX(a)-getX(b));
+    targetId=String(others[0]?.id||'');
+   }
+  }else if(speaker&&String(spec.id)!==speakerId){
+   targetId=speakerId;
+  }
+  const target=participants.find(item=>String(item.id)===targetId);
+  if(target){
+   semantic.interaction_target=targetId;
+   const delta=getX(target)-getX(self);
+   if(Math.abs(delta)>1)semantic.direction=delta<0?'left':'right';
+  }
+ }
  // Tọa độ chỉ điều khiển vị trí. Loại hành động phải do AI phân tích nội dung và ghi rõ trong motion.action.
  if(motion&&typeof motion.action==='string'&&motion.action.trim())semantic.action=motion.action.trim();
+ // Cho phép motion khai báo hướng nhìn tường minh để ghi đè đạo diễn tự động.
  ['direction','face_angle','view_angle','pose','emotion','interaction_target'].forEach(k=>{if(motion&&motion[k]!=null&&String(motion[k]).trim())semantic[k]=String(motion[k]).trim()});
  // Góc chính diện chỉ chuẩn hóa face_angle; tuyệt đối giữ nguyên emotion và communication.
- // Nhờ vậy biểu cảm speaking/listening không bị rơi về neutral chỉ vì chọn góc chính diện.
  if(semantic.face_angle&&canonicalAnimationValue('face_angle',semantic.face_angle)==='front')semantic.face_angle='0°';
  return semantic;
 }
