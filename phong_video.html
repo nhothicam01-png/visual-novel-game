@@ -1982,6 +1982,11 @@ async function loadSavedVoiceProfiles(){
  catch(e){console.warn('Không tải được thư viện giọng GitHub',e)}
  const list=getVoiceProfiles();sel.innerHTML='<option value="">Dùng giọng Piper bên dưới</option>'+list.map(p=>'<option value="'+String(p.id).replace(/["&<>]/g,'')+'">'+String(p.name).replace(/[&<>"]/g,'')+' · '+String(p.edgeVoice||p.voiceId)+'</option>').join('');
 }
+let voiceCatalogPromise=null;
+async function ensureVoiceCatalogReady(){
+ if(!voiceCatalogPromise)voiceCatalogPromise=Promise.all([loadSavedVoiceProfiles(),loadPiperVoices()]).finally(()=>{voiceCatalogPromise=null});
+ await voiceCatalogPromise;
+}
 function selectedVoiceProfile(){return getVoiceProfiles().find(p=>p.id===$('voice-profile').value)||null}
 $('voice-profile').addEventListener('change',()=>{
  const p=selectedVoiceProfile();if(!p)return;
@@ -2030,7 +2035,7 @@ $('tts-lang').addEventListener('change',async()=>{
  await loadPiperVoices();
  const line=getCurrentLine();if(line){line.lang=$('tts-lang').value;line.voiceId=$('piper-voice').value;saveCurrentLine();renderLineList()}
 });
-loadSavedVoiceProfiles().then(()=>renderCharacterVoiceSetup());
+ensureVoiceCatalogReady().then(()=>renderCharacterVoiceSetup());
 let generatedTtsKey='',ttsGenerationPromise=null;
 
 // ===== [TỐI ƯU] Edge Neural TTS: miễn phí, không cần API key, ~0.3s/câu, chạy SONG SONG =====
@@ -2171,6 +2176,7 @@ async function getPiperSession(voiceId){
  return piperSession;
 }
 async function generatePiperAudio(){
+ await ensureVoiceCatalogReady();
  const text=$('dialogue').value.trim(),profile=selectedVoiceProfile(),voiceId=profile?.voiceId||$('piper-voice').value;
  if(!text)throw new Error('Bạn chưa nhập lời thoại.');
  const useEdge=($('tts-engine').value==='edge'||profile?.engine==='edge')&&!edgeDead;
@@ -2227,7 +2233,7 @@ async function ensureTtsReady(){
 $('generate-piper').addEventListener('click',async()=>{
  try{await ensureTtsReady()}catch(err){setTtsStatus('Không tạo được giọng: '+(err.message||err))}
 });
-loadPiperVoices().then(()=>{const line=getCurrentLine();if(line&&!line.voiceId){line.voiceId=$('piper-voice').value;renderLineList()}});
+ensureVoiceCatalogReady().then(()=>{const line=getCurrentLine();if(line&&!line.voiceId){line.voiceId=$('piper-voice').value;renderLineList()}});
 loadStoryCatalog();
 $('dialogue').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
 $('speaker').addEventListener('input',()=>{if(!previewing)drawFrame(0)});
@@ -2320,6 +2326,7 @@ const yieldChannel=new MessageChannel();
 function yieldToUI(){return new Promise(r=>{yieldChannel.port1.onmessage=()=>r();yieldChannel.port2.postMessage(0)})}
 async function exportVideo(){
  if(recording)return;
+ await ensureVoiceCatalogReady();
  if(!window.VideoEncoder||!window.AudioEncoder){setStatus('Trình duyệt chưa hỗ trợ WebCodecs. Hãy dùng Chrome hoặc Edge mới.');return}
  saveCurrentLine();saveCurrentScene();
  if(!scenes.length||!scenes.some(sc=>sc.lines.some(line=>line.text.trim()))){setStatus('Hãy thêm ít nhất một câu thoại.');return}
@@ -2581,6 +2588,7 @@ function resolveVoiceForLine(line){
  return null;
 }
 async function applyVoiceForCurrentLine(){
+ await ensureVoiceCatalogReady();
  const line=getCurrentLine();if(!line)return;
  const resolved=resolveVoiceForLine(line);
  if(!resolved){$('voice-profile').value='';$('piper-voice').value='';$('voice-fallback-status').textContent='Chưa có giọng Piper hợp lệ. Hãy chọn giọng mặc định hoặc gán giọng cho nhân vật.';return}
