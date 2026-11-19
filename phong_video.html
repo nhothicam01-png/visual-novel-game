@@ -778,7 +778,7 @@ async function updateAssets(){
  const rawObjects=Array.isArray(currentLine?.scene_objects)?currentLine.scene_objects:Array.isArray(currentLine?.sceneObjects)?currentLine.sceneObjects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
  const objectSpecs=rawObjects.filter(o=>o&&typeof o==='object'&&String(o.asset||o.path||o.file||'').trim()).map((o,index)=>{const file=String(o.asset||o.path||o.file).trim(),url=(file.toLowerCase().startsWith('http://')||file.toLowerCase().startsWith('https://'))?file:(file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file);return {...o,id:String(o.id||('object_'+index)),url,type:/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?'image':'video',z_index:Number(o.z_index??10+index)}});
  const effectKey=JSON.stringify(sceneSpecs.map(x=>[x.id,x.opacity,x.z_index,x.config]));
- if(!directRecording){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
+ if(!directRecording&&!previewPreparing&&!previewing){$('preview-loading').classList.add('active');$('preview-loading-status').textContent=displaySpecs.length>1?'Đang nạp nền và '+displaySpecs.length+' nhân vật…':'Đang nạp nền và nhân vật…'}else $('preview-loading').classList.remove('active');
  let assetsLoaded=false;
  try{
   const layerJobs=displaySpecs.map(async(spec,index)=>{
@@ -1537,20 +1537,23 @@ async function preparePreviewPlayback(items,useBrowser){
   (Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[]).forEach(spec=>{const displayFolder=characterAssetFolder(spec?.id),displayExpression=resolveSemanticExpression(displayFolder,spec?.expression_id||semanticFromExpression(displayFolder,spec?.bieu_cam));if(displayFolder&&displayExpression)videoUrls.add(BASE+'NhanVat/'+displayFolder+'/'+displayExpression+'.webm')});
  }
  const assetJobs=[...imageUrls].map(url=>()=>cachedImage(url)),videoJobs=[...videoUrls].map(url=>()=>cachedVideo(url));
- const total=assetJobs.length+videoJobs.length+(useBrowser?0:items.length);let done=0;
- setTaskProgress('Chuẩn bị tài nguyên phát · 0/'+total,0);
+ const total=assetJobs.length+videoJobs.length+items.length+(useBrowser?0:items.length);let done=0;
+ setTaskProgress('Chuẩn bị toàn bộ tài nguyên · 0/'+total,0);
  const jobs=[...assetJobs,...videoJobs];
- for(let i=0;i<jobs.length;i+=2){
-  await Promise.all(jobs.slice(i,i+2).map(async load=>{await load();done++;setTaskProgress('Nạp hình/video · '+done+'/'+total,total?done/total*100:100)}));
+ for(let i=0;i<jobs.length;i+=3){
+  await Promise.all(jobs.slice(i,i+3).map(async load=>{try{await load()}catch(error){console.warn('Bỏ qua tài nguyên không tải được trong bước chuẩn bị:',error)}finally{done++;setTaskProgress('Nạp hình/video · '+done+'/'+total,total?done/total*100:100)}}));
  }
- if(!useBrowser){
-  for(const item of items){
-   await loadSourceLineForPlayback(item);
-   if($('dialogue').value.trim())await ensureTtsReady();
-   done++;setTaskProgress('Tạo/kiểm tra WAV · '+done+'/'+total,total?done/total*100:100);
-  }
+ // Duyệt từng dòng một lần trước khi phát để updateAssets nạp cả WEBM ngữ nghĩa,
+ // WEBM speaking/listening dự phòng, chuyển động kết thúc, hiệu ứng và vật thể của dòng.
+ for(let index=0;index<items.length;index++){
+  const item=items[index];
+  await loadSourceLineForPlayback(item);
+  if(!useBrowser&&$('dialogue').value.trim())await ensureTtsReady();
+  done++;setTaskProgress((useBrowser?'Chuẩn bị cảnh/nhân vật · ':'Chuẩn bị cảnh, nhân vật và WAV · ')+done+'/'+total,total?done/total*100:100);
  }
- setTaskProgress('Đã chuẩn bị xong tài nguyên · '+items.length+' câu thoại',100);
+ // Trả giao diện về đúng dòng bắt đầu; tài nguyên đã có trong cache nên phát không phải tải mạng lại.
+ if(items.length)await loadSourceLineForPlayback(items[0]);
+ setTaskProgress('Đã chuẩn bị xong toàn bộ tài nguyên · '+items.length+' câu thoại',100);
 }
 async function playPreview(){
  if(previewPreparing||previewing)return;
