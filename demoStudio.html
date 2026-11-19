@@ -75,12 +75,14 @@ function sceneGroups(){const out=[];rows.forEach((r,i)=>{const k=sceneKey(r);let
 function renderAll(){if(!data)return;$('lineCount').textContent=rows.length;$('sceneCount').textContent=new Set(rows.map(sceneKey)).size;$('duration').textContent=fmt(total);$('charCount').textContent=Object.keys(data.nhan_vat||{}).length;$('sceneBadge').textContent=sceneKey(rows[selected>=0?selected:0]);renderScenes();renderTimeline();renderInspector();renderMonitor()}
 function renderScenes(){const groups=sceneGroups();$('sceneList').innerHTML=groups.map(g=>'<button class="scene-item '+(selected>=g.start&&selected<=g.end?'active':'')+'" data-index="'+g.start+'"><b>'+esc(g.key)+'</b><small>Đoạn '+(g.start+1)+'–'+(g.end+1)+' · '+g.count+' thoại</small></button>').join('');$('sceneList').onclick=e=>{const b=e.target.closest('button[data-index]');if(!b)return;selectedKind='scene';selectLine(Number(b.dataset.index),true)}}
 function renderTimeline(){
- const width=Math.max(720,total*pxPerSec*zoom+150),scale=pxPerSec*zoom,inner=$('timelineInner');
- inner.style.width=width+'px';let ticks='';const step=zoom<.7?10:5;
- for(let t=0;t<=total+step;t+=step)ticks+='<div class="tick" style="left:'+(108+t*scale)+'px">'+fmt(t)+'</div>';
+ const width=Math.max(720,total*pxPerSec*zoom+150),scale=pxPerSec*zoom,inner=$('timelineInner'),viewport=$('timelineScroll');
+ inner.style.width=width+'px';const visibleStart=Math.max(0,(viewport.scrollLeft-180)/scale),visibleEnd=Math.min(total,(viewport.scrollLeft+Math.max(600,viewport.clientWidth)+180)/scale);
+ let lo=0,hi=segments.length;while(lo<hi){const mid=(lo+hi)>>1;if(segments[mid].end<visibleStart)lo=mid+1;else hi=mid}
+ const firstVisible=Math.max(0,lo-1);let upper=firstVisible;while(upper<segments.length&&segments[upper].start<=visibleEnd)upper++;const renderSegments=segments.slice(firstVisible,upper);
+ let ticks='';const step=zoom<.7?10:5;for(let t=Math.floor(visibleStart/step)*step;t<=visibleEnd+step;t+=step)ticks+='<div class="tick" style="left:'+(108+t*scale)+'px">'+fmt(t)+'</div>';
  let sceneClips='',dialogueClips='',effectClips='',cameraClips='',motionClips='',musicClips='',sfxClips='';
  const chars=Object.entries(data?.nhan_vat||{}),charClips=new Map(chars.map(([id])=>[id,''])),seen=new Set();
- segments.forEach(seg=>{
+ renderSegments.forEach(seg=>{
   const r=rows[seg.i],left=seg.start*scale,w=Math.max(5,seg.duration*scale-2),name=charName(r.nhan_vat);
   if(!seen.has(seg.scene)){seen.add(seg.scene);let last=seg.i;while(last+1<rows.length&&sceneKey(rows[last+1])===seg.scene)last++;const sceneWidth=Math.max(20,(segments[last].end-seg.start)*scale-2);sceneClips+='<div class="clip scene" data-kind="scene" title="'+esc(seg.scene)+'" style="left:'+left+'px;width:'+sceneWidth+'px" data-index="'+seg.i+'">'+esc(seg.scene)+'</div>'}
   dialogueClips+='<div class="clip dialogue '+(selected===seg.i?'selected':'')+'" data-kind="dialogue" title="'+esc(name+': '+r.noi_dung)+'" style="left:'+left+'px;width:'+w+'px" data-index="'+seg.i+'">'+esc(name+' · '+(r.noi_dung||'').slice(0,48))+'</div>';
@@ -253,6 +255,6 @@ $('undoBtn').onclick=undo;$('redoBtn').onclick=redo;
 window.addEventListener('keydown',e=>{const tag=(e.target?.tagName||'').toLowerCase(),editing=tag==='input'||tag==='textarea'||e.target?.isContentEditable;if(editing)return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo()}else if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo()}});
 $('playBtn').onclick=togglePlay;$('toStart').onclick=()=>seek(0);$('toEnd').onclick=()=>seek(total);$('zoomIn').onclick=()=>{zoom=Math.min(4,zoom*1.25);renderTimeline()};$('zoomOut').onclick=()=>{zoom=Math.max(.25,zoom/1.25);renderTimeline()};$('fitBtn').onclick=()=>{if(!total)return;const available=$('timelineScroll').clientWidth-140;zoom=Math.max(.2,Math.min(3,available/(total*pxPerSec)));renderTimeline()};
 $('timelineScroll').addEventListener('click',e=>{if(!data||e.target.closest('.clip'))return;const rect=$('timelineInner').getBoundingClientRect(),t=(e.clientX-rect.left-108)/(pxPerSec*zoom);seek(t)});
-$('timelineScroll').addEventListener('scroll',()=>{});
+let timelineScrollRaf=0;$('timelineScroll').addEventListener('scroll',()=>{if(timelineScrollRaf)return;timelineScrollRaf=requestAnimationFrame(()=>{timelineScrollRaf=0;renderTimeline()})});
 try{const cached=JSON.parse(localStorage.getItem(AUTOSAVE_KEY)||'null');if(cached?.snapshot?.data?.danh_sach?.length&&confirm('Tìm thấy bản tự lưu DemoStudio ('+new Date(cached.savedAt||0).toLocaleString('vi-VN')+'). Bạn có muốn khôi phục phiên làm việc gần nhất không?'))restoreSnapshot(cached.snapshot);}catch(e){console.warn('Không thể khôi phục bản tự lưu DemoStudio:',e)}
 </script></body></html>
