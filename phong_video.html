@@ -670,7 +670,7 @@ function normalizeSceneEffects(values){
   return {id,type:'code',loop:true,opacity:Math.max(.05,Math.min(1,Number(value.opacity??1))),z_index:Number(value.z_index??20+index),config:value.config&&typeof value.config==='object'?value.config:{}};
  }).filter(Boolean);
 }
-const CODE_VFX_CATALOG=[['rain','Mưa'],['snow','Tuyết'],['lightning','Sấm sét'],['leaves','Lá rơi'],['petals','Cánh hoa'],['dust','Bụi / mảnh vụn'],['fog','Sương / khói'],['wind','Gió'],['bubbles','Bọt khí'],['embers','Tàn lửa'],['fire','Lửa'],['sunlight','Tia nắng'],['aura','Hào quang'],['impact','Va chạm'],['cracks','Vết nứt'],['wound','Vết thương'],['sparkles','Lấp lánh'],['motion_blur','Nhòe chuyển động'],['transition','Chuyển cảnh'],['explosion','Vụ nổ']];
+const CODE_VFX_CATALOG=[['rain','Mưa'],['snow','Tuyết'],['lightning','Sấm sét'],['storm','Mưa bão + sấm sét'],['leaves','Lá rơi'],['petals','Cánh hoa'],['dust','Bụi / mảnh vụn'],['fog','Sương / khói'],['wind','Gió giật'],['bubbles','Bọt khí'],['embers','Tàn lửa'],['fire','Lửa'],['sunlight','Tia nắng'],['aura','Hào quang'],['impact','Va chạm'],['shockwave','Sóng chấn động'],['earthquake','Động đất / rung chấn'],['rockfall','Đá rơi / sạt lở'],['cracks','Vết nứt lan rộng'],['wound','Vết thương'],['sparkles','Lấp lánh'],['motion_blur','Nhòe chuyển động'],['transition','Chuyển cảnh'],['explosion','Vụ nổ']];
 function renderSceneEffectPicker(){
  const host=$('scene-effect-picker');if(!host)return;
  const scene=getCurrentScene(),selected=normalizeSceneEffects(scene?.visual?.sceneEffects||[]);
@@ -980,16 +980,18 @@ function drawCodeEnvironmentEffect(id,item,w,h,elapsed){
    else{ctx.fillStyle='rgba(205,190,160,.35)';ctx.beginPath();ctx.arc(0,0,size,0,Math.PI*2);ctx.fill()}
    ctx.restore();
   }
- }else if(id==='lightning'){
-  const period=Number(cfg.period||4.4),phase=((elapsed%period)+period)%period,events=[.08,.2,.28],pulse=events.reduce((v,t)=>Math.max(v,Math.max(0,1-Math.abs(phase-t)/.105)),0);
-  if(pulse>0){
-   const x=w*(.25+seed(Math.floor(elapsed/period))* .5),segments=12,points=[{x,y:0}];let px=x,py=0;
-   for(let i=0;i<segments;i++){py+=h/segments;px+=(seed(i+Math.floor(elapsed/period)*31)-.5)*w*.12;points.push({x:px,y:py})}
-   ctx.save();ctx.globalCompositeOperation='screen';ctx.shadowColor='#c9e5ff';ctx.shadowBlur=w*.025;ctx.strokeStyle='rgba(205,230,255,.98)';ctx.lineWidth=Math.max(2,w*.003);ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);points.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.stroke();
-   ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=Math.max(1,w*.001);ctx.stroke();
-   for(let b=2;b<segments-1;b+=3){const p=points[b],branch=[{x:p.x,y:p.y}];let bx=p.x,by=p.y;for(let k=0;k<3;k++){by+=h*.035;bx+=(seed(b*17+k+Math.floor(elapsed/period)*43)-.5)*w*.10;branch.push({x:bx,y:by})}ctx.globalAlpha=.72;ctx.lineWidth=Math.max(1,w*.0014);ctx.beginPath();ctx.moveTo(branch[0].x,branch[0].y);branch.slice(1).forEach(q=>ctx.lineTo(q.x,q.y));ctx.stroke()}ctx.restore();
-   ctx.save();ctx.globalCompositeOperation='screen';ctx.fillStyle='rgba(205,225,255,1)';ctx.globalAlpha=opacity*pulse*.18;ctx.fillRect(0,0,w,h);ctx.restore();
-  }
+ }else if(id==='lightning'||id==='storm'){
+  const period=Number(cfg.period||(id==='storm'?3.1:4.4)),phase=((elapsed%period)+period)%period,events=id==='storm'?[.04,.12,.19,.48]:[.08,.2,.28],pulse=events.reduce((v,t)=>Math.max(v,Math.max(0,1-Math.abs(phase-t)/(id==='storm'?.075:.105))),0);
+  if(id==='storm'){const n=count(190,30,260);ctx.strokeStyle='rgba(175,205,235,.58)';ctx.lineWidth=Math.max(1,w*.0011);for(let i=0;i<n;i++){const x=(seed(i)*w+Math.sin(elapsed*1.8+i)*w*.045+w)%w,y=(seed(i+400)*h+elapsed*h*(1+seed(i+700)*.8))%(h+40)-20,len=h*(.025+seed(i+900)*.035);ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-w*.014,y+len);ctx.stroke()}}
+  if(pulse>0){const ev=Math.floor(elapsed/period),x=w*(.22+seed(ev)*.56),segments=14,points=[{x,y:0}];let px=x,py=0;for(let i=0;i<segments;i++){py+=h/segments;px+=(seed(i+ev*31)-.5)*w*.14;points.push({x:px,y:py})}ctx.save();ctx.globalCompositeOperation='screen';ctx.shadowColor='#c9e5ff';ctx.shadowBlur=w*.03;ctx.strokeStyle='rgba(205,230,255,.98)';ctx.lineWidth=Math.max(2,w*.0035);ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);points.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.stroke();ctx.restore();ctx.save();ctx.globalCompositeOperation='screen';ctx.fillStyle='rgba(205,225,255,1)';ctx.globalAlpha=opacity*pulse*(id==='storm'?.27:.18);ctx.fillRect(0,0,w,h);ctx.restore()}
+ }else if(id==='earthquake'){
+  const n=count(36,12,70);ctx.fillStyle='rgba(165,150,130,.38)';for(let i=0;i<n;i++){const fall=(elapsed*(.18+seed(i+10)*.24)+seed(i+20))*1.4%1,x=seed(i+30)*w+Math.sin(elapsed*3+i)*w*.025,y=(seed(i+40)*h+fall*h*.22)%h,r=w*(.0015+seed(i+50)*.003);ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+ }else if(id==='shockwave'||id==='impact'){
+  const period=Number(cfg.period||2.2),phase=((elapsed%period)+period)%period,progress=phase/period,cx=w*.5,cy=h*.72;for(let ring=0;ring<4;ring++){const p=(progress+ring*.22)%1;ctx.globalAlpha=opacity*(1-p)*.8;ctx.strokeStyle='rgba(200,230,245,.9)';ctx.lineWidth=Math.max(2,w*.004*(1-p));ctx.beginPath();ctx.ellipse(cx,cy,w*(.025+p*(id==='impact'?.18:.58)),h*(.012+p*(id==='impact'?.07:.22)),0,0,Math.PI*2);ctx.stroke()}
+ }else if(id==='rockfall'){
+  const n=count(24,6,55);for(let i=0;i<n;i++){const phase=((elapsed*(.18+seed(i+60)*.5)+seed(i+70))*1.7)%1,x=seed(i+80)*w+Math.sin(elapsed*2+i)*w*.025,y=phase*h*1.18-h*.12,size=w*(.008+seed(i+90)*.018);ctx.save();ctx.translate(x,y);ctx.rotate(elapsed*(seed(i+100)-.5)*2);ctx.fillStyle=['#77766f','#9b9488','#625f59'][i%3];ctx.beginPath();ctx.moveTo(-size,-size*.45);ctx.lineTo(size*.55,-size);ctx.lineTo(size,size*.25);ctx.lineTo(size*.15,size*.8);ctx.lineTo(-size*.8,size*.35);ctx.closePath();ctx.fill();ctx.restore()}
+ }else if(id==='cracks'){
+  const progress=Math.min(1,elapsed/Math.max(.8,Number(cfg.duration||3.8))),cx=w*Number(cfg.x??.5),cy=h*Number(cfg.y??.68);ctx.save();ctx.globalAlpha=opacity*(.35+.65*progress);ctx.strokeStyle='rgba(25,28,32,.95)';ctx.lineWidth=Math.max(2,w*.0022);ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=w*.004;for(let a=0;a<12;a++){let x=cx,y=cy,angle=Math.PI*2*a/12+seed(a)*.18,len=Math.min(w,h)*(.1+progress*.35)*(.65+seed(a+20)*.6);ctx.beginPath();ctx.moveTo(x,y);for(let k=0;k<5;k++){const d=len/5*(.8+seed(a*10+k)*.4);x+=Math.cos(angle+(seed(k+a*30)-.5)*.55)*d;y+=Math.sin(angle+(seed(k+a*40)-.5)*.55)*d;ctx.lineTo(x,y)}ctx.stroke()}ctx.restore();
  }else if(id==='wind'){const n=count(26);ctx.strokeStyle='rgba(210,225,240,.28)';ctx.lineWidth=Math.max(1,w*.001);for(let i=0;i<n;i++){const x=(seed(i)*w+elapsed*w*.09)%w,y=seed(i+90)*h;ctx.beginPath();ctx.moveTo(x,y);ctx.bezierCurveTo(x+w*.025,y-h*.008,x+w*.04,y+h*.008,x+w*.065,y);ctx.stroke()}
  }else if(id==='fog'||id==='aura'||id==='sunlight'){
   const n=id==='fog'?7:4;for(let i=0;i<n;i++){const x=w*(.12+seed(i)*.76)+Math.sin(elapsed*.18+i)*w*.035,y=h*(.18+seed(i+20)*.65),r=w*(id==='fog'?.16:.12);const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,id==='sunlight'?'rgba(255,240,180,.12)':'rgba(220,230,240,.09)');g.addColorStop(1,'rgba(220,230,240,0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2)}
@@ -1036,6 +1038,7 @@ function drawFrameUnsafe(elapsed,st){
  ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
  let shakeX=0,shakeY=0,zoom=1;
  sceneEffectLayers.forEach(effect=>{if(effect.type==='code'&&effect.id==='lightning'){const period=Number(effect.config?.period||4.4),phase=((elapsed%period)+period)%period,pulse=[.08,.2,.28].reduce((v,t)=>Math.max(v,Math.max(0,1-Math.abs(phase-t)/.105)),0);if(pulse>0){const amount=.003*pulse;shakeX+=Math.sin(elapsed*85)*w*amount;shakeY+=Math.cos(elapsed*73)*h*amount}return;}});
+ sceneEffectLayers.filter(e=>e.type==='code'&&e.id==='earthquake').forEach(e=>{const k=Math.max(.2,Math.min(2,Number(e.config?.intensity||1)));shakeX+=Math.sin(elapsed*67)*w*.010*k;shakeY+=Math.cos(elapsed*59)*h*.008*k});
  if(camFx.includes('camera-shake')){shakeX=Math.sin(quakeElapsed*55)*w*.012*strength;shakeY=Math.cos(quakeElapsed*48)*h*.010*strength}
  if(camFx.includes('camera-zoom'))zoom*=1+Math.min(.10,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.10*strength);
  if(camFx.includes('camera-pull'))zoom*=1-Math.min(.08,Math.sin(Math.min(elapsed/2,1)*Math.PI)*.08*strength);
