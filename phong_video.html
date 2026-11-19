@@ -1135,7 +1135,7 @@ function getCharacterCameraLayers(layers,elapsed){
 function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
  if(!(shotZoom>1))return null;
  const layer=(layers||[]).find(item=>String(item.spec?.id||'')===targetId);if(!layer)return null;
- const count=Math.max(1,layers.length),zoom=Math.max(1,Math.min(1.5,shotZoom));
+ const count=Math.max(1,layers.length),zoom=Math.max(1,Math.min(3,shotZoom));
  if(zoom<=1)return null;
  const spec=layer.spec||{},requested=Number(spec.scale),clamp=(lo,hi,v)=>Math.max(lo,Math.min(hi,v));
  const baseScale=Number.isFinite(requested)?clamp(.1,2.5,requested):.68,scale=getCharacterDepthScale(spec.y,baseScale),dh=h*scale;
@@ -1216,7 +1216,9 @@ function drawFrameUnsafe(elapsed,st){
  const sourceCameraFrame=getCurrentLine()?.sourceFrame||{},cameraSpec=sourceCameraFrame.camera&&typeof sourceCameraFrame.camera==='object'?sourceCameraFrame.camera:{};
  const director=String(cameraSpec.director||'auto').toLowerCase();
  const sceneLines=getCurrentScene()?.lines||[],lineIndex=Math.max(0,activeLineIndex);
- const speakerTarget=String(sourceCameraFrame.nhan_vat||getCurrentLine()?.speakerId||speakingCharacterId||'');
+ const currentLine=getCurrentLine()||{};
+ // Ưu tiên người đang nói; nhan_vat trong sourceFrame đôi khi chỉ là nhân vật đại diện của cảnh.
+ const speakerTarget=String(currentLine.speakerId||sourceCameraFrame.speakerId||sourceCameraFrame.nhan_vat||speakingCharacterId||'');
  // Đạo diễn theo NHỊP CẢNH, không đổi máy quay theo từng câu thoại.
  // Mỗi shot được giữ ngẫu nhiên ổn định 2–4 câu; seed theo scene để kết quả lặp lại
  // nhất quán khi tua, phát lại hoặc xuất video.
@@ -1227,7 +1229,6 @@ function drawFrameUnsafe(elapsed,st){
   cueStart+=cueSpan;cueIndex++;
   cueSpan=2+((sceneSeed+cueIndex*7+3)%3);
  }
- const currentLine=getCurrentLine()||{};
  const currentSource=currentLine.sourceFrame||sourceCameraFrame;
  const visibleCount=Math.max(1,charLayerVideos.length);
  const speakerSemantic=normalizeSemantic(currentSource.expression_id||currentLine.expressionId||{});
@@ -1244,8 +1245,13 @@ function drawFrameUnsafe(elapsed,st){
  const cameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
   :speakerTarget;
- const defaultZoom=director==='manual'?1:(emotionalEmphasis?1.5:(visibleCount>1?(visibleCount>=3?1.015:1.035):1.14));
- const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.5:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
+ // Chọn ngẫu nhiên theo cue, nhưng giữ cố định khi tua/phát lại.
+ let zoomSeed=(sceneSeed^Math.imul(cueIndex+1,0x45d9f3b))>>>0;
+ for(let zi=0;zi<speakerTarget.length;zi++)zoomSeed=Math.imul(zoomSeed^speakerTarget.charCodeAt(zi),16777619)>>>0;
+ const closeupZoomStops=[1.5,2,2.5,3];
+ const randomCloseupZoom=closeupZoomStops[zoomSeed%closeupZoomStops.length];
+ const defaultZoom=director==='manual'?1:(emotionalEmphasis?randomCloseupZoom:(visibleCount>1?(visibleCount>=3?1.015:1.035):1.14));
+ const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?randomCloseupZoom:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
  const cameraLayers=getCharacterCameraLayers(charLayerVideos,elapsed);
  const rawShotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,cameraLayers,isPortrait,shot);
@@ -1259,10 +1265,10 @@ function drawFrameUnsafe(elapsed,st){
   panState.marker=panMarker;
   panState.startElapsed=elapsed;
   // Camera bắt đầu đúng tại vị trí cuối của shot trước, không reset về toàn cảnh.
-  panState.startZoom=Math.max(1,Math.min(1.8,Number.isFinite(panState.zoom)?panState.zoom:1));
+  panState.startZoom=Math.max(1,Math.min(3,Number.isFinite(panState.zoom)?panState.zoom:1));
   const startHalfW=w/(2*panState.startZoom);
   panState.startX=Math.max(startHalfW,Math.min(w-startHalfW,Number.isFinite(panState.x)?panState.x:w/2));
-  panState.targetZoom=Math.max(1,Math.min(1.8,rawShotCamera?rawShotCamera.zoom:1));
+  panState.targetZoom=Math.max(1,Math.min(3,rawShotCamera?rawShotCamera.zoom:1));
   panState.targetX=rawShotCamera?rawShotCamera.cx:w/2;
   panState.baseSubjectX=rawShotCamera?rawShotCamera.cx:w/2;
   panState.followOffset=0;panState.followElapsed=elapsed;
