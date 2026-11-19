@@ -1200,13 +1200,13 @@
         {
           "id": "char_bubu_char_01",
           "expression_id": {
-            "communication": "speaking",
-            "emotion": "neutral",
+            "communication": "listening",
+            "emotion": "afraid",
             "pose": "walking_pose",
-            "direction": "right",
+            "direction": "left",
             "face_angle": "135°",
             "view_angle": "full body",
-            "interaction_target": "char_pipun_char_02",
+            "interaction_target": "none",
             "action": "walking"
           },
           "x": 24,
@@ -1218,29 +1218,44 @@
             "easing": "linear",
             "from": {
               "x": 24,
-              "y": 92
+              "y": 92,
+              "opacity": 1
             },
             "to": {
-              "x": 38,
-              "y": 92
+              "x": -22,
+              "y": 92,
+              "opacity": 0
             },
             "keyframes": [
               {
                 "t": 0,
                 "x": 24,
-                "y": 92
+                "y": 92,
+                "opacity": 1
               },
               {
                 "t": 0.55,
-                "x": 31,
-                "y": 92
+                "x": -2,
+                "y": 92,
+                "opacity": 0.72
               },
               {
                 "t": 1,
-                "x": 38,
-                "y": 92
+                "x": -22,
+                "y": 92,
+                "opacity": 0
               }
-            ]
+            ],
+            "end_expression_id": {
+              "communication": "listening",
+              "emotion": "afraid",
+              "pose": "standing",
+              "direction": "left",
+              "face_angle": "135°",
+              "view_angle": "full body",
+              "interaction_target": "none",
+              "action": "standing"
+            }
           }
         },
         {
@@ -1313,22 +1328,6 @@
         "interaction_target": "char_bubu_char_01"
       },
       "nhan_vat_hien_thi": [
-        {
-          "id": "char_bubu_char_01",
-          "expression_id": {
-            "communication": "listening",
-            "emotion": "neutral",
-            "pose": "standing",
-            "direction": "right",
-            "face_angle": "135°",
-            "view_angle": "full body",
-            "interaction_target": "char_rerin_char_03"
-          },
-          "x": 38,
-          "y": 92,
-          "scale": 0.68,
-          "z_index": 1
-        },
         {
           "id": "char_pipun_char_02",
           "expression_id": {
