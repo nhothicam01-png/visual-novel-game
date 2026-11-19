@@ -1267,20 +1267,21 @@ function drawFrameUnsafe(elapsed,st){
  const shot=director==='manual'
   ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
   :autoShot;
- // Shot tự động giữ một chủ thể trong 2–4 câu theo nhịp cảnh; lấy người mở đầu
- // cụm làm điểm ngắm để máy quay có thời gian lia sang nhân vật đối thoại kế tiếp.
+ // Cỡ cảnh (wide/medium/close_up) giữ ổn định theo cụm 2–4 câu để không cắt máy vô cớ,
+ // nhưng ĐIỂM NGẮM luôn là người đang nói (nếu có trong khung); lời dẫn/không rõ người nói
+ // thì dùng người mở đầu cụm. Trước đây ngắm người mở đầu cụm nên người nói thứ 2–4 hay nằm ngoài khung.
  const cueLine=sceneLines[cueStart]||currentLine;
  const cueSource=cueLine.sourceFrame||cueLine;
  const cueTarget=String(cueSource.nhan_vat||cueLine.speakerId||speakerTarget);
  const requestedTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
-  :(cueTarget||speakerTarget);
+  :(speakerTarget||cueTarget);
  let cameraSaved=false;
  const cameraLayers=getCharacterCameraLayers(charLayerVideos,elapsed);
  // Mục tiêu không có trong khung (ẩn/sai ID) không được làm camera âm thầm rơi về toàn cảnh:
  // lùi lần lượt về người đang nói, rồi nhân vật đầu tiên đang hiển thị.
  const layerIds=cameraLayers.map(l=>String(l.spec?.id||''));
- const cameraTarget=[requestedTarget,speakerTarget,layerIds[0]].find(id=>id&&layerIds.includes(id))||requestedTarget;
+ const cameraTarget=(director==='manual'?[requestedTarget,speakerTarget,layerIds[0]]:[speakerTarget,cueTarget,layerIds[0]]).find(id=>id&&layerIds.includes(id))||requestedTarget;
  // Zoom khai báo <=1 trong chế độ manual coi như "không chỉ định" để dùng zoom mặc định của shot
  // (dữ liệu hay ghi shot:"medium", zoom:1 làm shot bị khóa ở toàn cảnh).
  const explicitZoom=Number(cameraSpec.zoom);
@@ -1314,7 +1315,7 @@ function drawFrameUnsafe(elapsed,st){
   panState.followOffset=0;panState.followOffsetY=0;panState.followElapsed=elapsed;
  }
  const panDistance=Math.abs(panState.targetX-panState.startX)/Math.max(1,w);
- const panDuration=Math.max(1.8,Math.min(2.8,1.8+panDistance*1.2));
+ const panDuration=Math.max(1.4,Math.min(2.4,1.4+panDistance*1.2));
  const panT=Math.max(0,Math.min(1,(elapsed-panState.startElapsed)/panDuration));
  const panEase=panT<.5?4*panT*panT*panT:1-Math.pow(-2*panT+2,3)/2;
  const cameraZoom=Math.max(1,panState.startZoom+(panState.targetZoom-panState.startZoom)*panEase);
