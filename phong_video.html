@@ -1571,19 +1571,14 @@ async function playPreview(){
   if(!items.length){setStatus('Không tìm thấy câu thoại hợp lệ trong phạm vi phát.');return}
   prefetchSceneEffectsFor(items);
   const useBrowser=$('preview-tts-mode').value==='browser';
-  const shouldPrepare=directRecordRequested||!useBrowser;
+  const shouldPrepare=true;
   if(shouldPrepare){
-   try{await preparePreviewPlayback(items,useBrowser)}
+   try{await preparePreviewPlayback(items,useBrowser);firstLineReady=true}
    catch(err){if(!isCurrent())return;setTaskProgress('Chuẩn bị thất bại: '+(err.message||err));setStatus('Không thể chuẩn bị tài nguyên phát: '+(err.message||err));directRecordRequested=false;return}
    if(!isCurrent())return;
   }
   stopPreview({preservePreparation:true});
   if(!isCurrent())return;
-  if(shouldPrepare){
-   try{await loadSourceLineForPlayback(items[0]);firstLineReady=true}
-   catch(err){if(!isCurrent())return;setStatus('Không thể tải cảnh đầu tiên: '+(err.message||err));directRecordRequested=false;return}
-   if(!isCurrent())return;
-  }
   if(directRecordRequested){
    directRecordRequested=false;
    try{if(!firstLineReady)await loadSourceLineForPlayback(items[0]);if(!isCurrent())return;await startDirectRecorder()}
