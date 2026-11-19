@@ -191,7 +191,7 @@
       "scene_id": "SC001",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
-      "nhan_vat": "char_pipun_char_02",
+      "nhan_vat": "char_bubu_char_01",
       "noi_dung": "Vậy còn con thì sao? Con đang học năm cuối, con cũng cần chỗ ở mà.",
       "thoi_luong": 5.2,
       "anh_nen": "",
@@ -1961,6 +1961,148 @@
           "expression_id": {
             "communication": "speaking",
             "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Tớ vẫn đang học. Ban ngày lên lớp, tối đi làm thêm, còn thời gian còn lại thì vào viện với bà.",
+      "thoi_luong": 7.1,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Vậy nên cậu mới phải cho thuê căn phòng của mình. Tớ sẽ trả tiền đúng hạn, cả điện nước nữa. Cậu đừng ngại nhắc tớ.",
+      "thoi_luong": 7.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "warm",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "warm",
             "pose": "standing",
             "direction": "right",
             "face_angle": "135°",
@@ -3788,6 +3930,2051 @@
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bac_si",
+      "noi_dung": "Kết quả hôm nay xấu hơn lần trước. Chúng tôi đã cố gắng ổn định tình trạng của bà, nhưng tiên lượng rất dè dặt.",
+      "thoi_luong": 7.5,
+      "anh_nen": "benh_vien.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Vậy bà còn bao nhiêu thời gian nữa, bác sĩ? Cháu chỉ muốn biết cháu còn có thể ở bên bà bao lâu.",
+      "thoi_luong": 7.2,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bac_si",
+      "noi_dung": "Không ai có thể nói chính xác. Cháu hãy ở cạnh bà và chuẩn bị tinh thần cho những tình huống xấu nhất.",
+      "thoi_luong": 7.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Cháu xin bác sĩ đừng nói như vậy. Bà là người thân duy nhất đã nuôi cháu lớn.",
+      "thoi_luong": 5.9,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "crying",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "crying",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Rerin, ra ngoài với tớ một chút nhé. Cậu đang run cả người rồi.",
+      "thoi_luong": 5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Tớ sợ lắm. Tớ đã cố tỏ ra bình tĩnh trước mặt bà, nhưng tớ không biết phải làm sao nếu bà không còn nữa.",
+      "thoi_luong": 7.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "crying",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "crying",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Cậu không cần phải gồng mình trước mặt tớ. Tớ ở đây, và tớ sẽ nghe cậu.",
+      "thoi_luong": 5.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Tớ ôm cậu nhé?",
+      "thoi_luong": 3.2,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Ừ... làm ơn.",
+      "thoi_luong": 3.2,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "crying",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "crying",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC008",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "narration",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Rerin tựa vào vai Bubu, lần đầu để nỗi sợ và nước mắt bật ra sau nhiều tháng cố gắng chịu đựng.",
+      "thoi_luong": 7.1,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "sad",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Tớ không muốn cậu nghĩ rằng tớ ở bên cậu chỉ vì thương hại.",
+      "thoi_luong": 4.7,
+      "anh_nen": "phong_bep.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Tớ biết. Nhưng khi cậu ở cạnh, căn nhà này không còn im lặng đến đáng sợ nữa.",
+      "thoi_luong": 5.9,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Tớ cũng mong được nhìn thấy cậu mỗi tối. Không chỉ vì tớ muốn giúp cậu.",
+      "thoi_luong": 5.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Nếu tớ nắm tay cậu, cậu có thấy sợ không?",
+      "thoi_luong": 3.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "embarrassed",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "embarrassed",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Tớ cũng sợ. Nhưng tớ muốn điều đó.",
+      "thoi_luong": 3.2,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Tớ không muốn làm cậu khó xử. Nếu cậu không muốn, chúng ta cứ như trước cũng được.",
+      "thoi_luong": 6.3,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Tớ muốn. Chỉ là tớ chưa từng nghĩ mình sẽ có cảm giác này với một người bạn cùng nhà.",
+      "thoi_luong": 6.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "embarrassed",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "embarrassed",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Vậy... hôn tớ nhé?",
+      "thoi_luong": 3.2,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "embarrassed",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "embarrassed",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC009",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "narration",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Bubu khẽ chạm môi Rerin. Nụ hôn đầu rất nhẹ, ngập ngừng, như một lời thừa nhận mà cả hai đã giữ trong lòng quá lâu.",
+      "thoi_luong": 7.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 34,
+          "y": 92,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 66,
+          "y": 95,
+          "scale": 0.68,
+          "z_index": 2
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Tớ đoán ra từ hôm hai cậu cứ nhìn nhau rồi lại giả vờ bận rộn.",
+      "thoi_luong": 4.9,
+      "anh_nen": "quan_ca_phe.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Cậu biết rồi à? Tớ định tìm lúc thích hợp để nói với cậu.",
+      "thoi_luong": 4.6,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "embarrassed",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "embarrassed",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Tớ hơi lo cho hai cậu, chứ không giận. Tớ chỉ sợ mọi chuyện bên ngoài sẽ không dễ dàng.",
+      "thoi_luong": 6.6,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Tớ không muốn cậu phải đứng giữa chúng tớ và những người khác.",
+      "thoi_luong": 4.9,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Tớ là bạn của cả hai. Tớ không cần đứng giữa; tớ chỉ muốn hai cậu đừng phải đối mặt một mình.",
+      "thoi_luong": 7,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "warm",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "warm",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Bọn tớ yêu nhau. Tớ không biết sau này sẽ thế nào, nhưng đây không phải chuyện nhất thời.",
+      "thoi_luong": 6.7,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_pipun_char_02",
+      "noi_dung": "Tớ sẽ giữ kín nếu hai cậu muốn. Và nếu có chuyện gì, cứ gọi tớ. Đừng tự cô lập mình.",
+      "thoi_luong": 6.4,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "happy",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "happy",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC010",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Cảm ơn cậu, Pipun. Tớ đã nghĩ mình sẽ mất luôn cả tình bạn này.",
+      "thoi_luong": 5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC011",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_bac_si",
       "noi_dung": "Chúng tôi rất tiếc. Bà đã không qua khỏi dù ê-kíp đã cố gắng hồi sức.",
       "thoi_luong": 5.4,
       "anh_nen": "benh_vien.png",
@@ -3855,7 +6042,7 @@
       }
     },
     {
-      "scene_id": "SC008",
+      "scene_id": "SC011",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -3926,7 +6113,7 @@
       }
     },
     {
-      "scene_id": "SC008",
+      "scene_id": "SC011",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -3997,7 +6184,7 @@
       }
     },
     {
-      "scene_id": "SC008",
+      "scene_id": "SC011",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -4068,7 +6255,7 @@
       }
     },
     {
-      "scene_id": "SC008",
+      "scene_id": "SC011",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -4139,7 +6326,7 @@
       }
     },
     {
-      "scene_id": "SC008",
+      "scene_id": "SC011",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -4210,7 +6397,7 @@
       }
     },
     {
-      "scene_id": "SC008",
+      "scene_id": "SC011",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -4281,7 +6468,7 @@
       }
     },
     {
-      "scene_id": "SC009",
+      "scene_id": "SC012",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -4352,7 +6539,7 @@
       }
     },
     {
-      "scene_id": "SC009",
+      "scene_id": "SC012",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -4423,7 +6610,7 @@
       }
     },
     {
-      "scene_id": "SC009",
+      "scene_id": "SC012",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -4494,7 +6681,7 @@
       }
     },
     {
-      "scene_id": "SC009",
+      "scene_id": "SC012",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -4565,7 +6752,7 @@
       }
     },
     {
-      "scene_id": "SC009",
+      "scene_id": "SC012",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -4636,7 +6823,7 @@
       }
     },
     {
-      "scene_id": "SC009",
+      "scene_id": "SC012",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -4707,7 +6894,7 @@
       }
     },
     {
-      "scene_id": "SC010",
+      "scene_id": "SC013",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_co_rerin",
@@ -4778,7 +6965,7 @@
       }
     },
     {
-      "scene_id": "SC010",
+      "scene_id": "SC013",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -4849,7 +7036,7 @@
       }
     },
     {
-      "scene_id": "SC010",
+      "scene_id": "SC013",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_co_rerin",
@@ -4920,7 +7107,7 @@
       }
     },
     {
-      "scene_id": "SC010",
+      "scene_id": "SC013",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -4991,7 +7178,7 @@
       }
     },
     {
-      "scene_id": "SC010",
+      "scene_id": "SC013",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_nguoi_ho_rerin",
@@ -5062,7 +7249,7 @@
       }
     },
     {
-      "scene_id": "SC010",
+      "scene_id": "SC013",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -5133,7 +7320,7 @@
       }
     },
     {
-      "scene_id": "SC010",
+      "scene_id": "SC013",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_nguoi_ho_rerin",
@@ -5204,7 +7391,7 @@
       }
     },
     {
-      "scene_id": "SC010",
+      "scene_id": "SC013",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -5275,7 +7462,7 @@
       }
     },
     {
-      "scene_id": "SC011",
+      "scene_id": "SC014",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -5346,7 +7533,7 @@
       }
     },
     {
-      "scene_id": "SC011",
+      "scene_id": "SC014",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_me_bubu",
@@ -5417,7 +7604,7 @@
       }
     },
     {
-      "scene_id": "SC011",
+      "scene_id": "SC014",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -5488,7 +7675,7 @@
       }
     },
     {
-      "scene_id": "SC011",
+      "scene_id": "SC014",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bo_bubu",
@@ -5559,7 +7746,7 @@
       }
     },
     {
-      "scene_id": "SC011",
+      "scene_id": "SC014",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -5630,7 +7817,7 @@
       }
     },
     {
-      "scene_id": "SC011",
+      "scene_id": "SC014",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -5701,7 +7888,7 @@
       }
     },
     {
-      "scene_id": "SC011",
+      "scene_id": "SC014",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -5772,7 +7959,7 @@
       }
     },
     {
-      "scene_id": "SC011",
+      "scene_id": "SC014",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -5843,7 +8030,7 @@
       }
     },
     {
-      "scene_id": "SC012",
+      "scene_id": "SC015",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_can_bo_truong",
@@ -5898,7 +8085,7 @@
       }
     },
     {
-      "scene_id": "SC012",
+      "scene_id": "SC015",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -5953,7 +8140,7 @@
       }
     },
     {
-      "scene_id": "SC012",
+      "scene_id": "SC015",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_can_bo_truong",
@@ -6008,7 +8195,7 @@
       }
     },
     {
-      "scene_id": "SC012",
+      "scene_id": "SC015",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -6063,7 +8250,7 @@
       }
     },
     {
-      "scene_id": "SC012",
+      "scene_id": "SC015",
       "hoi_tuong": false,
       "loai_phat_ngon": "narration",
       "nhan_vat": "char_bubu_char_01",
@@ -6118,7 +8305,7 @@
       }
     },
     {
-      "scene_id": "SC012",
+      "scene_id": "SC015",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -6173,7 +8360,7 @@
       }
     },
     {
-      "scene_id": "SC012",
+      "scene_id": "SC015",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -6228,7 +8415,7 @@
       }
     },
     {
-      "scene_id": "SC013",
+      "scene_id": "SC016",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_luat_su",
@@ -6315,7 +8502,7 @@
       }
     },
     {
-      "scene_id": "SC013",
+      "scene_id": "SC016",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -6402,7 +8589,7 @@
       }
     },
     {
-      "scene_id": "SC013",
+      "scene_id": "SC016",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_luat_su",
@@ -6489,7 +8676,7 @@
       }
     },
     {
-      "scene_id": "SC013",
+      "scene_id": "SC016",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_pipun_char_02",
@@ -6576,7 +8763,7 @@
       }
     },
     {
-      "scene_id": "SC013",
+      "scene_id": "SC016",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -6663,7 +8850,7 @@
       }
     },
     {
-      "scene_id": "SC013",
+      "scene_id": "SC016",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -6750,7 +8937,7 @@
       }
     },
     {
-      "scene_id": "SC013",
+      "scene_id": "SC016",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_luat_su",
@@ -6837,7 +9024,7 @@
       }
     },
     {
-      "scene_id": "SC013",
+      "scene_id": "SC016",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_pipun_char_02",
@@ -6924,7 +9111,268 @@
       }
     },
     {
-      "scene_id": "SC014",
+      "scene_id": "SC016",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_luat_su",
+      "noi_dung": "Họ còn nộp đơn yêu cầu tòa tuyên bố Rerin không đủ năng lực quản lý tài sản, đồng thời yêu cầu chia phần thừa kế.",
+      "thoi_luong": 7.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "serious",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC016",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Họ lấy chuyện tình cảm của cháu làm bằng chứng cho điều đó. Cháu chưa từng bỏ mặc bà hay căn nhà.",
+      "thoi_luong": 7.3,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "angry",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "angry",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC016",
+      "hoi_tuong": false,
+      "loai_phat_ngon": "character",
+      "nhan_vat": "char_luat_su",
+      "noi_dung": "Chúng ta sẽ phản bác bằng hồ sơ học tập, công việc, viện phí và lời khai của người chứng kiến. Đời tư không thay thế việc đánh giá năng lực.",
+      "thoi_luong": 7.5,
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "determined",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "135°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 78,
+          "y": 97,
+          "scale": 0.68,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "director": "auto"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC017",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_luat_su",
@@ -7011,7 +9459,7 @@
       }
     },
     {
-      "scene_id": "SC014",
+      "scene_id": "SC017",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -7098,7 +9546,7 @@
       }
     },
     {
-      "scene_id": "SC014",
+      "scene_id": "SC017",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_luat_su",
@@ -7185,7 +9633,7 @@
       }
     },
     {
-      "scene_id": "SC014",
+      "scene_id": "SC017",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -7272,7 +9720,7 @@
       }
     },
     {
-      "scene_id": "SC014",
+      "scene_id": "SC017",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -7359,7 +9807,7 @@
       }
     },
     {
-      "scene_id": "SC014",
+      "scene_id": "SC017",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -7446,7 +9894,7 @@
       }
     },
     {
-      "scene_id": "SC014",
+      "scene_id": "SC017",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_pipun_char_02",
@@ -7533,7 +9981,7 @@
       }
     },
     {
-      "scene_id": "SC015",
+      "scene_id": "SC018",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -7604,7 +10052,7 @@
       }
     },
     {
-      "scene_id": "SC015",
+      "scene_id": "SC018",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -7675,7 +10123,7 @@
       }
     },
     {
-      "scene_id": "SC015",
+      "scene_id": "SC018",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -7746,7 +10194,7 @@
       }
     },
     {
-      "scene_id": "SC015",
+      "scene_id": "SC018",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -7817,7 +10265,7 @@
       }
     },
     {
-      "scene_id": "SC015",
+      "scene_id": "SC018",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -7888,7 +10336,7 @@
       }
     },
     {
-      "scene_id": "SC015",
+      "scene_id": "SC018",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -7959,11 +10407,11 @@
       }
     },
     {
-      "scene_id": "SC016",
+      "scene_id": "SC019",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
-      "noi_dung": "Em trai cậu nhắn gì vậy?",
+      "noi_dung": "Em trai tớ vừa nhắn. Nó hỏi tớ có khỏe không, nhưng chỉ dám gửi vài chữ.",
       "thoi_luong": 3.2,
       "anh_nen": "phong_ngu_dem.png",
       "anh_hieu_ung": "",
@@ -8030,11 +10478,11 @@
       }
     },
     {
-      "scene_id": "SC016",
+      "scene_id": "SC019",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
-      "nhan_vat": "char_pipun_char_02",
-      "noi_dung": "Nó chỉ hỏi chị có khỏe không. Nó nói không dám nhắn nhiều vì sợ bố mẹ thấy.",
+      "nhan_vat": "char_bubu_char_01",
+      "noi_dung": "Nó nói không dám nhắn nhiều vì sợ bố mẹ nhìn thấy.",
       "thoi_luong": 5.8,
       "anh_nen": "",
       "anh_hieu_ung": "",
@@ -8101,7 +10549,7 @@
       }
     },
     {
-      "scene_id": "SC016",
+      "scene_id": "SC019",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -8172,7 +10620,7 @@
       }
     },
     {
-      "scene_id": "SC016",
+      "scene_id": "SC019",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -8243,7 +10691,7 @@
       }
     },
     {
-      "scene_id": "SC016",
+      "scene_id": "SC019",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -8314,7 +10762,7 @@
       }
     },
     {
-      "scene_id": "SC016",
+      "scene_id": "SC019",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -8385,7 +10833,7 @@
       }
     },
     {
-      "scene_id": "SC016",
+      "scene_id": "SC019",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -8456,7 +10904,7 @@
       }
     },
     {
-      "scene_id": "SC017",
+      "scene_id": "SC020",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -8527,7 +10975,7 @@
       }
     },
     {
-      "scene_id": "SC017",
+      "scene_id": "SC020",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -8598,7 +11046,7 @@
       }
     },
     {
-      "scene_id": "SC017",
+      "scene_id": "SC020",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_luat_su",
@@ -8669,7 +11117,7 @@
       }
     },
     {
-      "scene_id": "SC017",
+      "scene_id": "SC020",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_luat_su",
@@ -8740,7 +11188,7 @@
       }
     },
     {
-      "scene_id": "SC017",
+      "scene_id": "SC020",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -8811,7 +11259,7 @@
       }
     },
     {
-      "scene_id": "SC017",
+      "scene_id": "SC020",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -8882,7 +11330,7 @@
       }
     },
     {
-      "scene_id": "SC017",
+      "scene_id": "SC020",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -8953,7 +11401,7 @@
       }
     },
     {
-      "scene_id": "SC017",
+      "scene_id": "SC020",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -9024,7 +11472,7 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -9102,7 +11550,7 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -9180,7 +11628,7 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -9258,7 +11706,7 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -9336,7 +11784,7 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -9414,7 +11862,7 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -9492,7 +11940,7 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_rerin_char_03",
@@ -9570,7 +12018,7 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
@@ -9648,11 +12096,11 @@
       }
     },
     {
-      "scene_id": "SC018",
+      "scene_id": "SC021",
       "hoi_tuong": false,
       "loai_phat_ngon": "narration",
       "nhan_vat": "char_bubu_char_01",
-      "noi_dung": "Bubu kéo Rerin vào lòng, hôn nhẹ lên tóc cô. Ngoài cửa sổ, mưa vẫn rơi. Căn phòng nhỏ lạnh hơn căn nhà cũ, nhưng lần đầu tiên, cả hai biết mình đang ở lại vì chính lựa chọn của mình.",
+      "noi_dung": "Bubu kéo Rerin vào lòng, hôn lên tóc cô. Tình yêu của họ không còn ngây thơ như những đêm đầu ở căn nhà của bà; nó mang theo mất mát, tổn thương và cả những điều không thể lấy lại. Ngoài cửa sổ, mưa vẫn rơi. Nhưng trong căn phòng nhỏ ấy, họ vẫn chọn ở lại bên nhau.",
       "thoi_luong": 7.5,
       "anh_nen": "",
       "anh_hieu_ung": "",
