@@ -1,0 +1,1370 @@
+{
+  "schema_version": 1,
+  "kind": "visual-novel-audio-manifest",
+  "story": "TiengGoSauBucTuong",
+  "story_path": "assets/KichBan/TiengGoSauBucTuong/TiengGoSauBucTuong.json",
+  "created_at": "2026-11-19T08:15:52.847Z",
+  "source_language": "Vietnamese",
+  "duration": 192.4583,
+  "audio_mix": {
+    "bgm_volume": 0.25,
+    "sfx_volume": 0.8,
+    "tts_volume": 1
+  },
+  "audio_policy": {
+    "translated_versions": "replace_dialogue_keep_bgm_sfx",
+    "upload_audio_to_github": false
+  },
+  "events": [
+    {
+      "type": "dialogue",
+      "start": 0,
+      "end": 5.1432,
+      "duration": 5.1432,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Sân trường tối nay vắng bất thường. Nhưng mọi người có nghe thấy tiếng gõ phát ra từ dãy phòng học cũ không?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 5.3932,
+      "end": 10.1069,
+      "duration": 4.7136,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Mình nghe ba tiếng, nghỉ một nhịp, rồi lại ba tiếng. Nó giống như có ai đang gõ theo quy luật.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 10.3569,
+      "end": 14.6409,
+      "duration": 4.2841,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Chúng ta chỉ quan sát từ hành lang sáng đèn. Không ai tự ý đi sâu vào trong, nghe chưa?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 14.8909,
+      "end": 18.6293,
+      "duration": 3.7384,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Đèn ở tầng hai vừa chớp tắt. Có bóng người đứng sau ô cửa cuối hành lang kìa!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 18.8793,
+      "end": 22.966,
+      "duration": 4.0867,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Nhưng tầng hai đã bị khóa nhiều năm. Nếu có người bên trong thì họ vào bằng cách nào?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 23.216,
+      "end": 28.1502,
+      "duration": 4.9342,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Cửa cầu thang vẫn mở. Mình đi trước kiểm tra bảng điện ngay đầu hành lang, hai cậu đứng ở đây nhé.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 28.4002,
+      "end": 32.4753,
+      "duration": 4.0751,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Khoan đã, có tiếng gõ ngay sau bức tường bên trái. Mình chỉ nhìn qua ô cửa kính thôi!",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 32.7253,
+      "end": 35.1402,
+      "duration": 2.4149,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Bubu, đừng tách ra! Cậu nghe Rerin dặn rồi mà!",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 35.3902,
+      "end": 39.5234,
+      "duration": 4.1331,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Cánh cửa tự hé ra... bên trong có ánh đèn. Mình đứng ngay ngưỡng cửa, không đi xa đâu!",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 39.7734,
+      "end": 43.2215,
+      "duration": 3.4481,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Ủa? Đây không phải phòng học. Sao mình vừa bước qua cửa mà lại thành thư viện?",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 43.4715,
+      "end": 47.384,
+      "duration": 3.9125,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Cửa biến mất rồi. Trên bàn có một cuốn sổ mở sẵn, trang giấy đang tự lật!",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 47.634,
+      "end": 52.1735,
+      "duration": 4.5395,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Trong sổ ghi: 'Đừng trả lời tiếng gõ thứ tư'. Vậy ba tiếng gõ lúc nãy là để gọi mình sao?",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 52.4235,
+      "end": 56.8237,
+      "duration": 4.4002,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Có ai vừa đứng sau kệ sách không? Mình nhìn thấy bóng của mình... nhưng nó không cử động cùng lúc!",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 57.0737,
+      "end": 60.8702,
+      "duration": 3.7965,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Bóng đó đang giơ tay chỉ xuống sàn. Có một chiếc chìa khóa nằm dưới tấm thảm!",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 61.1202,
+      "end": 65.9731,
+      "duration": 4.853,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Mình nghe tiếng gõ thứ tư rồi! Không, mình sẽ không trả lời. Mình phải tìm cách báo cho hai cậu.",
+      "gain": 1,
+      "scene_index": 2,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 66.2231,
+      "end": 71.4824,
+      "duration": 5.2593,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Bubu! Cậu ở đâu? Tiếng gọi vừa phát ra từ phía thư viện, nhưng cửa thư viện lại nằm ở cuối hành lang!",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 71.7324,
+      "end": 76.6086,
+      "duration": 4.8762,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Đừng chạy tán loạn. Có ba vết bụi mới trên nền, như thể ai đó vừa kéo một vật nặng về phía cửa.",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 76.8586,
+      "end": 81.7696,
+      "duration": 4.911,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Nhìn này, đèn hành lang chớp theo nhịp ba lần. Có lẽ Bubu đang cố gửi tín hiệu cho chúng ta.",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 82.0196,
+      "end": 87.1512,
+      "duration": 5.1316,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Ba lần sáng, một lần tối. Chúng ta gõ lại đúng ba tiếng, rồi chờ. Không được gõ tiếng thứ tư.",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 87.4012,
+      "end": 91.9755,
+      "duration": 4.5743,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Cộc... cộc... cộc! Có tiếng đáp lại từ sau bức tường. Bubu, nếu nghe thấy thì lùi khỏi cửa nhé!",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 92.2255,
+      "end": 95.6969,
+      "duration": 3.4714,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Bức tường đang rung. Lùi lại! Có thứ gì đó đang đẩy từ phía bên kia!",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 95.9469,
+      "end": 99.6853,
+      "duration": 3.7384,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Một đường nứt vừa mở ra cạnh khung cửa. Mình thấy ánh đèn xanh ở bên trong!",
+      "gain": 1,
+      "scene_index": 3,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 99.9353,
+      "end": 103.3602,
+      "duration": 3.4249,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Mình nghe thấy ba tiếng gõ quen thuộc! Hai cậu đang ở bên kia phải không?",
+      "gain": 1,
+      "scene_index": 4,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 103.6102,
+      "end": 107.7666,
+      "duration": 4.1564,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Chiếc chìa khóa vừa khớp với ổ khóa dưới chân kệ sách. Có tiếng chốt cửa bật ra rồi!",
+      "gain": 1,
+      "scene_index": 4,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 108.0166,
+      "end": 112.2078,
+      "duration": 4.1912,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Pipun, lùi sang phải. Mình sẽ kéo cánh cửa này, cậu đừng đứng ngay trước khe mở!",
+      "gain": 1,
+      "scene_index": 5,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 112.4578,
+      "end": 117.0205,
+      "duration": 4.5627,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Mình giữ được rồi! Nhưng phía sau cửa không phải căn phòng... nó giống một hành lang khác đang xoay vòng!",
+      "gain": 1,
+      "scene_index": 5,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 117.2705,
+      "end": 122.228,
+      "duration": 4.9575,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Mình thấy ánh đèn của hai cậu! Mình đang ở sát cửa, nhưng có một cái bóng đứng chắn giữa chúng ta!",
+      "gain": 1,
+      "scene_index": 6,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 122.478,
+      "end": 125.0554,
+      "duration": 2.5774,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Bubu, cúi xuống! Cái bóng vừa lao về phía cậu!",
+      "gain": 1,
+      "scene_index": 7,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 125.3054,
+      "end": 129.9377,
+      "duration": 4.6324,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Á! Mình né được rồi. Cái bóng đập vào kệ sách, còn chiếc chìa khóa vẫn ở trong tay mình!",
+      "gain": 1,
+      "scene_index": 8,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 130.1877,
+      "end": 133.8449,
+      "duration": 3.6571,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Cánh cửa đã mở hẳn! Bubu, chạy về phía ánh đèn, đừng nhìn lại!",
+      "gain": 1,
+      "scene_index": 9,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 134.0949,
+      "end": 135.5925,
+      "duration": 1.4977,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Mình chạy đây! Đợi mình với!",
+      "gain": 1,
+      "scene_index": 10,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 135.8425,
+      "end": 138.5244,
+      "duration": 2.6819,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Bubu đã ra tới hành lang! Rerin, kéo cậu ấy qua đây!",
+      "gain": 1,
+      "scene_index": 11,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 138.7744,
+      "end": 140.899,
+      "duration": 2.1246,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Nắm lấy tay mình! Một, hai, ba... kéo!",
+      "gain": 1,
+      "scene_index": 11,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 141.149,
+      "end": 145.1661,
+      "duration": 4.017,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Mình ra được rồi! Hai cậu có sao không? Mình xin lỗi vì đã tự ý tách nhóm.",
+      "gain": 1,
+      "scene_index": 11,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 145.4161,
+      "end": 150.1994,
+      "duration": 4.7833,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Không sao, nhưng lần sau phải đi cùng nhau. Nhìn sau lưng cậu kìa... cái bóng vẫn đang ở trong đó!",
+      "gain": 1,
+      "scene_index": 11,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 150.4494,
+      "end": 155.2211,
+      "duration": 4.7717,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Đừng quay lại. Chúng ta rời khỏi đây theo lối cầu thang, giữ khoảng cách vừa đủ và nhìn thấy nhau.",
+      "gain": 1,
+      "scene_index": 11,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 155.4711,
+      "end": 159.7551,
+      "duration": 4.2841,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Sân trường đây rồi! Nhưng đồng hồ trên tường vẫn đứng đúng ở thời điểm chúng ta bước vào.",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 160.0051,
+      "end": 163.105,
+      "duration": 3.0999,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Mình tưởng đã thoát, nhưng tiếng gõ lại vang lên từ phía sau cổng!",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 163.355,
+      "end": 168.4401,
+      "duration": 5.0852,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Không ai trả lời. Cứ đi tiếp. Ba tiếng gõ không còn là lời gọi nữa, nó đang cố bắt chước chúng ta.",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 168.6901,
+      "end": 171.7203,
+      "duration": 3.0302,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Khoan, nhìn bóng của ba đứa mình trên nền. Có bốn cái bóng!",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 171.9703,
+      "end": 173.6886,
+      "duration": 1.7183,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Đừng đếm nữa! Chạy ra cổng thôi!",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 173.9386,
+      "end": 177.5725,
+      "duration": 3.6339,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Ra ngoài rồi! Đứng dưới đèn đường, kiểm tra xem cả ba có đủ không.",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 177.8225,
+      "end": 182.7451,
+      "duration": 4.9226,
+      "pause_after": 0.25,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Một, hai, ba... đủ cả. Nhưng trên tay Bubu có vết mực mới, giống hệt dòng chữ trong cuốn sổ.",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 182.9951,
+      "end": 187.8829,
+      "duration": 4.8878,
+      "pause_after": 0.25,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Dòng chữ gì cơ? 'Lần sau, hãy gõ bốn tiếng'. Không thể nào... mình đâu có mang cuốn sổ ra!",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 188.1329,
+      "end": 192.208,
+      "duration": 4.0751,
+      "pause_after": 0.25,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "",
+      "voice": {
+        "profile_id": "",
+        "profile_name": "",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi-VN",
+        "engine": "edge"
+      },
+      "text": "Về nhà ngay. Chuyện này chưa kết thúc, nhưng lần tới chúng ta sẽ không đi vào đó một mình.",
+      "gain": 1,
+      "scene_index": 12,
+      "timing_policy": "fixed_source_window"
+    }
+  ]
+}
