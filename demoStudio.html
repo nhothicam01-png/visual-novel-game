@@ -227,10 +227,21 @@ function selectLine(i,move){selected=Math.max(0,Math.min(rows.length-1,i));const
 function seek(t){playhead=Math.max(0,Math.min(total,t));const i=findLine(playhead);if(i>=0&&i!==selected){selected=i;renderInspector();renderScenes();renderMonitor();syncPreviewLine(i)}const ph=$('playhead');if(ph)ph.style.left=(108+playhead*pxPerSec*zoom)+'px';$('timeReadout').textContent=fmt(playhead)+' / '+fmt(total)}
 let playerPlaybackStarted=false;
 const PREVIEW_RATIOS={'16:9':[16,9],'9:16':[9,16],'1:1':[1,1]};
+function fitPreviewFrame(){
+ const stage=document.querySelector('.stage'),frame=$('enginePreview');if(!stage||!frame)return;
+ const rect=stage.getBoundingClientRect(),ratio=PREVIEW_RATIOS[$('previewRatio').value]||PREVIEW_RATIOS['16:9'];
+ if(rect.width<2||rect.height<2)return;
+ const target=ratio[0]/ratio[1];let width=rect.width,height=rect.height;
+ if(width/height>target)width=height*target;else height=width/target;
+ frame.style.width=Math.max(1,Math.floor(width))+'px';frame.style.height=Math.max(1,Math.floor(height))+'px';
+}
+const previewStageObserver=typeof ResizeObserver!=='undefined'?new ResizeObserver(fitPreviewFrame):null;
+if(previewStageObserver)previewStageObserver.observe(document.querySelector('.stage'));
 function applyPreviewRatio(ratio,notify=true){
  const value=PREVIEW_RATIOS[ratio]?ratio:'16:9',stage=document.querySelector('.stage');
  $('previewRatio').value=value;
  if(stage)stage.style.setProperty('--preview-ratio',PREVIEW_RATIOS[value].join('/'));
+ fitPreviewFrame();
  if(notify&&previewEngineReady)$('enginePreview').contentWindow.postMessage({type:'DEMO_STUDIO_SET_RATIO',ratio:value},location.origin);
 }
 $('previewRatio').addEventListener('change',()=>applyPreviewRatio($('previewRatio').value));
