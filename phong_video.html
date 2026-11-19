@@ -1013,15 +1013,43 @@ function backgroundAtSourceIndex(index){
  }
  return String(getCurrentScene()?.visual?.background||'').trim();
 }
-function preloadAdjacentAssets(sourceIndex,count=3){
- const rows=activeStoryData?.danh_sach||[];
- for(let i=Math.max(0,sourceIndex);i<Math.min(rows.length,sourceIndex+count);i++){
-  const row=rows[i]||{},bg=backgroundAtSourceIndex(i),character=characterAssetFolder(row.nhan_vat),expression=resolveSemanticExpression(character,row.expression_id);
-  if(bg){const url=backgroundAssetUrl(bg);if(isVideoBackground(bg))cachedVideo(url).catch(()=>{});else cachedImage(url).catch(()=>{})}
-  if(character&&expression)cachedVideo(BASE+'NhanVat/'+character+'/'+expression+'.webm').catch(()=>{});
-   normalizeSceneEffects(row.hieu_ung_canh??[]);
-  (Array.isArray(row.nhan_vat_hien_thi)?row.nhan_vat_hien_thi.filter(spec=>spec&&spec.visible!==false&&spec.remove_from_scene!==true):[]).forEach(spec=>{const folder=characterAssetFolder(spec?.id),semantic=semanticForVisibleCharacter(spec,row,{speakerId:row.nhan_vat});const selection=resolveSemanticAnimation(folder,semantic);if(folder&&selection.file)cachedVideo(BASE+'NhanVat/'+folder+'/'+selection.file+'.webm').catch(()=>{})});
+function rowAssetUrls(row,index){
+ const urls={images:new Set(),videos:new Set()},frame=row?.sourceFrame||row||{},bg=String(row?.anh_nen||frame.anh_nen||backgroundAtSourceIndex(index)||'').trim();
+ if(bg){const url=backgroundAssetUrl(bg);(isVideoBackground(bg)?urls.videos:urls.images).add(url)}
+ const addCharacter=(spec,semantic)=>{const folder=characterAssetFolder(spec?.id??row?.nhan_vat??row?.character),motion=spec?.motion||null;let selection;
+  if(motion&&['walking','running','running_pose','moving','locomotion'].includes(canonicalAnimationValue('action',motion.action||''))){
+   const dx=Number(motion?.to?.x)-Number(motion?.from?.x),direction=Number.isFinite(dx)&&Math.abs(dx)>.05?(dx<0?'left':'right'):canonicalAnimationValue('direction',motion.direction||semantic?.direction||'right');
+   const candidates=(expressionFilesByFolder[String(folder||'')]||[]).map(path=>({path,meta:animationMeta(path)})).filter(x=>canonicalAnimationValue('action',x.meta.action)===(canonicalAnimationValue('action',motion.action)||'walking')&&canonicalAnimationValue('direction',x.meta.direction)===direction);
+   if(candidates[0])urls.videos.add(BASE+'NhanVat/'+folder+'/'+candidates[0].path.split('/').pop());
+  }
+  selection=resolveSemanticAnimation(folder,semantic||semanticForVisibleCharacter(spec,frame,row));
+  if(folder&&selection.file)urls.videos.add(BASE+'NhanVat/'+folder+'/'+selection.file+'.webm');
+  const end=spec?.motion?.end_expression_id;if(folder&&end&&typeof end==='object'){const e=resolveSemanticAnimation(folder,end);if(e.file)urls.videos.add(BASE+'NhanVat/'+folder+'/'+e.file+'.webm')}
+ };
+ const specs=Array.isArray(row?.nhan_vat_hien_thi)?row.nhan_vat_hien_thi.filter(x=>x&&x.visible!==false&&x.remove_from_scene!==true):Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi.filter(x=>x&&x.visible!==false&&x.remove_from_scene!==true):[];
+ if(specs.length)specs.forEach(spec=>addCharacter(spec,semanticForVisibleCharacter(spec,frame,row)));
+ else if(row?.nhan_vat||frame.nhan_vat||row?.speakerId){const id=String(frame.nhan_vat||row.nhan_vat||row.speakerId);addCharacter({id},normalizeSemantic(frame.expression_id||row.expression_id||{}))}
+ normalizeSceneEffects(frame.hieu_ung_canh??row?.hieu_ung_canh??[]).forEach(effect=>{const path=String(effect?.path||'').trim();if(!path||effect.type==='code')return;const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path.split('/').map(encodeURIComponent).join('/');(effect.type==='image'?urls.images:urls.videos).add(url)});
+ const objects=Array.isArray(row?.scene_objects)?row.scene_objects:Array.isArray(frame.scene_objects)?frame.scene_objects:[];
+ objects.forEach(o=>{const file=String(o?.asset||o?.path||o?.file||'').trim();if(!file)return;const url=/^https?:\/\//i.test(file)?file:file.startsWith('assets/')?'https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+file:BASE+'PhuongTien/'+file;(/\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(file)?urls.images:urls.videos).add(url)});
+ return urls;
+}
+function trimPlaybackAssetCaches(keepUrls){
+ const active=new Set([bgVideo?.src,charVideo?.src,...charLayerVideos.map(x=>x.media?.src),...sceneEffectLayers.map(x=>x.media?.src),...sceneObjectLayers.map(x=>x.media?.src)].filter(Boolean).map(freshAssetUrl));
+ for(const [key,media] of videoAssetCache){if(!keepUrls.has(key)&&!active.has(key)){try{media.pause();media.removeAttribute('src');media.load()}catch(_){}videoAssetCache.delete(key)}}
+ for(const key of imageAssetCache.keys())if(!keepUrls.has(key))imageAssetCache.delete(key);
+}
+async function preloadAdjacentAssets(sourceIndex,count=5){
+ const rows=activeStoryData?.danh_sach||[],start=Math.max(0,sourceIndex),end=Math.min(rows.length,start+count),jobs=[],keep=new Set();
+ for(let i=Math.max(0,start-5);i<Math.min(rows.length,end+5);i++){
+  const row=rows[i]||{},assets=rowAssetUrls(row,i);
+  assets.images.forEach(url=>keep.add(freshAssetUrl(url)));
+  assets.videos.forEach(url=>keep.add(freshAssetUrl(url)));
+  if(i>=start&&i<end){assets.images.forEach(url=>jobs.push(()=>cachedImage(url)));assets.videos.forEach(url=>jobs.push(()=>cachedVideo(url)))}
  }
+ let done=0;for(let i=0;i<jobs.length;i+=3)await Promise.all(jobs.slice(i,i+3).map(async job=>{try{await job()}catch(error){console.warn('Nạp trước tài nguyên thoại thất bại:',error)}finally{done++}}));
+ trimPlaybackAssetCaches(keep);
+ return {start,end,total:done};
 }
 $('background').addEventListener('change',updateAssets);
 $('character').addEventListener('change',()=>{syncLineSpeakerFromCharacter();syncExpressionOptions($('character').value,$('expression').value);updateAssets()});
@@ -1752,7 +1780,7 @@ function loadBrowserTtsVoices(){
  select.innerHTML='<option value="">Tự chọn theo ngôn ngữ</option>'+voices.map(v=>'<option value="'+safeText(v.voiceURI)+'">'+safeText(v.name)+' · '+safeText(v.lang)+(v.default?' · mặc định':'')+'</option>').join('');
  if(voices.some(v=>v.voiceURI===previous))select.value=previous;
 }
-async function loadSourceLineForPlayback(item){
+async function loadSourceLineForPlayback(item,options={}){
  saveCurrentLine();saveCurrentScene();
  const previousSceneIndex=activeSceneIndex;
  activeSceneIndex=item.sceneIndex;activeLineIndex=item.lineIndex;savePlaybackProgress(item.sourceIndex);
@@ -1767,25 +1795,22 @@ async function loadSourceLineForPlayback(item){
  loadLineToEditor(line);renderSceneList();renderLineList();applyLineEffects(line);updateSeekUI(line.sourceIndex??0);
  // updateAssets dùng latest-request-wins. Nếu lượt nạp bị lượt khác thay thế,
  // phải đợi lượt mới nhất hoàn tất thay vì cho timeline chạy với cảnh chưa sẵn sàng.
- let assetsReady=false;
- for(let attempt=0;attempt<8&&!assetsReady;attempt++)assetsReady=await updateAssets();
- if(!assetsReady){console.warn('Nạp tài nguyên cảnh chưa hoàn tất, vẫn tiếp tục phát:',item);setStatus('Cảnh '+(item.sceneIndex+1)+' thiếu/lỗi một số tài nguyên; vẫn tiếp tục phát.')}
+ let assetsReady=true;
+ if(!options.skipAssets){assetsReady=false;for(let attempt=0;attempt<8&&!assetsReady;attempt++)assetsReady=await updateAssets();
+  if(!assetsReady){console.warn('Nạp tài nguyên cảnh chưa hoàn tất, vẫn tiếp tục phát:',item);setStatus('Cảnh '+(item.sceneIndex+1)+' thiếu/lỗi một số tài nguyên; vẫn tiếp tục phát.')}}
  if(line.speakerId){try{await applyVoiceForCurrentLine()}catch(err){console.warn('Không áp giọng cho câu thoại, bỏ qua:',err)}}
 }
 // Nạp nền trước (không chặn phát) hiệu ứng PNG/WEBM của toàn bộ đoạn sắp phát, theo thứ tự cảnh, 2 tệp một lượt.
 // Lỗi tải chỉ bỏ qua tệp đó: updateAssets vẫn tự xử lý hiệu ứng thiếu khi tới cảnh.
-function prefetchSceneEffectsFor(items){
+async function prefetchSceneEffectsFor(items){
  const seen=new Set(),queue=[];
  items.forEach(item=>{const scene=scenes[item.sceneIndex],line=scene?.lines?.[item.lineIndex];
   normalizeSceneEffects(line?.sourceFrame?.hieu_ung_canh??[]).forEach(effect=>{
-   // Hiệu ứng Canvas (type=code) được vẽ trực tiếp, không có tệp path để tải trước.
-   // Chỉ prefetch các hiệu ứng dạng ảnh/video có đường dẫn tài nguyên thực.
-   const path=String(effect?.path||'').trim();
-   if(effect?.type==='code'||!path)return;
+   const path=String(effect?.path||'').trim();if(effect?.type==='code'||!path)return;
    const url='https://raw.githubusercontent.com/nhothicam01-png/visual-novel-game/main/'+path.split('/').map(encodeURIComponent).join('/');
-   if(seen.has(url))return;seen.add(url);queue.push(()=>(effect.type==='image'?cachedImage(url):cachedVideo(url)).catch(err=>console.warn('Nạp trước hiệu ứng thất bại:',path,err)));
+   if(seen.has(url))return;seen.add(url);queue.push(()=>effect.type==='image'?cachedImage(url):cachedVideo(url));
   })});
- void (async()=>{for(let i=0;i<queue.length;i+=2)await Promise.all(queue.slice(i,i+2).map(job=>job()))})();
+ for(let i=0;i<queue.length;i+=3)await Promise.all(queue.slice(i,i+3).map(job=>job().catch(err=>console.warn('Nạp trước hiệu ứng thất bại:',err))));
 }
 async function convertTtsBlobToWav(blob){
  if(!blob||String(blob.type||'').includes('wav'))return blob;
@@ -1801,27 +1826,12 @@ async function convertTtsBlobToWav(blob){
  }finally{await ac.close().catch(()=>{})}
 }
 async function preparePreviewPlayback(items,useBrowser){
- const imageUrls=new Set(),videoUrls=new Set();
- for(const item of items){
-  const line=scenes[item.sceneIndex]?.lines[item.lineIndex];if(!line)continue;
-  const frame=line.sourceFrame||{},bg=String(frame.anh_nen||line.background||backgroundAtSourceIndex(item.sourceIndex)||'').trim();
-  const folder=characterAssetFolder(frame.nhan_vat??line.characterAsset??line.speakerId),expression=resolveSemanticExpression(folder,frame.expression_id)||normalizeExpression(line.expression||'');
-  if(bg){const url=backgroundAssetUrl(bg);if(isVideoBackground(bg))videoUrls.add(url);else imageUrls.add(url)}
-  if(folder&&expression)videoUrls.add(BASE+'NhanVat/'+folder+'/'+expression+'.webm');
-  (Array.isArray(frame.nhan_vat_hien_thi)?frame.nhan_vat_hien_thi:[]).forEach(spec=>{const displayFolder=characterAssetFolder(spec?.id),displayExpression=resolveSemanticExpression(displayFolder,spec?.expression_id||semanticFromExpression(displayFolder,spec?.bieu_cam));if(displayFolder&&displayExpression)videoUrls.add(BASE+'NhanVat/'+displayFolder+'/'+displayExpression+'.webm')});
- }
- const assetJobs=[...imageUrls].map(url=>()=>cachedImage(url)),videoJobs=[...videoUrls].map(url=>()=>cachedVideo(url));
- const total=assetJobs.length+videoJobs.length+items.length+(useBrowser?0:items.length);let done=0;
- setTaskProgress('Chuẩn bị toàn bộ tài nguyên · 0/'+total,0);
- const jobs=[...assetJobs,...videoJobs];
- for(let i=0;i<jobs.length;i+=3){
-  await Promise.all(jobs.slice(i,i+3).map(async load=>{try{await load()}catch(error){console.warn('Bỏ qua tài nguyên không tải được trong bước chuẩn bị:',error)}finally{done++;setTaskProgress('Nạp hình/video · '+done+'/'+total,total?done/total*100:100)}}));
- }
- // Duyệt từng dòng một lần trước khi phát để updateAssets nạp cả WEBM ngữ nghĩa,
- // WEBM speaking/listening dự phòng, chuyển động kết thúc, hiệu ứng và vật thể của dòng.
+ const initialCount=Math.min(items.length,10),total=initialCount+items.length+(useBrowser?0:items.length);let done=0;
+ setTaskProgress('Chuẩn bị 10 thoại đầu và âm thanh toàn truyện · 0/'+total,0);
+ await prefetchSceneEffectsFor(items.slice(0,initialCount));
  for(let index=0;index<items.length;index++){
-  const item=items[index];
-  await loadSourceLineForPlayback(item);
+  const item=items[index],visualReady=index<initialCount;
+  await loadSourceLineForPlayback(item,{skipAssets:!visualReady});
   if(!useBrowser&&$('dialogue').value.trim()){
    let blob=null;try{blob=await ensureTtsReady()}catch(error){console.warn('Không tạo được WAV cho câu '+(Number(item.sourceIndex)+1)+':',error)}
    if(blob){
@@ -1830,13 +1840,15 @@ async function preparePreviewPlayback(items,useBrowser){
     if(duration>0){const line=getCurrentLine();line.duration=duration;line.audioDuration=duration;const profile=selectedVoiceProfile();if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_READY',index:Number(line.sourceIndex??item.sourceIndex??0),blob,duration,cacheKey:line.cacheKey||ttsRequestKey(),profileId:profile?.id||'',voiceName:profile?.name||''},location.origin)}
    }
   }
-  done++;setTaskProgress((useBrowser?'Chuẩn bị cảnh/nhân vật · ':'Chuẩn bị cảnh, nhân vật và WAV · ')+done+'/'+total,total?done/total*100:100);
+  done++;setTaskProgress((visualReady?'Nạp 10 thoại đầu · ':'Chuẩn bị giọng thoại · ')+done+'/'+total,total?done/total*100:100);
   if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_AUDIO_PROGRESS',done,total:items.length},location.origin);
  }
- // Trả giao diện về đúng dòng bắt đầu; tài nguyên đã có trong cache nên phát không phải tải mạng lại.
  if(items.length)await loadSourceLineForPlayback(items[0]);
- setTaskProgress('Đã chuẩn bị xong toàn bộ tài nguyên · '+items.length+' câu thoại',100);
+ // Sau khi 10 thoại đầu đã sẵn sàng, nạp thêm 5 thoại kế tiếp trước khi bật recorder.
+ if(items.length>10)await preloadAdjacentAssets(items[10].sourceIndex,5);
+ setTaskProgress('Đã sẵn sàng: 10 thoại đầu + 5 thoại kế tiếp; WAV đã chuẩn bị',100);
 }
+
 async function playPreview(){
  if(previewPreparing||previewing)return;
  const startToken=++previewStartToken,isCurrent=()=>startToken===previewStartToken;
@@ -1851,7 +1863,6 @@ async function playPreview(){
   const effectiveStart=startIndex>=lastScopedIndex?scopedItems[0].sourceIndex:startIndex;
   const items=scopedItems.filter(item=>item.sourceIndex>=effectiveStart);
   if(!items.length){setStatus('Không tìm thấy câu thoại hợp lệ trong phạm vi phát.');return}
-  prefetchSceneEffectsFor(items);
   const useBrowser=$('preview-tts-mode').value==='browser';
   const shouldPrepare=true;
   if(shouldPrepare){
@@ -1876,8 +1887,13 @@ async function playPreview(){
   // của câu mới với elapsed cũ (panT=1), làm camera nhảy tới toàn cảnh/đích rồi mới lia.
   lineMotionStartElapsed=(performance.now()-previewStartedAt)/1000;
   startRenderLoop();updatePlaybackButtons();
+  let nextAssetWindowPromise=null,nextAssetWindowStart=10;
   try{
    for(let itemIndex=0;itemIndex<items.length;itemIndex++){
+    if(itemIndex===5&&items.length>15)nextAssetWindowPromise=preloadAdjacentAssets(items[15].sourceIndex,5);
+    if(itemIndex===10&&nextAssetWindowPromise){await nextAssetWindowPromise;nextAssetWindowPromise=null;}
+    if(itemIndex>10&&itemIndex%5===0){const nextStart=itemIndex+5;if(nextStart<items.length)nextAssetWindowPromise=preloadAdjacentAssets(items[nextStart].sourceIndex,5);}
+    if(itemIndex>=15&&itemIndex%5===0&&nextAssetWindowPromise){await nextAssetWindowPromise;nextAssetWindowPromise=null;}
     const item=items[itemIndex];
     if(!await waitWhilePaused(run))break;
     // Chụp lại vị trí camera hiện tại làm điểm đầu trước khi đổi thoại/nạp tài nguyên.
