@@ -99,6 +99,11 @@
       "title": "Bản Đồ Dưới Bầu Trời Đêm",
       "logline": "Một tín hiệu vô tuyến lặp lại kéo ba người bạn vào cuộc truy tìm đài quan sát cũ và bản đồ sao thất lạc.",
       "arc": "Từ tín hiệu bí ẩn ở trường, hành trình qua bến xe và con đường đèo, đến phát hiện bất ngờ rằng thông điệp chỉ dẫn đến một kho tư liệu khoa học bị lãng quên."
+    },
+    {
+      "title": "Lạc Lối Trong Nhà Ma",
+      "logline": "Bubu, Pipun và Rerin lạc vào một căn nhà bỏ hoang; khi Bubu bị tách khỏi nhóm và gặp bóng ma trong gương, hai người bạn phải lần theo dấu hiệu để giải cứu cậu.",
+      "arc": "Từ cánh cổng tự mở, hành lang méo mó và bóng người không mặt, đến manh mối ba tiếng gõ, chiếc chìa khóa bí ẩn, cuộc giải cứu và màn chạy thoát trong gang tấc."
     }
   ],
   "story_folders": [
@@ -119,6 +124,12 @@
       "folder": "BaoDongDaiQuanSat",
       "path": "assets/KichBan/BaoDongDaiQuanSat",
       "json_path": "assets/KichBan/BaoDongDaiQuanSat/BaoDongDaiQuanSat.json"
+    },
+    {
+      "title": "Lạc Lối Trong Nhà Ma",
+      "folder": "LacLoiTrongNhaMa",
+      "path": "assets/KichBan/LacLoiTrongNhaMa",
+      "json_path": "assets/KichBan/LacLoiTrongNhaMa/LacLoiTrongNhaMa.json"
     }
   ],
   "updated_at": "2026-11-19T09:34:00.000Z"
