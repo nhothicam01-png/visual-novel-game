@@ -887,7 +887,7 @@ async function updateAssets(){
    }
    if(!selection){selection=resolveSemanticAnimation(folder,assetSemantic);expression=selection.file;url=folder&&expression?BASE+'NhanVat/'+folder+'/'+expression+'.webm':''}
    let isSpeakingClip=motionClipMatched&&motionClipCommunication==='speaking';
-   if(!motionAction||!locomotionActions.has(motionAction))if(String(semantic.communication||'')==='speaking'&&folder&&!selection.neutralFallback){
+   if(!selection&&(!motionAction||!locomotionActions.has(motionAction)))if(String(semantic.communication||'')==='speaking'&&folder&&!selection.neutralFallback){
     const selectedPath=(expressionFilesByFolder[String(folder)]||[]).find(path=>path.split('/').pop().replace(/\.webm$/i,'')===expression);
     isSpeakingClip=!!selectedPath&&canonicalAnimationValue('communication',animationMeta(selectedPath).communication)==='speaking';
     if(!isSpeakingClip){
