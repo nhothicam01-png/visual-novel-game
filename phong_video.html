@@ -1135,7 +1135,7 @@ function getCharacterCameraLayers(layers,elapsed){
 function computeShotCamera(w,h,shotZoom,targetId,layers,portrait,shot=''){
  if(!(shotZoom>1))return null;
  const layer=(layers||[]).find(item=>String(item.spec?.id||'')===targetId);if(!layer)return null;
- const count=Math.max(1,layers.length),zoom=portrait&&count===1?1:Math.max(1,Math.min(1.8,shotZoom));
+ const count=Math.max(1,layers.length),zoom=Math.max(1,Math.min(1.5,shotZoom));
  if(zoom<=1)return null;
  const spec=layer.spec||{},requested=Number(spec.scale),clamp=(lo,hi,v)=>Math.max(lo,Math.min(hi,v));
  const baseScale=Number.isFinite(requested)?clamp(.1,2.5,requested):.68,scale=getCharacterDepthScale(spec.y,baseScale),dh=h*scale;
@@ -1244,8 +1244,8 @@ function drawFrameUnsafe(elapsed,st){
  const cameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
   :speakerTarget;
- const defaultZoom=director==='manual'?1:(emotionalEmphasis?1.34:(visibleCount>1?(visibleCount>=3?1.015:1.035):1.14));
- const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.42:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
+ const defaultZoom=director==='manual'?1:(emotionalEmphasis?1.5:(visibleCount>1?(visibleCount>=3?1.015:1.035):1.14));
+ const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.5:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
  const cameraLayers=getCharacterCameraLayers(charLayerVideos,elapsed);
  const rawShotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,cameraLayers,isPortrait,shot);
