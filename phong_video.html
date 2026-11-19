@@ -1583,7 +1583,7 @@ function renderPreviewTick(){
 
  // Luôn vẽ preview lên canvas xem trước, không ghi đè canvas xuất video.
  const activeCanvas=canvas,activeCtx=ctx;canvas=previewCanvas;ctx=previewCtx;
- try{drawFrame(t);if(directRecording&&directRecordRecorderStreams?.videoTrack){try{directRecordRecorderStreams.videoTrack.requestFrame()}catch(error){console.warn('Không thể gửi khung hình vào bản ghi trực tiếp:',error)}}}finally{canvas=activeCanvas;ctx=activeCtx}
+ try{drawFrame(t)}finally{canvas=activeCanvas;ctx=activeCtx}
 }
 function animate(){
  if(!raf)return;
@@ -1685,19 +1685,18 @@ async function startDirectRecorder(){
  const fps=Math.max(1,Number($('fps').value)||30),quality=Number($('export-quality').value)||720;
  const oldWidth=previewCanvas.width,oldHeight=previewCanvas.height,longEdge=quality===1080?1920:quality===540?960:1280,shortEdge=quality===1080?1080:quality===540?540:720;
  previewCanvas.width=previewAspectRatio==='1:1'?quality:(isPortrait?shortEdge:longEdge);previewCanvas.height=previewAspectRatio==='1:1'?quality:(isPortrait?longEdge:shortEdge);drawFrame(0);
- const videoStream=previewCanvas.captureStream(0),videoTrack=videoStream.getVideoTracks()[0];
- // Một số trình duyệt không triển khai requestFrame(); khi đó quay lại capture theo FPS tự động.
- const manualVideoFrames=!!videoTrack&&typeof videoTrack.requestFrame==='function';
- if(!manualVideoFrames){videoStream.getTracks().forEach(track=>track.stop());}
- const captureStream=manualVideoFrames?videoStream:previewCanvas.captureStream(fps);
+ // Dùng captureStream(fps) tự động thay vì requestFrame thủ công.
+ // Khi canvas bị khựng, capture tự động vẫn giữ nhịp timestamp video đều và lặp lại
+ // khung hình gần nhất; requestFrame thủ công chỉ gửi frame sau khi vẽ xong nên
+ // timestamp video bị giãn trong khi âm thanh vẫn chạy liên tục, gây lệch thoại.
+ const captureStream=previewCanvas.captureStream(fps);
  directRecordAudioContext=new (window.AudioContext||window.webkitAudioContext)();await directRecordAudioContext.resume();directRecordDestination=directRecordAudioContext.createMediaStreamDestination();
  const tracks=[...captureStream.getVideoTracks(),...directRecordDestination.stream.getAudioTracks()],stream=new MediaStream(tracks);
  const types=['video/mp4;codecs=avc1,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];const mimeType=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
  directRecordChunks=[];directRecordEntries=[];directRecordStartedAt=performance.now();directRecorder=new MediaRecorder(stream,mimeType?{mimeType,videoBitsPerSecond:quality===1080?8000000:quality===540?2500000:5000000}:undefined);
  directRecorder.ondataavailable=e=>{if(e.data?.size)directRecordChunks.push(e.data)};
  directRecorder.start(1000);directRecording=true;sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.currentTime=0;item.media.__sceneEffectFinished=false;item.media.play().catch(()=>{})}catch(e){}}});document.body.classList.add('direct-recording');$('preview-loading').classList.remove('active');$('direct-record-button').textContent='⏹ Dừng ghi';$('direct-record-button').classList.add('danger');
- directRecordRecorderStreams={stream,oldWidth,oldHeight,fps,quality,videoTrack:manualVideoFrames?videoTrack:null};
- if(manualVideoFrames)videoTrack.requestFrame();
+ directRecordRecorderStreams={stream,oldWidth,oldHeight,fps,quality,videoTrack:null};
  setStatus('Đang ghi trực tiếp · '+(isPortrait?'9:16':'16:9')+' · '+fps+' FPS · '+quality+'p');if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_RECORD_STARTED',message:'Đang ghi trực tiếp theo thời gian thực…'},location.origin);
 }
 let directRecordRecorderStreams=null;
