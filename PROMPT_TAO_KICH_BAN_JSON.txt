@@ -1565,3 +1565,13 @@ QUY TẮC CHUYỂN ĐỘNG NHÂN VẬT VÀ ÁNH XẠ WEBM — BẮT BUỘC
 - Mọi motion phải có end_expression_id hợp lệ để đổi sang WEBM đứng/idle sau khi kết thúc. Không để clip walking tiếp tục chạy khi nhân vật đã dừng.
 - Nếu không tìm thấy WEBM locomotion chính xác, chọn clip walking gần nhất cùng hướng (được phép mirror nếu metadata cho phép); nếu vẫn không có, báo thiếu tài nguyên và dùng trạng thái đứng dự phòng, tuyệt đối không giả vờ đã có clip chạy.
 - Trước khi lưu kịch bản, rà soát tất cả motion: action, chiều dịch chuyển, direction, opacity, duration, keyframes tăng dần và end_expression_id. Câu thoại có nội dung “đi/chạy/tiến/lùi/rời khỏi khung” phải đối chiếu với motion thực tế.
+
+QUY TẮC WEBM KHI NHÂN VẬT VỪA DI CHUYỂN VỪA NÓI — BẮT BUỘC
+- Khi một nhân vật vừa đi/chạy vừa phát thoại, ưu tiên WEBM có metadata communication="speaking" VÀ action đúng (running/walking), đúng hướng di chuyển.
+- Nếu thư viện không có WEBM speaking cho hành động đó, mới dùng WEBM silent/listening cùng action và hướng; không được giả định clip đó có khẩu hình nói.
+- Nếu yêu cầu running nhưng không có WEBM running, khai báo motion.action="running"; player sẽ tự tìm WEBM walking cùng hướng làm phương án thay thế. Không đổi motion thành một trạng thái đứng.
+- Mọi WEBM locomotion đã tải thành công phải được phát liên tục trong thời gian motion.duration_seconds. Không được pause video chỉ vì metadata không khớp tuyệt đối ở emotion/face_angle/interaction_target nếu action, hướng và communication đã được xác minh.
+- Chỉ dùng frame tĩnh khi tài nguyên thực sự không phải video hoặc video không tải được; tuyệt đối không kéo một frame WEBM đứng yên để giả lập đi/chạy.
+- Sau khi motion hoàn tất, chuyển sang motion.end_expression_id (WEBM đứng/idle) nếu có; dừng chuyển động đúng thời điểm và không để clip đi bộ tiếp tục.
+- Khi kiểm tra kịch bản, phân biệt rõ: thiếu WEBM running, thiếu WEBM speaking-running, và thiếu WEBM walking. Báo đúng loại thiếu, không đánh đồng chúng.
+
