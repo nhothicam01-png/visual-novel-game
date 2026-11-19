@@ -1,0 +1,1520 @@
+{
+  "schema_version": 1,
+  "kind": "visual-novel-audio-manifest",
+  "story": "HaiChieuKhongGian",
+  "story_path": "assets/KichBan/HaiChieuKhongGian/HaiChieuKhongGian.json",
+  "created_at": "2026-11-19T12:55:21.352Z",
+  "source_language": "Vietnamese",
+  "duration": 301.0762,
+  "audio_mix": {
+    "bgm_volume": 0.25,
+    "sfx_volume": 0.8,
+    "tts_volume": 1
+  },
+  "audio_policy": {
+    "translated_versions": "replace_dialogue_keep_bgm_sfx",
+    "upload_audio_to_github": false
+  },
+  "events": [
+    {
+      "type": "dialogue",
+      "start": 0.0195,
+      "end": 5.9839,
+      "duration": 5.9644,
+      "pause_after": 1.535600000000093,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Con đường núi hôm nay vắng vẻ thật. Mình cứ đi thêm một đoạn nữa rồi quay về thôi.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 7.5906,
+      "end": 10.8139,
+      "duration": 3.2233,
+      "pause_after": 3.1341000000000943,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Gió trên núi mát ghê. Ước gì lúc nào cũng được đi dạo thế này.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 14.0485,
+      "end": 15.684,
+      "duration": 1.6355,
+      "pause_after": 2.3181999999999547,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Ơ... Sao gió đột nhiên mạnh lên vậy?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 18.111,
+      "end": 20.9137,
+      "duration": 2.8027,
+      "pause_after": 2.550599999999976,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Mây đen kéo đến nhanh quá. Lúc nãy trời còn nắng mà!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 23.5644,
+      "end": 26.6242,
+      "duration": 3.0598,
+      "pause_after": 2.5930999999999793,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Á! Mưa rồi! Mình phải tìm chỗ trú trước khi đường trơn mất!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 29.314,
+      "end": 34.7839,
+      "duration": 5.4699,
+      "pause_after": 1.983600000000095,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Mưa trút xuống dày đặc, che mờ cả con đường phía trước. Bubu kéo áo che đầu rồi chạy dọc sườn núi.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 36.8538,
+      "end": 40.2541,
+      "duration": 3.4003,
+      "pause_after": 2.2595,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Phía trước có mái đá không nhỉ? Mình không nhìn rõ gì hết!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 42.6094,
+      "end": 45.9942,
+      "duration": 3.3848,
+      "pause_after": 2.671499999999993,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "ẦM!!! Tiếng sấm vang dội giữa hai vách núi khiến Bubu giật bắn người.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 48.783,
+      "end": 52.0052,
+      "duration": 3.2222,
+      "pause_after": 2.428300000000047,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Á! Sấm lớn quá! Mình phải tránh xa mấy cây cao mới được!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 54.5458,
+      "end": 58.3245,
+      "duration": 3.7787,
+      "pause_after": 2.9677999999999285,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Một tia chớp xé ngang bầu trời, soi rõ sườn núi đang rung chuyển phía sau.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 61.413,
+      "end": 63.4138,
+      "duration": 2.0008,
+      "pause_after": 2.651400000000021,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Khoan đã... Mặt đất dưới chân mình đang rung sao?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 66.1678,
+      "end": 71.9739,
+      "duration": 5.8061,
+      "pause_after": 1.6501000000000943,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Những vết nứt nhỏ xuất hiện trên sườn dốc. Đất đá bắt đầu trượt xuống, kéo theo cả bụi cây và những tảng đá lớn.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 73.7079,
+      "end": 75.884,
+      "duration": 2.1761,
+      "pause_after": 2.1815000000000087,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Sạt lở rồi! Mình phải chạy khỏi đây ngay!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 78.1546,
+      "end": 82.9344,
+      "duration": 4.7798,
+      "pause_after": 2.678200000000075,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Bubu lao về phía trước. Nước mưa làm mặt đường trơn trượt, còn đá vụn liên tục lăn ngang lối đi.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 85.716,
+      "end": 86.9637,
+      "duration": 1.2477,
+      "pause_after": 1.7089000000000283,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Á! Chân mình trượt rồi!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 88.7568,
+      "end": 93.934,
+      "duration": 5.1772,
+      "pause_after": 2.280799999999928,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Một tảng đá lớn lăn sượt qua, đập xuống con đường ngay trước mặt Bubu. Cô ngã nhào và không thể chạy tiếp.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 96.3166,
+      "end": 97.4542,
+      "duration": 1.1376,
+      "pause_after": 2.116300000000055,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Không... Mình không kịp tránh mất!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 99.6681,
+      "end": 105.2744,
+      "duration": 5.6063,
+      "pause_after": 1.8508000000000493,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Ngay khi Bubu tưởng mình sẽ bị đất đá cuốn trúng, mọi âm thanh bỗng tắt phụt. Những giọt mưa đứng yên giữa không trung.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 107.2178,
+      "end": 108.2937,
+      "duration": 1.0759,
+      "pause_after": 2.1834999999999978,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Hả...? Mưa... đang đứng yên ư?",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 110.5731,
+      "end": 116.4237,
+      "duration": 5.8506,
+      "pause_after": 1.6048000000000542,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Con đường trước mắt cong lại như mặt nước. Những thân cây, tảng đá và tia chớp bị kéo dài thành các dải sáng méo mó.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 118.1014,
+      "end": 119.8941,
+      "duration": 1.7927,
+      "pause_after": 2.5637999999999384,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cái gì đang xảy ra với không gian vậy?!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 122.5705,
+      "end": 126.7042,
+      "duration": 4.1337,
+      "pause_after": 2.9226999999999546,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Một vòng sáng mở ra dưới chân Bubu. Gió cuộn ngược, kéo cô về phía tâm xoáy.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 129.7406,
+      "end": 130.9138,
+      "duration": 1.1732,
+      "pause_after": 1.7808000000000561,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Không! Đừng cuốn mình đi!",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 132.7817,
+      "end": 138.3044,
+      "duration": 5.5227,
+      "pause_after": 1.9339999999999975,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Ánh sáng trắng bùng lên. Bubu biến mất khỏi con đường núi, còn cơn mưa tiếp tục rơi xuống nơi cô vừa đứng.",
+      "gain": 1,
+      "scene_index": 0,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 140.3389,
+      "end": 146.8581,
+      "duration": 6.5192,
+      "pause_after": 0.9145999999999788,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Khi ánh sáng tan đi, Bubu đang nằm trên sàn một hành lang rộng. Nắng chiều chiếu qua cửa sổ, bụi nhỏ lấp lánh trong không khí.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 147.8618,
+      "end": 151.0443,
+      "duration": 3.1825,
+      "pause_after": 3.162400000000014,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "voice_1794303742118",
+      "voice": {
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 2,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Bubu! Cậu tỉnh rồi à? Tớ gọi cậu mấy lần mà cậu không trả lời!",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 154.3415,
+      "end": 155.6342,
+      "duration": 1.2927,
+      "pause_after": 1.9566999999999721,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Pipun...? Sao cậu lại ở đây?",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 157.6924,
+      "end": 159.9343,
+      "duration": 2.2419,
+      "pause_after": 3.811900000000014,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cậu thấy trong người thế nào? Có chóng mặt hay đau ở đâu không?",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 163.8552,
+      "end": 164.7438,
+      "duration": 0.8886,
+      "pause_after": 2.0648000000000195,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Mình... đang ở đâu vậy?",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 166.9512,
+      "end": 169.7542,
+      "duration": 2.803,
+      "pause_after": 3.244900000000035,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "voice_1794303742118",
+      "voice": {
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 2,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Ở hành lang trường mình chứ đâu. Cậu làm bọn tớ lo quá đấy.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 173.1459,
+      "end": 174.0643,
+      "duration": 0.9184,
+      "pause_after": 2.034800000000047,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Trường...? Đây là trường nào?",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 176.2013,
+      "end": 178.764,
+      "duration": 2.5627,
+      "pause_after": 3.4933999999999283,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Bubu, cậu đang đùa phải không? Cậu học ở đây cùng bọn tớ mà.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 182.3719,
+      "end": 185.5561,
+      "duration": 3.1842,
+      "pause_after": 3.5702999999999347,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Tớ biết hai cậu... nhưng tớ không nhớ nơi này. Hôm nay là ngày nào vậy?",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 189.232,
+      "end": 192.354,
+      "duration": 3.122,
+      "pause_after": 3.6315000000000053,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "voice_1794303742118",
+      "voice": {
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 2,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cậu thật sự không nhớ à? Hôm nay bọn mình vừa làm bài kiểm tra xong.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 196.1187,
+      "end": 199.277,
+      "duration": 3.1583,
+      "pause_after": 4.3004999999999995,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cậu còn than đề khó ngay lúc ra khỏi lớp mà. Sau đó bọn mình đi xuống hành lang.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 204.0049,
+      "end": 207.1946,
+      "duration": 3.1897,
+      "pause_after": 3.1151999999999536,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Bài kiểm tra...? À... đúng rồi... Tớ hơi choáng nên đầu óc chưa tỉnh táo.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 210.6909,
+      "end": 215.7342,
+      "duration": 5.0433,
+      "pause_after": 2.379300000000029,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Hai người trước mặt vẫn là Pipun và Rerin. Nhưng cách họ nhìn mình... giống như họ đã quen với một Bubu khác.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 218.3466,
+      "end": 221.2945,
+      "duration": 2.9479,
+      "pause_after": 3.4068999999998884,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "voice_1794303742118",
+      "voice": {
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 2,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cậu có muốn bọn tớ đưa đến phòng y tế không? Mặt cậu tái lắm.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 224.8113,
+      "end": 227.274,
+      "duration": 2.4627,
+      "pause_after": 2.4927999999999315,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Không cần đâu. Tớ chỉ muốn ngồi nghỉ một chút thôi.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 229.9115,
+      "end": 231.7742,
+      "duration": 1.8627,
+      "pause_after": 3.086900000000014,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Được. Nhưng nếu còn chóng mặt thì phải nói ngay nhé.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 234.9953,
+      "end": 238.6333,
+      "duration": 3.638,
+      "pause_after": 3.413400000000001,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "À... lúc nãy hai cậu đang nói chuyện gì vậy? Tớ nghe loáng thoáng về căn tin.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 242.2014,
+      "end": 245.5242,
+      "duration": 3.3228,
+      "pause_after": 4.128999999999991,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "voice_1794303742118",
+      "voice": {
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 2,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Đồ ăn hôm nay mặn kinh khủng! Tớ ăn một miếng mà phải uống gần hết chai nước.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 249.8831,
+      "end": 253.2445,
+      "duration": 3.3614,
+      "pause_after": 4.08359999999999,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Còn bài kiểm tra thì khó thật. Câu cuối có dữ kiện lạ, tớ vẫn chưa chắc mình làm đúng.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 257.4948,
+      "end": 261.5742,
+      "duration": 4.0794,
+      "pause_after": 3.37439999999998,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "À... vậy là hôm nay có kiểm tra, rồi hai cậu vừa ăn ở căn tin. Tớ hiểu rồi.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 265.1405,
+      "end": 267.0344,
+      "duration": 1.8939,
+      "pause_after": 2.7592000000000896,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "voice_1794303742118",
+      "voice": {
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 2,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cậu nói cứ như vừa mới chuyển đến trường vậy.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 269.9389,
+      "end": 271.5442,
+      "duration": 1.6053,
+      "pause_after": 2.3438000000000443,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Ha ha... chắc do tớ mệt quá thôi.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 273.993,
+      "end": 277.3572,
+      "duration": 3.3642,
+      "pause_after": 4.086500000000001,
+      "speaker": "Rerin",
+      "speaker_id": "char_rerin_char_03",
+      "voice_id": "voice_1794192970852",
+      "voice": {
+        "profile_id": "voice_1794192970852",
+        "profile_name": "Embe",
+        "source_voice_id": "vi_VN-vais1000-medium",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "",
+        "gender": "female",
+        "settings": {
+          "speed": 1.1,
+          "pitch": 3,
+          "rough": 50,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Cậu nhớ chuyện gì xảy ra trước khi ngất không? Bọn tớ chỉ thấy cậu đột nhiên đứng khựng lại.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 281.6176,
+      "end": 283.804,
+      "duration": 2.1864,
+      "pause_after": 2.4698999999999502,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Tớ... không nhớ rõ. Trước đó tớ đang làm gì?",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 286.3824,
+      "end": 290.0117,
+      "duration": 3.6293,
+      "pause_after": 3.8173000000000457,
+      "speaker": "Pipun",
+      "speaker_id": "char_pipun_char_02",
+      "voice_id": "voice_1794303742118",
+      "voice": {
+        "profile_id": "voice_1794303742118",
+        "profile_name": "Giọng bé",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 2,
+          "rough": 0,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Bọn mình vừa rời khỏi lớp. Cậu đi bên cạnh tớ, còn Rerin đi phía ngoài hành lang.",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    },
+    {
+      "type": "dialogue",
+      "start": 294.0248,
+      "end": 297.6444,
+      "duration": 3.6196,
+      "pause_after": 3.4318000000000435,
+      "speaker": "Bubu",
+      "speaker_id": "char_bubu_char_01",
+      "voice_id": "voice_1794303792721",
+      "voice": {
+        "profile_id": "voice_1794303792721",
+        "profile_name": "Thiếu nữ",
+        "source_voice_id": "vi-VN-HoaiMyNeural",
+        "piper_voice_id": "vi_VN-vais1000-medium",
+        "edge_voice_id": "vi-VN-HoaiMyNeural",
+        "gender": "female",
+        "settings": {
+          "speed": 1,
+          "pitch": 0,
+          "rough": 5,
+          "volume": 100
+        },
+        "source_language": "vi",
+        "engine": "edge"
+      },
+      "text": "Vậy trước khi tỉnh lại ở đây, Bubu của thế giới này đang ở cùng hai cậu...",
+      "gain": 1,
+      "scene_index": 1,
+      "timing_policy": "fixed_source_window"
+    }
+  ]
+}
