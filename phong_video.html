@@ -1260,6 +1260,7 @@ function drawFrameUnsafe(elapsed,st){
  const cueLine=sceneLines[cueStart]||currentLine;
  const cueSource=cueLine.sourceFrame||cueLine;
  const cueTarget=String(cueSource.nhan_vat||cueLine.speakerId||speakerTarget);
+ const cameraLayers=getCharacterCameraLayers(charLayerVideos,elapsed);
  const requestedCameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
   :(cueTarget||speakerTarget);
@@ -1270,7 +1271,6 @@ function drawFrameUnsafe(elapsed,st){
   :(shot==='close_up'?1.42:(shot==='medium'?1.14:1));
  const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?1.42:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
- const cameraLayers=getCharacterCameraLayers(charLayerVideos,elapsed);
  const rawShotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,cameraLayers,isPortrait,shot);
  // Chỉ bắt đầu lia khi có một cue camera mới. Giữ nguyên vị trí và zoom trong các
  // câu còn lại của cùng shot, kể cả khi người nói thay đổi.
