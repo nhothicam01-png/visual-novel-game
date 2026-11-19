@@ -1641,7 +1641,7 @@ async function startDirectRecorder(){
  directRecorder.ondataavailable=e=>{if(e.data?.size)directRecordChunks.push(e.data)};
  directRecorder.start(1000);directRecording=true;sceneEffectLayers.forEach(item=>{if(item.type==='video'&&item.media){try{item.media.currentTime=0;item.media.__sceneEffectFinished=false;item.media.play().catch(()=>{})}catch(e){}}});document.body.classList.add('direct-recording');$('preview-loading').classList.remove('active');$('direct-record-button').textContent='⏹ Dừng ghi';$('direct-record-button').classList.add('danger');
  directRecordRecorderStreams={stream,oldWidth,oldHeight,fps,quality};
- setStatus('Đang ghi trực tiếp · '+(isPortrait?'9:16':'16:9')+' · '+fps+' FPS · '+quality+'p');
+ setStatus('Đang ghi trực tiếp · '+(isPortrait?'9:16':'16:9')+' · '+fps+' FPS · '+quality+'p');if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_RECORD_STARTED',message:'Đang ghi trực tiếp theo thời gian thực…'},location.origin);
 }
 let directRecordRecorderStreams=null;
 async function stopDirectRecorder(){
@@ -1656,6 +1656,7 @@ async function stopDirectRecorder(){
  if(blob.size){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='visual-novel-direct-'+Date.now()+'.'+ext;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
  if(directRecordEntries.length){try{const entries=directRecordEntries,prepared=scenes.map((scene,sceneIndex)=>({scene,visual:scene.visual,lines:entries.filter(e=>e.sceneIndex===sceneIndex)})),bgmSegments=[];for(const e of entries){const name=resolvedLineAudio(e.line,'bgm'),end=e.start+e.duration+e.pause,last=bgmSegments[bgmSegments.length-1];if(name){if(last&&last.name===name&&Math.abs(last.end-e.start)<.2)last.end=end;else bgmSegments.push({name,start:e.start,end})}}const total=Math.max(...entries.map(e=>e.start+e.duration+e.pause),0),manifest=buildAudioManifest(prepared,entries,bgmSegments,total);const meta=await pushExportMetadata(entries,manifest);setStatus('Đã ghi '+ext.toUpperCase()+' · '+(blob.size/1048576).toFixed(1)+' MB; đã push '+meta.srtName+' và AudioManifest.json lên GitHub.');finishTaskProgress('Ghi trực tiếp & metadata hoàn tất')}catch(err){setStatus('Đã ghi video nhưng không push được SRT/AudioManifest: '+(err.message||err))}}
  directRecordEntries=[];directRecordRecorderStreams=null;
+ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1')window.parent.postMessage({type:'DEMO_STUDIO_RECORD_DONE',message:'Đã ghi trực tiếp '+ext.toUpperCase()+' · '+(blob.size/1048576).toFixed(1)+' MB',extension:ext,size:blob.size},location.origin);
 }
 
 function resolvedLineAudio(line,kind){
@@ -3323,6 +3324,20 @@ if(new URLSearchParams(location.search).get('demoStudioPreview')==='1'){
    drawFrame(0);
   }else if(message.type==='DEMO_STUDIO_SET_SPEECH_MOTION'&&demoStudioStoryLoaded){
    applyDemoStudioSpeechMotion(message.settings);
+  }else if(message.type==='DEMO_STUDIO_RECORD_DIRECT'&&demoStudioStoryLoaded){
+   if(previewing||previewPreparing||directRecording){window.parent.postMessage({type:'DEMO_STUDIO_RECORD_ERROR',message:'Player đang phát, chuẩn bị hoặc ghi một tiến trình khác.'},location.origin);return}
+   try{
+    setPreviewAspectRatio(message.ratio||previewAspectRatio);
+    applyDemoStudioSpeechMotion(message.speechMotion);
+    $('fps').value=String([24,30,50,60].includes(Number(message.fps))?Number(message.fps):30);
+    $('export-quality').value=String([540,720,1080].includes(Number(message.quality))?Number(message.quality):720);
+    $('preview-scope').value='full';$('preview-tts-mode').value='render';
+    await seekSourceLine(0);
+    directRecordRequested=true;
+    await playPreview();
+   }catch(error){directRecordRequested=false;window.parent.postMessage({type:'DEMO_STUDIO_RECORD_ERROR',message:error?.message||String(error)},location.origin)}
+  }else if(message.type==='DEMO_STUDIO_STOP_DIRECT_RECORD'&&demoStudioStoryLoaded){
+   try{stopPreview();await stopDirectRecorder();}catch(error){window.parent.postMessage({type:'DEMO_STUDIO_RECORD_ERROR',message:error?.message||String(error)},location.origin)}
   }else if(message.type==='DEMO_STUDIO_EXPORT_VIDEO'&&demoStudioStoryLoaded){
    if(recording){window.parent.postMessage({type:'DEMO_STUDIO_EXPORT_ERROR',message:'Đang có một tiến trình xuất video.'},location.origin);return}
    try{
