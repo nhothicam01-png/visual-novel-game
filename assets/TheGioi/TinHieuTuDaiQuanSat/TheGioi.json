@@ -104,6 +104,11 @@
       "title": "Lạc Lối Trong Nhà Ma",
       "logline": "Bubu, Pipun và Rerin lạc vào một căn nhà bỏ hoang; khi Bubu bị tách khỏi nhóm và gặp bóng ma trong gương, hai người bạn phải lần theo dấu hiệu để giải cứu cậu.",
       "arc": "Từ cánh cổng tự mở, hành lang méo mó và bóng người không mặt, đến manh mối ba tiếng gõ, chiếc chìa khóa bí ẩn, cuộc giải cứu và màn chạy thoát trong gang tấc."
+    },
+    {
+      "title": "Thử Thách Biểu Cảm Của Rerin",
+      "logline": "Rerin cùng Bubu và Pipun thực hiện một buổi thử thoại để kiểm tra 11 biểu cảm mới, cách đổi WEBM theo cảm xúc và trạng thái nghe/nói.",
+      "arc": "Từ việc lần lượt thể hiện vui, buồn, tức giận, sợ hãi, ngạc nhiên, ngượng ngùng, khóc, cười, lo lắng, bối rối và quyết tâm, đến cuộc đối thoại xác nhận Rerin chuyển đúng giữa speaking và listening."
     }
   ],
   "story_folders": [
@@ -142,7 +147,13 @@
       "folder": "HaiChieuKhongGian",
       "path": "assets/KichBan/HaiChieuKhongGian",
       "json_path": "assets/KichBan/HaiChieuKhongGian/HaiChieuKhongGian.json"
+    },
+    {
+      "title": "Thử Thách Biểu Cảm Của Rerin",
+      "folder": "ThuVienBieuCamRerin",
+      "path": "assets/KichBan/ThuVienBieuCamRerin",
+      "json_path": "assets/KichBan/ThuVienBieuCamRerin/ThuVienBieuCamRerin.json"
     }
   ],
-  "updated_at": "2026-11-19T11:30:00.000Z"
+  "updated_at": "2026-11-20T02:48:26.352Z"
 }
