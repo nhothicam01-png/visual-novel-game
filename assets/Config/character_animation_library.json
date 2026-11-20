@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-20T07:44:10.435Z",
+  "updated_at": "2026-11-20T08:02:52.321Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -425,6 +425,14 @@
       "analysis_status": "not_analyzed",
       "summary": "communication: silent · emotion: embarrassed · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
       "updated_at": "2026-11-20T07:42:24.047Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/Pipun-24fps-1795161755865.webm",
+      "metadata_path": "assets/NhanVat/Pipun/Pipun-24fps-1795161755865.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: silent · emotion: neutral · pose: walking_pose · action: walking · direction: front · face_angle: front · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:02:52.321Z"
     }
   ]
 }
