@@ -44,7 +44,7 @@ const file=new File([item.file],item.file.name,{type:item.file.type||'video/mp4'
 w.loadVideoFileForEditor(file);
 await waitFor(()=>{const v=doc.getElementById('video');return v.readyState>=1&&v.videoWidth>0&&doc.getElementById('out').width>0},60000);
 await wait(500);
-setVal(doc,'mode',item.mode);setVal(doc,'autoKey',false);setVal(doc,'keyColor',item.keyColor);setVal(doc,'tolerance',item.tolerance);setVal(doc,'softness',item.softness);setVal(doc,'spill',item.spill);setVal(doc,'shrink',item.shrink);setVal(doc,'shrinkPx',item.shrink);setVal(doc,'feather',item.feather);setVal(doc,'featherPx',item.feather);setVal(doc,'brightness',item.brightness);setVal(doc,'fpsRef',item.fps);
+setVal(doc,'mode',item.mode);doc.getElementById('autoKey').checked=false;setVal(doc,'keyColor',item.keyColor);setVal(doc,'tolerance',item.tolerance);setVal(doc,'softness',item.softness);setVal(doc,'spill',item.spill);setVal(doc,'shrink',item.shrink);setVal(doc,'shrinkPx',item.shrink);setVal(doc,'feather',item.feather);setVal(doc,'featherPx',item.feather);setVal(doc,'brightness',item.brightness);setVal(doc,'fpsRef',item.fps);
 setVal(doc,'newCharacterName',clean(item.character));setVal(doc,'githubCharacterSelect','');setVal(doc,'webmFileName',clean(item.filename));
 for(const [k,v] of Object.entries(item.metadata)){const m=doc.getElementById('asset-'+k);if(m)m.value=v}
 await wait(500);
