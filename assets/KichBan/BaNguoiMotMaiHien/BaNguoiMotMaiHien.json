@@ -2657,7 +2657,7 @@
       "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_bubu_char_01",
-      "noi_dung": "Email vừa đến. Họ xác nhận dự án ở thành phố và muốn mình trả lời trước tối mai.",
+      "noi_dung": "Tối hôm sau, email vừa đến. Họ xác nhận dự án ở thành phố và muốn mình trả lời trước tối mai.",
       "thoi_luong": 5.9,
       "anh_nen": "quan_ca_phe.png",
       "anh_hieu_ung": "",
@@ -3264,11 +3264,98 @@
     {
       "scene_id": "SC006",
       "hoi_tuong": false,
+      "loai_phat_ngon": "narration",
+      "nhan_vat": "char_rerin_char_03",
+      "noi_dung": "Sau khi rời quán cà phê, cả ba về phòng khách nhà Rerin để nói rõ những điều còn dang dở.",
+      "thoi_luong": 5.4,
+      "anh_nen": "phong_khach.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral",
+        "pose": "standing",
+        "direction": "front",
+        "face_angle": "0°",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "right",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 24,
+          "y": 94,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 50,
+          "y": 94,
+          "scale": 0.67,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "direction": "left",
+            "face_angle": "0°",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 76,
+          "y": 94,
+          "scale": 0.69,
+          "z_index": 3
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      },
+      "camera": {
+        "director": "auto"
+      }
+    },
+    {
+      "scene_id": "SC006",
+      "hoi_tuong": false,
       "loai_phat_ngon": "character",
       "nhan_vat": "char_pipun_char_02",
       "noi_dung": "Mình muốn nói rõ: tình cảm mình dành cho Rerin không phụ thuộc vào việc Bubu có ở đây hay không.",
       "thoi_luong": 7.1,
-      "anh_nen": "phong_khach.png",
+      "anh_nen": "",
       "anh_hieu_ung": "",
       "expression_id": {
         "communication": "speaking",
@@ -4397,7 +4484,7 @@
       "hoi_tuong": false,
       "loai_phat_ngon": "narration",
       "nhan_vat": "char_bubu_char_01",
-      "noi_dung": "Một tháng đầu tiên đã qua. Có những tối mình nhớ thị trấn đến mức chỉ muốn bắt chuyến xe cuối cùng về đây.",
+      "noi_dung": "Cuối tuần đầu tiên trở lại thị trấn sau một tháng ở thành phố, mình lại được đứng cạnh hai cậu. Khoảng cách không biến mất, nhưng tụi mình đã học cách nói thật.",
       "thoi_luong": 7.9,
       "anh_nen": "san_thuong_hoang_hon.png",
       "anh_hieu_ung": "",
@@ -4430,13 +4517,13 @@
         {
           "id": "char_pipun_char_02",
           "expression_id": {
-            "communication": "listening",
+            "communication": "silent",
             "emotion": "happy",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
             "view_angle": "full body",
-            "interaction_target": "char_bubu_char_01"
+            "interaction_target": "none"
           },
           "x": 50,
           "y": 94,
@@ -4446,13 +4533,13 @@
         {
           "id": "char_rerin_char_03",
           "expression_id": {
-            "communication": "listening",
+            "communication": "silent",
             "emotion": "happy",
             "pose": "standing",
             "direction": "left",
             "face_angle": "135°",
             "view_angle": "full body",
-            "interaction_target": "char_bubu_char_01"
+            "interaction_target": "none"
           },
           "x": 76,
           "y": 94,
