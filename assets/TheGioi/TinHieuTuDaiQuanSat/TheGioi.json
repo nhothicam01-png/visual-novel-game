@@ -114,6 +114,11 @@
       "title": "Ba Người, Một Mái Hiên",
       "logline": "Bubu, Pipun và Rerin nhận ra tình cảm dành cho nhau không chỉ là tình bạn, rồi học cách xây dựng một mối quan hệ ba người bình đẳng, tự nguyện và có ranh giới rõ ràng.",
       "arc": "Từ cuộc hội ngộ ở quán cà phê, những lời chưa dám nói trong khu vườn cộng đồng, lời thú nhận trên sân thượng và buổi hẹn đầu tiên, đến thử thách yêu xa ba tháng và lựa chọn tiếp tục đồng hành mà không ai phải từ bỏ cuộc sống riêng."
+    },
+    {
+      "title": "Bỗng Dưng Nhớ Pipun",
+      "logline": "Trên đường đi dạo, một cuộc gặp bất ngờ với chú mèo con khiến Bubu chợt nhận ra người đầu tiên cô muốn chia sẻ niềm vui lại là Pipun.",
+      "arc": "Bubu vừa đi vừa ngắm phố thì giật mình khi một chú mèo con bất ngờ chạy ngang; sau phút ngạc nhiên, cô bối rối nhận ra mình nhớ Pipun và muốn kể cho cô ấy nghe khoảnh khắc nhỏ ấy."
     }
   ],
   "story_folders": [
@@ -164,7 +169,13 @@
       "folder": "BaNguoiMotMaiHien",
       "path": "assets/KichBan/BaNguoiMotMaiHien",
       "json_path": "assets/KichBan/BaNguoiMotMaiHien/BaNguoiMotMaiHien.json"
+    },
+    {
+      "title": "Bỗng Dưng Nhớ Pipun",
+      "folder": "BubuNhoPipun",
+      "path": "assets/KichBan/BubuNhoPipun",
+      "json_path": "assets/KichBan/BubuNhoPipun/BubuNhoPipun.json"
     }
   ],
-  "updated_at": "2026-11-20T09:15:00.000Z"
+  "updated_at": "2026-11-20T09:50:00.000Z"
 }
