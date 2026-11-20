@@ -222,7 +222,7 @@ function loadVideoFile(f){
  if(!f)return;
  if(videoURL)URL.revokeObjectURL(videoURL);
  videoURL=URL.createObjectURL(f);video.src=videoURL;video.load();
- video.onloadedmetadata=()=>{detectedSourceFps=Number(f.__removeBgSourceFps)||0;out.width=source.width=maskCanvas.width=eraseMask.width=eraseOverlay.width=video.videoWidth;out.height=source.height=maskCanvas.height=eraseMask.height=eraseOverlay.height=video.videoHeight;eraseStrokes=[];redrawEraseMask();$('uploadPanel').classList.add('hide');$('editor').classList.remove('hide');$('videoInfo').textContent=`${video.videoWidth}×${video.videoHeight} · ${fmt(video.duration)}`;$('time').textContent=`00:00 / ${fmt(video.duration)}`;updateRangeUI(true);setStatus('Video đã sẵn sàng. Chọn đoạn frame rồi nhấn Bắt đầu.');renderStill();if($('fpsRef').value==='source'&&!detectedSourceFps)detectSourceFps();else if(detectedSourceFps){updateRangeUI(true);setStatus('Đã nhận FPS chính xác từ bộ ghép frame: '+detectedSourceFps+' FPS. Thời lượng nguồn được giữ nguyên.')}};
+ video.onloadedmetadata=()=>{detectedSourceFps=Number(f.__removeBgSourceFps)||0;out.width=source.width=maskCanvas.width=eraseMask.width=eraseOverlay.width=video.videoWidth;out.height=source.height=maskCanvas.height=eraseMask.height=eraseOverlay.height=video.videoHeight;if(window.__VNS_BATCH_MODE&&Array.isArray(window.__VNS_BATCH_SHARED_ERASE_STROKES)){eraseStrokes=window.__VNS_BATCH_SHARED_ERASE_STROKES.map(st=>({size:Math.max(1,(Number(st.size)||0)*video.videoWidth),points:(st.points||[]).map(p=>({x:clamp(Number(p.x)||0,0,1)*video.videoWidth,y:clamp(Number(p.y)||0,0,1)*video.videoHeight}))}));}else{eraseStrokes=[]}redrawEraseMask();$('uploadPanel').classList.add('hide');$('editor').classList.remove('hide');$('videoInfo').textContent=`${video.videoWidth}×${video.videoHeight} · ${fmt(video.duration)}`;$('time').textContent=`00:00 / ${fmt(video.duration)}`;updateRangeUI(true);setStatus('Video đã sẵn sàng. Chọn đoạn frame rồi nhấn Bắt đầu.');renderStill();if($('fpsRef').value==='source'&&!detectedSourceFps)detectSourceFps();else if(detectedSourceFps){updateRangeUI(true);setStatus('Đã nhận FPS chính xác từ bộ ghép frame: '+detectedSourceFps+' FPS. Thời lượng nguồn được giữ nguyên.')}};
  video.onerror=()=>setStatus('Không đọc được video này. Hãy thử WEBM/MP4 khác hoặc Chrome mới.');
 }
 window.loadVideoFileForEditor=loadVideoFile;
@@ -408,6 +408,7 @@ function redrawEraseMask(){
  eraseStrokes.forEach(st=>{drawStroke(eraseCtx,st,'rgba(255,255,255,1)');drawStroke(overlayCtx,st,'rgba(255,65,80,.42)')});
  $('undoErase').disabled=eraseStrokes.length===0;$('clearErase').disabled=eraseStrokes.length===0;
 }
+function publishBatchEraseStrokes(){if(!window.__VNS_BATCH_MODE||!out.width||!out.height)return;const strokes=eraseStrokes.map(st=>({size:st.size/out.width,points:st.points.map(p=>({x:p.x/out.width,y:p.y/out.height}))}));window.parent.postMessage({type:'vns-batch-erase-strokes',strokes},location.origin)}
 $('eraseTool').onclick=()=>{
  eraseEnabled=!eraseEnabled;
  $('eraseTool').textContent=eraseEnabled?'✋ Tắt cọ xóa':'🖌️ Bật cọ xóa';
@@ -427,11 +428,11 @@ eraseOverlay.addEventListener('pointermove',e=>{
  if(!isPainting||!currentStroke)return;
  currentStroke.points.push(paintPoint(e));redrawEraseMask();renderStill();
 });
-function finishPaint(){if(!isPainting)return;isPainting=false;currentStroke=null;redrawEraseMask();renderStill()}
+function finishPaint(){if(!isPainting)return;isPainting=false;currentStroke=null;redrawEraseMask();publishBatchEraseStrokes();renderStill()}
 eraseOverlay.addEventListener('pointerup',finishPaint);
 eraseOverlay.addEventListener('pointercancel',finishPaint);
-$('undoErase').onclick=()=>{eraseStrokes.pop();redrawEraseMask();renderStill()};
-$('clearErase').onclick=()=>{eraseStrokes=[];redrawEraseMask();renderStill()};
+$('undoErase').onclick=()=>{eraseStrokes.pop();redrawEraseMask();publishBatchEraseStrokes();renderStill()};
+$('clearErase').onclick=()=>{eraseStrokes=[];redrawEraseMask();publishBatchEraseStrokes();renderStill()};
 function renderComposite(){
  const w=out.width,h=out.height;if(!w||!h)return;
  sctx.drawImage(video,0,0,w,h);
