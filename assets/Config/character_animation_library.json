@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-20T07:16:21.722Z",
+  "updated_at": "2026-11-20T07:20:45.403Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -249,6 +249,94 @@
       "analysis_status": "not_analyzed",
       "summary": "communication: silent · emotion: embarrassed · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
       "updated_at": "2026-11-20T07:15:54.988Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/ncboiroi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/ncboiroi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: confused · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:17:16.598Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/ncbuon.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/ncbuon.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: sad · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:17:36.617Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/nccuoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/nccuoi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: laughing · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:17:56.750Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/nckhoc.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/nckhoc.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: crying · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:18:16.792Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/nclolang.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/nclolang.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: worried · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:18:37.207Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/ncngacnhien.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/ncngacnhien.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: surprised · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:18:57.544Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/ncquyettam.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/ncquyettam.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: determined · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:19:17.742Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/ncsohai.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/ncsohai.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: afraid · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:19:38.010Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/nctucgian.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/nctucgian.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: angry · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:19:58.262Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/ncvuu.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/ncvuu.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: happy · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:20:18.321Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/ncxauhi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/ncxauhi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: embarrassed · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:20:38.770Z"
     }
   ]
 }
