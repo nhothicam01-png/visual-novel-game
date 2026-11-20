@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-20T07:14:10.335Z",
+  "updated_at": "2026-11-20T07:16:21.722Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -187,12 +187,68 @@
       "updated_at": "2026-11-20T02:44:38.945Z"
     },
     {
-      "file_path": "assets/NhanVat/Bubu/Bubu-24fps-1795158825039.webm",
-      "metadata_path": "assets/NhanVat/Bubu/Bubu-24fps-1795158825039.webm.json",
+      "file_path": "assets/NhanVat/Bubu/buonkonoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/buonkonoi.mp4.webm.json",
       "character_id": "Bubu",
       "analysis_status": "not_analyzed",
-      "summary": "communication: speaking · emotion: neutral · pose: walking_pose · action: walking · direction: front · face_angle: front · view_angle: full body · interaction_target: none",
-      "updated_at": "2026-11-20T07:14:10.335Z"
+      "summary": "communication: silent · emotion: sad · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:08:29.284Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/giankonoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/giankonoi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: silent · emotion: angry · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:11:23.284Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/lolangkonoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/lolangkonoi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: silent · emotion: worried · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:14:14.255Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/ngacnhien.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/ngacnhien.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: silent · emotion: surprised · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:14:34.215Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/quyetamkonoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/quyetamkonoi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: silent · emotion: determined · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:14:54.204Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/sohaikonoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/sohaikonoi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: silent · emotion: afraid · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:15:14.349Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/vuikonoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/vuikonoi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: silent · emotion: happy · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:15:34.732Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Bubu/xauhokonoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Bubu/xauhokonoi.mp4.webm.json",
+      "character_id": "Bubu",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: silent · emotion: embarrassed · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T07:15:54.988Z"
     }
   ]
 }
