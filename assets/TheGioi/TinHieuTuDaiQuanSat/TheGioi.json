@@ -109,6 +109,11 @@
       "title": "Thử Thách Biểu Cảm Của Rerin",
       "logline": "Rerin cùng Bubu và Pipun thực hiện một buổi thử thoại để kiểm tra 11 biểu cảm mới, cách đổi WEBM theo cảm xúc và trạng thái nghe/nói.",
       "arc": "Từ việc lần lượt thể hiện vui, buồn, tức giận, sợ hãi, ngạc nhiên, ngượng ngùng, khóc, cười, lo lắng, bối rối và quyết tâm, đến cuộc đối thoại xác nhận Rerin chuyển đúng giữa speaking và listening."
+    },
+    {
+      "title": "Ba Người, Một Mái Hiên",
+      "logline": "Bubu, Pipun và Rerin nhận ra tình cảm dành cho nhau không chỉ là tình bạn, rồi học cách xây dựng một mối quan hệ ba người bình đẳng, tự nguyện và có ranh giới rõ ràng.",
+      "arc": "Từ cuộc hội ngộ ở quán cà phê, những lời chưa dám nói trong khu vườn cộng đồng, lời thú nhận trên sân thượng và buổi hẹn đầu tiên, đến thử thách yêu xa ba tháng và lựa chọn tiếp tục đồng hành mà không ai phải từ bỏ cuộc sống riêng."
     }
   ],
   "story_folders": [
@@ -153,7 +158,13 @@
       "folder": "ThuVienBieuCamRerin",
       "path": "assets/KichBan/ThuVienBieuCamRerin",
       "json_path": "assets/KichBan/ThuVienBieuCamRerin/ThuVienBieuCamRerin.json"
+    },
+    {
+      "title": "Ba Người, Một Mái Hiên",
+      "folder": "BaNguoiMotMaiHien",
+      "path": "assets/KichBan/BaNguoiMotMaiHien",
+      "json_path": "assets/KichBan/BaNguoiMotMaiHien/BaNguoiMotMaiHien.json"
     }
   ],
-  "updated_at": "2026-11-20T02:48:26.352Z"
+  "updated_at": "2026-11-20T09:15:00.000Z"
 }
