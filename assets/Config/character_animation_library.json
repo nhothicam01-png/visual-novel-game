@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-20T08:06:09.633Z",
+  "updated_at": "2026-11-20T08:13:23.323Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -433,6 +433,86 @@
       "analysis_status": "not_analyzed",
       "summary": "communication: silent · emotion: neutral · pose: walking_pose · action: walking · direction: front · face_angle: front · view_angle: full body · interaction_target: none",
       "updated_at": "2026-11-20T08:06:09.633Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/ncboiroi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/ncboiroi.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: confused · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:07:32.067Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/nccuoi.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/nccuoi.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: laughing · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:07:52.455Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/nclolang.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/nclolang.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: worried · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:08:12.689Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/noichuyenbuon.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/noichuyenbuon.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: sad · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:08:32.641Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/noichuyengian.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/noichuyengian.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: angry · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:08:53.120Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/noichuyenkhoc.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/noichuyenkhoc.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: crying · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:09:13.301Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/noichuyenngacnhien.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/noichuyenngacnhien.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: surprised · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:09:33.774Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/noichuyenquyettam.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/noichuyenquyettam.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: determined · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:09:54.008Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/noichuyensohai.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/noichuyensohai.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: afraid · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:10:14.436Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Pipun/noichuyenvui.mp4.webm",
+      "metadata_path": "assets/NhanVat/Pipun/noichuyenvui.mp4.webm.json",
+      "character_id": "Pipun",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: happy · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T08:10:34.764Z"
     }
   ]
 }
