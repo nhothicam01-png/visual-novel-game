@@ -1,0 +1,443 @@
+{
+  "phien_ban": 3,
+  "world_id": "TinHieuTuDaiQuanSat",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.45,
+    "toc_do_go_chu": 32
+  },
+  "nhan_vat": {
+    "char_bubu_char_01": {
+      "character_id": "char_bubu_char_01",
+      "ten_hien_thi": "Bubu",
+      "assetFolder": "Bubu",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_pipun_char_02": {
+      "character_id": "char_pipun_char_02",
+      "ten_hien_thi": "Pipun",
+      "assetFolder": "Pipun",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Buổi chiều, Bubu thong thả đi dọc con phố nhỏ. Cô bước đều đều, vừa đi vừa ngắm những cửa tiệm hai bên đường.",
+      "anh_nen": "pho_ban_ngay.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral",
+        "pose": "walking_pose",
+        "action": "walking",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "walking_pose",
+            "action": "walking",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 50,
+          "y": 100,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [
+          "bg_pan_right"
+        ],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "shot": "wide",
+        "target": "char_bubu_char_01"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Bỗng một chú mèo con từ sau chậu hoa phóng vụt ra, chạy ngang trước mũi giày Bubu rồi bất ngờ dừng lại.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "surprised",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "surprised",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 50,
+          "y": 100,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [
+          "camera_zoom_in"
+        ],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01",
+        "zoom": 1.2
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Á! Trời ơi, cậu nhóc này xuất hiện bất thình lình làm mình giật cả mình!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 50,
+          "y": 100,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_bubu_char_01",
+        "zoom": 1.35
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Chú mèo con chẳng hề sợ hãi, chỉ ngước đôi mắt tròn xoe nhìn cô rồi khẽ kêu meo một tiếng. Bubu nhìn nó, bất giác thấy buồn cười.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 50,
+          "y": 100,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Ủa... sao tự nhiên mình nhớ Pipun zậy ta?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "confused",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "confused",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 50,
+          "y": 100,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_bubu_char_01",
+        "zoom": 1.4
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Chỉ là gặp một chú mèo con thôi mà... vậy mà người đầu tiên mình muốn kể lại là Pipun. Nghĩ đến đó, Bubu bỗng thấy hơi ngượng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "confused",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "front",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "confused",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "front",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 50,
+          "y": 100,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "shot": "close_up",
+        "target": "char_bubu_char_01",
+        "zoom": 1.35
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Bubu khẽ mỉm cười. Cô quyết định lát nữa sẽ chụp chú mèo con gửi cho Pipun, dù trong lòng vẫn chưa hiểu vì sao mình lại mong được nói chuyện với cô ấy đến vậy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "happy",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "front",
+        "face_angle": "front",
+        "view_angle": "full body",
+        "interaction_target": "none"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "front",
+            "face_angle": "front",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 50,
+          "y": 100,
+          "scale": 0.76,
+          "z_index": 1
+        }
+      ],
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "camera": {
+        "shot": "medium",
+        "target": "char_bubu_char_01"
+      },
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    }
+  ]
+}
