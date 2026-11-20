@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-15T18:15:47.257Z",
+  "updated_at": "2026-11-20T02:06:34.557Z",
   "assets": [
     {
       "file_path": "assets/NhanVat/Hầu gái/HauGai1.webm",
@@ -81,6 +81,94 @@
       "analysis_status": "not_analyzed",
       "summary": "pose: Đứng · emotion: Trung tính · direction: Chính diện · face_angle: Chính diện (0°) · view_angle: Bán thân · communication: Đang nói · action: Đứng yên",
       "updated_at": "2026-11-15T15:42:44.447Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075213.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075213.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: happy · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T01:46:31.210Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075214.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075214.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: sad · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T01:48:13.207Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075215.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075215.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: angry · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T01:50:00.163Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075216.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075216.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: afraid · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T01:51:44.000Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075217.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075217.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: surprised · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T01:53:20.548Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075218.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075218.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: embarrassed · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T01:54:56.573Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075219.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075219.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: crying · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T01:56:35.105Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075220.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075220.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: laughing · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T01:58:40.196Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075222.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075222.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: worried · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T02:00:31.861Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075223.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075223.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: confused · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T02:02:03.226Z"
+    },
+    {
+      "file_path": "assets/NhanVat/Rerin/1000075224.mp4.webm",
+      "metadata_path": "assets/NhanVat/Rerin/1000075224.mp4.webm.json",
+      "character_id": "Rerin",
+      "analysis_status": "not_analyzed",
+      "summary": "communication: speaking · emotion: determined · pose: standing · action: idle · direction: right · face_angle: angled · view_angle: full body · interaction_target: none",
+      "updated_at": "2026-11-20T02:03:44.889Z"
     }
   ]
 }
