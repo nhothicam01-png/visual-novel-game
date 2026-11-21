@@ -82,7 +82,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "action": "idle",
             "direction": "right",
@@ -99,7 +99,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "action": "idle",
             "direction": "right",
@@ -268,7 +268,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "action": "idle",
             "direction": "right",
@@ -285,7 +285,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "curious",
+            "emotion": "neutral",
             "pose": "standing",
             "action": "idle",
             "direction": "right",
@@ -2420,7 +2420,7 @@
             },
             "end_expression_id": {
               "communication": "silent",
-              "emotion": "worried",
+              "emotion": "neutral",
               "pose": "standing",
               "action": "idle",
               "direction": "right",
@@ -2464,7 +2464,7 @@
             },
             "end_expression_id": {
               "communication": "silent",
-              "emotion": "worried",
+              "emotion": "neutral",
               "pose": "standing",
               "action": "idle",
               "direction": "right",
@@ -2508,7 +2508,7 @@
             },
             "end_expression_id": {
               "communication": "silent",
-              "emotion": "worried",
+              "emotion": "neutral",
               "pose": "standing",
               "action": "idle",
               "direction": "right",
@@ -2953,7 +2953,7 @@
           "id": "char_pipun_char_02",
           "expression_id": {
             "communication": "listening",
-            "emotion": "relieved",
+            "emotion": "neutral",
             "pose": "standing",
             "action": "idle",
             "direction": "right",
@@ -2970,7 +2970,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "relieved",
+            "emotion": "neutral",
             "pose": "standing",
             "action": "idle",
             "direction": "right",
@@ -3308,7 +3308,7 @@
           "id": "char_bubu_char_01",
           "expression_id": {
             "communication": "listening",
-            "emotion": "relieved",
+            "emotion": "neutral",
             "pose": "standing",
             "action": "idle",
             "direction": "right",
@@ -3342,7 +3342,7 @@
           "id": "char_rerin_char_03",
           "expression_id": {
             "communication": "listening",
-            "emotion": "relieved",
+            "emotion": "neutral",
             "pose": "standing",
             "action": "idle",
             "direction": "right",
