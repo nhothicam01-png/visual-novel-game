@@ -1240,9 +1240,13 @@ function drawFrameUnsafe(elapsed,st){
  const emotionalEmphasis=emphasisEmotions.has(emotion)||explicitCloseup||cameraSpec.emphasis===true;
  // Mặc định là khung hình đối thoại: giữ cả nhóm trong ảnh, chỉ dịch rất nhẹ về người nói.
  // Cận cảnh chỉ xuất hiện khi dữ liệu biểu cảm/góc nhìn hoặc đạo diễn chỉ định nhấn mạnh.
+ // Cảnh chỉ có một nhân vật trong khung: xen kẽ cận mặt / bán thân theo từng cụm thoại (2–4 câu)
+ // thay vì giữ mãi một cỡ cảnh. Điểm bắt đầu phụ thuộc scene nên các cảnh không cùng nhịp; kết quả xác định
+ // theo (scene, cue) nên tua/phát lại/xuất video luôn giống nhau.
+ const soloShot=visibleCount===1?((((sceneSeed>>>2)+cueIndex)%2===0)?'close_up':'bust'):'';
  const shot=director==='manual'
   ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
-  :(emotionalEmphasis?'close_up':(visibleCount>1?'group':'bust'));
+  :(emotionalEmphasis?'close_up':(visibleCount>1?'group':soloShot));
  const cameraTarget=director==='manual'
   ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
   :speakerTarget;
@@ -1251,8 +1255,10 @@ function drawFrameUnsafe(elapsed,st){
  for(let zi=0;zi<speakerTarget.length;zi++)zoomSeed=Math.imul(zoomSeed^speakerTarget.charCodeAt(zi),16777619)>>>0;
  const closeupZoomStops=[1.5,2,2.5,3];
  const randomCloseupZoom=closeupZoomStops[zoomSeed%closeupZoomStops.length];
- const defaultZoom=director==='manual'?1:(emotionalEmphasis?randomCloseupZoom:(visibleCount>1?(visibleCount>=3?1.015:1.035):1.14));
- const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?randomCloseupZoom:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
+ // Cận mặt thường (không phải nhấn mạnh cảm xúc) dùng zoom nhẹ hơn cận mặt nhấn mạnh để không quá gắt.
+ const soloCloseZoomStops=[1.5,1.8,2],soloCloseZoom=soloCloseZoomStops[zoomSeed%soloCloseZoomStops.length];
+ const defaultZoom=director==='manual'?1:(emotionalEmphasis?randomCloseupZoom:(visibleCount>1?(visibleCount>=3?1.015:1.035):(shot==='close_up'?soloCloseZoom:1.14)));
+ const shotZoom=director==='manual'?(Number(cameraSpec.zoom)||(shot==='close_up'||shot==='closeup'||shot==='can_canh'?randomCloseupZoom:shot==='medium'||shot==='medium_shot'||shot==='trung_canh'?1.14:shot==='bust'||shot==='half_body'||shot==='ban_than'?1.3:shot==='over_shoulder'||shot==='qua_vai'?1.22:shot==='wide'||shot==='wide_shot'||shot==='toan_canh'?1:0)):defaultZoom;
  let cameraSaved=false;
  const cameraLayers=getCharacterCameraLayers(charLayerVideos,elapsed);
  const rawShotCamera=computeShotCamera(w,h,shotZoom,cameraTarget,cameraLayers,isPortrait,shot);
