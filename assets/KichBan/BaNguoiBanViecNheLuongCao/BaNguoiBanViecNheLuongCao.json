@@ -1,0 +1,4219 @@
+{
+  "phien_ban": 3,
+  "world_id": "TinHieuTuDaiQuanSat",
+  "thiet_lap_chung": {
+    "thoi_gian_giu_khung": 2,
+    "thoi_gian_cho_giua": 0.5,
+    "toc_do_go_chu": 30
+  },
+  "nhan_vat": {
+    "char_bubu_char_01": {
+      "character_id": "char_bubu_char_01",
+      "ten_hien_thi": "Bubu",
+      "assetFolder": "Bubu",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_pipun_char_02": {
+      "character_id": "char_pipun_char_02",
+      "ten_hien_thi": "Pipun",
+      "assetFolder": "Pipun",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    },
+    "char_rerin_char_03": {
+      "character_id": "char_rerin_char_03",
+      "ten_hien_thi": "Rerin",
+      "assetFolder": "Rerin",
+      "giong_noi": {
+        "profile_id": "",
+        "lang": "vi",
+        "voice_id": ""
+      }
+    }
+  },
+  "am_thanh_mac_dinh": {
+    "nhac_nen": ""
+  },
+  "danh_sach": [
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ vừa thấy một tin tuyển dụng khá hấp dẫn. Họ nói việc nhẹ, lương tới ba mươi triệu mỗi tháng.",
+      "anh_nen": "quan_ca_phe.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Việc gì mà lương cao đến vậy? Có yêu cầu kinh nghiệm hay bằng cấp gì không?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "confused",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "confused",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Họ ghi nhập liệu, chăm sóc đơn hàng, không cần kinh nghiệm, còn bao ăn ở nữa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "curious",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tên công ty, địa chỉ văn phòng và thông tin hợp đồng được ghi ở đâu?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Không có địa chỉ rõ ràng. Người đăng chỉ bảo gửi ảnh căn cước để giữ chỗ trước.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "confused",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "confused",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Đừng gửi vội. Một công việc đàng hoàng phải cho mình biết đơn vị tuyển dụng và điều kiện làm việc trước.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Nhưng tớ đang thất nghiệp, tiền nhà tháng tới cũng sắp đến hạn rồi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC001",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ hiểu cậu đang cần việc. Nhưng mình đừng để lời hứa lương cao ép mình quyết định khi chưa kiểm tra.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "sad",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "sad",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ thử tìm tên công ty trên thông tin công khai mà không thấy địa chỉ hay thông tin pháp nhân trùng khớp.",
+      "anh_nen": "phong_khach.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tài khoản tuyển dụng mới lập, bài đăng lại giống hệt nhau ở nhiều nhóm việc làm.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "confused",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "confused",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Họ vừa nhắn thêm: phải nộp hai triệu phí hồ sơ, sáng mai sẽ có xe đưa đi nhận việc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tại sao phải đóng phí trước khi mình biết rõ nơi làm và được xem hợp đồng?",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "confused",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "confused",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Lúc đầu họ nói công việc ở Bình Dương, giờ lại đổi thành Tây Ninh. Thông tin cứ thay đổi liên tục.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ hỏi hợp đồng thì họ bảo đến nơi rồi ký, không cần lo lắng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Đó là dấu hiệu rất đáng ngại. Mình không chuyển tiền, không gửi giấy tờ và tuyệt đối không giao điện thoại cho người lạ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC002",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Nếu vẫn đi hỏi trực tiếp, chỉ gặp ở nơi công cộng, tự giữ giấy tờ và báo lịch trình cho người thân. Có gì bất thường thì rời đi ngay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Sáng hôm sau, tụi mình đến bến xe công cộng theo điểm hẹn trong tin nhắn, nhưng ở đây chẳng có văn phòng công ty nào cả.",
+      "anh_nen": "ben_xe.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Người liên hệ chỉ nhắn bảo đi theo một chiếc xe đang đỗ phía ngoài. Họ không gửi tên đơn vị vận tải.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "confused",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "confused",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ hỏi địa chỉ nơi làm và bản hợp đồng. Họ lại nói phải qua Campuchia rồi mới biết công ty cụ thể.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "surprised",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "surprised",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Campuchia ư? Tin tuyển dụng ban đầu đâu có nói đây là công việc ở nước ngoài!",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Họ còn yêu cầu tụi mình giao căn cước và điện thoại cho tài xế giữ trước khi lên xe.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Không được. Mình không giao giấy tờ, không đưa điện thoại và không lên xe khi chưa xác minh được công việc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Người đó cứ giục đi ngay, nói nếu chậm thì mất suất, còn bảo đừng gọi cho gia đình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Càng cấm liên lạc càng nguy hiểm. Mình không đi theo họ tới nơi vắng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ không muốn lên chiếc xe đó nữa. Mình phải rời khỏi điểm hẹn ngay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "narration",
+      "noi_dung": "Cả ba lập tức rời khỏi điểm đón, đi về phía khu vực đông người có nhân viên bến xe để nhờ hỗ trợ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "silent",
+        "emotion": "worried",
+        "pose": "walking_pose",
+        "action": "walking",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "walking_pose",
+            "action": "walking",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1,
+          "motion": {
+            "action": "walking",
+            "duration_seconds": 2.6,
+            "easing": "ease-in-out",
+            "from": {
+              "x": 29,
+              "y": 91,
+              "scale": 0.68,
+              "opacity": 1
+            },
+            "to": {
+              "x": 41,
+              "y": 91,
+              "scale": 0.68,
+              "opacity": 1
+            },
+            "end_expression_id": {
+              "communication": "silent",
+              "emotion": "worried",
+              "pose": "standing",
+              "action": "idle",
+              "direction": "right",
+              "face_angle": "angled",
+              "view_angle": "full body",
+              "interaction_target": "none"
+            }
+          }
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "walking_pose",
+            "action": "walking",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2,
+          "motion": {
+            "action": "walking",
+            "duration_seconds": 2.6,
+            "easing": "ease-in-out",
+            "from": {
+              "x": 51,
+              "y": 86,
+              "scale": 0.72,
+              "opacity": 1
+            },
+            "to": {
+              "x": 63,
+              "y": 86,
+              "scale": 0.72,
+              "opacity": 1
+            },
+            "end_expression_id": {
+              "communication": "silent",
+              "emotion": "worried",
+              "pose": "standing",
+              "action": "idle",
+              "direction": "right",
+              "face_angle": "angled",
+              "view_angle": "full body",
+              "interaction_target": "none"
+            }
+          }
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "silent",
+            "emotion": "worried",
+            "pose": "walking_pose",
+            "action": "walking",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "none"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1,
+          "motion": {
+            "action": "walking",
+            "duration_seconds": 2.6,
+            "easing": "ease-in-out",
+            "from": {
+              "x": 73,
+              "y": 91,
+              "scale": 0.68,
+              "opacity": 1
+            },
+            "to": {
+              "x": 85,
+              "y": 91,
+              "scale": 0.68,
+              "opacity": 1
+            },
+            "end_expression_id": {
+              "communication": "silent",
+              "emotion": "worried",
+              "pose": "standing",
+              "action": "idle",
+              "direction": "right",
+              "face_angle": "angled",
+              "view_angle": "full body",
+              "interaction_target": "none"
+            }
+          }
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC003",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Chúng ta sẽ trình bày sự việc với nhân viên bến xe và liên hệ công an địa phương. Đừng tự đối đầu với họ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tụi mình đã trình bày sự việc với nhân viên bến xe và liên hệ công an địa phương.",
+      "anh_nen": "sanh_lon.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ giữ lại tin nhắn, số điện thoại và nội dung tuyển dụng để cung cấp khi cần.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Mình kể đúng những gì đã xảy ra: lời mời tuyển dụng, khoản phí, điểm hẹn và yêu cầu giao giấy tờ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "May là cả ba chưa chuyển tiền, chưa giao căn cước và chưa lên chiếc xe đó.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "relieved",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "relieved",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ không ngờ một lời mời việc làm lại có thể dẫn đến nguy hiểm như vậy.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "sad",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "sad",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Mình không tự ý tìm gặp hay đối đầu với người tuyển dụng. Để cơ quan chức năng tiếp nhận và xác minh.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Tớ vẫn còn sợ, nhưng nhẹ nhõm vì tụi mình đã dừng lại đúng lúc.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "sad",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "sad",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC004",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Sau khi được hướng dẫn, tụi mình về nhà an toàn và tiếp tục lưu giữ bằng chứng.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "relieved",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "relieved",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Nhìn lại, dấu hiệu đầu tiên là lương quá cao nhưng mô tả công việc mơ hồ, không có thông tin công ty rõ ràng.",
+      "anh_nen": "phong_khach.png",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Rồi họ yêu cầu đóng phí, giục đi gấp, đổi địa điểm và hứa chỉ ký hợp đồng sau khi tới nơi.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Nguy hiểm nhất là họ muốn giữ căn cước, điện thoại và ngăn tụi mình liên lạc với gia đình.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "worried",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Nếu lời mời làm việc ở nước ngoài không có hợp đồng rõ ràng và đơn vị được xác minh, đừng tự ý lên đường.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Hãy kiểm tra doanh nghiệp và thông tin tuyển dụng qua cơ quan có thẩm quyền; đừng chuyển tiền hay giao giấy tờ gốc cho người lạ.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Nếu bị ép lên xe hoặc đưa tới nơi không an toàn, hãy tìm nơi công cộng, nhờ nhân viên an ninh hỗ trợ và liên hệ công an ngay.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "afraid",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "afraid",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "worried",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_rerin_char_03",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Báo cho người thân biết lịch trình, giữ liên lạc và chia sẻ thông tin chuyến đi trước khi đi làm xa.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "neutral",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_pipun_char_02",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Một công việc tốt không bắt mình phải giấu gia đình, bỏ điện thoại hay từ bỏ quyền được biết mình sẽ làm ở đâu.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "neutral",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    },
+    {
+      "scene_id": "SC005",
+      "hoi_tuong": false,
+      "nhan_vat": "char_bubu_char_01",
+      "loai_phat_ngon": "character",
+      "noi_dung": "Từ nay, tụi mình sẽ kiểm tra kỹ trước khi tin vào bất kỳ lời mời việc nhẹ lương cao nào.",
+      "anh_nen": "",
+      "anh_hieu_ung": "",
+      "expression_id": {
+        "communication": "speaking",
+        "emotion": "determined",
+        "pose": "standing",
+        "action": "idle",
+        "direction": "right",
+        "face_angle": "angled",
+        "view_angle": "full body",
+        "interaction_target": "character"
+      },
+      "nhan_vat_hien_thi": [
+        {
+          "id": "char_bubu_char_01",
+          "expression_id": {
+            "communication": "speaking",
+            "emotion": "determined",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 29,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        },
+        {
+          "id": "char_pipun_char_02",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 51,
+          "y": 86,
+          "scale": 0.72,
+          "z_index": 2
+        },
+        {
+          "id": "char_rerin_char_03",
+          "expression_id": {
+            "communication": "listening",
+            "emotion": "happy",
+            "pose": "standing",
+            "action": "idle",
+            "direction": "right",
+            "face_angle": "angled",
+            "view_angle": "full body",
+            "interaction_target": "character"
+          },
+          "x": 73,
+          "y": 91,
+          "scale": 0.68,
+          "z_index": 1
+        }
+      ],
+      "bo_cuc_nhan_vat": {
+        "mode": "manual"
+      },
+      "camera": {
+        "director": "auto"
+      },
+      "hieu_ung": {
+        "nhan_vat": [],
+        "nen": [],
+        "camera": [],
+        "moi_truong": []
+      },
+      "hieu_ung_canh": [],
+      "am_thanh": {
+        "nhac_nen": {
+          "tep": ""
+        },
+        "hieu_ung_am_thanh": {
+          "tep": ""
+        }
+      }
+    }
+  ]
+}
