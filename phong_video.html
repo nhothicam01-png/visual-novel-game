@@ -1247,9 +1247,16 @@ function drawFrameUnsafe(elapsed,st){
  const shot=director==='manual'
   ?String(cameraSpec.shot||sourceCameraFrame.camera_shot||'wide').toLowerCase().replace(/[- ]+/g,'_')
   :(emotionalEmphasis?'close_up':(visibleCount>1?'group':soloShot));
- const cameraTarget=director==='manual'
-  ?String(cameraSpec.target||sourceCameraFrame.camera_target||speakerTarget)
-  :speakerTarget;
+ // BẤT BIẾN: camera luôn ưu tiên đúng nhân vật đang phát ngôn.
+ // camera.target trong JSON cũ hoặc manual không được phép kéo khung hình sang người nghe.
+ const speakerLayerExists=!!speakerTarget&&charLayerVideos.some(layer=>String(layer.spec?.id||'')===speakerTarget);
+ const speakingLayer=charLayerVideos.find(layer=>{
+  const spec=layer.spec||{};
+  return spec.communication==='speaking'||spec.motion?.communication==='speaking';
+ });
+ const cameraTarget=speakerLayerExists
+  ?speakerTarget
+  :(String(speakingLayer?.spec?.id||speakerTarget||cameraSpec.target||sourceCameraFrame.camera_target||''));
  // Chọn ngẫu nhiên theo cue, nhưng giữ cố định khi tua/phát lại.
  let zoomSeed=(sceneSeed^Math.imul(cueIndex+1,0x45d9f3b))>>>0;
  for(let zi=0;zi<speakerTarget.length;zi++)zoomSeed=Math.imul(zoomSeed^speakerTarget.charCodeAt(zi),16777619)>>>0;
